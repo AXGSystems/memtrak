@@ -4,79 +4,74 @@ import { useEffect, useState } from 'react';
 interface Props {
   value: number;
   max: number;
-  label: string;
+  label?: string;
   color: string;
   size?: number;
 }
 
-export default function ProgressRing({ value, max, label, color, size = 100 }: Props) {
-  const [animatedValue, setAnimatedValue] = useState(0);
-  const percentage = Math.round((value / max) * 100);
+export default function ProgressRing({ value, max, color, size = 64 }: Props) {
+  const [animatedPct, setAnimatedPct] = useState(0);
+  const percentage = Math.min(Math.round((value / max) * 100), 100);
 
   useEffect(() => {
     const start = performance.now();
-    const duration = 1000;
-
+    const duration = 1200;
     function animate(now: number) {
       const elapsed = now - start;
       const progress = Math.min(elapsed / duration, 1);
-      // ease-out cubic
       const eased = 1 - Math.pow(1 - progress, 3);
-      setAnimatedValue(Math.round(eased * percentage));
+      setAnimatedPct(Math.round(eased * percentage));
       if (progress < 1) requestAnimationFrame(animate);
     }
-
     requestAnimationFrame(animate);
   }, [percentage]);
 
-  const strokeWidth = size * 0.08;
-  const radius = (size - strokeWidth) / 2;
+  const strokeWidth = Math.max(size * 0.09, 3);
+  const radius = (size - strokeWidth * 2) / 2;
   const circumference = 2 * Math.PI * radius;
-  const dashoffset = circumference - (animatedValue / 100) * circumference;
+  const dashoffset = circumference - (animatedPct / 100) * circumference;
   const center = size / 2;
 
-  // Format the "X of Y" text
-  const fmtNum = (n: number) => {
-    if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
-    if (n >= 1_000) return n.toLocaleString('en-US');
-    return String(n);
-  };
-
   return (
-    <div className="flex flex-col items-center gap-1">
+    <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
       <svg width={size} height={size} className="transform -rotate-90">
+        {/* Glow filter */}
+        <defs>
+          <filter id={`glow-${color.replace('#', '')}`} x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="2" result="blur" />
+            <feFlood floodColor={color} floodOpacity="0.4" />
+            <feComposite in2="blur" operator="in" />
+            <feMerge>
+              <feMergeNode />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
         {/* Background track */}
         <circle
-          cx={center}
-          cy={center}
-          r={radius}
+          cx={center} cy={center} r={radius}
           fill="none"
-          stroke="#eef1f5"
+          stroke="rgba(255,255,255,0.06)"
           strokeWidth={strokeWidth}
         />
-        {/* Progress arc */}
+        {/* Progress arc with glow */}
         <circle
-          cx={center}
-          cy={center}
-          r={radius}
+          cx={center} cy={center} r={radius}
           fill="none"
           stroke={color}
           strokeWidth={strokeWidth}
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={dashoffset}
-          style={{ transition: 'stroke-dashoffset 0.05s linear' }}
+          filter={`url(#glow-${color.replace('#', '')})`}
+          style={{ transition: 'stroke-dashoffset 0.08s linear' }}
         />
       </svg>
-      {/* Percentage in center — overlay on the SVG */}
-      <div className="relative" style={{ marginTop: -size * 0.65, height: size * 0.35 }}>
-        <span className="text-lg font-extrabold" style={{ color: 'var(--theme-heading)' }}>
-          {animatedValue}%
+      {/* Center percentage */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className="font-extrabold text-white" style={{ fontSize: size * 0.24 }}>
+          {animatedPct}<span className="text-white/40" style={{ fontSize: size * 0.16 }}>%</span>
         </span>
-      </div>
-      <div className="text-xs font-semibold" style={{ color: 'var(--theme-heading)' }}>{label}</div>
-      <div className="text-[10px]" style={{ color: 'var(--theme-text-muted)' }}>
-        {fmtNum(value)} of {fmtNum(max)}
       </div>
     </div>
   );

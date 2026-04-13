@@ -30,16 +30,22 @@ export default function Deliverability() {
 
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6 stagger-children">
         {[
-          { label: 'Delivery Rate', value: 96.2, color: C.green },
-          { label: 'Hard Bounce', value: 1.8, color: C.red },
-          { label: 'Soft Bounce', value: 2.0, color: C.orange },
-          { label: 'Spam Complaints', value: 0.02, color: C.green },
-          { label: 'Invalid Addresses', value: 332, color: C.blue, isCount: true },
+          { label: 'Delivery Rate', value: 96.2, ringValue: 96.2, color: C.green },
+          { label: 'Hard Bounce', value: 1.8, ringValue: 1.8, color: C.red },
+          { label: 'Soft Bounce', value: 2.0, ringValue: 2.0, color: C.orange },
+          { label: 'Spam Complaints', value: 0.02, ringValue: 0.02, color: C.green },
+          { label: 'Invalid Addresses', value: 332, ringValue: 0, color: C.blue },
         ].map(m => (
-          <Card key={m.label} className="p-4 flex items-center gap-3">
-            {!('isCount' in m) ? <ProgressRing value={m.label.includes('Rate') ? m.value : 100 - m.value} max={100} size={48} label="" color={m.color} /> : null}
-            <div>
-              <div className="text-xs font-bold text-white">{'isCount' in m ? m.value.toLocaleString() : m.value + '%'}</div>
+          <Card key={m.label} className="p-4 flex flex-col items-center text-center">
+            {m.ringValue > 0 ? (
+              <ProgressRing value={m.label.includes('Rate') ? m.ringValue : m.ringValue} max={m.label.includes('Rate') ? 100 : 10} size={64} color={m.color} />
+            ) : (
+              <div className="w-[64px] h-[64px] flex items-center justify-center">
+                <span className="text-xl font-extrabold text-white">{m.value.toLocaleString()}</span>
+              </div>
+            )}
+            <div className="mt-2">
+              {m.ringValue > 0 && <div className="text-xs font-bold text-white">{m.value}%</div>}
               <div className="text-[10px] text-white/40">{m.label}</div>
             </div>
           </Card>
