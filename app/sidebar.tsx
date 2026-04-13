@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import {
   Zap, Send, TrendingUp, Shield, ClipboardCheck, MessageSquare,
   Activity, Mail, Map, Camera, PlusCircle, GitBranch, Users,
-  Calendar, UserPlus, FileText,
+  Calendar, UserPlus, FileText, BarChart3, Target, Layers,
 } from 'lucide-react';
 
 const sections = [
@@ -36,6 +36,13 @@ const sections = [
       { label: 'Communication Log', href: '/log', icon: MessageSquare },
       { label: 'Address Hygiene', href: '/hygiene', icon: Shield },
       { label: 'Mail Scanner', href: '/scanner', icon: Camera },
+    ]
+  },
+  {
+    label: 'Advertising (Revive)', items: [
+      { label: 'Ad Dashboard', href: '/ads', icon: BarChart3 },
+      { label: 'Inventory Calendar', href: '/ads/inventory', icon: Layers },
+      { label: 'Request a Slot', href: '/ads/request', icon: Target },
     ]
   },
   {
@@ -82,7 +89,7 @@ export default function Sidebar() {
       <div className="px-4 py-3 border-t border-white/10 flex-shrink-0">
         <div className="flex items-center gap-2 text-[10px]">
           <span className="w-2 h-2 rounded-full bg-[#8CC63F] animate-pulse" />
-          <span className="text-white/40">17 pages · 13 APIs</span>
+          <span className="text-white/40">20 pages · 13 APIs</span>
         </div>
         <div className="text-[9px] text-white/20 mt-1">MEMTrak v1.0 — Standalone</div>
       </div>

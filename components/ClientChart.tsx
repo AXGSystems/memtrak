@@ -8,10 +8,15 @@ import { fmt, fmtDollarFull } from '@/lib/data';
 Chart.register(...registerables, ChartDataLabels);
 
 Chart.defaults.font.family = "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif";
-Chart.defaults.font.size = 12;
-Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(27, 58, 92, 0.95)';
+Chart.defaults.font.size = 11;
+Chart.defaults.color = '#8899aa';
+Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(10, 22, 40, 0.95)';
 Chart.defaults.plugins.tooltip.titleFont = { size: 13, weight: 'bold' };
+Chart.defaults.plugins.tooltip.titleColor = '#e2e8f0';
 Chart.defaults.plugins.tooltip.bodyFont = { size: 12 };
+Chart.defaults.plugins.tooltip.bodyColor = '#8899aa';
+Chart.defaults.plugins.tooltip.borderColor = 'rgba(255,255,255,0.1)';
+Chart.defaults.plugins.tooltip.borderWidth = 1;
 Chart.defaults.plugins.tooltip.cornerRadius = 8;
 Chart.defaults.plugins.tooltip.padding = 12;
 Chart.defaults.plugins.tooltip.displayColors = true;
@@ -156,9 +161,10 @@ interface Props {
   options?: ChartOptions;
   plugins?: Plugin[];
   height?: number;
+  onPointClick?: (label: string, value: number, datasetLabel: string) => void;
 }
 
-export default function ClientChart({ type, data, options = {}, plugins = [], height = 300 }: Props) {
+export default function ClientChart({ type, data, options = {}, plugins = [], height = 300, onPointClick }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const chartRef = useRef<Chart | null>(null);
 
@@ -285,12 +291,29 @@ export default function ClientChart({ type, data, options = {}, plugins = [], he
       ...(isBar ? { bar: { ...(defaultElements as ChartOptions).bar, ...incomingElements.bar } } : {}),
     };
 
-    chartRef.current = new Chart(canvasRef.current, {
+    const chart = new Chart(canvasRef.current, {
       type,
       data: data as ChartData<keyof ChartTypeRegistry>,
       options: mergedOptions as ChartOptions,
       plugins,
     });
+
+    chartRef.current = chart;
+
+    // Click handler
+    if (onPointClick) {
+      const handler = (event: MouseEvent) => {
+        const elements = chart.getElementsAtEventForMode(event, 'nearest', { intersect: true }, false);
+        if (elements.length > 0) {
+          const el = elements[0];
+          const dsLabel = chart.data.datasets[el.datasetIndex]?.label || '';
+          const label = String(chart.data.labels?.[el.index] || '');
+          const value = (chart.data.datasets[el.datasetIndex]?.data[el.index] as number) || 0;
+          onPointClick(label, value, dsLabel);
+        }
+      };
+      canvasRef.current.addEventListener('click', handler);
+    }
 
     return () => {
       if (chartRef.current) {
@@ -298,11 +321,11 @@ export default function ClientChart({ type, data, options = {}, plugins = [], he
         chartRef.current = null;
       }
     };
-  }, [type, data, options, plugins]);
+  }, [type, data, options, plugins, onPointClick]);
 
   return (
-    <div style={{ height, position: 'relative' }} role="img" aria-label={`${type} chart`}>
-      <canvas ref={canvasRef} />
+    <div style={{ height, position: 'relative', width: '100%' }} role="img" aria-label={`${type} chart`}>
+      <canvas ref={canvasRef} style={{ cursor: onPointClick ? 'pointer' : 'default' }} />
     </div>
   );
 }
