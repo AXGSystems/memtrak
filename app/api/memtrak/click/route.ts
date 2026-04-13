@@ -11,12 +11,15 @@ import { logEvent } from '@/lib/memtrak';
  * 2. Redirects (302) to the actual destination URL
  */
 
-// Allowlist of safe redirect domains
+// Allowlist of safe redirect domains — ONLY these can be redirect targets
 const SAFE_DOMAINS = ['alta.org', 'www.alta.org', 'team.alta.org', 'remembers.com', 'alta.atlassian.net'];
 
 function isSafeUrl(url: string): boolean {
   try {
     const parsed = new URL(url);
+    // Must be HTTPS (no HTTP redirects)
+    if (parsed.protocol !== 'https:') return false;
+    // Must match allowlist exactly
     return SAFE_DOMAINS.some(d => parsed.hostname === d || parsed.hostname.endsWith('.' + d));
   } catch {
     return false;
