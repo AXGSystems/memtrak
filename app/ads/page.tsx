@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import ClientChart from '@/components/ClientChart';
 import { exportCSV } from '@/lib/export-utils';
-import { BarChart3, Eye, MousePointerClick, DollarSign, Download, ExternalLink, Calendar, Target } from 'lucide-react';
+import { BarChart3, Eye, MousePointerClick, DollarSign, Download, Calendar, Target, Printer } from 'lucide-react';
 
 const C = { navy: '#1B3A5C', blue: '#4A90D9', green: '#8CC63F', red: '#D94A4A', orange: '#E8923F' };
 
