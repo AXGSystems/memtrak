@@ -51,7 +51,7 @@ export default function ProgressRing({ value, max, color, size = 64 }: Props) {
         <circle
           cx={center} cy={center} r={radius}
           fill="none"
-          stroke="rgba(255,255,255,0.06)"
+          stroke="var(--ring-track, rgba(255,255,255,0.06))"
           strokeWidth={strokeWidth}
         />
         {/* Progress arc with glow */}

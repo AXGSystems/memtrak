@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -57,27 +58,52 @@ const sections = [
 export default function Sidebar() {
   const pathname = usePathname();
 
+  const themes = [
+    { id: 'deep-blue', label: 'Deep Blue', color: '#0f1d2f' },
+    { id: 'glass', label: 'Apple Glass', color: '#1a1a2e' },
+    { id: 'vibranium', label: 'Vibranium', color: '#0d0618' },
+    { id: 'axg', label: 'AXG Gold', color: '#0a1628' },
+    { id: 'light', label: 'ALTA Light', color: '#f4f6f8' },
+  ];
+
+  const [currentTheme, setCurrentTheme] = useState(() => {
+    if (typeof window === 'undefined') return 'deep-blue';
+    return localStorage.getItem('memtrak-theme') || 'deep-blue';
+  });
+
+  const switchTheme = (id: string) => {
+    document.documentElement.setAttribute('data-theme', id);
+    localStorage.setItem('memtrak-theme', id);
+    setCurrentTheme(id);
+  };
+
+  // Apply saved theme on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('memtrak-theme');
+    if (saved) document.documentElement.setAttribute('data-theme', saved);
+  }, []);
+
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-56 bg-[#0a1628] border-r border-white/10 flex flex-col z-50 overflow-hidden">
-      <div className="px-4 py-4 border-b border-white/10 flex-shrink-0">
+    <aside className="fixed left-0 top-0 bottom-0 w-56 border-r flex flex-col z-50 overflow-hidden transition-colors duration-300" style={{ background: 'var(--sidebar-bg)', borderColor: 'var(--card-border)' }}>
+      <div className="px-4 py-4 border-b flex-shrink-0" style={{ borderColor: 'var(--card-border)' }}>
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-[#8CC63F]/20 flex items-center justify-center text-[#8CC63F] font-extrabold text-sm">M</div>
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center font-extrabold text-sm" style={{ background: 'color-mix(in srgb, var(--accent) 20%, transparent)', color: 'var(--accent)' }}>M</div>
           <div>
-            <div className="text-white font-bold text-sm">MEMTrak</div>
-            <div className="text-white/30 text-[8px]">Email Intelligence Platform</div>
+            <div className="font-bold text-sm" style={{ color: 'var(--heading)' }}>MEMTrak</div>
+            <div className="text-[8px]" style={{ color: 'var(--text-muted)' }}>Email Intelligence Platform</div>
           </div>
         </div>
       </div>
       <nav className="flex-1 py-2 px-2 space-y-3 overflow-y-auto">
         {sections.map(section => (
           <div key={section.label}>
-            <div className="text-[9px] uppercase tracking-widest font-semibold text-white/30 px-3 py-1">{section.label}</div>
+            <div className="text-[9px] uppercase tracking-widest font-semibold px-3 py-1" style={{ color: 'var(--sidebar-text)' }}>{section.label}</div>
             <div className="space-y-0.5">
               {section.items.map(item => {
                 const Icon = item.icon;
                 const active = pathname === item.href;
                 return (
-                  <Link key={item.href} href={item.href} className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-semibold transition-all ${active ? 'bg-white/10 text-[#8CC63F] border-r-2 border-[#8CC63F]' : 'text-white/50 hover:text-white/80 hover:bg-white/5'}`}>
+                  <Link key={item.href} href={item.href} className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-semibold transition-all ${active ? 'border-r-2' : 'hover:bg-white/5'}`} style={active ? { background: 'var(--sidebar-active)', color: 'var(--accent)', borderColor: 'var(--accent)' } : { color: 'var(--sidebar-text)' }}>
                     <Icon className="w-3.5 h-3.5 flex-shrink-0" /> {item.label}
                   </Link>
                 );
@@ -86,12 +112,25 @@ export default function Sidebar() {
           </div>
         ))}
       </nav>
-      <div className="px-4 py-3 border-t border-white/10 flex-shrink-0">
-        <div className="flex items-center gap-2 text-[10px]">
-          <span className="w-2 h-2 rounded-full bg-[#8CC63F] animate-pulse" />
-          <span className="text-white/40">20 pages · 13 APIs</span>
+
+      {/* Theme switcher */}
+      <div className="px-3 py-2 border-t flex-shrink-0" style={{ borderColor: 'var(--card-border)' }}>
+        <div className="text-[9px] uppercase tracking-widest font-semibold mb-2" style={{ color: 'var(--sidebar-text)' }}>Theme</div>
+        <div className="flex gap-1.5">
+          {themes.map(t => (
+            <button key={t.id} onClick={() => switchTheme(t.id)} title={t.label}
+              className={`w-6 h-6 rounded-full border-2 transition-all ${currentTheme === t.id ? 'scale-110 ring-2 ring-offset-1' : 'opacity-60 hover:opacity-100'}`}
+              style={{ background: t.color, borderColor: currentTheme === t.id ? 'var(--accent)' : 'transparent', ringColor: 'var(--accent)' }}
+            />
+          ))}
         </div>
-        <div className="text-[9px] text-white/20 mt-1">MEMTrak v1.0 — Standalone</div>
+      </div>
+
+      <div className="px-4 py-2 border-t flex-shrink-0" style={{ borderColor: 'var(--card-border)' }}>
+        <div className="flex items-center gap-2 text-[10px]">
+          <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: 'var(--accent)' }} />
+          <span style={{ color: 'var(--text-muted)' }}>20 pages · 13 APIs</span>
+        </div>
       </div>
     </aside>
   );
