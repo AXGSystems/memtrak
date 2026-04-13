@@ -3,6 +3,7 @@
 import ClientChart from '@/components/ClientChart';
 import { demoCampaigns, getCampaignTotals } from '@/lib/demo-data';
 import { exportCSV } from '@/lib/export-utils';
+import { memtrakPrint } from '@/lib/print';
 import { Download, Printer } from 'lucide-react';
 
 const C = { navy: '#1B3A5C', blue: '#4A90D9', green: '#8CC63F', red: '#D94A4A', orange: '#E8923F' };
@@ -14,7 +15,7 @@ export default function Campaigns() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-lg font-extrabold text-white">Campaigns ({demoCampaigns.length})</h1>
         <div className="flex gap-2">
-          <button onClick={() => window.print()} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-white/50 border border-white/10 hover:border-white/30 no-print"><Printer className="w-3 h-3" /> Print</button>
+          <button onClick={() => memtrakPrint('Campaigns')} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold border no-print" style={{ color: 'var(--text-muted)', borderColor: 'var(--card-border)' }}><Printer className="w-3 h-3" /> Print</button>
           <button onClick={() => exportCSV(['Campaign', 'Type', 'Status', 'Source', 'Date', 'Sent', 'Delivered', 'Opened', 'Clicked', 'Bounced', 'Revenue'], demoCampaigns.map(c => [c.name, c.type, c.status, c.source, c.sentDate, c.listSize, c.delivered, c.uniqueOpened, c.clicked, c.bounced, c.revenue]), 'MEMTrak_Campaigns')} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-[#8CC63F] hover:bg-[#6fa030]"><Download className="w-3 h-3" /> CSV</button>
         </div>
       </div>

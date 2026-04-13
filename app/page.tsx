@@ -3,6 +3,7 @@
 import ClientChart from '@/components/ClientChart';
 import { demoMonthly, demoDecayAlerts, getCampaignTotals } from '@/lib/demo-data';
 import { exportCSV } from '@/lib/export-utils';
+import { memtrakPrint } from '@/lib/print';
 import { Send, Eye, MousePointerClick, TrendingDown, CheckCircle, Target, AlertTriangle, Download, Printer } from 'lucide-react';
 
 const C = { navy: '#1B3A5C', blue: '#4A90D9', green: '#8CC63F', red: '#D94A4A', orange: '#E8923F' };
@@ -21,7 +22,7 @@ export default function DailyBriefing() {
         </div>
         <div className="flex items-center gap-2">
           <Badge />
-          <button onClick={() => window.print()} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white/50 border border-white/10 hover:border-white/30 no-print"><Printer className="w-3.5 h-3.5" /> Print</button>
+          <button onClick={() => memtrakPrint('Daily Briefing')} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border no-print" style={{ color: 'var(--text-muted)', borderColor: 'var(--card-border)' }}><Printer className="w-3.5 h-3.5" /> Print</button>
         </div>
       </div>
 
