@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import {
   Zap, Send, TrendingUp, Shield, ClipboardCheck, MessageSquare,
   Activity, Mail, Map, Camera, PlusCircle, GitBranch, Users,
-  Calendar, UserPlus, FileText, BarChart3, Target, Layers,
+  Calendar, UserPlus, FileText, BarChart3, Target, Layers, Lock,
 } from 'lucide-react';
 
 const sections = [
@@ -51,6 +51,7 @@ const sections = [
       { label: 'Code Generator', href: '/generator', icon: Mail },
       { label: 'Email Audit', href: '/audit', icon: ClipboardCheck },
       { label: 'Tracking Roadmap', href: '/roadmap', icon: Map },
+      { label: 'Security', href: '/security', icon: Lock },
     ]
   },
 ];

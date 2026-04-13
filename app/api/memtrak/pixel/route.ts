@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { logEvent } from '@/lib/memtrak';
+import { sanitize, logAudit } from '@/lib/security';
 
 /**
  * MEMTrak Tracking Pixel
@@ -18,8 +19,11 @@ import { logEvent } from '@/lib/memtrak';
 const PIXEL = Buffer.from('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'base64');
 
 export async function GET(request: NextRequest) {
-  const cid = request.nextUrl.searchParams.get('cid') || 'unknown';
-  const rid = request.nextUrl.searchParams.get('rid') || 'unknown';
+  const cid = sanitize(request.nextUrl.searchParams.get('cid'), 100) || 'unknown';
+  const rid = sanitize(request.nextUrl.searchParams.get('rid'), 254) || 'unknown';
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
+
+  logAudit('pixel-open', ip, `Campaign: ${cid}, Recipient: ${rid}`);
 
   // Log the open event
   logEvent({

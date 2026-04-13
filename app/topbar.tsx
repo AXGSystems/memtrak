@@ -20,6 +20,7 @@ const pageNames: Record<string, string> = {
   '/generator': 'Code Generator',
   '/audit': 'Email Audit',
   '/roadmap': 'Tracking Roadmap',
+  '/security': 'Security Dashboard',
   '/briefing': 'Email Briefing',
   '/ads': 'Ad Dashboard',
   '/ads/inventory': 'Ad Inventory',
