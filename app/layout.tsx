@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Sidebar from "./sidebar";
+import TopBar from "./topbar";
 
 export const metadata: Metadata = {
   title: "MEMTrak — Email Intelligence Platform",
@@ -13,7 +14,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" data-theme="deep-blue" className="h-full antialiased">
       <body className="min-h-full flex">
         <Sidebar />
-        <main className="flex-1 ml-56 min-h-screen">{children}</main>
+        <main className="flex-1 ml-56 min-h-screen">
+          <TopBar />
+          {children}
+        </main>
       </body>
     </html>
   );

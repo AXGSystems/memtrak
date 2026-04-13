@@ -66,10 +66,7 @@ export default function Sidebar() {
     { id: 'light', label: 'ALTA Brand', color: '#f0f2f5', ring: '#D94A4A' },
   ];
 
-  const [currentTheme, setCurrentTheme] = useState(() => {
-    if (typeof window === 'undefined') return 'deep-blue';
-    return localStorage.getItem('memtrak-theme') || 'deep-blue';
-  });
+  const [currentTheme, setCurrentTheme] = useState('deep-blue');
 
   const switchTheme = (id: string) => {
     document.documentElement.setAttribute('data-theme', id);
@@ -77,10 +74,13 @@ export default function Sidebar() {
     setCurrentTheme(id);
   };
 
-  // Apply saved theme on mount
+  // Apply saved theme on mount — client only
   useEffect(() => {
     const saved = localStorage.getItem('memtrak-theme');
-    if (saved) document.documentElement.setAttribute('data-theme', saved);
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+      setCurrentTheme(saved);
+    }
   }, []);
 
   return (
