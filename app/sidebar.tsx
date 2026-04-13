@@ -59,11 +59,11 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   const themes = [
-    { id: 'deep-blue', label: 'Deep Blue', color: '#0f1d2f' },
-    { id: 'glass', label: 'Apple Glass', color: '#1a1a2e' },
-    { id: 'vibranium', label: 'Vibranium', color: '#0d0618' },
-    { id: 'axg', label: 'AXG Gold', color: '#0a1628' },
-    { id: 'light', label: 'ALTA Light', color: '#f4f6f8' },
+    { id: 'deep-blue', label: 'Deep Blue', color: '#0f1d2f', ring: '#8CC63F' },
+    { id: 'glass', label: 'Apple Glass', color: '#16162a', ring: '#5AC8FA' },
+    { id: 'vibranium', label: 'Vibranium', color: '#08020f', ring: '#a855f7' },
+    { id: 'axg', label: 'AXG Gold', color: '#06101e', ring: '#C5A55A' },
+    { id: 'light', label: 'ALTA Brand', color: '#f0f2f5', ring: '#D94A4A' },
   ];
 
   const [currentTheme, setCurrentTheme] = useState(() => {
@@ -119,8 +119,8 @@ export default function Sidebar() {
         <div className="flex gap-1.5">
           {themes.map(t => (
             <button key={t.id} onClick={() => switchTheme(t.id)} title={t.label}
-              className={`w-6 h-6 rounded-full border-2 transition-all ${currentTheme === t.id ? 'scale-110 ring-2 ring-offset-1' : 'opacity-60 hover:opacity-100'}`}
-              style={{ background: t.color, borderColor: currentTheme === t.id ? 'var(--accent)' : 'transparent', ringColor: 'var(--accent)' }}
+              className={`w-7 h-7 rounded-full border-2 transition-all ${currentTheme === t.id ? 'scale-110' : 'opacity-50 hover:opacity-90'}`}
+              style={{ background: t.color, borderColor: currentTheme === t.id ? t.ring : 'rgba(128,128,128,0.3)', boxShadow: currentTheme === t.id ? `0 0 8px ${t.ring}40` : 'none' }}
             />
           ))}
         </div>

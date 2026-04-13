@@ -1,111 +1,138 @@
 @import "tailwindcss";
 
-/* ═══════════════════════════════════════════════ */
-/* THEME 1: Deep Blue (current default)           */
-/* ═══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════ */
+/* THEME 1: Deep Blue — Dark navy intelligence dashboard      */
+/* ═══════════════════════════════════════════════════════════ */
 [data-theme="deep-blue"], :root {
   --background: #0f1d2f;
   --foreground: #e2e8f0;
   --card: #162337;
   --card-border: #1e3350;
   --card-hover: #1a2d48;
-  --text-muted: #8899aa;
+  --text-muted: #6b7f96;
   --heading: #e2e8f0;
   --accent: #8CC63F;
   --sidebar-bg: #0a1628;
-  --sidebar-active: rgba(255,255,255,0.1);
-  --sidebar-text: rgba(255,255,255,0.5);
+  --sidebar-active: rgba(140,198,63,0.12);
+  --sidebar-text: rgba(255,255,255,0.45);
   --grid-line: #1e3350;
   --ring-track: rgba(255,255,255,0.06);
-  --input-bg: rgba(255,255,255,0.05);
-  --input-border: rgba(255,255,255,0.1);
+  --input-bg: rgba(255,255,255,0.04);
+  --input-border: rgba(255,255,255,0.08);
+  --table-header: #0a1628;
 }
 
-/* ═══════════════════════════════════════════════ */
-/* THEME 2: Apple Glass (frosted translucent)     */
-/* ═══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════ */
+/* THEME 2: Apple Glass — Frosted translucent + blur          */
+/* ═══════════════════════════════════════════════════════════ */
 [data-theme="glass"] {
-  --background: #1a1a2e;
-  --foreground: #e8e8f0;
-  --card: rgba(255,255,255,0.06);
-  --card-border: rgba(255,255,255,0.12);
-  --card-hover: rgba(255,255,255,0.1);
-  --text-muted: #a0a0b8;
-  --heading: #f0f0ff;
+  --background: #16162a;
+  --foreground: #e8e8f4;
+  --card: rgba(255,255,255,0.04);
+  --card-border: rgba(255,255,255,0.08);
+  --card-hover: rgba(255,255,255,0.07);
+  --text-muted: #8888aa;
+  --heading: #f4f4ff;
   --accent: #5AC8FA;
-  --sidebar-bg: rgba(20,20,40,0.85);
-  --sidebar-active: rgba(90,200,250,0.15);
-  --sidebar-text: rgba(255,255,255,0.5);
-  --grid-line: rgba(255,255,255,0.06);
-  --ring-track: rgba(255,255,255,0.08);
-  --input-bg: rgba(255,255,255,0.06);
-  --input-border: rgba(255,255,255,0.12);
+  --sidebar-bg: rgba(14,14,28,0.92);
+  --sidebar-active: rgba(90,200,250,0.12);
+  --sidebar-text: rgba(200,200,230,0.45);
+  --grid-line: rgba(255,255,255,0.04);
+  --ring-track: rgba(255,255,255,0.06);
+  --input-bg: rgba(255,255,255,0.04);
+  --input-border: rgba(255,255,255,0.08);
+  --table-header: rgba(14,14,28,0.85);
 }
 
-/* ═══════════════════════════════════════════════ */
-/* THEME 3: Vibranium (dark purple)               */
-/* ═══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════ */
+/* THEME 3: Vibranium — Deep purple + electric violet         */
+/* ═══════════════════════════════════════════════════════════ */
 [data-theme="vibranium"] {
-  --background: #0d0618;
-  --foreground: #e2e8f0;
-  --card: #1e1035;
-  --card-border: #2d1a50;
-  --card-hover: #251540;
-  --text-muted: #9b8bb8;
-  --heading: #c4b5fd;
-  --accent: #7c3aed;
-  --sidebar-bg: #0a0515;
-  --sidebar-active: rgba(124,58,237,0.2);
-  --sidebar-text: rgba(196,181,253,0.5);
-  --grid-line: #2d1a50;
-  --ring-track: rgba(124,58,237,0.15);
-  --input-bg: rgba(255,255,255,0.05);
-  --input-border: #2d1a50;
+  --background: #08020f;
+  --foreground: #d8d0f0;
+  --card: #14082a;
+  --card-border: #28104a;
+  --card-hover: #1c0c38;
+  --text-muted: #8070a8;
+  --heading: #d4c4ff;
+  --accent: #a855f7;
+  --sidebar-bg: #060010;
+  --sidebar-active: rgba(168,85,247,0.15);
+  --sidebar-text: rgba(212,196,255,0.4);
+  --grid-line: #28104a;
+  --ring-track: rgba(168,85,247,0.12);
+  --input-bg: rgba(168,85,247,0.06);
+  --input-border: #28104a;
+  --table-header: #0a0018;
 }
 
-/* ═══════════════════════════════════════════════ */
-/* THEME 4: AXG Gold / Royal Blue                 */
-/* ═══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════ */
+/* THEME 4: AXG Gold — Royal blue + gold accents              */
+/* ═══════════════════════════════════════════════════════════ */
 [data-theme="axg"] {
-  --background: #0a1628;
-  --foreground: #e8e0d0;
-  --card: #101e33;
-  --card-border: #1a3050;
-  --card-hover: #142640;
-  --text-muted: #8899aa;
+  --background: #06101e;
+  --foreground: #e8dfc8;
+  --card: #0c1a30;
+  --card-border: #1a3055;
+  --card-hover: #102440;
+  --text-muted: #7a8898;
   --heading: #C5A55A;
   --accent: #C5A55A;
-  --sidebar-bg: #060e1c;
-  --sidebar-active: rgba(197,165,90,0.15);
-  --sidebar-text: rgba(197,165,90,0.5);
-  --grid-line: #1a3050;
-  --ring-track: rgba(197,165,90,0.15);
-  --input-bg: rgba(255,255,255,0.05);
-  --input-border: #1a3050;
+  --sidebar-bg: #040a14;
+  --sidebar-active: rgba(197,165,90,0.12);
+  --sidebar-text: rgba(197,165,90,0.4);
+  --grid-line: #1a3055;
+  --ring-track: rgba(197,165,90,0.12);
+  --input-bg: rgba(197,165,90,0.04);
+  --input-border: #1a3055;
+  --table-header: #060e1c;
 }
 
-/* ═══════════════════════════════════════════════ */
-/* THEME 5: ALTA Light                            */
-/* ═══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════ */
+/* THEME 5: ALTA Brand — Navy sidebar, white cards, red+blue  */
+/* ═══════════════════════════════════════════════════════════ */
 [data-theme="light"] {
-  --background: #f4f6f8;
+  --background: #f0f2f5;
   --foreground: #1B3A5C;
   --card: #ffffff;
-  --card-border: #e1e5ea;
+  --card-border: #d1d9e2;
   --card-hover: #f8fafc;
-  --text-muted: #7f8c9b;
+  --text-muted: #5a6d82;
   --heading: #1B3A5C;
-  --accent: #8CC63F;
+  --accent: #D94A4A;
   --sidebar-bg: #1B3A5C;
-  --sidebar-active: rgba(140,198,63,0.15);
-  --sidebar-text: rgba(255,255,255,0.6);
-  --grid-line: #e5e7eb;
-  --ring-track: #e5e7eb;
-  --input-bg: #f9fafb;
-  --input-border: #e1e5ea;
+  --sidebar-active: rgba(217,74,74,0.15);
+  --sidebar-text: rgba(255,255,255,0.65);
+  --grid-line: #e2e8f0;
+  --ring-track: #d1d9e2;
+  --input-bg: #ffffff;
+  --input-border: #d1d9e2;
+  --table-header: #1B3A5C;
+  color-scheme: light;
 }
-[data-theme="light"] { color-scheme: light; }
+/* Light theme: make sure text is readable on white cards */
+[data-theme="light"] .text-white { color: #1B3A5C !important; }
+[data-theme="light"] .text-white\/40,
+[data-theme="light"] .text-white\/30,
+[data-theme="light"] .text-white\/50,
+[data-theme="light"] .text-white\/60,
+[data-theme="light"] .text-white\/70 { color: #5a6d82 !important; }
+[data-theme="light"] .bg-white\/5,
+[data-theme="light"] .bg-white\/10 { background: rgba(27,58,92,0.04) !important; }
+[data-theme="light"] .border-white\/5,
+[data-theme="light"] .border-white\/10 { border-color: #d1d9e2 !important; }
+[data-theme="light"] .text-green-400 { color: #8CC63F !important; }
+[data-theme="light"] .text-red-400 { color: #D94A4A !important; }
+[data-theme="light"] .text-amber-400 { color: #E8923F !important; }
+[data-theme="light"] .text-blue-400 { color: #4A90D9 !important; }
+[data-theme="light"] .bg-green-500\/20 { background: rgba(140,198,63,0.12) !important; }
+[data-theme="light"] .bg-red-500\/20 { background: rgba(217,74,74,0.12) !important; }
+[data-theme="light"] .bg-amber-500\/20 { background: rgba(232,146,63,0.12) !important; }
+[data-theme="light"] .bg-blue-500\/20 { background: rgba(74,144,217,0.12) !important; }
 
+/* ═══════════════════════════════════════════════ */
+/* Global Styles                                  */
+/* ═══════════════════════════════════════════════ */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -119,12 +146,12 @@ body {
 }
 
 /* Scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(128,128,128,0.3); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(128,128,128,0.5); }
+::-webkit-scrollbar-thumb { background: rgba(128,128,128,0.25); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(128,128,128,0.4); }
 
-/* Stagger children */
+/* Stagger entrance animations */
 .stagger-children > * { opacity: 0; animation: cardIn 0.4s ease-out forwards; }
 .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
 .stagger-children > *:nth-child(2) { animation-delay: 80ms; }
