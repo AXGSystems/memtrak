@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* ═══════════════════════════════════════════════════════════ */
-/* THEME 1: Deep Blue — Dark navy intelligence dashboard      */
+/* THEME 1: Midnight — Dark navy intelligence dashboard       */
 /* ═══════════════════════════════════════════════════════════ */
 [data-theme="deep-blue"], :root {
   --background: #0f1d2f;
@@ -23,29 +23,7 @@
 }
 
 /* ═══════════════════════════════════════════════════════════ */
-/* THEME 2: Apple Glass — Frosted translucent + blur          */
-/* ═══════════════════════════════════════════════════════════ */
-[data-theme="glass"] {
-  --background: #16162a;
-  --foreground: #e8e8f4;
-  --card: rgba(255,255,255,0.04);
-  --card-border: rgba(255,255,255,0.08);
-  --card-hover: rgba(255,255,255,0.07);
-  --text-muted: #8888aa;
-  --heading: #f4f4ff;
-  --accent: #5AC8FA;
-  --sidebar-bg: rgba(14,14,28,0.92);
-  --sidebar-active: rgba(90,200,250,0.12);
-  --sidebar-text: rgba(200,200,230,0.45);
-  --grid-line: rgba(255,255,255,0.04);
-  --ring-track: rgba(255,255,255,0.06);
-  --input-bg: rgba(255,255,255,0.04);
-  --input-border: rgba(255,255,255,0.08);
-  --table-header: rgba(14,14,28,0.85);
-}
-
-/* ═══════════════════════════════════════════════════════════ */
-/* THEME 3: Vibranium — Deep purple + electric violet         */
+/* THEME 2: Vibranium — Near-black + electric violet          */
 /* ═══════════════════════════════════════════════════════════ */
 [data-theme="vibranium"] {
   --background: #08020f;
@@ -67,29 +45,67 @@
 }
 
 /* ═══════════════════════════════════════════════════════════ */
-/* THEME 4: AXG Gold — Royal blue + gold accents              */
+/* THEME 3: Ember — Warm dark with orange/amber accents       */
 /* ═══════════════════════════════════════════════════════════ */
-[data-theme="axg"] {
-  --background: #06101e;
-  --foreground: #e8dfc8;
-  --card: #0c1a30;
-  --card-border: #1a3055;
-  --card-hover: #102440;
-  --text-muted: #7a8898;
-  --heading: #C5A55A;
-  --accent: #C5A55A;
-  --sidebar-bg: #040a14;
-  --sidebar-active: rgba(197,165,90,0.12);
-  --sidebar-text: rgba(197,165,90,0.4);
-  --grid-line: #1a3055;
-  --ring-track: rgba(197,165,90,0.12);
-  --input-bg: rgba(197,165,90,0.04);
-  --input-border: #1a3055;
-  --table-header: #060e1c;
+[data-theme="ember"] {
+  --background: #1a1008;
+  --foreground: #f0e8d8;
+  --card: #261a0e;
+  --card-border: #3d2a16;
+  --card-hover: #2e2012;
+  --text-muted: #9a8870;
+  --heading: #f4e8d0;
+  --accent: #F59E0B;
+  --sidebar-bg: #120a04;
+  --sidebar-active: rgba(245,158,11,0.15);
+  --sidebar-text: rgba(244,232,208,0.4);
+  --grid-line: #3d2a16;
+  --ring-track: rgba(245,158,11,0.12);
+  --input-bg: rgba(245,158,11,0.04);
+  --input-border: #3d2a16;
+  --table-header: #1a0e04;
 }
 
 /* ═══════════════════════════════════════════════════════════ */
-/* THEME 5: ALTA Brand — Navy sidebar, white cards, red+blue  */
+/* THEME 4: AXG Gold — White base, royal blue sidebar, gold   */
+/* ═══════════════════════════════════════════════════════════ */
+[data-theme="axg"] {
+  --background: #f8f7f4;
+  --foreground: #26231e;
+  --card: #ffffff;
+  --card-border: #ddd9d3;
+  --card-hover: #f5f3ef;
+  --text-muted: #65615a;
+  --heading: #002D5C;
+  --accent: #C6A75E;
+  --sidebar-bg: #002D5C;
+  --sidebar-active: rgba(198,167,94,0.18);
+  --sidebar-text: rgba(198,167,94,0.7);
+  --grid-line: #e8e4de;
+  --ring-track: #ddd9d3;
+  --input-bg: #ffffff;
+  --input-border: #ddd9d3;
+  --table-header: #002D5C;
+  color-scheme: light;
+}
+/* AXG light overrides */
+[data-theme="axg"] .text-white { color: #002D5C !important; }
+[data-theme="axg"] .text-white\/40,
+[data-theme="axg"] .text-white\/30,
+[data-theme="axg"] .text-white\/50,
+[data-theme="axg"] .text-white\/60,
+[data-theme="axg"] .text-white\/70 { color: #65615a !important; }
+[data-theme="axg"] .bg-white\/5,
+[data-theme="axg"] .bg-white\/10 { background: rgba(0,45,92,0.04) !important; }
+[data-theme="axg"] .border-white\/5,
+[data-theme="axg"] .border-white\/10 { border-color: #ddd9d3 !important; }
+[data-theme="axg"] .text-green-400 { color: #C6A75E !important; }
+[data-theme="axg"] .text-red-400 { color: #C8102E !important; }
+[data-theme="axg"] .text-amber-400 { color: #E8923F !important; }
+[data-theme="axg"] .text-blue-400 { color: #005DAA !important; }
+
+/* ═══════════════════════════════════════════════════════════ */
+/* THEME 5: ALTA Brand — Navy + red + white (alta.org)        */
 /* ═══════════════════════════════════════════════════════════ */
 [data-theme="light"] {
   --background: #f0f2f5;
@@ -110,7 +126,7 @@
   --table-header: #1B3A5C;
   color-scheme: light;
 }
-/* Light theme: make sure text is readable on white cards */
+/* ALTA light overrides */
 [data-theme="light"] .text-white { color: #1B3A5C !important; }
 [data-theme="light"] .text-white\/40,
 [data-theme="light"] .text-white\/30,
@@ -125,10 +141,6 @@
 [data-theme="light"] .text-red-400 { color: #D94A4A !important; }
 [data-theme="light"] .text-amber-400 { color: #E8923F !important; }
 [data-theme="light"] .text-blue-400 { color: #4A90D9 !important; }
-[data-theme="light"] .bg-green-500\/20 { background: rgba(140,198,63,0.12) !important; }
-[data-theme="light"] .bg-red-500\/20 { background: rgba(217,74,74,0.12) !important; }
-[data-theme="light"] .bg-amber-500\/20 { background: rgba(232,146,63,0.12) !important; }
-[data-theme="light"] .bg-blue-500\/20 { background: rgba(74,144,217,0.12) !important; }
 
 /* ═══════════════════════════════════════════════ */
 /* Global Styles                                  */
@@ -145,13 +157,11 @@ body {
   transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(128,128,128,0.25); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(128,128,128,0.4); }
 
-/* Stagger entrance animations */
 .stagger-children > * { opacity: 0; animation: cardIn 0.4s ease-out forwards; }
 .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
 .stagger-children > *:nth-child(2) { animation-delay: 80ms; }
@@ -167,7 +177,6 @@ body {
 
 .num-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: inline-block; }
 canvas { max-width: 100% !important; }
-
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
 :focus:not(:focus-visible) { outline: none; }
 

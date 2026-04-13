@@ -59,10 +59,10 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   const themes = [
-    { id: 'deep-blue', label: 'Deep Blue', color: '#0f1d2f', ring: '#8CC63F' },
-    { id: 'glass', label: 'Apple Glass', color: '#16162a', ring: '#5AC8FA' },
-    { id: 'vibranium', label: 'Vibranium', color: '#08020f', ring: '#a855f7' },
-    { id: 'axg', label: 'AXG Gold', color: '#06101e', ring: '#C5A55A' },
+    { id: 'deep-blue', label: 'Midnight', color: '#0f1d2f', ring: '#8CC63F' },
+    { id: 'vibranium', label: 'Vibranium', color: '#14082a', ring: '#a855f7' },
+    { id: 'ember', label: 'Ember', color: '#261a0e', ring: '#F59E0B' },
+    { id: 'axg', label: 'AXG Gold', color: '#f8f7f4', ring: '#C6A75E' },
     { id: 'light', label: 'ALTA Brand', color: '#f0f2f5', ring: '#D94A4A' },
   ];
 
