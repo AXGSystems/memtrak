@@ -21,7 +21,7 @@ export default function NewMembers() {
       <p className="text-xs text-white/40 mb-6">Automated 7-email drip sequence for the 566 new members in 2026. Goal: first-year retention from 76% → 85%.</p>
 
       {/* KPIs */}
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-4 gap-4 mb-6 stagger-children">
         {[
           { label: 'New Members 2026', value: '566', color: C.navy },
           { label: 'Sequence Emails', value: '7', color: C.blue },

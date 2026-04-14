@@ -2,6 +2,8 @@
 
 import ClientChart from '@/components/ClientChart';
 import { getCampaignTotals } from '@/lib/demo-data';
+import { exportCSV } from '@/lib/export-utils';
+import { Download } from 'lucide-react';
 
 const C = { green: '#8CC63F', blue: '#4A90D9', red: '#D94A4A', navy: '#002D5C', orange: '#E8923F' };
 const totals = getCampaignTotals();
@@ -40,7 +42,10 @@ export default function Benchmarks() {
 
       {/* Detailed Table */}
       <div className="rounded-xl border p-5" style={{ background: 'var(--card)', borderColor: 'var(--card-border)' }}>
-        <h3 className="text-xs font-bold mb-3" style={{ color: 'var(--heading)' }}>Detailed Comparison</h3>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-xs font-bold" style={{ color: 'var(--heading)' }}>Detailed Comparison</h3>
+          <button onClick={() => exportCSV(['Metric', 'ALTA', 'Assoc Avg', 'All Industry'], benchmarks.map(b => [b.metric, b.alta + '%', b.associations + '%', b.allIndustry + '%']), 'MEMTrak_Benchmarks')} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold" style={{ background: 'var(--accent)', color: 'white' }}><Download className="w-3 h-3" /> CSV</button>
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full text-xs">
             <thead><tr style={{ borderBottom: '1px solid var(--card-border)' }}>

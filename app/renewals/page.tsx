@@ -35,7 +35,7 @@ export default function Renewals() {
       </div>
 
       {/* KPIs */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-3 gap-4 mb-6 stagger-children">
         <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-4 text-center">
           <Users className="w-5 h-5 text-white/30 mx-auto mb-2" />
           <div className="text-2xl font-extrabold text-white">4,994</div>

@@ -20,7 +20,7 @@ export default function Compare() {
       <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>Compare any two campaigns side-by-side — see what worked and what didn&apos;t.</p>
 
       {/* Selectors */}
-      <div className="grid grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-2 gap-4 mb-6 stagger-children">
         <div>
           <label className="text-[10px] font-bold uppercase mb-1 block" style={{ color: 'var(--text-muted)' }}>Campaign A</label>
           <select value={campA} onChange={e => setCampA(e.target.value)} className="w-full px-3 py-2.5 rounded-xl text-xs" style={{ background: 'var(--input-bg)', border: '1px solid var(--input-border)', color: 'var(--heading)' }}>
@@ -38,7 +38,7 @@ export default function Compare() {
       {a && b && (
         <>
           {/* Side-by-side metrics */}
-          <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="grid grid-cols-2 gap-4 mb-6 stagger-children">
             {[a, b].map((camp, i) => (
               <div key={camp.id} className="rounded-xl border p-5" style={{ background: 'var(--card)', borderColor: i === 0 ? C.blue : C.green }}>
                 <div className="text-xs font-bold mb-3" style={{ color: i === 0 ? C.blue : C.green }}>{i === 0 ? 'Campaign A' : 'Campaign B'}</div>
