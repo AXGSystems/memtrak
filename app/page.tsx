@@ -1280,7 +1280,136 @@ export default function DailyBriefing() {
       </Card>
 
       {/* ───────────────────────────────────────────────────────
-          11. QUICK ACTIONS BAR (Floating Bottom)
+          11. EMBEDDED INTELLIGENCE REPORT
+          ─────────────────────────────────────────────────────── */}
+      <Card
+        title="Daily Intelligence Report"
+        subtitle="Full briefing — click Detail for print/export view"
+        glass
+        detailTitle="MEMTrak Daily Intelligence Report"
+        detailContent={
+          <div className="space-y-4 text-xs" style={{ color: 'var(--heading)' }}>
+            <p className="text-[10px] italic" style={{ color: 'var(--text-muted)' }}>Print this modal for a formatted PDF report.</p>
+            <h3 className="text-sm font-bold" style={{ color: '#C6A75E', borderBottom: '2px solid #C6A75E', paddingBottom: 4 }}>EXECUTIVE SUMMARY</h3>
+            <p style={{ lineHeight: '1.8' }}>This week&apos;s analysis reveals a membership engagement program performing well above industry benchmarks. Your <strong>{openRate}%</strong> open rate places ALTA in the top decile of association email programs nationally. The standout campaign, <strong>{sentCampaigns.sort((a,b) => b.revenue - a.revenue)[0]?.name}</strong>, generated <strong style={{ color: C.green }}>${(sentCampaigns.sort((a,b) => b.revenue - a.revenue)[0]?.revenue / 1000).toFixed(0)}K in attributed revenue</strong>. {demoDecayAlerts.filter(d => d.decay >= 70).length > 0 && <span>However, <strong style={{ color: C.red }}>{demoDecayAlerts.filter(d => d.decay >= 70).length} high-priority decay alerts</strong> demand attention — ${demoDecayAlerts.filter(d => d.decay >= 70).reduce((s,d) => s + d.revenue, 0).toLocaleString()} in annual revenue is at risk.</span>}</p>
+            <h3 className="text-sm font-bold mt-4" style={{ color: '#C6A75E', borderBottom: '2px solid #C6A75E', paddingBottom: 4 }}>PERFORMANCE METRICS</h3>
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { label: 'Open Rate', value: openRate + '%', color: C.green, benchmark: '25-35%' },
+                { label: 'Click Rate', value: clickRate + '%', color: C.green, benchmark: '3-5%' },
+                { label: 'Revenue', value: '$' + (totals.totalRevenue/1000).toFixed(0) + 'K', color: C.green, benchmark: '—' },
+                { label: 'Bounce Rate', value: bounceRate + '%', color: parseFloat(bounceRate) > 3 ? C.red : C.green, benchmark: '<2%' },
+              ].map(m => (
+                <div key={m.label} className="p-3 rounded-lg text-center" style={{ background: 'var(--input-bg)' }}>
+                  <div className="text-2xl font-extrabold" style={{ color: m.color }}>{m.value}</div>
+                  <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{m.label}</div>
+                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Industry: {m.benchmark}</div>
+                </div>
+              ))}
+            </div>
+            <h3 className="text-sm font-bold mt-4" style={{ color: '#C6A75E', borderBottom: '2px solid #C6A75E', paddingBottom: 4 }}>PRIORITY ACTIONS</h3>
+            {demoDecayAlerts.filter(d => d.decay >= 70).map(d => (
+              <div key={d.email} className="p-3 rounded-lg border-l-3" style={{ background: 'var(--input-bg)', borderLeftWidth: 3, borderLeftColor: C.red }}>
+                <div className="font-bold" style={{ color: C.red }}>URGENT: {d.org} ({d.type})</div>
+                <div style={{ color: 'var(--text-muted)' }}>Open rate dropped from {d.historical}% → {d.recent}%. ${d.revenue.toLocaleString()}/yr at risk. Last open: {d.lastOpen}.</div>
+              </div>
+            ))}
+            <div className="p-3 rounded-lg border-l-3" style={{ background: 'var(--input-bg)', borderLeftWidth: 3, borderLeftColor: C.orange }}>
+              <div className="font-bold" style={{ color: C.orange }}>MEDIUM: {totals.totalBounced} bounced addresses need cleanup</div>
+              <div style={{ color: 'var(--text-muted)' }}>Current bounce rate ({bounceRate}%) is above the 2% threshold. Clean before next send.</div>
+            </div>
+            <h3 className="text-sm font-bold mt-4" style={{ color: '#C6A75E', borderBottom: '2px solid #C6A75E', paddingBottom: 4 }}>TOP CAMPAIGNS</h3>
+            {sentCampaigns.sort((a,b) => b.revenue - a.revenue).slice(0,5).map(c => (
+              <div key={c.id} className="flex justify-between items-center p-2.5 rounded-lg" style={{ background: 'var(--input-bg)' }}>
+                <div><div className="font-bold" style={{ color: 'var(--heading)' }}>{c.name}</div><div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{c.source} · {c.sentDate} · {c.listSize.toLocaleString()} sent</div></div>
+                <div className="text-right"><div className="font-bold" style={{ color: (c.uniqueOpened/c.delivered) >= 0.4 ? C.green : C.orange }}>{(c.uniqueOpened/c.delivered*100).toFixed(1)}%</div>{c.revenue > 0 && <div className="font-bold" style={{ color: C.green }}>${(c.revenue/1000).toFixed(0)}K</div>}</div>
+              </div>
+            ))}
+            <h3 className="text-sm font-bold mt-4" style={{ color: '#C6A75E', borderBottom: '2px solid #C6A75E', paddingBottom: 4 }}>RECOMMENDED ACTIONS</h3>
+            {[
+              { action: 'CEO outreach to First American Title', impact: '$61K account — engagement declining', color: C.red },
+              { action: 'Clean bounce list before May 5 PFL send', impact: 'Protects domain reputation for 18K sends', color: C.orange },
+              { action: 'Send ALTA ONE early bird reminder', impact: '$18-30K potential event revenue', color: C.blue },
+              { action: 'Finalize sponsor thank-you email', impact: '$120K+ event partnership retention', color: C.green },
+            ].map((r,i) => (
+              <div key={i} className="p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
+                <div className="font-bold" style={{ color: r.color }}>{r.action}</div>
+                <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{r.impact}</div>
+              </div>
+            ))}
+          </div>
+        }
+      >
+        {/* Inline summary of the report */}
+        <div className="space-y-4">
+          {/* Executive summary prose */}
+          <div className="p-4 rounded-lg" style={{ background: 'var(--input-bg)', borderLeft: '3px solid #C6A75E' }}>
+            <div className="text-[9px] uppercase tracking-widest font-bold mb-2" style={{ color: '#C6A75E' }}>Executive Summary</div>
+            <p className="text-xs leading-relaxed" style={{ color: 'var(--heading)' }}>
+              Your <strong>{openRate}%</strong> open rate places ALTA in the top decile nationally.
+              <strong> {sentCampaigns.sort((a,b) => b.revenue - a.revenue)[0]?.name}</strong> generated
+              <strong style={{ color: C.green }}> ${(sentCampaigns.sort((a,b) => b.revenue - a.revenue)[0]?.revenue / 1000).toFixed(0)}K revenue</strong> from {sentCampaigns.sort((a,b) => b.revenue - a.revenue)[0]?.listSize.toLocaleString()} recipients.
+              {demoDecayAlerts.filter(d => d.decay >= 70).length > 0 && <span style={{ color: C.red }}> {demoDecayAlerts.filter(d => d.decay >= 70).length} decay alerts — ${demoDecayAlerts.filter(d => d.decay >= 70).reduce((s,d) => s + d.revenue, 0).toLocaleString()} at risk.</span>}
+            </p>
+          </div>
+
+          {/* 4 inline KPI mini-cards */}
+          <div className="grid grid-cols-4 gap-3">
+            {[
+              { label: 'Open Rate', value: openRate + '%', color: C.green, bar: parseFloat(openRate) },
+              { label: 'Click Rate', value: clickRate + '%', color: C.green, bar: parseFloat(clickRate) * 3 },
+              { label: 'Revenue', value: '$' + (totals.totalRevenue/1000).toFixed(0) + 'K', color: C.green, bar: 80 },
+              { label: 'Bounce', value: bounceRate + '%', color: parseFloat(bounceRate) > 3 ? C.red : C.green, bar: parseFloat(bounceRate) * 15 },
+            ].map(m => (
+              <div key={m.label} className="p-3 rounded-lg text-center" style={{ background: 'var(--input-bg)' }}>
+                <div className="text-lg font-extrabold" style={{ color: m.color }}>{m.value}</div>
+                <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>{m.label}</div>
+                <div className="mt-1.5"><MiniBar value={m.bar} color={m.color} /></div>
+              </div>
+            ))}
+          </div>
+
+          {/* Priority actions inline */}
+          <div>
+            <div className="text-[9px] uppercase tracking-widest font-bold mb-2" style={{ color: '#C6A75E' }}>Priority Actions</div>
+            <div className="space-y-1.5">
+              {demoDecayAlerts.filter(d => d.decay >= 70).map(d => (
+                <div key={d.email} className="flex items-center gap-2 p-2.5 rounded-lg" style={{ background: 'var(--input-bg)' }}>
+                  <span className="text-[8px] px-2 py-0.5 rounded-full font-bold" style={{ background: 'rgba(217,74,74,0.15)', color: C.red }}>URGENT</span>
+                  <span className="text-xs" style={{ color: 'var(--heading)' }}>{d.org} — ${d.revenue.toLocaleString()}/yr at risk</span>
+                </div>
+              ))}
+              <div className="flex items-center gap-2 p-2.5 rounded-lg" style={{ background: 'var(--input-bg)' }}>
+                <span className="text-[8px] px-2 py-0.5 rounded-full font-bold" style={{ background: 'rgba(232,146,63,0.15)', color: C.orange }}>MEDIUM</span>
+                <span className="text-xs" style={{ color: 'var(--heading)' }}>{totals.totalBounced} bounced addresses — clean before May 5</span>
+              </div>
+              <div className="flex items-center gap-2 p-2.5 rounded-lg" style={{ background: 'var(--input-bg)' }}>
+                <span className="text-[8px] px-2 py-0.5 rounded-full font-bold" style={{ background: 'rgba(74,144,217,0.15)', color: C.blue }}>PLAN</span>
+                <span className="text-xs" style={{ color: 'var(--heading)' }}>4,994 members need renewal comms by Q4</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Top campaigns mini-table */}
+          <div>
+            <div className="text-[9px] uppercase tracking-widest font-bold mb-2" style={{ color: '#C6A75E' }}>Top Campaigns</div>
+            {sentCampaigns.sort((a,b) => b.revenue - a.revenue).slice(0,4).map(c => (
+              <div key={c.id} className="flex justify-between items-center p-2 rounded-lg mb-1" style={{ background: 'var(--input-bg)' }}>
+                <div className="text-xs font-bold truncate" style={{ color: 'var(--heading)' }}>{c.name}</div>
+                <div className="flex items-center gap-3 flex-shrink-0 ml-2">
+                  <span className="text-xs font-bold" style={{ color: (c.uniqueOpened/c.delivered) >= 0.4 ? C.green : C.orange }}>{(c.uniqueOpened/c.delivered*100).toFixed(1)}%</span>
+                  {c.revenue > 0 && <span className="text-xs font-bold" style={{ color: C.green }}>${(c.revenue/1000).toFixed(0)}K</span>}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-[9px] text-center pt-2" style={{ color: 'var(--accent)' }}>Click Detail for the full printable intelligence report →</div>
+        </div>
+      </Card>
+
+      {/* ───────────────────────────────────────────────────────
+          12. QUICK ACTIONS BAR (Floating Bottom)
           ─────────────────────────────────────────────────────── */}
       <div
         className="fixed bottom-0 left-0 right-0 z-50 no-print"
