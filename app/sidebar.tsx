@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import {
   Zap, Send, TrendingUp, Shield, ClipboardCheck, MessageSquare,
   Activity, Mail, Map, Camera, PlusCircle, GitBranch, Users,
-  Calendar, UserPlus, FileText, BarChart3, Target, Layers, Lock,
+  Calendar, UserPlus, FileText, BarChart3, Target, Layers, Lock, Star, ShieldCheck, Workflow,
 } from 'lucide-react';
 
 const sections = [
@@ -28,8 +28,11 @@ const sections = [
   {
     label: 'Intelligence', items: [
       { label: 'Analytics', href: '/intelligence', icon: TrendingUp },
+      { label: 'Engagement Scoring', href: '/scoring', icon: Star },
       { label: 'Member Journey', href: '/journey', icon: Users },
       { label: 'Deliverability', href: '/deliverability', icon: Activity },
+      { label: 'Spam Pre-Check', href: '/spam-check', icon: ShieldCheck },
+      { label: 'Workflows', href: '/workflows', icon: Workflow },
     ]
   },
   {
