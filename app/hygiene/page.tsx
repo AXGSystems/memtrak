@@ -1,11 +1,11 @@
 'use client';
 
 import ClientChart from '@/components/ClientChart';
+import Card from '@/components/Card';
 import ProgressRing from '@/components/ProgressRing';
 import { demoHygiene } from '@/lib/demo-data';
 
 const C = { green: '#8CC63F', orange: '#E8923F', red: '#D94A4A', navy: '#1B3A5C', blue: '#4A90D9' };
-function Card({ children, className = '' }: { children: React.ReactNode; className?: string }) { return <div className={`bg-[var(--card)] border border-[var(--card-border)] rounded-xl ${className}`}>{children}</div>; }
 const h = demoHygiene;
 
 export default function Hygiene() {

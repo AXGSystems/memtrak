@@ -1,10 +1,10 @@
 'use client';
 
 import ClientChart from '@/components/ClientChart';
+import Card from '@/components/Card';
 import ProgressRing from '@/components/ProgressRing';
 
 const C = { navy: '#1B3A5C', blue: '#4A90D9', green: '#8CC63F', red: '#D94A4A', orange: '#E8923F' };
-function Card({ children, className = '' }: { children: React.ReactNode; className?: string }) { return <div className={`bg-[var(--card)] border border-[var(--card-border)] rounded-xl ${className}`}>{children}</div>; }
 
 const trend = [
   { month: 'Oct', delivery: 97.1, open: 34 }, { month: 'Nov', delivery: 96.8, open: 35 }, { month: 'Dec', delivery: 95.4, open: 32 },
