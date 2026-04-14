@@ -54,6 +54,8 @@ const sections = [
   {
     label: 'Operations', items: [
       { label: 'Communication Log', href: '/log', icon: MessageSquare },
+      { label: 'Event Tracker', href: '/event-tracker', icon: Calendar },
+      { label: 'Email Templates', href: '/templates', icon: Mail },
     ]
   },
   {
@@ -67,6 +69,9 @@ const sections = [
     label: 'Setup & Docs', items: [
       { label: 'Code Generator', href: '/generator', icon: Mail },
       { label: 'API Documentation', href: '/api-docs', icon: Mail },
+      { label: 'Integrations', href: '/integrations', icon: Layers },
+      { label: 'Data Export', href: '/data-export', icon: Shield },
+      { label: 'What\'s New', href: '/whats-new', icon: Star },
       { label: 'Email Audit', href: '/audit', icon: ClipboardCheck },
       { label: 'Tracking Roadmap', href: '/roadmap', icon: Map },
       { label: 'Security', href: '/security', icon: Lock },
@@ -148,7 +153,7 @@ export default function Sidebar() {
       <div className="px-4 py-2 border-t flex-shrink-0" style={{ borderColor: 'var(--card-border)' }}>
         <div className="flex items-center gap-2 text-[10px]">
           <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: 'var(--accent)' }} />
-          <span style={{ color: 'var(--text-muted)' }}>35 pages · 15 APIs</span>
+          <span style={{ color: 'var(--text-muted)' }}>40+ pages · 15 APIs</span>
         </div>
       </div>
     </aside>
