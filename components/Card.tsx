@@ -25,21 +25,21 @@ export default function Card({ children, title, subtitle, className = '', glass 
   return (
     <>
       <div
-        className={`rounded-xl border transition-all duration-200 ${detailContent ? 'cursor-pointer' : ''} ${className}`}
+        className={`group rounded-xl border transition-all duration-300 ease-out hover:translate-y-[-3px] ${detailContent ? 'cursor-pointer' : ''} ${className}`}
         style={{
           background: isGlass
-            ? 'rgba(255,255,255,0.03)'
+            ? 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)'
             : 'var(--card)',
           borderColor: isGlass
-            ? 'rgba(255,255,255,0.08)'
+            ? 'rgba(255,255,255,0.10)'
             : 'var(--card-border)',
           borderLeftWidth: accent ? '4px' : undefined,
           borderLeftColor: accent,
           boxShadow: isGlass
-            ? '0 4px 24px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.04)'
+            ? '0 4px 30px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 0 rgba(0,0,0,0.1)'
             : '0 2px 8px rgba(0,0,0,0.08)',
-          backdropFilter: isGlass ? 'blur(12px)' : undefined,
-          WebkitBackdropFilter: isGlass ? 'blur(12px)' : undefined,
+          backdropFilter: 'blur(16px) saturate(1.2)',
+          WebkitBackdropFilter: 'blur(16px) saturate(1.2)',
         }}
         onClick={detailContent ? () => setShowDetail(true) : undefined}
       >
@@ -120,13 +120,13 @@ export function KpiCard({ label, value, sub, icon: Icon, color, detail }: {
     <>
       <div
         onClick={detail ? () => setShowDetail(true) : undefined}
-        className={`rounded-xl border p-4 transition-all duration-200 ${detail ? 'cursor-pointer' : ''}`}
+        className={`group rounded-xl border p-4 transition-all duration-300 ease-out hover:translate-y-[-3px] ${detail ? 'cursor-pointer' : ''}`}
         style={{
-          background: 'rgba(255,255,255,0.03)',
-          borderColor: 'rgba(255,255,255,0.08)',
-          boxShadow: '0 4px 24px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.04)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
+          background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)',
+          borderColor: 'rgba(255,255,255,0.10)',
+          boxShadow: '0 4px 30px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.06)',
+          backdropFilter: 'blur(16px) saturate(1.2)',
+          WebkitBackdropFilter: 'blur(16px) saturate(1.2)',
         }}
       >
         <div className="flex items-center justify-between mb-1">

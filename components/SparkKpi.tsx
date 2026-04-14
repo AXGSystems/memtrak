@@ -71,12 +71,12 @@ export default function SparkKpi({ label, value, sub, trend, sparkData, sparkCol
     <>
       <div
         onClick={detail ? () => setShowDetail(true) : undefined}
-        className={`rounded-xl border transition-all duration-200 hover:translate-y-[-2px] ${detail ? 'cursor-pointer' : ''} ${size === 'lg' ? 'p-5' : size === 'sm' ? 'p-3' : 'p-4'}`}
+        className={`group rounded-xl border transition-all duration-300 ease-out hover:translate-y-[-3px] ${detail ? 'cursor-pointer' : ''} ${size === 'lg' ? 'p-5' : size === 'sm' ? 'p-3' : 'p-4'}`}
         style={{
-          background: 'rgba(255,255,255,0.03)',
-          borderColor: 'rgba(255,255,255,0.08)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
+          background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)',
+          borderColor: 'rgba(255,255,255,0.10)',
+          backdropFilter: 'blur(16px) saturate(1.2)',
+          WebkitBackdropFilter: 'blur(16px) saturate(1.2)',
           borderTopWidth: accent ? '3px' : undefined,
           borderTopColor: accent ? (color || 'var(--accent)') : undefined,
           boxShadow: '0 4px 24px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.04)',
