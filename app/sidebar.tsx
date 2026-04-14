@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import {
   Zap, Send, TrendingUp, Shield, ClipboardCheck, MessageSquare,
   Activity, Mail, Map, Camera, PlusCircle, GitBranch, Users,
-  Calendar, UserPlus, FileText, BarChart3, Target, Layers, Lock, Star, ShieldCheck, Workflow,
+  Calendar, UserPlus, FileText, BarChart3, Target, Layers, Lock, Star, ShieldCheck, Workflow, Filter,
 } from 'lucide-react';
 
 const sections = [
@@ -14,13 +14,16 @@ const sections = [
     label: 'Overview', items: [
       { label: 'Daily Briefing', href: '/', icon: Zap },
       { label: 'Email Briefing', href: '/briefing', icon: FileText },
+      { label: 'ROI Calculator', href: '/roi-calc', icon: Target },
     ]
   },
   {
     label: 'Campaigns', items: [
       { label: 'All Campaigns', href: '/campaigns', icon: Send },
       { label: 'Campaign Builder', href: '/campaign-builder', icon: PlusCircle },
+      { label: 'AI Subject Writer', href: '/ai-writer', icon: Zap },
       { label: 'A/B Testing', href: '/ab-testing', icon: GitBranch },
+      { label: 'Send Calendar', href: '/calendar', icon: Calendar },
       { label: 'Renewal Season', href: '/renewals', icon: Calendar },
       { label: 'New Member Onboarding', href: '/new-members', icon: UserPlus },
     ]
@@ -30,18 +33,27 @@ const sections = [
       { label: 'Analytics', href: '/intelligence', icon: TrendingUp },
       { label: 'Engagement Scoring', href: '/scoring', icon: Star },
       { label: 'Member Journey', href: '/journey', icon: Users },
-      { label: 'Deliverability', href: '/deliverability', icon: Activity },
-      { label: 'Spam Pre-Check', href: '/spam-check', icon: ShieldCheck },
-      { label: 'Workflows', href: '/workflows', icon: Workflow },
+      { label: 'Smart Segments', href: '/segments', icon: Filter },
+      { label: 'Click Heatmap', href: '/heatmap', icon: BarChart3 },
       { label: 'Content Analysis', href: '/content-analysis', icon: BarChart3 },
+      { label: 'Member NPS', href: '/nps', icon: Star },
+      { label: 'Benchmarks', href: '/benchmarks', icon: TrendingUp },
+      { label: 'Revenue Forecast', href: '/forecast', icon: TrendingUp },
       { label: 'Privacy Metrics', href: '/privacy-metrics', icon: Shield },
+      { label: 'Workflows', href: '/workflows', icon: Workflow },
+    ]
+  },
+  {
+    label: 'Deliverability', items: [
+      { label: 'Monitor', href: '/deliverability', icon: Activity },
+      { label: 'Spam Pre-Check', href: '/spam-check', icon: ShieldCheck },
+      { label: 'Address Hygiene', href: '/hygiene', icon: Shield },
+      { label: 'Mail Scanner', href: '/scanner', icon: Camera },
     ]
   },
   {
     label: 'Operations', items: [
       { label: 'Communication Log', href: '/log', icon: MessageSquare },
-      { label: 'Address Hygiene', href: '/hygiene', icon: Shield },
-      { label: 'Mail Scanner', href: '/scanner', icon: Camera },
     ]
   },
   {
@@ -52,8 +64,9 @@ const sections = [
     ]
   },
   {
-    label: 'Setup', items: [
+    label: 'Setup & Docs', items: [
       { label: 'Code Generator', href: '/generator', icon: Mail },
+      { label: 'API Documentation', href: '/api-docs', icon: Mail },
       { label: 'Email Audit', href: '/audit', icon: ClipboardCheck },
       { label: 'Tracking Roadmap', href: '/roadmap', icon: Map },
       { label: 'Security', href: '/security', icon: Lock },
@@ -135,7 +148,7 @@ export default function Sidebar() {
       <div className="px-4 py-2 border-t flex-shrink-0" style={{ borderColor: 'var(--card-border)' }}>
         <div className="flex items-center gap-2 text-[10px]">
           <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: 'var(--accent)' }} />
-          <span style={{ color: 'var(--text-muted)' }}>26 pages · 14 APIs</span>
+          <span style={{ color: 'var(--text-muted)' }}>35 pages · 15 APIs</span>
         </div>
       </div>
     </aside>
