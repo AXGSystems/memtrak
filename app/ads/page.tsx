@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Card, { KpiCard } from '@/components/Card';
 import ClientChart from '@/components/ClientChart';
 import { exportCSV } from '@/lib/export-utils';
 import { BarChart3, Eye, MousePointerClick, DollarSign, Download, Calendar, Target } from 'lucide-react';
@@ -31,7 +32,12 @@ const zones = [
   { name: 'Mobile Interstitial', size: '320x480', impressions: 200000, fill: 56, cpm: 6.00 },
 ];
 
-const statusColors = { Active: 'bg-green-500/20 text-green-400', Scheduled: 'bg-blue-500/20 text-blue-400', Completed: 'bg-white/10 text-white/40', Paused: 'bg-amber-500/20 text-amber-400' };
+const statusColors: Record<string, { bg: string; color: string }> = {
+  Active: { bg: 'bg-green-500/20', color: 'text-green-400' },
+  Scheduled: { bg: 'bg-blue-500/20', color: 'text-blue-400' },
+  Completed: { bg: '', color: '' },
+  Paused: { bg: 'bg-amber-500/20', color: 'text-amber-400' },
+};
 
 export default function AdsOverview() {
   const [detail, setDetail] = useState<typeof campaigns[0] | null>(null);
@@ -45,11 +51,11 @@ export default function AdsOverview() {
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-lg font-extrabold text-white">Advertising &amp; Revive Ad Server</h1>
-          <p className="text-xs text-white/40">Campaign performance, ad inventory, and slot management</p>
+          <h1 className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>Advertising &amp; Revive Ad Server</h1>
+          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Campaign performance, ad inventory, and slot management</p>
         </div>
         <div className="flex gap-2">
-          <Link href="/ads/inventory" className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-white border border-white/10 hover:border-white/30 transition-colors">
+          <Link href="/ads/inventory" className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-colors" style={{ color: 'var(--heading)', borderColor: 'var(--card-border)', borderWidth: '1px', borderStyle: 'solid' }}>
             <Calendar className="w-3.5 h-3.5" /> Inventory
           </Link>
           <Link href="/ads/request" className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-white bg-[#8CC63F] hover:bg-[#6fa030] transition-colors">
@@ -67,19 +73,12 @@ export default function AdsOverview() {
           { label: 'Revenue', value: '$' + (totalRevenue / 1000).toFixed(0) + 'K', icon: DollarSign, color: C.green },
           { label: 'Active Campaigns', value: String(campaigns.filter(c => c.status === 'Active').length), icon: Target, color: C.orange },
         ].map(kpi => (
-          <div key={kpi.label} className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-3">
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-[8px] uppercase tracking-wider font-semibold text-white/40">{kpi.label}</span>
-              <kpi.icon className="w-3 h-3" style={{ color: kpi.color }} />
-            </div>
-            <div className="text-lg font-extrabold text-white">{kpi.value}</div>
-          </div>
+          <KpiCard key={kpi.label} label={kpi.label} value={kpi.value} icon={kpi.icon} color={kpi.color} />
         ))}
       </div>
 
       {/* Monthly Trend */}
-      <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-5 mb-6">
-        <h3 className="text-xs font-bold text-white mb-3">Monthly Ad Revenue &amp; Performance</h3>
+      <Card title="Monthly Ad Revenue &amp; Performance" className="mb-6">
         <ClientChart type="bar" height={260} data={{ labels: monthly.map(m => m.month), datasets: [
           { label: 'Revenue', data: monthly.map(m => m.revenue), backgroundColor: C.green, borderRadius: 4, yAxisID: 'y' },
           { label: 'Impressions', data: monthly.map(m => m.impressions / 1000), borderColor: C.blue, borderWidth: 2, type: 'line' as const, fill: false, tension: 0.3, pointRadius: 4, yAxisID: 'y1' },
@@ -90,75 +89,96 @@ export default function AdsOverview() {
         } }}
         onPointClick={(label, value, ds) => { /* Could drill down into monthly detail */ }}
         />
-      </div>
+      </Card>
 
       {/* Campaign Table */}
-      <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-5 mb-6">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-xs font-bold text-white">All Campaigns</h3>
-          <button onClick={() => exportCSV(['Campaign', 'Advertiser', 'Status', 'Impressions', 'Clicks', 'CTR', 'Revenue', 'Budget', 'Zone'], campaigns.map(c => [c.name, c.advertiser, c.status, c.impressions, c.clicks, c.ctr + '%', c.revenue, c.budget, c.zone]), 'MEMTrak_Ad_Campaigns')} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-[#8CC63F] hover:bg-[#6fa030]"><Download className="w-3 h-3" /> CSV</button>
+      <Card title="All Campaigns" className="mb-6" noPad detailTitle="Campaign Details" detailContent={
+        <div>
+          <p className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>Full breakdown of all {campaigns.length} campaigns with performance metrics.</p>
+          <div className="space-y-3">
+            {campaigns.map(c => (
+              <div key={c.id} className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{c.name}</span>
+                  <span className={`px-2 py-0.5 rounded-full text-[9px] font-semibold ${statusColors[c.status]?.bg} ${statusColors[c.status]?.color}`} style={c.status === 'Completed' ? { background: 'var(--input-bg)', color: 'var(--text-muted)' } : undefined}>{c.status}</span>
+                </div>
+                <div className="text-[10px] mb-2" style={{ color: 'var(--text-muted)' }}>{c.advertiser} -- {c.zone} -- {c.start} to {c.end}</div>
+                <div className="grid grid-cols-4 gap-2 text-[10px]">
+                  <div><span style={{ color: 'var(--text-muted)' }}>Impressions:</span> <span style={{ color: 'var(--heading)' }}>{c.impressions > 0 ? (c.impressions / 1000).toFixed(0) + 'K' : '--'}</span></div>
+                  <div><span style={{ color: 'var(--text-muted)' }}>Clicks:</span> <span style={{ color: 'var(--heading)' }}>{c.clicks > 0 ? c.clicks.toLocaleString() : '--'}</span></div>
+                  <div><span style={{ color: 'var(--text-muted)' }}>CTR:</span> <span className={c.ctr >= 2 ? 'text-green-400 font-bold' : ''} style={c.ctr < 2 ? { color: 'var(--heading)' } : undefined}>{c.ctr > 0 ? c.ctr + '%' : '--'}</span></div>
+                  <div><span style={{ color: 'var(--text-muted)' }}>Revenue:</span> <span className="text-green-400 font-bold">{c.revenue > 0 ? '$' + (c.revenue / 1000).toFixed(0) + 'K' : '--'}</span></div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-xs">
-            <thead><tr className="border-b border-white/10 text-white/40 text-[10px] uppercase">
-              <th className="text-left pb-2">Campaign</th><th className="text-left pb-2">Advertiser</th><th className="text-center pb-2">Status</th><th className="text-right pb-2">Impressions</th><th className="text-right pb-2">Clicks</th><th className="text-right pb-2">CTR</th><th className="text-right pb-2">Revenue</th><th className="text-right pb-2">Budget</th>
-            </tr></thead>
-            <tbody>
-              {campaigns.map(c => (
-                <tr key={c.id} onClick={() => setDetail(c)} className="border-b border-white/5 text-white/60 cursor-pointer hover:bg-white/5 transition-colors">
-                  <td className="py-2.5 font-semibold text-white">{c.name}</td>
-                  <td className="py-2.5">{c.advertiser}</td>
-                  <td className="py-2.5 text-center"><span className={`px-2 py-0.5 rounded-full text-[9px] font-semibold ${statusColors[c.status]}`}>{c.status}</span></td>
-                  <td className="py-2.5 text-right">{c.impressions > 0 ? (c.impressions / 1000).toFixed(0) + 'K' : '—'}</td>
-                  <td className="py-2.5 text-right">{c.clicks > 0 ? c.clicks.toLocaleString() : '—'}</td>
-                  <td className="py-2.5 text-right">{c.ctr > 0 ? <span className={`font-bold ${c.ctr >= 2 ? 'text-green-400' : 'text-white/60'}`}>{c.ctr}%</span> : '—'}</td>
-                  <td className="py-2.5 text-right">{c.revenue > 0 ? <span className="text-green-400 font-bold">${(c.revenue / 1000).toFixed(0)}K</span> : '—'}</td>
-                  <td className="py-2.5 text-right">${(c.budget / 1000).toFixed(0)}K</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      }>
+        <div className="px-5 pb-5">
+          <div className="flex items-center justify-end mb-3">
+            <button onClick={() => exportCSV(['Campaign', 'Advertiser', 'Status', 'Impressions', 'Clicks', 'CTR', 'Revenue', 'Budget', 'Zone'], campaigns.map(c => [c.name, c.advertiser, c.status, c.impressions, c.clicks, c.ctr + '%', c.revenue, c.budget, c.zone]), 'MEMTrak_Ad_Campaigns')} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-[#8CC63F] hover:bg-[#6fa030]"><Download className="w-3 h-3" /> CSV</button>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead><tr className="text-[10px] uppercase" style={{ borderBottom: '1px solid var(--card-border)' }}>
+                <th className="text-left pb-2" style={{ color: 'var(--text-muted)' }}>Campaign</th><th className="text-left pb-2" style={{ color: 'var(--text-muted)' }}>Advertiser</th><th className="text-center pb-2" style={{ color: 'var(--text-muted)' }}>Status</th><th className="text-right pb-2" style={{ color: 'var(--text-muted)' }}>Impressions</th><th className="text-right pb-2" style={{ color: 'var(--text-muted)' }}>Clicks</th><th className="text-right pb-2" style={{ color: 'var(--text-muted)' }}>CTR</th><th className="text-right pb-2" style={{ color: 'var(--text-muted)' }}>Revenue</th><th className="text-right pb-2" style={{ color: 'var(--text-muted)' }}>Budget</th>
+              </tr></thead>
+              <tbody>
+                {campaigns.map(c => (
+                  <tr key={c.id} onClick={() => setDetail(c)} className="cursor-pointer transition-colors" style={{ borderBottom: '1px solid var(--card-border)', color: 'var(--text-muted)' }} onMouseEnter={e => (e.currentTarget.style.background = 'var(--input-bg)')} onMouseLeave={e => (e.currentTarget.style.background = '')}>
+                    <td className="py-2.5 font-semibold" style={{ color: 'var(--heading)' }}>{c.name}</td>
+                    <td className="py-2.5">{c.advertiser}</td>
+                    <td className="py-2.5 text-center"><span className={`px-2 py-0.5 rounded-full text-[9px] font-semibold ${statusColors[c.status]?.bg} ${statusColors[c.status]?.color}`} style={c.status === 'Completed' ? { background: 'var(--input-bg)', color: 'var(--text-muted)' } : undefined}>{c.status}</span></td>
+                    <td className="py-2.5 text-right">{c.impressions > 0 ? (c.impressions / 1000).toFixed(0) + 'K' : '—'}</td>
+                    <td className="py-2.5 text-right">{c.clicks > 0 ? c.clicks.toLocaleString() : '—'}</td>
+                    <td className="py-2.5 text-right">{c.ctr > 0 ? <span className={`font-bold ${c.ctr >= 2 ? 'text-green-400' : ''}`} style={c.ctr < 2 ? { color: 'var(--text-muted)' } : undefined}>{c.ctr}%</span> : '—'}</td>
+                    <td className="py-2.5 text-right">{c.revenue > 0 ? <span className="text-green-400 font-bold">${(c.revenue / 1000).toFixed(0)}K</span> : '—'}</td>
+                    <td className="py-2.5 text-right">${(c.budget / 1000).toFixed(0)}K</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+      </Card>
 
       {/* Ad Zones */}
-      <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-5 mb-6">
-        <h3 className="text-xs font-bold text-white mb-3">Ad Zones &amp; Fill Rates</h3>
+      <Card title="Ad Zones &amp; Fill Rates" className="mb-6">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {zones.map(z => (
-            <div key={z.name} className="p-4 rounded-lg bg-white/5">
-              <div className="text-xs font-bold text-white mb-1">{z.name}</div>
-              <div className="text-[10px] text-white/40 mb-2">{z.size} · ${z.cpm} CPM</div>
+            <div key={z.name} className="p-4 rounded-lg" style={{ background: 'var(--input-bg)' }}>
+              <div className="text-xs font-bold mb-1" style={{ color: 'var(--heading)' }}>{z.name}</div>
+              <div className="text-[10px] mb-2" style={{ color: 'var(--text-muted)' }}>{z.size} -- ${z.cpm} CPM</div>
               <div className="flex items-center gap-2">
-                <div className="flex-1 h-2 rounded-full bg-white/10"><div className="h-2 rounded-full" style={{ width: `${z.fill}%`, background: z.fill >= 80 ? C.green : z.fill >= 60 ? C.orange : C.red }} /></div>
+                <div className="flex-1 h-2 rounded-full" style={{ background: 'var(--input-bg)' }}><div className="h-2 rounded-full" style={{ width: `${z.fill}%`, background: z.fill >= 80 ? C.green : z.fill >= 60 ? C.orange : C.red }} /></div>
                 <span className={`text-xs font-bold ${z.fill >= 80 ? 'text-green-400' : z.fill >= 60 ? 'text-amber-400' : 'text-red-400'}`}>{z.fill}%</span>
               </div>
-              <div className="text-[10px] text-white/30 mt-1">{(z.impressions / 1000).toFixed(0)}K impressions</div>
+              <div className="text-[10px] mt-1" style={{ color: 'var(--text-muted)' }}>{(z.impressions / 1000).toFixed(0)}K impressions</div>
             </div>
           ))}
         </div>
-      </div>
+      </Card>
 
       {/* Detail Panel */}
       {detail && (
         <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={() => setDetail(null)}>
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-          <div className="relative bg-[#0f1d2f] rounded-2xl border border-white/10 w-full max-w-lg mx-4 p-6" onClick={e => e.stopPropagation()}>
-            <h2 className="text-sm font-bold text-white mb-1">{detail.name}</h2>
-            <p className="text-[10px] text-white/40 mb-4">{detail.advertiser} · {detail.zone} · {detail.start} – {detail.end}</p>
+          <div className="relative rounded-2xl w-full max-w-lg mx-4 p-6" style={{ background: 'var(--card)', borderColor: 'var(--card-border)', borderWidth: '1px', borderStyle: 'solid' }} onClick={e => e.stopPropagation()}>
+            <h2 className="text-sm font-bold mb-1" style={{ color: 'var(--heading)' }}>{detail.name}</h2>
+            <p className="text-[10px] mb-4" style={{ color: 'var(--text-muted)' }}>{detail.advertiser} -- {detail.zone} -- {detail.start} – {detail.end}</p>
             <div className="grid grid-cols-3 gap-3 mb-4">
-              <div className="p-3 rounded-lg bg-white/5 text-center"><div className="text-lg font-extrabold text-white">{detail.impressions > 0 ? (detail.impressions / 1000).toFixed(0) + 'K' : '—'}</div><div className="text-[9px] text-white/40">Impressions</div></div>
-              <div className="p-3 rounded-lg bg-white/5 text-center"><div className="text-lg font-extrabold text-white">{detail.clicks.toLocaleString()}</div><div className="text-[9px] text-white/40">Clicks</div></div>
-              <div className="p-3 rounded-lg bg-white/5 text-center"><div className="text-lg font-extrabold text-green-400">${detail.revenue.toLocaleString()}</div><div className="text-[9px] text-white/40">Revenue</div></div>
+              <div className="p-3 rounded-lg text-center" style={{ background: 'var(--input-bg)' }}><div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>{detail.impressions > 0 ? (detail.impressions / 1000).toFixed(0) + 'K' : '—'}</div><div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Impressions</div></div>
+              <div className="p-3 rounded-lg text-center" style={{ background: 'var(--input-bg)' }}><div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>{detail.clicks.toLocaleString()}</div><div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Clicks</div></div>
+              <div className="p-3 rounded-lg text-center" style={{ background: 'var(--input-bg)' }}><div className="text-lg font-extrabold text-green-400">${detail.revenue.toLocaleString()}</div><div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Revenue</div></div>
             </div>
-            <div className="flex items-center justify-between p-3 rounded-lg bg-white/5 mb-4">
-              <span className="text-xs text-white/60">Budget utilization</span>
+            <div className="flex items-center justify-between p-3 rounded-lg mb-4" style={{ background: 'var(--input-bg)' }}>
+              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Budget utilization</span>
               <div className="flex items-center gap-2">
-                <div className="w-24 h-2 rounded-full bg-white/10"><div className="h-2 rounded-full bg-green-400" style={{ width: `${detail.budget > 0 ? (detail.revenue / detail.budget * 100) : 0}%` }} /></div>
-                <span className="text-xs font-bold text-white">{detail.budget > 0 ? (detail.revenue / detail.budget * 100).toFixed(0) : 0}%</span>
+                <div className="w-24 h-2 rounded-full" style={{ background: 'var(--input-bg)' }}><div className="h-2 rounded-full bg-green-400" style={{ width: `${detail.budget > 0 ? (detail.revenue / detail.budget * 100) : 0}%` }} /></div>
+                <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{detail.budget > 0 ? (detail.revenue / detail.budget * 100).toFixed(0) : 0}%</span>
               </div>
             </div>
-            <button onClick={() => setDetail(null)} className="w-full py-2.5 rounded-xl text-xs font-semibold text-white/50 border border-white/10 hover:border-white/30">Close</button>
+            <button onClick={() => setDetail(null)} className="w-full py-2.5 rounded-xl text-xs font-semibold transition-colors" style={{ color: 'var(--text-muted)', borderColor: 'var(--card-border)', borderWidth: '1px', borderStyle: 'solid' }}>Close</button>
           </div>
         </div>
       )}

@@ -45,13 +45,16 @@ export async function POST(request: NextRequest) {
     const baseUrl = request.nextUrl.origin;
 
     // Filter out suppressed recipients
-    const activeRecipients = to.filter((r: { email: string }) => !isUnsubscribed(r.email));
+    const suppressionChecks = await Promise.all(
+      to.map(async (r: { email: string }) => ({ r, unsub: await isUnsubscribed(r.email) }))
+    );
+    const activeRecipients = suppressionChecks.filter(c => !c.unsub).map(c => c.r);
     const suppressedCount = to.length - activeRecipients.length;
 
     // Preview mode (Graph API not connected)
     const hasGraph = process.env.GRAPH_CLIENT_ID && process.env.GRAPH_CLIENT_SECRET;
 
-    const results = activeRecipients.map((recipient: { email: string; name?: string }) => {
+    const results = await Promise.all(activeRecipients.map(async (recipient: { email: string; name?: string }) => {
       let finalBody = htmlBody;
 
       if (autoTrack) {
@@ -69,7 +72,7 @@ export async function POST(request: NextRequest) {
       }
 
       // Log the send event
-      logEvent({
+      await logEvent({
         type: 'send',
         campaignId,
         recipientEmail: recipient.email,
@@ -83,7 +86,7 @@ export async function POST(request: NextRequest) {
         status: hasGraph ? 'sent' : 'preview',
         bodyPreview: finalBody.slice(0, 200) + '...',
       };
-    });
+    }));
 
     // TODO: When Graph API is connected, actually send via:
     // POST https://graph.microsoft.com/v1.0/users/{from}/sendMail

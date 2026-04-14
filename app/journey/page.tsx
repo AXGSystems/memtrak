@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Search, Mail, Phone, Users, Calendar, CheckCircle, XCircle, Eye, MousePointerClick, DollarSign, Clock } from 'lucide-react';
+import Card from '@/components/Card';
 
 interface TouchEvent {
   date: string;
@@ -52,6 +53,109 @@ const demoOrgs: { name: string; type: string; email: string; member: string; due
 
 const typeIcons: Record<string, typeof Mail> = { 'email-sent': Mail, 'email-opened': Eye, 'email-clicked': MousePointerClick, phone: Phone, meeting: Users, event: Calendar, payment: DollarSign, bounced: XCircle };
 const typeColors: Record<string, string> = { 'email-sent': 'bg-blue-500/20 text-blue-400', 'email-opened': 'bg-green-500/20 text-green-400', 'email-clicked': 'bg-purple-500/20 text-purple-400', phone: 'bg-amber-500/20 text-amber-400', meeting: 'bg-cyan-500/20 text-cyan-400', event: 'bg-indigo-500/20 text-indigo-400', payment: 'bg-green-500/20 text-green-400', bounced: 'bg-red-500/20 text-red-400' };
+const typeLabels: Record<string, string> = { 'email-sent': 'Emails Sent', 'email-opened': 'Emails Opened', 'email-clicked': 'Links Clicked', phone: 'Phone Calls', meeting: 'Meetings', event: 'Events', payment: 'Payments', bounced: 'Bounced' };
+
+function MemberDetailModal({ org }: { org: typeof demoOrgs[0] }) {
+  const typeCounts: Record<string, number> = {};
+  org.events.forEach(ev => { typeCounts[ev.type] = (typeCounts[ev.type] || 0) + 1; });
+
+  const emailsSent = typeCounts['email-sent'] || 0;
+  const emailsOpened = typeCounts['email-opened'] || 0;
+  const emailsClicked = typeCounts['email-clicked'] || 0;
+  const meetings = typeCounts['meeting'] || 0;
+  const events = typeCounts['event'] || 0;
+  const bounced = typeCounts['bounced'] || 0;
+
+  const openRate = emailsSent > 0 ? Math.round((emailsOpened / emailsSent) * 100) : 0;
+  const clickRate = emailsOpened > 0 ? Math.round((emailsClicked / emailsOpened) * 100) : 0;
+  const engagementScore = Math.min(100, Math.round(
+    (openRate * 0.25) +
+    (clickRate * 0.25) +
+    ((meetings + events) * 10) +
+    (bounced > 0 ? -15 : 10)
+  ));
+
+  const memberYears = 2026 - org.since;
+
+  return (
+    <div className="space-y-5">
+      {/* Member Profile Header */}
+      <div className="rounded-xl border p-4" style={{ background: 'var(--input-bg)', borderColor: 'var(--card-border)' }}>
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <div className="text-base font-bold" style={{ color: 'var(--heading)' }}>{org.name}</div>
+            <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{org.type} · {org.email} · {org.member}</div>
+          </div>
+          <div className="text-right">
+            <div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>${org.dues.toLocaleString()}</div>
+            <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>annual dues</div>
+          </div>
+        </div>
+        <div className="flex gap-4 text-[10px]" style={{ color: 'var(--text-muted)' }}>
+          <span>Member since {org.since} ({memberYears} years)</span>
+          <span>{org.events.length} total touchpoints</span>
+        </div>
+      </div>
+
+      {/* Engagement Score */}
+      <div>
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>Engagement Score</span>
+          <span className="text-sm font-extrabold" style={{ color: engagementScore >= 70 ? '#22c55e' : engagementScore >= 40 ? '#f59e0b' : '#ef4444' }}>{engagementScore}/100</span>
+        </div>
+        <div className="w-full h-3 rounded-full" style={{ background: 'var(--input-bg)' }}>
+          <div
+            className="h-3 rounded-full transition-all"
+            style={{
+              width: `${engagementScore}%`,
+              background: engagementScore >= 70 ? '#22c55e' : engagementScore >= 40 ? '#f59e0b' : '#ef4444',
+            }}
+          />
+        </div>
+        <div className="grid grid-cols-3 gap-2 mt-2 text-[9px]" style={{ color: 'var(--text-muted)' }}>
+          <span>Open rate: {openRate}% (x0.25)</span>
+          <span>Click rate: {clickRate}% (x0.25)</span>
+          <span>In-person: {meetings + events} (x10pts)</span>
+        </div>
+      </div>
+
+      {/* Touchpoint Counts by Type */}
+      <div>
+        <div className="text-xs font-bold mb-2" style={{ color: 'var(--heading)' }}>Touchpoint Breakdown</div>
+        <div className="grid grid-cols-2 gap-2">
+          {Object.entries(typeIcons).map(([type, Icon]) => {
+            const count = typeCounts[type] || 0;
+            return (
+              <div key={type} className="flex items-center gap-2 p-2 rounded-lg" style={{ background: 'var(--input-bg)' }}>
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center ${typeColors[type]}`}>
+                  <Icon className="w-3 h-3" />
+                </div>
+                <div>
+                  <div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{count}</div>
+                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{typeLabels[type] || type}</div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Dues History */}
+      <div>
+        <div className="text-xs font-bold mb-2" style={{ color: 'var(--heading)' }}>Dues History</div>
+        <div className="space-y-1.5">
+          {[2026, 2025, 2024].map(year => (
+            <div key={year} className="flex items-center justify-between p-2 rounded-lg" style={{ background: 'var(--input-bg)' }}>
+              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{year}</span>
+              <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>${org.dues.toLocaleString()}</span>
+              <span className="text-[9px] px-1.5 py-0.5 rounded-full font-semibold bg-green-500/20 text-green-400">Paid</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Journey() {
   const [selected, setSelected] = useState(demoOrgs[0]);
@@ -61,21 +165,33 @@ export default function Journey() {
 
   return (
     <div className="p-6">
-      <h1 className="text-lg font-extrabold text-white mb-6">Member Journey</h1>
+      <h1 className="text-lg font-extrabold mb-6" style={{ color: 'var(--heading)' }}>Member Journey</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Org List */}
         <div>
           <div className="relative mb-3">
-            <Search className="w-3.5 h-3.5 text-white/30 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search organizations..." className="w-full pl-9 pr-3 py-2.5 text-xs bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:border-[#8CC63F]/50" />
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--text-muted)' }} />
+            <input
+              type="text"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search organizations..."
+              className="w-full pl-9 pr-3 py-2.5 text-xs rounded-xl focus:outline-none focus:border-[#8CC63F]/50"
+              style={{ background: 'var(--input-bg)', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--card-border)', color: 'var(--heading)' }}
+            />
           </div>
           <div className="space-y-2">
             {filtered.map(org => (
-              <button key={org.member} onClick={() => setSelected(org)} className={`w-full text-left p-3.5 rounded-xl transition-all ${selected.member === org.member ? 'bg-[#8CC63F]/20 border-2 border-[#8CC63F]/50' : 'bg-[var(--card)] border border-[var(--card-border)] hover:border-white/30'}`}>
-                <div className="text-xs font-bold text-white">{org.name}</div>
-                <div className="text-[10px] text-white/40">{org.type} · {org.email}</div>
-                <div className="text-[10px] text-white/30 mt-1">{org.events.length} touchpoints · Since {org.since}</div>
+              <button
+                key={org.member}
+                onClick={() => setSelected(org)}
+                className={`w-full text-left p-3.5 rounded-xl transition-all ${selected.member === org.member ? 'bg-[#8CC63F]/20 border-2 border-[#8CC63F]/50' : 'hover:border-[var(--text-muted)]'}`}
+                style={selected.member === org.member ? undefined : { background: 'var(--card)', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--card-border)' }}
+              >
+                <div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{org.name}</div>
+                <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{org.type} · {org.email}</div>
+                <div className="text-[10px] mt-1" style={{ color: 'var(--text-muted)' }}>{org.events.length} touchpoints · Since {org.since}</div>
               </button>
             ))}
           </div>
@@ -83,22 +199,25 @@ export default function Journey() {
 
         {/* Timeline */}
         <div className="lg:col-span-2">
-          <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-xl p-5 mb-4">
+          <Card
+            title={selected.name}
+            subtitle={`${selected.type} · ${selected.email} · ${selected.member} · Since ${selected.since}`}
+            className="mb-4"
+            detailTitle={`${selected.name} — Member Profile`}
+            detailContent={<MemberDetailModal org={selected} />}
+          >
             <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-sm font-bold text-white">{selected.name}</h2>
-                <div className="text-[10px] text-white/40">{selected.type} · {selected.email} · {selected.member} · Since {selected.since}</div>
-              </div>
+              <div />
               <div className="text-right">
-                <div className="text-lg font-extrabold text-white">${selected.dues.toLocaleString()}</div>
-                <div className="text-[10px] text-white/40">annual dues</div>
+                <div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>${selected.dues.toLocaleString()}</div>
+                <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>annual dues</div>
               </div>
             </div>
-          </div>
+          </Card>
 
           <div className="relative pl-6">
             {/* Timeline line */}
-            <div className="absolute left-[11px] top-0 bottom-0 w-0.5 bg-white/10" />
+            <div className="absolute left-[11px] top-0 bottom-0 w-0.5" style={{ background: 'var(--card-border)' }} />
 
             <div className="space-y-3">
               {selected.events.map((ev, i) => {
@@ -108,14 +227,14 @@ export default function Journey() {
                     <div className={`absolute -left-6 w-6 h-6 rounded-full flex items-center justify-center ${typeColors[ev.type]}`}>
                       <Icon className="w-3 h-3" />
                     </div>
-                    <div className="bg-[var(--card)] border border-[var(--card-border)] rounded-lg p-3 ml-4">
+                    <div className="rounded-lg p-3 ml-4" style={{ background: 'var(--card)', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--card-border)' }}>
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-semibold text-white">{ev.description}</span>
-                        <span className="text-[10px] text-white/30">{ev.date}</span>
+                        <span className="text-xs font-semibold" style={{ color: 'var(--heading)' }}>{ev.description}</span>
+                        <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{ev.date}</span>
                       </div>
-                      <div className="flex items-center gap-3 mt-1 text-[10px] text-white/30">
+                      <div className="flex items-center gap-3 mt-1 text-[10px]" style={{ color: 'var(--text-muted)' }}>
                         {ev.staff && <span><Users className="w-3 h-3 inline mr-0.5" />{ev.staff}</span>}
-                        {ev.campaign && <span className="px-1.5 py-0.5 rounded bg-white/5">{ev.campaign}</span>}
+                        {ev.campaign && <span className="px-1.5 py-0.5 rounded" style={{ background: 'var(--input-bg)' }}>{ev.campaign}</span>}
                       </div>
                     </div>
                   </div>

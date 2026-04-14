@@ -1,6 +1,6 @@
 'use client';
 
-import { Database, Mail, BarChart3, Globe, Shield, Zap, CheckCircle, Clock, XCircle } from 'lucide-react';
+import { Database, Mail, BarChart3, Globe, Shield, Zap, CheckCircle, Clock } from 'lucide-react';
 
 const integrations = [
   { name: 'Microsoft Graph API', desc: 'Monitor membership@ and licensing@ mailboxes — auto-count sends, parse bounces', status: 'Ready' as const, icon: Mail, envVars: ['GRAPH_CLIENT_ID', 'GRAPH_CLIENT_SECRET', 'GRAPH_TENANT_ID'], category: 'Email' },

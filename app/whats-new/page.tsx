@@ -1,6 +1,6 @@
 'use client';
 
-import { Sparkles, CheckCircle } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 
 const releases = [
   { version: 'v1.5', date: 'Apr 14, 2026', features: ['AI Subject Line Writer with predicted open rates', 'Smart Segment Builder with custom filters', 'Send Calendar for campaign coordination', 'Member NPS tracking with 5-quarter trends', 'Revenue Forecasting with scenario modeling', 'ROI Calculator vs competitor pricing', 'Email Click Heatmap analysis', 'Industry Benchmarks comparison', 'Interactive API Documentation', 'Event Tracker with email-to-registration conversion'] },

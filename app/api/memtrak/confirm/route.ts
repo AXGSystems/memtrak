@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
   const action = request.nextUrl.searchParams.get('action') || 'confirm';
 
   // BOTH actions log confirmed engagement
-  logEvent({
+  await logEvent({
     type: 'open',
     campaignId: cid,
     recipientEmail: rid,

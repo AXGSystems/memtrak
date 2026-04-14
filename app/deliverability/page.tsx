@@ -26,7 +26,7 @@ const auth = [
 export default function Deliverability() {
   return (
     <div className="p-6">
-      <h1 className="text-lg font-extrabold text-white mb-6">Deliverability Monitor</h1>
+      <h1 className="text-lg font-extrabold mb-6" style={{ color: 'var(--heading)' }}>Deliverability Monitor</h1>
 
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6 stagger-children">
         {[
@@ -36,17 +36,17 @@ export default function Deliverability() {
           { label: 'Spam Complaints', value: 0.02, ringValue: 0.02, color: C.green },
           { label: 'Invalid Addresses', value: 332, ringValue: 0, color: C.blue },
         ].map(m => (
-          <Card key={m.label} className="p-4 flex flex-col items-center text-center">
+          <Card key={m.label} className="p-4 flex flex-col items-center text-center" detailTitle={m.label} detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>{m.label === 'Delivery Rate' ? 'Current delivery rate of 96.2% means ~700 emails per campaign fail to reach inboxes. Industry benchmark for associations is 97-98%. Cleaning invalid and bounced addresses would push this above 98%.' : m.label === 'Hard Bounce' ? 'Hard bounces (1.8%) indicate permanently undeliverable addresses — invalid mailboxes or non-existent domains. These should be removed immediately as ISPs penalize senders with high hard bounce rates.' : m.label === 'Soft Bounce' ? 'Soft bounces (2.0%) are temporary failures — full mailboxes, server timeouts, or rate limiting. Most resolve on retry, but addresses that soft bounce repeatedly (3+ times) should be investigated.' : m.label === 'Spam Complaints' ? 'Spam complaint rate of 0.02% is well below the 0.1% danger threshold. Above 0.1%, major ISPs (Gmail, Outlook) may throttle or block your emails entirely.' : 'There are 332 addresses flagged as invalid through DNS verification and syntax checks. These have never received a send attempt but would hard bounce if included. Remove them proactively.'}</p></div>}>
             {m.ringValue > 0 ? (
               <ProgressRing value={m.label.includes('Rate') ? m.ringValue : m.ringValue} max={m.label.includes('Rate') ? 100 : 10} size={64} color={m.color} />
             ) : (
               <div className="w-[64px] h-[64px] flex items-center justify-center">
-                <span className="text-xl font-extrabold text-white">{m.value.toLocaleString()}</span>
+                <span className="text-xl font-extrabold" style={{ color: 'var(--heading)' }}>{m.value.toLocaleString()}</span>
               </div>
             )}
             <div className="mt-2">
-              {m.ringValue > 0 && <div className="text-xs font-bold text-white">{m.value}%</div>}
-              <div className="text-[10px] text-white/40">{m.label}</div>
+              {m.ringValue > 0 && <div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{m.value}%</div>}
+              <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{m.label}</div>
             </div>
           </Card>
         ))}
@@ -63,8 +63,8 @@ export default function Deliverability() {
           <div className="space-y-3">
             {bounces.map(b => (
               <div key={b.reason}>
-                <div className="flex justify-between text-[10px] mb-1"><span className="text-white/70">{b.reason}</span><span className="text-white font-bold">{b.count} ({b.pct}%)</span></div>
-                <div className="h-2 rounded-full bg-white/10"><div className="h-2 rounded-full" style={{ width: `${b.pct}%`, background: b.pct > 20 ? C.red : b.pct > 10 ? C.orange : C.blue }} /></div>
+                <div className="flex justify-between text-[10px] mb-1"><span style={{ color: 'var(--text-muted)' }}>{b.reason}</span><span className="font-bold" style={{ color: 'var(--heading)' }}>{b.count} ({b.pct}%)</span></div>
+                <div className="h-2 rounded-full" style={{ background: 'var(--input-bg)' }}><div className="h-2 rounded-full" style={{ width: `${b.pct}%`, background: b.pct > 20 ? C.red : b.pct > 10 ? C.orange : C.blue }} /></div>
               </div>
             ))}
           </div>
@@ -74,20 +74,20 @@ export default function Deliverability() {
       <Card title="Email Authentication (SPF / DKIM / DMARC)" subtitle="Domain security for alta.org" className="mb-6" detailTitle="Authentication Explained" detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>SPF verifies alta.org servers are authorized to send. DKIM cryptographically signs messages. DMARC tells receiving servers what to do with failed messages. All three must pass for maximum deliverability. ALTA has SPF and DKIM configured correctly, but DMARC is in monitoring mode only — upgrading to "quarantine" would prevent spoofing and improve inbox placement.</p></div>}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {auth.map(a => (
-            <div key={a.name} className="p-4 rounded-lg bg-white/5">
+            <div key={a.name} className="p-4 rounded-lg" style={{ background: 'var(--input-bg)' }}>
               <div className="flex items-center gap-2 mb-2">
                 <span className={`w-2 h-2 rounded-full ${a.status === 'Pass' ? 'bg-green-400' : 'bg-amber-400'}`} />
-                <span className="text-xs font-bold text-white">{a.name}</span>
+                <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{a.name}</span>
                 <span className={`text-[9px] px-2 py-0.5 rounded-full font-semibold ${a.status === 'Pass' ? 'bg-green-500/20 text-green-400' : 'bg-amber-500/20 text-amber-400'}`}>{a.status}</span>
               </div>
-              <p className="text-[10px] text-white/40">{a.desc}</p>
+              <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{a.desc}</p>
             </div>
           ))}
         </div>
       </Card>
 
-      <Card className="p-5 border-l-4 border-l-[#8CC63F]">
-        <h3 className="text-xs font-bold text-white mb-3">Recommended Actions</h3>
+      <Card className="p-5 border-l-4 border-l-[#8CC63F]" title="Recommended Actions" subtitle="Steps to improve deliverability" detailTitle="Action Plan" detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>These actions are prioritized by impact. Removing hard bounces and upgrading DMARC are the highest-leverage changes. Full list verification will uncover additional invalid addresses beyond those already identified. A/B testing subject lines can improve open rates by 5-10% based on industry benchmarks for association emails.</p></div>}>
+        <h3 className="text-xs font-bold mb-3" style={{ color: 'var(--heading)' }}>Recommended Actions</h3>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
           {[
             { action: 'Remove 265 hard-bounce addresses', impact: 'Reduces bounce by 1.4%', when: 'Now' },
@@ -95,9 +95,9 @@ export default function Deliverability() {
             { action: 'Verify full 18,400 address list', impact: 'Find 500+ more invalid', when: 'This month' },
             { action: 'A/B test Title News subject lines', impact: '+5-10% open rate', when: 'Next send' },
           ].map((r, i) => (
-            <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-white/5">
-              <div><div className="text-xs font-bold text-white">{r.action}</div><div className="text-[10px] text-green-400">{r.impact}</div></div>
-              <span className="text-[9px] px-2 py-0.5 rounded-full bg-white/10 text-white/60 font-semibold">{r.when}</span>
+            <div key={i} className="flex items-center justify-between p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
+              <div><div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{r.action}</div><div className="text-[10px] text-green-400">{r.impact}</div></div>
+              <span className="text-[9px] px-2 py-0.5 rounded-full font-semibold" style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}>{r.when}</span>
             </div>
           ))}
         </div>

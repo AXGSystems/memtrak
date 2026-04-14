@@ -31,10 +31,10 @@ export async function GET(request: NextRequest) {
 
   if (email) {
     // Process the unsubscribe
-    unsubscribe(email);
+    await unsubscribe(email);
 
     // Log the event
-    logEvent({
+    await logEvent({
       type: 'bounce', // Using bounce type for unsubscribes (they're "soft bounces" from a deliverability perspective)
       campaignId: cid,
       recipientEmail: email,
@@ -87,11 +87,11 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
 
     if (body.action === 'list') {
-      return NextResponse.json({ suppressionList: getSuppressionList() });
+      return NextResponse.json({ suppressionList: await getSuppressionList() });
     }
 
     if (body.action === 'check' && body.email) {
-      return NextResponse.json({ email: body.email, unsubscribed: isUnsubscribed(body.email) });
+      return NextResponse.json({ email: body.email, unsubscribed: await isUnsubscribed(body.email) });
     }
 
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 });

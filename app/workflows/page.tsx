@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Zap, Play, Pause, CheckCircle, Clock, Mail, Phone, AlertTriangle, ArrowRight, Users } from 'lucide-react';
+import Card, { KpiCard } from '@/components/Card';
+import { Zap, Play, Pause, CheckCircle, Clock, Mail, Phone, AlertTriangle, ArrowRight, Users, DollarSign, TrendingUp } from 'lucide-react';
 
 const workflows = [
   {
@@ -60,6 +61,12 @@ const channelIcons: Record<string, typeof Mail> = { Email: Mail, Phone: Phone, A
 export default function Workflows() {
   const [expanded, setExpanded] = useState<string | null>(workflows[0].id);
 
+  const totalEnrolled = workflows.reduce((s, w) => s + w.enrolled, 0);
+  const totalConverted = workflows.reduce((s, w) => s + w.converted, 0);
+  const totalRevenue = workflows.reduce((s, w) => s + w.revenueProtected, 0);
+  const activeWorkflows = workflows.filter(w => w.enrolled > 0);
+  const avgConversion = activeWorkflows.length > 0 ? (activeWorkflows.reduce((s, w) => s + w.conversionRate, 0) / activeWorkflows.length).toFixed(1) : '0';
+
   return (
     <div className="p-6">
       <h1 className="text-lg font-extrabold mb-1" style={{ color: 'var(--heading)' }}>Automated Workflows</h1>
@@ -67,30 +74,272 @@ export default function Workflows() {
 
       {/* Summary KPIs */}
       <div className="grid grid-cols-4 gap-3 mb-6 stagger-children">
-        <div className="rounded-xl border p-4 text-center" style={{ background: 'var(--card)', borderColor: 'var(--card-border)' }}>
-          <div className="text-2xl font-extrabold" style={{ color: 'var(--heading)' }}>{workflows.length}</div>
-          <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Workflows</div>
-        </div>
-        <div className="rounded-xl border p-4 text-center" style={{ background: 'var(--card)', borderColor: 'var(--card-border)' }}>
-          <div className="text-2xl font-extrabold" style={{ color: 'var(--heading)' }}>{workflows.reduce((s, w) => s + w.enrolled, 0)}</div>
-          <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Members Enrolled</div>
-        </div>
-        <div className="rounded-xl border p-4 text-center" style={{ background: 'var(--card)', borderColor: 'var(--card-border)' }}>
-          <div className="text-2xl font-extrabold" style={{ color: 'var(--accent)' }}>{workflows.reduce((s, w) => s + w.converted, 0)}</div>
-          <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Re-engaged</div>
-        </div>
-        <div className="rounded-xl border p-4 text-center" style={{ background: 'var(--card)', borderColor: 'var(--card-border)' }}>
-          <div className="text-2xl font-extrabold" style={{ color: 'var(--accent)' }}>${(workflows.reduce((s, w) => s + w.revenueProtected, 0) / 1000).toFixed(0)}K</div>
-          <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Revenue Protected</div>
-        </div>
+        <KpiCard
+          label="Workflows"
+          value={workflows.length}
+          sub={`${workflows.filter(w => w.status === 'Active').length} active, ${workflows.filter(w => w.status === 'Scheduled').length} scheduled`}
+          icon={Zap}
+          color="var(--heading)"
+          detail={
+            <div className="space-y-3">
+              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                MEMTrak manages {workflows.length} automated workflows that trigger based on member behavior events. Each workflow combines automated email sequences with manual staff escalation points.
+              </div>
+              <div className="space-y-2">
+                {workflows.map(w => (
+                  <div key={w.id} className="flex items-center justify-between rounded-lg p-2" style={{ background: 'var(--background)' }}>
+                    <span className="text-[10px] font-bold" style={{ color: 'var(--heading)' }}>{w.name}</span>
+                    <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold ${statusColors[w.status]}`}>{w.status}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                Workflows run 24/7 and trigger automatically when conditions are met. Staff are notified only at manual escalation points, keeping the workload minimal while ensuring no member falls through the cracks.
+              </div>
+            </div>
+          }
+        />
+        <KpiCard
+          label="Members Enrolled"
+          value={totalEnrolled}
+          sub={`Across ${activeWorkflows.length} active workflows`}
+          icon={Users}
+          color="var(--heading)"
+          detail={
+            <div className="space-y-3">
+              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                {totalEnrolled} members are currently being nurtured through automated workflows. Enrollment is triggered by real-time behavior events — no manual list management needed.
+              </div>
+              <div className="space-y-2">
+                {workflows.filter(w => w.enrolled > 0).map(w => (
+                  <div key={w.id} className="rounded-lg p-3" style={{ background: 'var(--background)' }}>
+                    <div className="flex justify-between text-[10px] mb-1">
+                      <span className="font-bold" style={{ color: 'var(--heading)' }}>{w.name}</span>
+                      <span className="font-bold" style={{ color: 'var(--accent)' }}>{w.enrolled} enrolled</span>
+                    </div>
+                    <div className="h-1.5 rounded-full" style={{ background: 'var(--card-border)' }}>
+                      <div className="h-1.5 rounded-full" style={{ width: `${(w.enrolled / totalEnrolled) * 100}%`, background: 'var(--accent)' }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          }
+        />
+        <KpiCard
+          label="Re-engaged"
+          value={totalConverted}
+          sub={`${avgConversion}% avg conversion rate`}
+          icon={TrendingUp}
+          color="var(--accent)"
+          detail={
+            <div className="space-y-3">
+              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                {totalConverted} members have been successfully re-engaged through automated workflows. "Re-engaged" means the member resumed meaningful activity (opened emails, attended events, or renewed dues) after being flagged for intervention.
+              </div>
+              <div className="space-y-2">
+                {workflows.filter(w => w.converted > 0).map(w => (
+                  <div key={w.id} className="rounded-lg p-3" style={{ background: 'var(--background)' }}>
+                    <div className="flex justify-between text-[10px] mb-1">
+                      <span className="font-bold" style={{ color: 'var(--heading)' }}>{w.name}</span>
+                      <span className="font-bold" style={{ color: 'var(--accent)' }}>{w.converted} converted ({w.conversionRate}%)</span>
+                    </div>
+                    <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                      {w.enrolled - w.converted} members still in progress
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                The New Member 30-Day Check has the highest conversion rate ({workflows.find(w => w.id === 'new-member-30day')?.conversionRate}%), confirming that early intervention with new members is the most effective retention strategy.
+              </div>
+            </div>
+          }
+        />
+        <KpiCard
+          label="Revenue Protected"
+          value={`$${(totalRevenue / 1000).toFixed(0)}K`}
+          sub="Estimated retained dues & event revenue"
+          icon={DollarSign}
+          color="var(--accent)"
+          detail={
+            <div className="space-y-3">
+              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                ${totalRevenue.toLocaleString()} in membership dues and event revenue has been protected by successfully re-engaging members who were at risk of lapsing.
+              </div>
+              <div className="space-y-2">
+                {workflows.filter(w => w.revenueProtected > 0).map(w => (
+                  <div key={w.id} className="rounded-lg p-3" style={{ background: 'var(--background)' }}>
+                    <div className="flex justify-between text-[10px] mb-1">
+                      <span className="font-bold" style={{ color: 'var(--heading)' }}>{w.name}</span>
+                      <span className="font-bold" style={{ color: 'var(--accent)' }}>${(w.revenueProtected / 1000).toFixed(0)}K protected</span>
+                    </div>
+                    <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                      ${Math.round(w.revenueProtected / w.converted).toLocaleString()} avg revenue per re-engaged member
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="rounded-lg p-3" style={{ background: 'var(--background)' }}>
+                <div className="text-[10px] font-bold mb-1" style={{ color: 'var(--heading)' }}>ROI Calculation</div>
+                <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                  ActiveCampaign + HubSpot equivalent: ~$1,076/mo ($12,912/yr). MEMTrak workflows: $0/mo. Revenue protected: ${totalRevenue.toLocaleString()}. That is a {Math.round(totalRevenue / 12912)}x return on what you would have spent on third-party automation.
+                </div>
+              </div>
+            </div>
+          }
+        />
       </div>
 
       {/* Workflow Cards */}
       <div className="space-y-4">
         {workflows.map(w => {
           const isExpanded = expanded === w.id;
+          const autoSteps = w.steps.filter(s => s.status === 'auto').length;
+          const manualSteps = w.steps.filter(s => s.status === 'manual').length;
           return (
-            <div key={w.id} className="rounded-xl border overflow-hidden" style={{ background: 'var(--card)', borderColor: 'var(--card-border)' }}>
+            <Card
+              key={w.id}
+              title={w.name}
+              subtitle={`Trigger: ${w.trigger}`}
+              detailTitle={`${w.name} — Full Analysis`}
+              detailContent={
+                <div className="space-y-4">
+                  {/* Conversion funnel */}
+                  <div>
+                    <div className="text-xs font-bold mb-2" style={{ color: 'var(--heading)' }}>Conversion Funnel</div>
+                    {w.enrolled > 0 ? (
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-3">
+                          <div className="w-24 text-[10px] text-right font-semibold" style={{ color: 'var(--text-muted)' }}>Triggered</div>
+                          <div className="flex-1 h-6 rounded" style={{ background: 'var(--accent)', opacity: 0.3 }}>
+                            <div className="h-6 rounded flex items-center px-2" style={{ width: '100%', background: 'var(--accent)' }}>
+                              <span className="text-[9px] font-bold text-white">{w.enrolled}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="w-24 text-[10px] text-right font-semibold" style={{ color: 'var(--text-muted)' }}>In Progress</div>
+                          <div className="flex-1 h-6 rounded" style={{ background: 'var(--card-border)' }}>
+                            <div className="h-6 rounded flex items-center px-2" style={{ width: `${((w.enrolled - w.converted) / w.enrolled) * 100}%`, background: 'var(--accent)', opacity: 0.7 }}>
+                              <span className="text-[9px] font-bold text-white">{w.enrolled - w.converted}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="w-24 text-[10px] text-right font-semibold" style={{ color: 'var(--text-muted)' }}>Converted</div>
+                          <div className="flex-1 h-6 rounded" style={{ background: 'var(--card-border)' }}>
+                            <div className="h-6 rounded flex items-center px-2" style={{ width: `${w.conversionRate}%`, background: '#8CC63F' }}>
+                              <span className="text-[9px] font-bold text-white">{w.converted} ({w.conversionRate}%)</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-[10px] rounded-lg p-3" style={{ background: 'var(--background)', color: 'var(--text-muted)' }}>
+                        This workflow is scheduled but has not yet enrolled any members. Funnel data will appear once it activates.
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Revenue impact */}
+                  <div>
+                    <div className="text-xs font-bold mb-2" style={{ color: 'var(--heading)' }}>Revenue Impact</div>
+                    <div className="rounded-lg p-3" style={{ background: 'var(--background)' }}>
+                      {w.revenueProtected > 0 ? (
+                        <div className="grid grid-cols-2 gap-3 text-[10px]">
+                          <div>
+                            <div style={{ color: 'var(--text-muted)' }}>Revenue Protected</div>
+                            <div className="text-sm font-extrabold" style={{ color: 'var(--accent)' }}>${w.revenueProtected.toLocaleString()}</div>
+                          </div>
+                          <div>
+                            <div style={{ color: 'var(--text-muted)' }}>Per Conversion</div>
+                            <div className="text-sm font-extrabold" style={{ color: 'var(--accent)' }}>${Math.round(w.revenueProtected / w.converted).toLocaleString()}</div>
+                          </div>
+                          <div>
+                            <div style={{ color: 'var(--text-muted)' }}>Still At Risk</div>
+                            <div className="text-sm font-extrabold" style={{ color: '#E8923F' }}>{w.enrolled - w.converted} members</div>
+                          </div>
+                          <div>
+                            <div style={{ color: 'var(--text-muted)' }}>Potential Recovery</div>
+                            <div className="text-sm font-extrabold" style={{ color: '#E8923F' }}>${Math.round((w.enrolled - w.converted) * (w.revenueProtected / w.converted)).toLocaleString()}</div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Revenue impact data will be available once members complete this workflow.</div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Workflow steps detail */}
+                  <div>
+                    <div className="text-xs font-bold mb-2" style={{ color: 'var(--heading)' }}>Step-by-Step Breakdown</div>
+                    <div className="space-y-2">
+                      {w.steps.map((step, i) => {
+                        const Icon = channelIcons[step.channel] || Mail;
+                        return (
+                          <div key={i} className="rounded-lg p-3 flex items-start gap-3" style={{ background: 'var(--background)' }}>
+                            <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: step.status === 'auto' ? 'rgba(140,198,63,0.15)' : 'rgba(74,144,217,0.15)' }}>
+                              <Icon className="w-3 h-3" style={{ color: step.status === 'auto' ? '#8CC63F' : '#4A90D9' }} />
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ background: 'var(--card-border)', color: 'var(--text-muted)' }}>Day {step.day}</span>
+                                <span className={`text-[9px] px-1.5 py-0.5 rounded font-semibold ${step.status === 'auto' ? 'bg-green-500/20 text-green-400' : 'bg-blue-500/20 text-blue-400'}`}>{step.status === 'auto' ? 'Automated' : 'Manual'}</span>
+                                <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>via {step.channel}</span>
+                              </div>
+                              <div className="text-[10px]" style={{ color: 'var(--heading)' }}>{step.action}</div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Optimization suggestions */}
+                  <div>
+                    <div className="text-xs font-bold mb-2" style={{ color: 'var(--heading)' }}>Optimization Suggestions</div>
+                    <div className="rounded-lg p-3" style={{ background: 'var(--background)' }}>
+                      <ul className="text-[10px] space-y-1.5" style={{ color: 'var(--text-muted)' }}>
+                        {w.id === 'decay-reengagement' && (
+                          <>
+                            <li>- Consider adding SMS as an alternate channel for members who never open emails</li>
+                            <li>- A/B test subject lines on the initial "We miss you" email to improve open rates</li>
+                            <li>- Add a Day 21 touchpoint before escalating to retention team</li>
+                            <li>- Segment by member type (ACU vs ACA) for more personalized messaging</li>
+                          </>
+                        )}
+                        {w.id === 'bounce-cleanup' && (
+                          <>
+                            <li>- Cross-reference bounced emails with LinkedIn to find updated addresses</li>
+                            <li>- Add a direct mail fallback for high-LTV members with no valid email</li>
+                            <li>- Track bounce rates by email domain to identify deliverability issues</li>
+                            <li>- Consider adding BIMI/DMARC verification to reduce false bounces</li>
+                          </>
+                        )}
+                        {w.id === 'new-member-30day' && (
+                          <>
+                            <li>- The 66.7% conversion rate is excellent — consider replicating this approach for other workflows</li>
+                            <li>- Add a Day 15 milestone check before the Day 30 trigger for earlier intervention</li>
+                            <li>- Include a peer-matching component to connect new members with Champions</li>
+                            <li>- Track which onboarding content correlates with higher 90-day retention</li>
+                          </>
+                        )}
+                        {w.id === 'renewal-sequence' && (
+                          <>
+                            <li>- Once active, benchmark against industry 85% renewal target</li>
+                            <li>- Include personalized value summary ("You attended X events, downloaded Y resources")</li>
+                            <li>- Offer early-bird renewal discount at the 90-day mark to incentivize prompt action</li>
+                            <li>- Add a post-renewal thank-you sequence to reinforce the decision</li>
+                          </>
+                        )}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              }
+              noPad
+            >
               <button onClick={() => setExpanded(isExpanded ? null : w.id)} className="w-full flex items-center justify-between p-5 text-left">
                 <div className="flex items-center gap-3">
                   <Zap className="w-5 h-5" style={{ color: 'var(--accent)' }} />
@@ -143,7 +392,7 @@ export default function Workflows() {
                   </div>
                 </div>
               )}
-            </div>
+            </Card>
           );
         })}
       </div>

@@ -121,7 +121,7 @@ export async function POST(request: NextRequest) {
     returns.push(entry);
 
     // Log the event
-    logEvent({
+    await logEvent({
       type: 'bounce',
       campaignId: 'physical-mail',
       recipientEmail: 'physical-address',

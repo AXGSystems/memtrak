@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
   const rid = request.nextUrl.searchParams.get('rid') || 'unknown';
 
   // Log the open event
-  logEvent({
+  await logEvent({
     type: 'open',
     campaignId: cid,
     recipientEmail: rid,

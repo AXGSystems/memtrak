@@ -1,27 +1,15 @@
 /**
  * MEMTrak — Member Engagement & Membership Tracking
  *
- * Internal email tracking system for ALTA DASH 2.0.
- * Provides open tracking (via pixel), click tracking (via redirect),
+ * Internal email tracking system for ALTA.
+ * Provides open tracking (via pixel/logo), click tracking (via redirect),
  * and a unified event log.
  *
- * How it works:
- * 1. When composing an email, staff embed a tracking pixel URL in the email body
- *    Example: <img src="https://dash.alta.org/api/memtrak/pixel?cid=renewal-apr-2026&rid=jsmith@firstam.com" width="1" height="1" />
- *
- * 2. When the recipient opens the email, their email client loads the image,
- *    which hits our API and logs the "open" event.
- *
- * 3. Links in the email are wrapped through our click tracker:
- *    Instead of: https://alta.org/join
- *    Use: https://dash.alta.org/api/memtrak/click?cid=renewal-apr-2026&rid=jsmith@firstam.com&url=https://alta.org/join
- *
- * 4. When the recipient clicks, they hit our API (logs the click) then get
- *    redirected to the actual destination URL.
- *
- * Storage: Currently in-memory (resets on server restart).
- * Future: Store in Azure SQL for persistence across deployments.
+ * Storage: Uses Supabase when configured (NEXT_PUBLIC_SUPABASE_URL),
+ * falls back to in-memory store for local development.
  */
+
+import { supabase, isSupabaseConfigured } from './supabase';
 
 export interface MemTrakEvent {
   id: string;
@@ -33,24 +21,59 @@ export interface MemTrakEvent {
   metadata: Record<string, string>;
 }
 
-// In-memory event store (replace with Azure SQL in production)
-// This persists across API calls within the same server process
-const events: MemTrakEvent[] = [];
+// ===== IN-MEMORY FALLBACK =====
+const memoryEvents: MemTrakEvent[] = [];
+const memorySuppression = new Set<string>();
 
-export function logEvent(event: Omit<MemTrakEvent, 'id' | 'timestamp'>): MemTrakEvent {
+// ===== EVENT LOGGING =====
+
+export async function logEvent(event: Omit<MemTrakEvent, 'id' | 'timestamp'>): Promise<MemTrakEvent> {
   const entry: MemTrakEvent = {
     id: `mt_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
     timestamp: new Date().toISOString(),
     ...event,
   };
-  events.push(entry);
-  // Keep last 10,000 events in memory
-  if (events.length > 10000) events.splice(0, events.length - 10000);
+
+  if (isSupabaseConfigured()) {
+    await supabase.from('memtrak_events').insert({
+      type: entry.type,
+      campaign_id: entry.campaignId,
+      recipient_email: entry.recipientEmail,
+      recipient_name: entry.recipientName || null,
+      metadata: entry.metadata,
+    });
+  } else {
+    memoryEvents.push(entry);
+    if (memoryEvents.length > 10000) memoryEvents.splice(0, memoryEvents.length - 10000);
+  }
+
   return entry;
 }
 
-export function getEvents(filters?: { campaignId?: string; type?: string; limit?: number }): MemTrakEvent[] {
-  let result = [...events];
+export async function getEvents(filters?: { campaignId?: string; type?: string; limit?: number }): Promise<MemTrakEvent[]> {
+  if (isSupabaseConfigured()) {
+    let query = supabase
+      .from('memtrak_events')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (filters?.campaignId) query = query.eq('campaign_id', filters.campaignId);
+    if (filters?.type) query = query.eq('type', filters.type);
+    if (filters?.limit) query = query.limit(filters.limit);
+
+    const { data } = await query;
+    return (data || []).map(row => ({
+      id: row.id,
+      timestamp: row.created_at,
+      type: row.type as MemTrakEvent['type'],
+      campaignId: row.campaign_id,
+      recipientEmail: row.recipient_email,
+      recipientName: row.recipient_name || undefined,
+      metadata: (row.metadata as Record<string, string>) || {},
+    }));
+  }
+
+  let result = [...memoryEvents];
   if (filters?.campaignId) result = result.filter(e => e.campaignId === filters.campaignId);
   if (filters?.type) result = result.filter(e => e.type === filters.type);
   result.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
@@ -58,7 +81,8 @@ export function getEvents(filters?: { campaignId?: string; type?: string; limit?
   return result;
 }
 
-export function getStats() {
+export async function getStats() {
+  const events = await getEvents();
   const now = new Date();
   const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
   const recent = events.filter(e => e.timestamp >= thirtyDaysAgo);
@@ -97,44 +121,73 @@ export function getStats() {
   };
 }
 
-/**
- * Generate a tracking pixel URL for embedding in emails.
- * Usage: Include this as an <img> tag at the bottom of the email body.
- */
+// ===== URL GENERATORS =====
+
 export function generatePixelUrl(baseUrl: string, campaignId: string, recipientEmail: string): string {
   return `${baseUrl}/api/memtrak/pixel?cid=${encodeURIComponent(campaignId)}&rid=${encodeURIComponent(recipientEmail)}`;
 }
 
-/**
- * Generate a tracked link URL that redirects after logging the click.
- * Usage: Replace destination URLs in email body with this wrapped version.
- */
 export function generateClickUrl(baseUrl: string, campaignId: string, recipientEmail: string, destinationUrl: string): string {
   return `${baseUrl}/api/memtrak/click?cid=${encodeURIComponent(campaignId)}&rid=${encodeURIComponent(recipientEmail)}&url=${encodeURIComponent(destinationUrl)}`;
 }
 
-// ===== SUPPRESSION / UNSUBSCRIBE LIST =====
-// In-memory (replace with Azure SQL in production)
-const suppressionList = new Set<string>();
+// ===== SUPPRESSION / UNSUBSCRIBE =====
 
-export function unsubscribe(email: string): void {
-  suppressionList.add(email.toLowerCase().trim());
+export async function unsubscribe(email: string): Promise<void> {
+  const normalized = email.toLowerCase().trim();
+  if (isSupabaseConfigured()) {
+    await supabase.from('memtrak_suppression').upsert({ email: normalized, reason: 'unsubscribe' });
+  } else {
+    memorySuppression.add(normalized);
+  }
 }
 
-export function resubscribe(email: string): void {
-  suppressionList.delete(email.toLowerCase().trim());
+export async function resubscribe(email: string): Promise<void> {
+  const normalized = email.toLowerCase().trim();
+  if (isSupabaseConfigured()) {
+    await supabase.from('memtrak_suppression').delete().eq('email', normalized);
+  } else {
+    memorySuppression.delete(normalized);
+  }
 }
 
-export function isUnsubscribed(email: string): boolean {
-  return suppressionList.has(email.toLowerCase().trim());
+export async function isUnsubscribed(email: string): Promise<boolean> {
+  const normalized = email.toLowerCase().trim();
+  if (isSupabaseConfigured()) {
+    const { data } = await supabase.from('memtrak_suppression').select('email').eq('email', normalized).single();
+    return !!data;
+  }
+  return memorySuppression.has(normalized);
 }
 
-export function getSuppressionList(): string[] {
-  return [...suppressionList].sort();
+export async function getSuppressionList(): Promise<string[]> {
+  if (isSupabaseConfigured()) {
+    const { data } = await supabase.from('memtrak_suppression').select('email').order('email');
+    return (data || []).map(row => row.email);
+  }
+  return [...memorySuppression].sort();
 }
 
-export function getSuppressionCount(): number {
-  return suppressionList.size;
+export async function getSuppressionCount(): Promise<number> {
+  if (isSupabaseConfigured()) {
+    const { count } = await supabase.from('memtrak_suppression').select('*', { count: 'exact', head: true });
+    return count || 0;
+  }
+  return memorySuppression.size;
+}
+
+// ===== AUDIT LOG =====
+
+export async function auditLog(action: string, actor: string, details: Record<string, string> = {}, ipAddress?: string): Promise<void> {
+  if (isSupabaseConfigured()) {
+    await supabase.from('memtrak_audit_log').insert({
+      action,
+      actor,
+      details,
+      ip_address: ipAddress || null,
+    });
+  }
+  // In-memory: audit logs are not persisted (only meaningful with a database)
 }
 
 // ===== RECIPIENT LISTS =====
@@ -166,10 +219,11 @@ export function getList(id: string): RecipientList | undefined {
   return recipientLists.find(l => l.id === id);
 }
 
-/**
- * Filter a recipient list, removing anyone on the suppression list.
- * This is the critical function — ALWAYS filter before sending.
- */
-export function getActiveRecipients(list: RecipientList): RecipientList['recipients'] {
-  return list.recipients.filter(r => !isUnsubscribed(r.email));
+export async function getActiveRecipients(list: RecipientList): Promise<RecipientList['recipients']> {
+  const results = [];
+  for (const r of list.recipients) {
+    const suppressed = await isUnsubscribed(r.email);
+    if (!suppressed) results.push(r);
+  }
+  return results;
 }

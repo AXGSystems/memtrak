@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
   if (id) {
     const list = getList(id);
     if (!list) return NextResponse.json({ error: 'List not found' }, { status: 404 });
-    const active = getActiveRecipients(list);
+    const active = await getActiveRecipients(list);
     return NextResponse.json({
       ...list,
       totalRecipients: list.recipients.length,
@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
       createdAt: l.createdAt,
     })),
     totalLists: lists.length,
-    suppressionCount: getSuppressionCount(),
+    suppressionCount: await getSuppressionCount(),
   });
 }
 

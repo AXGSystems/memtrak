@@ -85,7 +85,7 @@ export default function ContentAnalysis() {
                     <div className="flex-1 h-1.5 rounded-full mr-3" style={{ background: 'var(--card-border)' }}>
                       <div className="h-1.5 rounded-full" style={{ width: `${w.avgOpen}%`, background: w.avgOpen >= 50 ? C.green : w.avgOpen >= 35 ? C.blue : C.orange }} />
                     </div>
-                    <span className={`text-[9px] px-2 py-0.5 rounded-full font-semibold ${w.verdict === 'Excellent' ? 'bg-green-500/20 text-green-400' : w.verdict === 'Strong' || w.verdict === 'Good' ? 'bg-blue-500/20 text-blue-400' : w.verdict === 'Spam risk' ? 'bg-red-500/20 text-red-400' : 'bg-white/10'}`} style={w.verdict === 'Average' ? { color: 'var(--text-muted)' } : {}}>{w.verdict}</span>
+                    <span className={`text-[9px] px-2 py-0.5 rounded-full font-semibold ${w.verdict === 'Excellent' ? 'bg-green-500/20 text-green-400' : w.verdict === 'Strong' || w.verdict === 'Good' ? 'bg-blue-500/20 text-blue-400' : w.verdict === 'Spam risk' ? 'bg-red-500/20 text-red-400' : ''}`} style={w.verdict === 'Average' ? { background: 'var(--input-bg)', color: 'var(--text-muted)' } : {}}>{w.verdict}</span>
                   </div>
                 </div>
               </div>

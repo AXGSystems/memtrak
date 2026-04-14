@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Shield, AlertTriangle, CheckCircle, Lock, Eye, Key, Server, Clock } from 'lucide-react';
+import { Shield, CheckCircle, Lock, Eye, Key, Server, Clock } from 'lucide-react';
 
 interface AuditStats { total: number; critical: number; warning: number; last24h: number; }
 interface AuditEvent { timestamp: string; action: string; ip: string; detail: string; severity: 'info' | 'warning' | 'critical'; }

@@ -15,20 +15,20 @@ export async function GET(request: NextRequest) {
   const action = request.nextUrl.searchParams.get('action') || 'stats';
 
   if (action === 'stats') {
-    return NextResponse.json(getStats());
+    return NextResponse.json(await getStats());
   }
 
   const cid = request.nextUrl.searchParams.get('cid') || undefined;
   const type = request.nextUrl.searchParams.get('type') || undefined;
   const limit = parseInt(request.nextUrl.searchParams.get('limit') || '100');
 
-  return NextResponse.json(getEvents({ campaignId: cid, type, limit }));
+  return NextResponse.json(await getEvents({ campaignId: cid, type, limit }));
 }
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const event = logEvent({
+    const event = await logEvent({
       type: body.type || 'send',
       campaignId: body.campaignId || 'manual',
       recipientEmail: body.recipientEmail || '',

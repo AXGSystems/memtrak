@@ -1,7 +1,6 @@
 'use client';
 
 import ClientChart from '@/components/ClientChart';
-import { Download } from 'lucide-react';
 import { exportCSV } from '@/lib/export-utils';
 
 const C = { green: '#8CC63F', blue: '#4A90D9', red: '#D94A4A', navy: '#002D5C', orange: '#E8923F' };

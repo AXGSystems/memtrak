@@ -185,6 +185,10 @@ canvas { max-width: 100% !important; }
   aside { display: none !important; }
   main { margin-left: 0 !important; }
 }
+/* Sidebar width sync */
+@media (min-width: 769px) {
+  main { margin-left: 260px !important; }
+}
 
 /* Card hover — every card with border gets subtle lift */
 .rounded-xl {
@@ -222,4 +226,99 @@ tr { transition: background 0.15s ease; }
   body { background: white !important; color: #1B3A5C !important; }
   aside { display: none !important; }
   main { margin-left: 0 !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════ */
+/* PREMIUM ANIMATIONS & LIVING-BREATHING UI                   */
+/* ═══════════════════════════════════════════════════════════ */
+
+/* 1. Enhanced Card Hover — elevated, glowing border */
+.rounded-xl:hover {
+  transform: translateY(-2px) scale(1.005);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15), 0 0 0 1px color-mix(in srgb, var(--accent) 15%, transparent);
+}
+
+/* 2. Pulse glow — live status indicators */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(140,198,63,0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(140,198,63,0); }
+}
+.pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+
+/* 3. Typewriter cursor blink */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.typewriter-cursor { animation: blink 0.8s step-end infinite; }
+
+/* 4. Count-up fade in */
+@keyframes countIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.count-in { animation: countIn 0.6s ease-out forwards; }
+
+/* 5. Breathing glow — meters, live elements */
+@keyframes breathe {
+  0%, 100% { filter: drop-shadow(0 0 4px currentColor); }
+  50% { filter: drop-shadow(0 0 12px currentColor); }
+}
+.breathe { animation: breathe 3s ease-in-out infinite; }
+
+/* 6. Shimmer loading effect */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.05) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+/* 7. Slide-in animations for side panels */
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideInUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.slide-in-right { animation: slideInRight 0.3s ease-out; }
+.slide-in-up { animation: slideInUp 0.4s ease-out; }
+
+/* 8. Number highlight flash — value change feedback */
+@keyframes valueFlash {
+  0% { color: var(--accent); transform: scale(1.05); }
+  100% { color: inherit; transform: scale(1); }
+}
+.value-flash { animation: valueFlash 0.6s ease-out; }
+
+/* 9. Smooth skeleton loading */
+@keyframes skeletonPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+.skeleton-pulse { animation: skeletonPulse 1.5s ease-in-out infinite; }
+
+/* 10. Interactive table row hover */
+tr:hover td {
+  transition: all 0.15s ease;
+}
+tbody tr:hover {
+  background: color-mix(in srgb, var(--accent) 5%, transparent) !important;
+}
+
+/* 11. Button press effect */
+button:active:not(:disabled) {
+  transform: scale(0.97);
+  transition: transform 0.1s;
+}
+
+/* 12. Floating label / focus glow for inputs */
+input:focus, select:focus, textarea:focus {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 25%, transparent);
+  transition: box-shadow 0.2s ease;
 }

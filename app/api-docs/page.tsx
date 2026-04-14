@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Copy, CheckCircle, ExternalLink } from 'lucide-react';
+import { Copy, CheckCircle } from 'lucide-react';
 
 const endpoints = [
   { method: 'GET', path: '/api/memtrak/pixel', desc: 'Tracking pixel — returns 1x1 transparent GIF', params: 'cid (campaign ID), rid (recipient email)', response: 'image/gif', category: 'Tracking' },

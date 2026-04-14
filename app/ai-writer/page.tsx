@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Sparkles, Copy, CheckCircle, Zap, TrendingUp } from 'lucide-react';
+import { Sparkles, Copy, CheckCircle, Zap } from 'lucide-react';
 
 const C = { green: '#8CC63F', blue: '#4A90D9', orange: '#E8923F' };
 

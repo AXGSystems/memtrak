@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
   logAudit('pixel-open', ip, `Campaign: ${cid}, Recipient: ${rid}`);
 
   // Log the open event
-  logEvent({
+  await logEvent({
     type: 'open',
     campaignId: cid,
     recipientEmail: rid,

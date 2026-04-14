@@ -93,14 +93,14 @@ export async function GET(request: NextRequest) {
     case 'journey': {
       const rid = request.nextUrl.searchParams.get('rid');
       if (!rid) return NextResponse.json({ error: 'rid parameter required' }, { status: 400 });
-      const events = getEvents({ limit: 50 });
+      const events = await getEvents({ limit: 50 });
       const memberEvents = events.filter(e => e.recipientEmail === rid);
       return NextResponse.json({ email: rid, events: memberEvents, totalTouchpoints: memberEvents.length });
     }
 
     default:
       return NextResponse.json({
-        ...getStats(),
+        ...(await getStats()),
         decayAlerts: engagementDecay.filter(e => e.decayScore > 50).length,
         churnHighRisk: churnScores.filter(s => s.score >= 70).length,
         revenueAttributed: revenueAttribution.reduce((s, c) => s + c.revenueGenerated, 0),

@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
   const url = request.nextUrl.searchParams.get('url') || '';
 
   // Log the click event
-  logEvent({
+  await logEvent({
     type: 'click',
     campaignId: cid,
     recipientEmail: rid,
