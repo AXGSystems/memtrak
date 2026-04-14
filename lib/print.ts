@@ -402,6 +402,120 @@ const reports: Record<string, () => string> = {
     ${insight('6 interactions logged this month. 2 resulted in positive actions (renewal confirmed, event registration), 1 meeting was scheduled (potential upgrade), 1 bounced (needs address update), 1 declined (revisit Q3). The Heritage Abstract bounce highlights the value of the MEMTrak Address Hygiene system — this address should have been flagged before outreach.')}
     ${footer()}
   `,
+
+  'Engagement Scoring & LTV': () => `
+    ${header('Engagement Scoring & Lifetime Value Report', `Member-Level Scoring + Revenue Predictions — ${new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`)}
+    <p style="font-size:12px;color:#2c3e50;line-height:1.8;margin-bottom:20px;">
+      Every ALTA member receives a 0-100 engagement score based on 6 weighted factors: email opens (25%), email clicks (20%), event attendance (20%), committee participation (15%), dues payment timeliness (10%), and website activity (10%). This score predicts renewal likelihood and helps prioritize staff outreach. ActiveCampaign charges $186/mo for this. Klaviyo charges $150/mo for LTV predictions. MEMTrak includes both free.
+    </p>
+    ${section('Score Distribution')}
+    ${table(['Segment', 'Members', '% of Total', 'Recommended Action'],
+      [['Champions (90-100)', '420', '8.4%', 'Recognize + ask for referrals + TIPAC engagement'],
+       ['Engaged (70-89)', '1,850', '37.1%', 'Maintain with regular content + event invitations'],
+       ['At Risk (50-69)', '1,520', '30.4%', 'Targeted re-engagement + personal check-in'],
+       ['Disengaged (25-49)', '860', '17.2%', 'Win-back campaign + phone outreach'],
+       ['Gone Dark (0-24)', '344', '6.9%', 'Final notice → staff call → accept loss if no response']]
+    )}
+    ${insight('30.4% of members (1,520) are in the "At Risk" zone — they haven\'t fully disengaged but are trending down. This is the highest-ROI group for intervention. Moving just 20% of them back to "Engaged" would protect approximately $278K in annual dues revenue. The 344 "Gone Dark" members represent $62K at risk — these need immediate personal outreach.')}
+    ${section('Top Members by Lifetime Value')}
+    ${table(['Organization', 'Type', 'Score', '5-Year LTV', 'Trend', 'Risk'],
+      [['First American Title', 'ACU', '94', '$308,000', 'Stable', 'Low'],
+       ['Old Republic Title', 'ACU', '82', '$246,000', 'Stable', 'Low'],
+       ['Stewart Title', 'ACU', '58', '$184,662', 'Declining', 'High — needs CEO outreach'],
+       ['Commonwealth Land', 'ACA', '87', '$12,160', 'Rising', 'Low'],
+       ['Heritage Abstract', 'ACB', '8', '$1,551', 'Gone Dark', 'Critical — likely lost']]
+    )}
+    ${footer()}
+  `,
+
+  'Spam Pre-Check': () => `
+    ${header('Spam Pre-Check & Blacklist Report', `Email Content Analysis + Domain Reputation — ${new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`)}
+    <p style="font-size:12px;color:#2c3e50;line-height:1.8;margin-bottom:20px;">
+      Before sending any campaign, MEMTrak analyzes the email content for spam triggers, checks CAN-SPAM compliance, validates authentication records, and monitors 10 major email blacklists. GlockApps charges $59/month for similar testing. MEMTrak includes it free and runs it automatically before every send.
+    </p>
+    ${section('What MEMTrak Checks')}
+    ${table(['Check', 'What It Tests', 'Why It Matters'],
+      [['Subject Line Analysis', 'Length, ALL CAPS, multiple exclamation marks, dollar amounts', 'Bad subjects trigger Gmail/Outlook spam filters before the email is even opened'],
+       ['Trigger Word Detection', '20+ known spam words: "free", "act now", "guaranteed", etc.', 'ESPs score content against known spam vocabulary — too many triggers = junk folder'],
+       ['Link Density', 'Count of links in email body', 'More than 5 links in one email raises spam probability significantly'],
+       ['Image-to-Text Ratio', 'Number of images vs text content', 'Image-heavy emails with little text are a classic spam pattern'],
+       ['CAN-SPAM Compliance', 'Unsubscribe link present, physical address', 'Federal law requires both. Missing = fine risk + ISP blocking'],
+       ['Authentication', 'SPF, DKIM, DMARC status for alta.org', 'Unauthenticated emails are 10x more likely to land in spam']]
+    )}
+    ${section('Blacklist Status: alta.org')}
+    <p style="font-size:11px;color:#2c3e50;margin-bottom:12px;">All 10 monitored blacklists show <strong style="color:#8CC63F;">CLEAN</strong> status for alta.org. Being listed on even one blacklist can reduce deliverability by 20-40%.</p>
+    ${insight('alta.org has clean blacklist status across all 10 monitored databases. However, DMARC is set to "none" (monitoring only), which means someone could spoof @alta.org without rejection. Upgrading DMARC to "quarantine" is the single highest-impact deliverability improvement available right now.')}
+    ${footer()}
+  `,
+
+  'Automated Workflows': () => `
+    ${header('Automated Workflow Report', `Event-Triggered Email Sequences — Performance & ROI`)}
+    <p style="font-size:12px;color:#2c3e50;line-height:1.8;margin-bottom:20px;">
+      MEMTrak workflows automatically trigger multi-step email sequences when specific events occur — a member stops engaging, an email bounces, a new member hits Day 30, or a renewal date approaches. ActiveCampaign charges $186/month for workflow automation. HubSpot charges $890/month. MEMTrak includes 4 pre-built workflows free.
+    </p>
+    ${section('Active Workflows')}
+    ${table(['Workflow', 'Trigger', 'Enrolled', 'Converted', 'Rate', 'Revenue Protected'],
+      [['Engagement Decay Re-engagement', 'Score drops below 40', '344', '52', '15.1%', '$78,400'],
+       ['Hard Bounce Auto-Cleanup', 'Email bounces 2+ times', '265', '89', '33.6%', '$12,600'],
+       ['New Member 30-Day Check', 'Day 30 with score < 50', '42', '28', '66.7%', '$33,600'],
+       ['Renewal Countdown (Scheduled)', '90 days before renewal', '—', '—', '—', 'Est. $6.5M']]
+    )}
+    ${insight('The three active workflows have protected $124,600 in revenue this year with zero manual effort beyond initial setup. The New Member 30-Day Check has the highest conversion rate (66.7%) — early intervention is dramatically more effective than trying to win back fully disengaged members. The scheduled Renewal Countdown workflow is expected to process all 4,994 members starting in August.')}
+    ${footer()}
+  `,
+
+  'Content Performance': () => `
+    ${header('Content Performance Report', `Subject Lines, CTAs & Send Timing Analysis`)}
+    <p style="font-size:12px;color:#2c3e50;line-height:1.8;margin-bottom:20px;">
+      MEMTrak analyzes every email element to determine what drives engagement: which subject line words get more opens, which CTAs get more clicks, and what time of day works best. HubSpot charges $890/month for AI content analysis. MEMTrak provides it automatically from your tracking data.
+    </p>
+    ${section('Subject Line Insights')}
+    ${table(['Word/Phrase', 'Avg Open Rate', 'Times Used', 'Verdict'],
+      [['Welcome', '82%', '3', 'Excellent — highest-performing word'],
+       ['Your', '58%', '12', 'Excellent — personalization works'],
+       ['Don\'t Miss', '45%', '5', 'Good — FOMO framing effective'],
+       ['Action Required', '35%', '4', 'Strong — urgency drives action'],
+       ['Reminder', '38%', '8', 'Average — overused'],
+       ['Important', '27%', '6', 'Weak — too generic, gets ignored'],
+       ['Free', '22%', '2', 'Spam risk — triggers filters']]
+    )}
+    ${section('CTA Performance')}
+    ${table(['Call-to-Action', 'Click Rate', 'Recommendation'],
+      [['Renew Your Membership', '39.2%', 'Best performer — specific + actionable'],
+       ['RSVP Today', '18.7%', 'Good — urgency + clarity'],
+       ['Register Now', '16.3%', 'Good for events'],
+       ['Download Report', '12.8%', 'Moderate — works for content offers'],
+       ['View Your Status', '8.3%', 'Below average — too vague'],
+       ['Learn More', '5.1%', 'Weakest — replace everywhere with specific CTAs']]
+    )}
+    ${insight('"Renew Your Membership" gets 8x more clicks than "Learn More." The data is clear: specific, action-oriented CTAs dramatically outperform generic ones. If ALTA replaced every "Learn More" button with a specific action verb, click rates could improve by 50-100% across all campaigns.')}
+    ${footer()}
+  `,
+
+  'Privacy-First Metrics': () => `
+    ${header('Privacy-First Metrics Report', `Post-Apple MPP Analytics — What Metrics You Can Actually Trust`)}
+    <p style="font-size:12px;color:#2c3e50;line-height:1.8;margin-bottom:20px;">
+      Since Apple launched Mail Privacy Protection (MPP) in 2021, open rates have been inflated by 30-40% because Apple pre-fetches ALL tracking pixels regardless of whether the recipient reads the email. This means the "open rate" that most ESPs report is fiction. MEMTrak addresses this by prioritizing metrics that cannot be faked — clicks, conversions, and confirmed receipts.
+    </p>
+    ${section('The Open Rate Problem')}
+    ${kpiRow([
+      { label: 'Reported Open Rate', value: '<s>42.3%</s>', context: 'Includes machine-generated opens from Apple MPP. NOT a real engagement metric.' },
+      { label: 'Estimated Real Opens', value: '29.6%', context: 'Adjusted for ~30% MPP inflation. Closer to reality but still imprecise.' },
+      { label: 'Click Rate (TRUE)', value: '14.0%', context: 'Recipients who clicked a link. 100% reliable — no email client can fake this.' },
+      { label: 'Conversion Rate (TRUE)', value: '5.8%', context: 'Email led to action (renewal, registration, purchase). The gold standard.' },
+    ])}
+    ${section('Metric Reliability Ranking')}
+    ${table(['Metric', 'Reliability', 'Use As Primary KPI?', 'Why'],
+      [['Conversion Rate', '100%', 'YES', 'Someone took a real action — renewed, registered, paid'],
+       ['Click Rate', '100%', 'YES', 'They clicked a link — no client blocks this'],
+       ['Confirmed Receipt', '100%', 'YES', 'MEMTrak exclusive — explicit confirmation'],
+       ['Logo Tracker', '85%', 'Secondary', 'Less affected by MPP than invisible pixels'],
+       ['Pixel Open Rate', '60%', 'NO', 'Inflated by Apple MPP, blocked by corporate Outlook'],
+       ['Reported Open Rate', '45%', 'NO', 'What most ESPs show — includes machine opens']]
+    )}
+    ${insight('MEMTrak is one of the only platforms that explicitly acknowledges the post-MPP reality and provides adjusted metrics. Most ESPs still report inflated open rates because it makes their performance look better. MEMTrak tells the truth: if your real engagement is 14% CTR and 5.8% conversion rate, that\'s what you should be optimizing against — not a fictional 42% open rate.')}
+    ${footer()}
+  `,
 };
 
 export function memtrakPrint(title: string) {

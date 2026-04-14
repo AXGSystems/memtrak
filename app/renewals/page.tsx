@@ -2,6 +2,7 @@
 
 import ClientChart from '@/components/ClientChart';
 import { exportCSV } from '@/lib/export-utils';
+import { memtrakPrint } from '@/lib/print';
 import { Download, Calendar, Users, DollarSign, Printer } from 'lucide-react';
 
 const C = { navy: '#1B3A5C', blue: '#4A90D9', green: '#8CC63F', red: '#D94A4A', orange: '#E8923F' };

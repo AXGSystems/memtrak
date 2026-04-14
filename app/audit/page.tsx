@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { CheckCircle, XCircle, AlertTriangle, HelpCircle, Printer } from 'lucide-react';
+import { CheckCircle, XCircle, AlertTriangle, HelpCircle } from 'lucide-react';
 
 type Answer = 'yes' | 'no' | 'partial' | 'unknown' | '';
 const questions = [

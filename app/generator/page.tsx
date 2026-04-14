@@ -31,6 +31,10 @@ export default function Generator() {
 
       {codes.length > 0 && (
         <div className="space-y-3">
+          {/* Batch copy all */}
+          <button onClick={() => { const all = codes.map(c => `--- ${c.label} ---\n${c.code}`).join('\n\n'); navigator.clipboard.writeText(all); copy('_batch_', 'all'); }} className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all" style={{ background: 'var(--accent)', color: 'white' }}>
+            {copied === 'all' ? <><CheckCircle className="w-4 h-4" /> All Codes Copied!</> : <><Copy className="w-4 h-4" /> Copy All Tracking Codes at Once</>}
+          </button>
           {codes.map(item => (
             <div key={item.key} className={`p-4 rounded-xl ${'hi' in item ? 'bg-[#8CC63F]/10 border-2 border-[#8CC63F]/30' : 'bg-[var(--card)] border border-[var(--card-border)]'}`}>
               <div className="flex items-center justify-between mb-2">

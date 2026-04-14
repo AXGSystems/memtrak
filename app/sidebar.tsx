@@ -135,7 +135,7 @@ export default function Sidebar() {
       <div className="px-4 py-2 border-t flex-shrink-0" style={{ borderColor: 'var(--card-border)' }}>
         <div className="flex items-center gap-2 text-[10px]">
           <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: 'var(--accent)' }} />
-          <span style={{ color: 'var(--text-muted)' }}>20 pages · 13 APIs</span>
+          <span style={{ color: 'var(--text-muted)' }}>26 pages · 14 APIs</span>
         </div>
       </div>
     </aside>

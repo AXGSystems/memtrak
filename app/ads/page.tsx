@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import ClientChart from '@/components/ClientChart';
 import { exportCSV } from '@/lib/export-utils';
-import { BarChart3, Eye, MousePointerClick, DollarSign, Download, Calendar, Target, Printer } from 'lucide-react';
+import { BarChart3, Eye, MousePointerClick, DollarSign, Download, Calendar, Target } from 'lucide-react';
 
 const C = { navy: '#1B3A5C', blue: '#4A90D9', green: '#8CC63F', red: '#D94A4A', orange: '#E8923F' };
 
@@ -59,7 +59,7 @@ export default function AdsOverview() {
       </div>
 
       {/* KPIs */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-6 stagger-children">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-6 stagger-children stagger-children">
         {[
           { label: 'Impressions', value: (totalImpressions / 1e6).toFixed(1) + 'M', icon: Eye, color: C.navy },
           { label: 'Clicks', value: (totalClicks / 1000).toFixed(1) + 'K', icon: MousePointerClick, color: C.blue },

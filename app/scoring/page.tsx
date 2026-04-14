@@ -45,7 +45,7 @@ export default function Scoring() {
       <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>Per-member composite scoring + predicted lifetime revenue — what ActiveCampaign and Klaviyo charge $300+/mo for. MEMTrak does it for free.</p>
 
       {/* Score Distribution */}
-      <div className="grid grid-cols-5 gap-3 mb-6 stagger-children">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-6 stagger-children">
         {scoreDistribution.map(d => (
           <div key={d.range} className="rounded-xl border p-4 text-center" style={{ background: 'var(--card)', borderColor: 'var(--card-border)' }}>
             <div className="text-2xl font-extrabold" style={{ color: d.color }}>{d.count.toLocaleString()}</div>

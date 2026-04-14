@@ -1,6 +1,6 @@
 'use client';
 
-import { CheckCircle, Circle, ArrowRight, Printer, Zap } from 'lucide-react';
+import { CheckCircle, Circle, ArrowRight, Zap } from 'lucide-react';
 
 const phases = [
   { n: 1, title: 'Manual Logging', time: 'Complete', cost: '$0', status: 'Complete' as const, desc: 'Staff log every outreach in MEMTrak Communication Log.', gain: 'Baseline visibility: who sent what to whom' },
