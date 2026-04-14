@@ -33,6 +33,8 @@ const sections = [
       { label: 'Deliverability', href: '/deliverability', icon: Activity },
       { label: 'Spam Pre-Check', href: '/spam-check', icon: ShieldCheck },
       { label: 'Workflows', href: '/workflows', icon: Workflow },
+      { label: 'Content Analysis', href: '/content-analysis', icon: BarChart3 },
+      { label: 'Privacy Metrics', href: '/privacy-metrics', icon: Shield },
     ]
   },
   {

@@ -24,6 +24,8 @@ const pageNames: Record<string, string> = {
   '/scoring': 'Engagement Scoring & LTV',
   '/spam-check': 'Spam Pre-Check',
   '/workflows': 'Automated Workflows',
+  '/content-analysis': 'Content Performance',
+  '/privacy-metrics': 'Privacy-First Metrics',
   '/briefing': 'Email Briefing',
   '/ads': 'Ad Dashboard',
   '/ads/inventory': 'Ad Inventory',
