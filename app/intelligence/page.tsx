@@ -12,7 +12,7 @@ export default function Intelligence() {
       <h1 className="text-lg font-extrabold text-white mb-6">Intelligence</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <Card className="p-5 border-l-4 border-l-red-500">
+        <Card title="Engagement Decay Alerts" subtitle="Members going dark" accent="#D94A4A" detailTitle="Decay Analysis" detailContent={<div><p className="text-xs" style={{ color: "var(--text-muted)" }}>Members whose email open rate has dropped significantly. A decay score of 70+ typically predicts non-renewal within 3-6 months. Total revenue at risk from decaying members: ${demoDecayAlerts.filter(d => d.decay >= 50).reduce((s: number, d: {revenue: number}) => s + d.revenue, 0).toLocaleString()}.</p></div>}>
           <h3 className="text-xs font-bold text-white mb-3">Engagement Decay Alerts</h3>
           <p className="text-[10px] text-white/40 mb-3">Members going dark — early churn warning. ${demoDecayAlerts.filter(d => d.decay >= 50).reduce((s, d) => s + d.revenue, 0).toLocaleString()} revenue at risk.</p>
           <div className="space-y-2">
@@ -28,7 +28,7 @@ export default function Intelligence() {
           </div>
         </Card>
 
-        <Card className="p-5 border-l-4 border-l-amber-500">
+        <Card title="Predictive Churn Scores" subtitle="AI-scored non-renewal risk" accent="#E8923F" detailTitle="Churn Prediction" detailContent={<div><p className="text-xs" style={{ color: "var(--text-muted)" }}>MEMTrak combines email engagement, event attendance, payment behavior, and member type to predict churn. ACU members are weighted 50x due to revenue impact. Scores above 70 predict non-renewal.</p></div>}>
           <h3 className="text-xs font-bold text-white mb-3">Predictive Churn Scores</h3>
           <p className="text-[10px] text-white/40 mb-3">AI-scored non-renewal probability with recommended actions.</p>
           <div className="space-y-2">

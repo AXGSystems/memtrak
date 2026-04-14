@@ -53,15 +53,13 @@ export default function Deliverability() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <Card className="p-5">
-          <h3 className="text-xs font-bold text-white mb-3">7-Month Trend</h3>
+        <Card title="7-Month Trend" subtitle="Delivery rate and open rate over time" detailTitle="Trend Analysis" detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>Delivery rate dipped to 95.4% in December (holiday bounces) but recovered to 96.2%. The upward trend in open rates (32% → 40%) suggests improving list quality and content relevance. Target: maintain delivery above 96% and open rates above 35%.</p></div>}>
           <ClientChart type="line" height={240} data={{ labels: trend.map(t => t.month), datasets: [
             { label: 'Delivery %', data: trend.map(t => t.delivery), borderColor: C.green, borderWidth: 2.5, fill: false, tension: 0.3, pointRadius: 4 },
             { label: 'Open %', data: trend.map(t => t.open), borderColor: C.blue, borderWidth: 2, fill: false, tension: 0.3, pointRadius: 4, borderDash: [5, 5] },
           ] }} options={{ plugins: { legend: { display: true, position: 'top' as const, labels: { color: '#8899aa', usePointStyle: true, padding: 16, font: { size: 10 } } }, datalabels: { display: false } }, scales: { y: { min: 30, max: 100, grid: { color: '#1e3350' }, ticks: { color: '#8899aa', callback: (v: number) => v + '%' } }, x: { grid: { display: false }, ticks: { color: '#8899aa' } } } }} />
         </Card>
-        <Card className="p-5">
-          <h3 className="text-xs font-bold text-white mb-3">Bounce Breakdown</h3>
+        <Card title="Bounce Breakdown" subtitle="What's causing emails to fail?" detailTitle="Bounce Analysis" detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>59% of bounces are hard bounces (invalid mailbox + domain not found) — these should be permanently removed. 32% are soft bounces that may resolve. The 5% content-blocked bounces suggest some receiving servers are flagging ALTA emails as promotional — review subject lines for spam triggers.</p></div>}>
           <div className="space-y-3">
             {bounces.map(b => (
               <div key={b.reason}>
@@ -73,8 +71,7 @@ export default function Deliverability() {
         </Card>
       </div>
 
-      <Card className="p-5 mb-6">
-        <h3 className="text-xs font-bold text-white mb-3">Email Authentication (SPF / DKIM / DMARC)</h3>
+      <Card title="Email Authentication (SPF / DKIM / DMARC)" subtitle="Domain security for alta.org" className="mb-6" detailTitle="Authentication Explained" detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>SPF verifies alta.org servers are authorized to send. DKIM cryptographically signs messages. DMARC tells receiving servers what to do with failed messages. All three must pass for maximum deliverability. ALTA has SPF and DKIM configured correctly, but DMARC is in monitoring mode only — upgrading to "quarantine" would prevent spoofing and improve inbox placement.</p></div>}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {auth.map(a => (
             <div key={a.name} className="p-4 rounded-lg bg-white/5">

@@ -48,7 +48,7 @@ export default function Hygiene() {
       </div>
 
       {/* Doughnut — with better sizing */}
-      <Card className="p-5 mb-6">
+      <Card title="Address Health Distribution" subtitle="All 18,400 addresses categorized" className="mb-6" detailTitle="Health Analysis" detailContent={<div><p className="text-xs" style={{ color: "var(--text-muted)" }}>A clean list improves deliverability for everyone. Removing 900 invalid+bounced addresses and re-engaging 15% of stale addresses could improve delivery rate from 96.2% to 98.8% — meaning 480 more emails reaching inboxes per campaign.</p></div>}>
         <h3 className="text-xs font-bold text-white mb-1">Address Health Distribution</h3>
         <p className="text-[10px] text-white/40 mb-3">{h.total.toLocaleString()} total addresses in the system</p>
         <div className="max-w-md mx-auto">
@@ -57,7 +57,7 @@ export default function Hygiene() {
       </Card>
 
       {/* Improvement projection */}
-      <Card className="p-5 mb-6">
+      <Card title="Address Health Distribution" subtitle="All 18,400 addresses categorized" className="mb-6" detailTitle="Health Analysis" detailContent={<div><p className="text-xs" style={{ color: "var(--text-muted)" }}>A clean list improves deliverability for everyone. Removing 900 invalid+bounced addresses and re-engaging 15% of stale addresses could improve delivery rate from 96.2% to 98.8% — meaning 480 more emails reaching inboxes per campaign.</p></div>}>
         <h3 className="text-xs font-bold text-white mb-3">Delivery Rate Projection</h3>
         <ClientChart type="bar" height={200} data={{
           labels: ['Current', 'After Invalid Removal', 'After Bounce Cleanup', 'After Re-engagement', 'Target'],
