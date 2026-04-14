@@ -462,106 +462,163 @@ export default function DailyBriefing() {
           ─────────────────────────────────────────────────────── */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Next Campaign Countdown */}
-        <div
-          className="rounded-2xl border p-6 flex flex-col items-center justify-center"
-          style={{
-            background: 'var(--card)',
-            borderColor: 'var(--card-border)',
-            boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-          }}
-        >
-          <CountdownClock
-            targetDate="2026-05-05T09:00:00"
-            label="Next Campaign — PFL May Wave 1"
-            color={C.blue}
-            size="sm"
-            startDate="2026-04-09"
-          />
-        </div>
+        <Card glass title="Next Campaign" subtitle="PFL Compliance — May Wave 1 (Illinois Focus)" detailTitle="PFL May Wave 1 — Campaign Details" detailContent={
+          <div className="space-y-3">
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Illinois-focused PFL compliance notice targeting 1,029 non-compliant organizations. This is the third wave in the 2026 PFL compliance series.</p>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}><div className="text-[9px] uppercase" style={{ color: 'var(--text-muted)' }}>Recipients</div><div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>1,029</div></div>
+              <div className="p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}><div className="text-[9px] uppercase" style={{ color: 'var(--text-muted)' }}>Expected Open Rate</div><div className="text-lg font-extrabold" style={{ color: C.green }}>29.9%</div></div>
+              <div className="p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}><div className="text-[9px] uppercase" style={{ color: 'var(--text-muted)' }}>Template</div><div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>PFL Compliance Notice</div></div>
+              <div className="p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}><div className="text-[9px] uppercase" style={{ color: 'var(--text-muted)' }}>From</div><div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>licensing@alta.org</div></div>
+            </div>
+            <div className="p-3 rounded-lg border-l-2" style={{ background: 'var(--input-bg)', borderColor: C.orange }}>
+              <div className="text-xs font-bold" style={{ color: C.orange }}>Pre-Send Checklist</div>
+              <div className="text-[10px] mt-1 space-y-1" style={{ color: 'var(--text-muted)' }}>
+                <div>&#10003; Subject line A/B test completed (urgency framing won +29.6%)</div>
+                <div>&#10003; Bounce list cleaned April 12</div>
+                <div>&#9744; Final content review pending — Taylor Spolidoro</div>
+                <div>&#9744; Illinois suppression list updated</div>
+              </div>
+            </div>
+            <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Previous waves: Wave 1 (Feb) — 29.9% open, Wave 2 (Mar) — 27.0% open. Urgency subject line expected to lift Wave 3 to ~35%.</div>
+          </div>
+        }>
+          <div className="flex flex-col items-center">
+            <CountdownClock
+              targetDate="2026-05-05T09:00:00"
+              label=""
+              color={C.blue}
+              size="sm"
+              startDate="2026-04-09"
+            />
+            <div className="mt-3 w-full space-y-2">
+              <div className="flex justify-between text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                <span>1,029 recipients</span>
+                <span>licensing@alta.org</span>
+              </div>
+              <div className="flex justify-between text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                <span>Expected: ~29.9% open rate</span>
+                <span>A/B tested &#10003;</span>
+              </div>
+              <MiniBar value={30} color={C.blue} />
+            </div>
+          </div>
+        </Card>
 
         {/* Renewal Season Countdown */}
-        <div
-          className="rounded-2xl border p-6 flex flex-col items-center justify-center"
-          style={{
-            background: 'var(--card)',
-            borderColor: 'var(--card-border)',
-            boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-          }}
-        >
-          <CountdownClock
-            targetDate="2026-08-01T00:00:00"
-            label="Renewal Season Begins"
-            color={C.orange}
-            size="sm"
-            startDate="2026-01-01"
-          />
-        </div>
+        <Card glass title="Renewal Season" subtitle="4,994 members · Aug 1 – Dec 31, 2026" detailTitle="Renewal Season Plan" detailContent={
+          <div className="space-y-3">
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Annual membership renewal campaign targeting all 4,994 active members across 7 membership types. Projected revenue: $4.2M at 84% renewal rate.</p>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}><div className="text-[9px] uppercase" style={{ color: 'var(--text-muted)' }}>Members to Renew</div><div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>4,994</div></div>
+              <div className="p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}><div className="text-[9px] uppercase" style={{ color: 'var(--text-muted)' }}>Projected Revenue</div><div className="text-lg font-extrabold" style={{ color: C.green }}>$4.2M</div></div>
+              <div className="p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}><div className="text-[9px] uppercase" style={{ color: 'var(--text-muted)' }}>Target Renewal Rate</div><div className="text-lg font-extrabold" style={{ color: C.green }}>84.3%</div></div>
+              <div className="p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}><div className="text-[9px] uppercase" style={{ color: 'var(--text-muted)' }}>ACU White-Glove (40)</div><div className="text-lg font-extrabold" style={{ color: C.orange }}>$2.4M</div></div>
+            </div>
+            <div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>Outreach Timeline</div>
+            {[
+              { month: 'Aug', action: 'Pre-renewal awareness — early bird messaging' },
+              { month: 'Sep', action: 'Renewal notice #1 — standard renewal email' },
+              { month: 'Oct', action: 'ACU CEO personal calls + reminder #2' },
+              { month: 'Nov', action: 'Final notice — urgency messaging' },
+              { month: 'Dec', action: 'Lapsed member re-engagement' },
+            ].map(t => (
+              <div key={t.month} className="flex items-center gap-3 p-2 rounded" style={{ background: 'var(--input-bg)' }}>
+                <span className="text-xs font-bold w-8" style={{ color: C.orange }}>{t.month}</span>
+                <span className="text-[10px]" style={{ color: 'var(--heading)' }}>{t.action}</span>
+              </div>
+            ))}
+          </div>
+        }>
+          <div className="flex flex-col items-center">
+            <CountdownClock
+              targetDate="2026-08-01T00:00:00"
+              label=""
+              color={C.orange}
+              size="sm"
+              startDate="2026-01-01"
+            />
+            <div className="mt-3 w-full space-y-2">
+              <div className="flex justify-between text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                <span>4,994 members</span>
+                <span>$4.2M projected</span>
+              </div>
+              <div className="flex justify-between text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                <span>84.3% target renewal rate</span>
+                <span>6-email sequence</span>
+              </div>
+              <MiniBar value={49} color={C.orange} />
+            </div>
+          </div>
+        </Card>
 
         {/* Campaigns in Flight */}
-        <div
-          className="rounded-2xl border p-6"
-          style={{
-            background: 'var(--card)',
-            borderColor: 'var(--card-border)',
-            boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-          }}
-        >
-          <div className="flex items-center gap-2 mb-4">
-            <div
-              className="w-7 h-7 rounded-lg flex items-center justify-center"
-              style={{ background: 'color-mix(in srgb, var(--accent) 15%, transparent)' }}
-            >
-              <Radio className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
-            </div>
-            <span className="text-[10px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>
-              Campaigns in Flight
-            </span>
-          </div>
+        <Card glass title="Campaigns in Flight" subtitle="Real-time pipeline status" detailTitle="All Campaigns — Pipeline View" detailContent={
           <div className="space-y-3">
-            {/* Active */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="relative flex h-2 w-2">
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>All campaigns across MEMTrak, Higher Logic, and Outlook — active, scheduled, and in draft.</p>
+            {demoCampaigns.map(c => (
+              <div key={c.id} className="flex items-center justify-between p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
+                <div>
+                  <div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{c.name}</div>
+                  <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{c.source} · {c.sentDate || 'No date'} · {c.listSize.toLocaleString()} recipients</div>
+                </div>
+                <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold ${c.status === 'Sent' ? 'bg-green-500/20 text-green-400' : c.status === 'Scheduled' ? 'bg-blue-500/20 text-blue-400' : ''}`} style={c.status === 'Draft' ? { background: 'var(--input-bg)', color: 'var(--text-muted)' } : undefined}>{c.status}</span>
+              </div>
+            ))}
+          </div>
+        }>
+          <div className="space-y-3">
+            {/* Active row */}
+            <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
+              <div className="flex items-center gap-2.5">
+                <span className="relative flex h-2.5 w-2.5">
                   <span className="absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: C.green, animation: 'livePulse 2s ease-in-out infinite' }} />
-                  <span className="relative inline-flex rounded-full h-2 w-2" style={{ background: C.green }} />
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5" style={{ background: C.green }} />
                 </span>
-                <span className="text-xs font-semibold" style={{ color: 'var(--heading)' }}>Active</span>
+                <div>
+                  <div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>Active</div>
+                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Sent & tracking</div>
+                </div>
               </div>
-              <span className="text-xl font-extrabold" style={{ color: C.green }}>
-                <AnimatedCounter value={totals.campaignCount} duration={1200} />
-              </span>
+              <span className="text-2xl font-extrabold" style={{ color: C.green }}>{totals.campaignCount}</span>
             </div>
-            {/* Scheduled */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="flex h-2 w-2 rounded-full" style={{ background: C.blue }} />
-                <span className="text-xs font-semibold" style={{ color: 'var(--heading)' }}>Scheduled</span>
+            {/* Scheduled row */}
+            <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
+              <div className="flex items-center gap-2.5">
+                <span className="flex h-2.5 w-2.5 rounded-full" style={{ background: C.blue }} />
+                <div>
+                  <div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>Scheduled</div>
+                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Queued for send</div>
+                </div>
               </div>
-              <span className="text-xl font-extrabold" style={{ color: C.blue }}>
-                <AnimatedCounter value={totals.scheduled} duration={1200} />
-              </span>
+              <span className="text-2xl font-extrabold" style={{ color: C.blue }}>{totals.scheduled}</span>
             </div>
-            {/* Draft */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="flex h-2 w-2 rounded-full" style={{ background: 'var(--text-muted)' }} />
-                <span className="text-xs font-semibold" style={{ color: 'var(--heading)' }}>Drafts</span>
+            {/* Draft row */}
+            <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
+              <div className="flex items-center gap-2.5">
+                <span className="flex h-2.5 w-2.5 rounded-full" style={{ background: 'var(--text-muted)' }} />
+                <div>
+                  <div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>Drafts</div>
+                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>In progress</div>
+                </div>
               </div>
-              <span className="text-xl font-extrabold" style={{ color: 'var(--text-muted)' }}>
-                <AnimatedCounter value={totals.drafts} duration={1200} />
-              </span>
+              <span className="text-2xl font-extrabold" style={{ color: 'var(--text-muted)' }}>{totals.drafts}</span>
             </div>
-            {/* Divider */}
-            <div className="pt-2" style={{ borderTop: '1px solid var(--card-border)' }}>
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Total Pipeline</span>
-                <span className="text-xl font-extrabold" style={{ color: 'var(--heading)' }}>
-                  <AnimatedCounter value={demoCampaigns.length} duration={1200} />
-                </span>
+            {/* Total + recent activity */}
+            <div className="pt-3" style={{ borderTop: '1px solid var(--card-border)' }}>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Total Pipeline</span>
+                <span className="text-xl font-extrabold" style={{ color: 'var(--heading)' }}>{demoCampaigns.length}</span>
+              </div>
+              <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                Latest: <span style={{ color: 'var(--heading)' }}>{sentCampaigns[0]?.name}</span> · {sentCampaigns[0]?.sentDate}
+              </div>
+              <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                Next: <span style={{ color: C.blue }}>{nextCampaign?.name}</span> · {nextCampaign?.sentDate}
               </div>
             </div>
           </div>
-        </div>
+        </Card>
       </section>
 
       {/* ───────────────────────────────────────────────────────
