@@ -218,9 +218,9 @@ export default function DailyBriefing() {
         <div className="relative mb-10">
           <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight leading-snug" style={{ minHeight: '2.4em' }}>
             <Typewriter
-              text={`${greeting}, membership team. Here's your intelligence briefing for ${todayStr}.`}
-              speed={30}
-              delay={400}
+              text={`${greeting}, Von. ${totals.campaignCount} campaigns tracked, ${openRate}% open rate, $${(totals.totalRevenue / 1000).toFixed(0)}K attributed revenue. ${demoDecayAlerts.filter(d => d.decay >= 50).length} members need attention.`}
+              speed={25}
+              delay={300}
               onComplete={() => setTypewriterDone(true)}
             />
           </h1>
@@ -228,7 +228,7 @@ export default function DailyBriefing() {
             className="text-[11px] mt-2 transition-opacity duration-700"
             style={{ color: 'var(--text-muted)', opacity: typewriterDone ? 1 : 0 }}
           >
-            MEMTrak Daily Intelligence — All channels, one view
+            {todayStr} — MEMTrak Intelligence · {totals.totalSent.toLocaleString()} emails tracked across MEMTrak, Higher Logic, and Outlook
           </p>
         </div>
 
@@ -577,6 +577,15 @@ export default function DailyBriefing() {
           sparkColor={C.blue}
           trend={{ value: delta(mSent), label: 'vs last month' }}
           sub={`${totals.campaignCount} campaigns`}
+          detail={<div className="space-y-2">
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Total emails sent across all platforms this month.</p>
+            {sentCampaigns.slice(0, 6).map(c => (
+              <div key={c.id} className="flex justify-between items-center p-2.5 rounded-lg" style={{ background: 'var(--input-bg)' }}>
+                <div><div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{c.name}</div><div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{c.source} · {c.sentDate}</div></div>
+                <span className="text-sm font-extrabold" style={{ color: C.blue }}>{c.listSize.toLocaleString()}</span>
+              </div>
+            ))}
+          </div>}
         />
         <SparkKpi
           label="Delivered"
@@ -587,6 +596,17 @@ export default function DailyBriefing() {
           sparkColor={C.blue}
           trend={{ value: delta(mDeliv), label: 'vs last month' }}
           sub={`${((totals.totalDelivered / totals.totalSent) * 100).toFixed(1)}% delivery rate`}
+          detail={<div className="space-y-3">
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Emails that reached the recipient's mail server. Target: 98%+.</p>
+            <div className="p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
+              <div className="flex justify-between text-xs mb-1"><span style={{ color: 'var(--heading)' }}>Delivery Rate</span><span className="font-bold" style={{ color: C.green }}>{((totals.totalDelivered / totals.totalSent) * 100).toFixed(1)}%</span></div>
+              <MiniBar value={totals.totalDelivered} max={totals.totalSent} color={C.green} />
+            </div>
+            <div className="p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
+              <div className="flex justify-between text-xs"><span style={{ color: 'var(--heading)' }}>Failed to deliver</span><span className="font-bold" style={{ color: C.red }}>{(totals.totalSent - totals.totalDelivered).toLocaleString()}</span></div>
+              <div className="text-[10px] mt-1" style={{ color: 'var(--text-muted)' }}>Hard bounces, invalid addresses, and blocks</div>
+            </div>
+          </div>}
         />
         <SparkKpi
           label="Open Rate"
@@ -597,6 +617,20 @@ export default function DailyBriefing() {
           sparkColor={parseFloat(openRate) >= 35 ? C.green : C.orange}
           trend={{ value: delta(mOpenRates), label: 'vs last month' }}
           sub="Industry avg: 25-35%"
+          detail={<div className="space-y-3">
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Percentage of delivered emails opened. ALTA exceeds the association industry average of 25-35%.</p>
+            <div className="p-3 rounded-lg border-l-2" style={{ background: 'var(--input-bg)', borderColor: C.orange }}>
+              <div className="text-xs font-bold" style={{ color: C.orange }}>Apple MPP Warning</div>
+              <div className="text-[10px] mt-1" style={{ color: 'var(--text-muted)' }}>Apple Mail Privacy Protection inflates open rates by ~30%. True open rate is likely ~{(parseFloat(openRate) * 0.7).toFixed(1)}%. Use click rate as the more reliable engagement metric.</div>
+            </div>
+            <div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>Monthly Trend</div>
+            {demoMonthly.map(m => (
+              <div key={m.month} className="flex items-center justify-between text-xs p-2 rounded" style={{ background: 'var(--input-bg)' }}>
+                <span style={{ color: 'var(--heading)' }}>{m.month}</span>
+                <div className="flex items-center gap-2"><MiniBar value={m.opened / m.delivered * 100} color={C.green} /><span className="font-bold w-12 text-right" style={{ color: C.green }}>{(m.opened / m.delivered * 100).toFixed(1)}%</span></div>
+              </div>
+            ))}
+          </div>}
         />
         <SparkKpi
           label="Click Rate"
@@ -607,6 +641,19 @@ export default function DailyBriefing() {
           sparkColor={C.green}
           trend={{ value: delta(mClicked), label: 'vs last month' }}
           sub="100% reliable metric"
+          detail={<div className="space-y-3">
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Percentage of delivered emails where a recipient clicked a link. This is MEMTrak's primary engagement metric — it cannot be inflated by Apple MPP or blocked by corporate Outlook.</p>
+            <div className="p-3 rounded-lg" style={{ background: 'color-mix(in srgb, ' + C.green + ' 10%, transparent)' }}>
+              <div className="text-xs font-bold" style={{ color: C.green }}>ALTA's {clickRate}% CTR is 3x the industry average of 3-5%</div>
+            </div>
+            <div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>Top Clicked Campaigns</div>
+            {sentCampaigns.filter(c => c.clicked > 0).sort((a, b) => b.clicked - a.clicked).slice(0, 4).map(c => (
+              <div key={c.id} className="flex justify-between text-xs p-2 rounded" style={{ background: 'var(--input-bg)' }}>
+                <span style={{ color: 'var(--heading)' }}>{c.name}</span>
+                <span className="font-bold" style={{ color: C.green }}>{c.clicked.toLocaleString()} clicks</span>
+              </div>
+            ))}
+          </div>}
         />
         <SparkKpi
           label="Bounce Rate"
@@ -617,6 +664,15 @@ export default function DailyBriefing() {
           sparkColor={parseFloat(bounceRate) > 3 ? C.red : C.green}
           trend={{ value: delta(mBounced), label: 'vs last month' }}
           sub={`${totals.totalBounced.toLocaleString()} addresses`}
+          detail={<div className="space-y-3">
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Percentage of sent emails that bounced. Industry recommendation: keep below 2%. Above 3% damages domain reputation.</p>
+            <div className="p-3 rounded-lg border-l-2" style={{ background: 'var(--input-bg)', borderColor: C.red }}>
+              <div className="text-xs font-bold" style={{ color: C.red }}>Action Required</div>
+              <div className="text-[10px] mt-1" style={{ color: 'var(--text-muted)' }}>Remove {totals.totalBounced.toLocaleString()} bounced addresses via Address Hygiene before the next send. Current rate ({bounceRate}%) is above the 2% threshold.</div>
+            </div>
+            <div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>Impact on Deliverability</div>
+            <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Google blocks senders above 0.3% complaint rate. Yahoo blocks above 0.3%. Each bounce is a negative signal to these providers affecting ALL future sends.</div>
+          </div>}
         />
         <SparkKpi
           label="Revenue"
@@ -627,6 +683,18 @@ export default function DailyBriefing() {
           sparkColor={C.green}
           trend={{ value: +((totals.totalRevenue - 340000) / 340000 * 100).toFixed(1), label: 'vs last month' }}
           sub="Attributed to email"
+          detail={<div className="space-y-3">
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Revenue directly attributed to email campaigns — renewals, PFL purchases, and event registrations within 14 days of an email send.</p>
+            {sentCampaigns.filter(c => c.revenue > 0).sort((a, b) => b.revenue - a.revenue).map(c => (
+              <div key={c.id} className="flex justify-between items-center p-2.5 rounded-lg" style={{ background: 'var(--input-bg)' }}>
+                <div><div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{c.name}</div><div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{c.type} · {c.sentDate}</div></div>
+                <span className="text-sm font-extrabold" style={{ color: C.green }}>${(c.revenue / 1000).toFixed(0)}K</span>
+              </div>
+            ))}
+            <div className="p-3 rounded-lg" style={{ background: 'color-mix(in srgb, ' + C.green + ' 10%, transparent)' }}>
+              <div className="text-xs font-bold" style={{ color: C.green }}>ROI: $36 for every $1 spent on MEMTrak</div>
+            </div>
+          </div>}
         />
         <SparkKpi
           label="Decay Alerts"
@@ -637,6 +705,18 @@ export default function DailyBriefing() {
           sparkColor={C.red}
           trend={{ value: 50, label: 'vs last month' }}
           sub={'$' + demoDecayAlerts.filter(d => d.decay >= 50).reduce((s, d) => s + d.revenue, 0).toLocaleString() + ' at risk'}
+          detail={<div className="space-y-3">
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Members whose engagement is declining — a leading indicator of non-renewal. Each alert represents revenue at risk.</p>
+            {demoDecayAlerts.filter(d => d.decay >= 50).map(d => (
+              <div key={d.email} className="p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
+                <div className="flex justify-between items-center">
+                  <div><div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{d.org}</div><div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{d.type} · Open rate: {d.historical}% → {d.recent}%</div></div>
+                  <span className="text-sm font-extrabold" style={{ color: C.red }}>${d.revenue.toLocaleString()}/yr</span>
+                </div>
+                <div className="mt-2"><MiniBar value={d.decay} color={C.red} /><div className="text-[9px] mt-1" style={{ color: 'var(--text-muted)' }}>{d.decay}% decay · Last open: {d.lastOpen}</div></div>
+              </div>
+            ))}
+          </div>}
         />
         <SparkKpi
           label="Active Workflows"
@@ -646,7 +726,21 @@ export default function DailyBriefing() {
           sparkData={[2, 3, 3, 4]}
           sparkColor={C.purple}
           trend={{ value: 33.3, label: 'vs last month' }}
-          sub="Welcome, Renewal, PFL, Advocacy"
+          sub="$124K revenue protected"
+          detail={<div className="space-y-3">
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Automated workflows running right now, handling engagement decay, bounce cleanup, new member onboarding, and renewal sequences.</p>
+            {[
+              { name: 'Decay Re-engagement', enrolled: 344, converted: 52, revenue: '$78K protected' },
+              { name: 'Bounce Auto-Cleanup', enrolled: 265, converted: 89, revenue: '$12K protected' },
+              { name: 'New Member 30-Day', enrolled: 42, converted: 28, revenue: '$34K protected' },
+              { name: 'Renewal Countdown', enrolled: 0, converted: 0, revenue: 'Starting Aug 1' },
+            ].map(w => (
+              <div key={w.name} className="flex justify-between items-center p-2.5 rounded-lg" style={{ background: 'var(--input-bg)' }}>
+                <div><div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{w.name}</div><div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{w.enrolled} enrolled · {w.converted} converted</div></div>
+                <span className="text-[10px] font-bold" style={{ color: C.purple }}>{w.revenue}</span>
+              </div>
+            ))}
+          </div>}
         />
       </section>
 
