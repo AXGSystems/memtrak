@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, ReactNode } from 'react';
-import { X, Maximize2, Printer } from 'lucide-react';
-import { memtrakPrint } from '@/lib/print';
+import { X, Maximize2 } from 'lucide-react';
 
 interface CardProps {
   children: ReactNode;
@@ -14,22 +13,35 @@ interface CardProps {
   detailTitle?: string;
   detailContent?: ReactNode;
   noPad?: boolean;
+  /** When true, disable the default glassmorphic background */
+  solid?: boolean;
 }
 
-export default function Card({ children, title, subtitle, className = '', glass = false, accent, detailTitle, detailContent, noPad }: CardProps) {
+export default function Card({ children, title, subtitle, className = '', glass = false, accent, detailTitle, detailContent, noPad, solid }: CardProps) {
   const [showDetail, setShowDetail] = useState(false);
+
+  const isGlass = glass || !solid;
 
   return (
     <>
       <div
-        className={`rounded-xl border transition-all duration-200 hover:translate-y-[-1px] ${glass ? 'backdrop-blur-md' : ''} ${className}`}
+        className={`rounded-xl border transition-all duration-200 ${detailContent ? 'cursor-pointer' : ''} ${className}`}
         style={{
-          background: glass ? 'rgba(255,255,255,0.03)' : 'var(--card)',
-          borderColor: glass ? 'rgba(255,255,255,0.08)' : 'var(--card-border)',
+          background: isGlass
+            ? 'rgba(255,255,255,0.03)'
+            : 'var(--card)',
+          borderColor: isGlass
+            ? 'rgba(255,255,255,0.08)'
+            : 'var(--card-border)',
           borderLeftWidth: accent ? '4px' : undefined,
           borderLeftColor: accent,
-          boxShadow: glass ? '0 4px 24px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.05)' : '0 2px 8px rgba(0,0,0,0.08)',
+          boxShadow: isGlass
+            ? '0 4px 24px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.04)'
+            : '0 2px 8px rgba(0,0,0,0.08)',
+          backdropFilter: isGlass ? 'blur(12px)' : undefined,
+          WebkitBackdropFilter: isGlass ? 'blur(12px)' : undefined,
         }}
+        onClick={detailContent ? () => setShowDetail(true) : undefined}
       >
         {(title || detailContent) && (
           <div className={`flex items-start justify-between ${noPad ? 'px-5 pt-4' : 'px-5 pt-4 pb-0'}`}>
@@ -39,7 +51,7 @@ export default function Card({ children, title, subtitle, className = '', glass 
             </div>
             {detailContent && (
               <button
-                onClick={() => setShowDetail(true)}
+                onClick={(e) => { e.stopPropagation(); setShowDetail(true); }}
                 className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold transition-all hover:scale-105 ml-3 flex-shrink-0"
                 style={{ color: 'var(--accent)', background: 'color-mix(in srgb, var(--accent) 10%, transparent)' }}
               >
@@ -56,23 +68,33 @@ export default function Card({ children, title, subtitle, className = '', glass 
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={() => setShowDetail(false)}>
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
           <div
-            className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl border"
+            className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl border print-modal"
             style={{
               background: 'var(--card)',
               borderColor: 'var(--card-border)',
               boxShadow: '0 25px 60px rgba(0,0,0,0.4)',
+              animation: 'scaleIn 0.2s ease-out',
             }}
             onClick={e => e.stopPropagation()}
           >
             {/* Modal header */}
-            <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b backdrop-blur-md" style={{ background: 'color-mix(in srgb, var(--card) 90%, transparent)', borderColor: 'var(--card-border)' }}>
+            <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b backdrop-blur-md no-print" style={{ background: 'color-mix(in srgb, var(--card) 90%, transparent)', borderColor: 'var(--card-border)' }}>
               <div>
                 <h2 className="text-base font-bold" style={{ color: 'var(--heading)' }}>{detailTitle || title}</h2>
                 {subtitle && <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{subtitle}</p>}
               </div>
-              <button onClick={() => setShowDetail(false)} className="p-1.5 rounded-lg transition-colors" style={{ color: 'var(--text-muted)' }}>
-                <X className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={(e) => { e.stopPropagation(); window.print(); }}
+                  className="px-2.5 py-1 rounded-lg text-[10px] font-semibold transition-all hover:scale-105"
+                  style={{ color: 'var(--accent)', background: 'color-mix(in srgb, var(--accent) 10%, transparent)' }}
+                >
+                  Print
+                </button>
+                <button onClick={() => setShowDetail(false)} className="p-1.5 rounded-lg transition-colors" style={{ color: 'var(--text-muted)' }}>
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
             </div>
             {/* Modal content */}
             <div className="p-6">{detailContent}</div>
@@ -98,11 +120,13 @@ export function KpiCard({ label, value, sub, icon: Icon, color, detail }: {
     <>
       <div
         onClick={detail ? () => setShowDetail(true) : undefined}
-        className={`rounded-xl border p-4 transition-all duration-200 hover:translate-y-[-2px] ${detail ? 'cursor-pointer' : ''}`}
+        className={`rounded-xl border p-4 transition-all duration-200 ${detail ? 'cursor-pointer' : ''}`}
         style={{
-          background: 'var(--card)',
-          borderColor: 'var(--card-border)',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+          background: 'rgba(255,255,255,0.03)',
+          borderColor: 'rgba(255,255,255,0.08)',
+          boxShadow: '0 4px 24px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.04)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
         }}
       >
         <div className="flex items-center justify-between mb-1">
@@ -111,16 +135,34 @@ export function KpiCard({ label, value, sub, icon: Icon, color, detail }: {
         </div>
         <div className="text-xl font-extrabold" style={{ color: color || 'var(--heading)' }}>{value}</div>
         {sub && <div className="text-[10px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{sub}</div>}
-        {detail && <div className="text-[9px] mt-1" style={{ color: 'var(--accent)' }}>Click for details →</div>}
+        {detail && <div className="text-[9px] mt-1 font-semibold" style={{ color: 'var(--accent)' }}>Click for details</div>}
       </div>
 
       {showDetail && detail && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={() => setShowDetail(false)}>
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-          <div className="relative w-full max-w-lg max-h-[80vh] overflow-y-auto rounded-2xl border p-6" style={{ background: 'var(--card)', borderColor: 'var(--card-border)', boxShadow: '0 25px 60px rgba(0,0,0,0.4)' }} onClick={e => e.stopPropagation()}>
+          <div
+            className="relative w-full max-w-lg max-h-[80vh] overflow-y-auto rounded-2xl border p-6 print-modal"
+            style={{
+              background: 'var(--card)',
+              borderColor: 'var(--card-border)',
+              boxShadow: '0 25px 60px rgba(0,0,0,0.4)',
+              animation: 'scaleIn 0.2s ease-out',
+            }}
+            onClick={e => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-bold" style={{ color: 'var(--heading)' }}>{label}</h3>
-              <button onClick={() => setShowDetail(false)} className="p-1 rounded-lg" style={{ color: 'var(--text-muted)' }}><X className="w-4 h-4" /></button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={(e) => { e.stopPropagation(); window.print(); }}
+                  className="px-2.5 py-1 rounded-lg text-[10px] font-semibold"
+                  style={{ color: 'var(--accent)', background: 'color-mix(in srgb, var(--accent) 10%, transparent)' }}
+                >
+                  Print
+                </button>
+                <button onClick={() => setShowDetail(false)} className="p-1 rounded-lg" style={{ color: 'var(--text-muted)' }}><X className="w-4 h-4" /></button>
+              </div>
             </div>
             <div className="text-3xl font-extrabold mb-4" style={{ color: color || 'var(--heading)' }}>{value}</div>
             {detail}

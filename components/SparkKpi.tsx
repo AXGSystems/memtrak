@@ -73,11 +73,13 @@ export default function SparkKpi({ label, value, sub, trend, sparkData, sparkCol
         onClick={detail ? () => setShowDetail(true) : undefined}
         className={`rounded-xl border transition-all duration-200 hover:translate-y-[-2px] ${detail ? 'cursor-pointer' : ''} ${size === 'lg' ? 'p-5' : size === 'sm' ? 'p-3' : 'p-4'}`}
         style={{
-          background: 'var(--card)',
-          borderColor: 'var(--card-border)',
+          background: 'rgba(255,255,255,0.03)',
+          borderColor: 'rgba(255,255,255,0.08)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
           borderTopWidth: accent ? '3px' : undefined,
           borderTopColor: accent ? (color || 'var(--accent)') : undefined,
-          boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+          boxShadow: '0 4px 24px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.04)',
         }}
       >
         {/* Top row: label + icon */}

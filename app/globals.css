@@ -226,6 +226,21 @@ tr { transition: background 0.15s ease; }
   body { background: white !important; color: #1B3A5C !important; }
   aside { display: none !important; }
   main { margin-left: 0 !important; }
+  /* When printing a modal, hide everything else and show only the modal */
+  .print-modal { position: static !important; max-height: none !important; overflow: visible !important; box-shadow: none !important; border: none !important; }
+}
+
+/* Modal scale-in animation */
+@keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Glassmorphic card light-theme adjustments */
+[data-theme="axg"] .rounded-xl,
+[data-theme="light"] .rounded-xl {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 /* ═══════════════════════════════════════════════════════════ */
