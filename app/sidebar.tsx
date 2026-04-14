@@ -30,6 +30,9 @@ const sections = [
   },
   {
     label: 'Intelligence', items: [
+      { label: 'Live Feed', href: '/live-feed', icon: Activity },
+      { label: 'Member Health', href: '/member-health', icon: Users },
+      { label: 'Campaign Compare', href: '/compare', icon: GitBranch },
       { label: 'Analytics', href: '/intelligence', icon: TrendingUp },
       { label: 'Engagement Scoring', href: '/scoring', icon: Star },
       { label: 'Member Journey', href: '/journey', icon: Users },
@@ -75,6 +78,7 @@ const sections = [
       { label: 'Email Audit', href: '/audit', icon: ClipboardCheck },
       { label: 'Tracking Roadmap', href: '/roadmap', icon: Map },
       { label: 'Security', href: '/security', icon: Lock },
+      { label: 'System Status', href: '/status', icon: Activity },
     ]
   },
 ];
@@ -153,7 +157,7 @@ export default function Sidebar() {
       <div className="px-4 py-2 border-t flex-shrink-0" style={{ borderColor: 'var(--card-border)' }}>
         <div className="flex items-center gap-2 text-[10px]">
           <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: 'var(--accent)' }} />
-          <span style={{ color: 'var(--text-muted)' }}>40+ pages · 15 APIs</span>
+          <span style={{ color: 'var(--text-muted)' }}>45+ pages · 15 APIs</span>
         </div>
       </div>
     </aside>
