@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
   // Serve the real logo
   const logo = await getLogo();
 
-  return new NextResponse(logo, {
+  return new NextResponse(new Uint8Array(logo), {
     status: 200,
     headers: {
       'Content-Type': 'image/png',
