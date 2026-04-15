@@ -141,324 +141,83 @@ export default function DailyBriefing() {
     <div className="space-y-6 pb-24">
 
       {/* ───────────────────────────────────────────────────────
-          1. HERO: Typewriter Welcome + Live Pulse
+          1. COMMAND BAR — compact, data-dense, one row
           ─────────────────────────────────────────────────────── */}
       <section
-        className="relative rounded-2xl overflow-hidden px-8 py-10"
+        className="relative rounded-2xl overflow-hidden"
         style={{
-          background: 'linear-gradient(135deg, color-mix(in srgb, var(--accent) 18%, var(--background)), color-mix(in srgb, var(--accent) 5%, var(--background)), var(--background))',
-          border: '1px solid color-mix(in srgb, var(--accent) 25%, transparent)',
+          background: 'linear-gradient(135deg, color-mix(in srgb, var(--accent) 14%, var(--background)), var(--background))',
+          border: '1px solid color-mix(in srgb, var(--accent) 20%, transparent)',
         }}
       >
-        {/* shimmer sweep */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background: 'linear-gradient(105deg, transparent 40%, color-mix(in srgb, var(--accent) 6%, transparent) 50%, transparent 60%)',
-            backgroundSize: '200% 100%',
-            animation: 'heroShimmer 6s ease-in-out infinite',
-          }}
-        />
+        {/* shimmer */}
+        <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(105deg, transparent 40%, color-mix(in srgb, var(--accent) 5%, transparent) 50%, transparent 60%)', backgroundSize: '200% 100%', animation: 'heroShimmer 6s ease-in-out infinite' }} />
 
-        {/* accent glow — top right */}
-        <div
-          className="absolute -top-20 -right-20 w-96 h-96 rounded-full opacity-15 blur-3xl pointer-events-none"
-          style={{ background: 'var(--accent)' }}
-        />
-        {/* accent glow — bottom left (subtle) */}
-        <div
-          className="absolute -bottom-32 -left-32 w-80 h-80 rounded-full opacity-8 blur-3xl pointer-events-none"
-          style={{ background: 'var(--accent)', opacity: 0.06 }}
-        />
-
-        {/* LIVE indicator */}
-        <div className="absolute top-5 right-6 flex items-center gap-2 no-print">
-          <span
-            className="relative flex h-2.5 w-2.5"
-          >
-            <span
-              className="absolute inline-flex h-full w-full rounded-full opacity-75"
-              style={{ background: C.green, animation: 'livePulse 2s ease-in-out infinite' }}
-            />
-            <span
-              className="relative inline-flex rounded-full h-2.5 w-2.5"
-              style={{ background: C.green }}
-            />
-          </span>
-          <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: C.green }}>Live</span>
-        </div>
-
-        {/* top bar: actions */}
-        <div className="relative flex items-start justify-between mb-6">
-          <div />
+        {/* Top strip: greeting + actions */}
+        <div className="relative flex items-center justify-between px-6 py-3" style={{ borderBottom: '1px solid color-mix(in srgb, var(--accent) 12%, transparent)' }}>
+          <div className="flex items-center gap-3">
+            <span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: C.green, animation: 'livePulse 2s ease-in-out infinite' }} /><span className="relative inline-flex rounded-full h-2 w-2" style={{ background: C.green }} /></span>
+            <h1 className="text-sm font-bold" style={{ color: 'var(--heading)' }}>
+              <Typewriter text={`${greeting}, Von — ${demoDecayAlerts.filter(d => d.decay >= 50).length} alerts, $${(totals.totalRevenue / 1000).toFixed(0)}K revenue, ${openRate}% open rate`} speed={20} delay={200} onComplete={() => setTypewriterDone(true)} />
+            </h1>
+          </div>
           <div className="flex items-center gap-2 no-print flex-shrink-0">
             <PageGuide pageId="dashboard" guide={dashGuide} />
-            <button
-              onClick={() => exportCSV(
-                ['Metric', 'Value'],
-                [['Sent', totals.totalSent], ['Open Rate', openRate + '%'], ['Click Rate', clickRate + '%'], ['Bounce Rate', bounceRate + '%'], ['Revenue', '$' + totals.totalRevenue], ['Campaigns', totals.campaignCount]],
-                'MEMTrak_Daily_Brief',
-              )}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-semibold border transition-all hover:scale-105"
-              style={{ color: 'var(--accent)', borderColor: 'var(--card-border)', background: 'color-mix(in srgb, var(--accent) 6%, transparent)' }}
-            >
-              <Download className="w-3 h-3" /> CSV
-            </button>
-            <button
-              onClick={() => memtrakPrint('daily')}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[10px] font-semibold border transition-all hover:scale-105"
-              style={{ color: 'var(--accent)', borderColor: 'var(--card-border)', background: 'color-mix(in srgb, var(--accent) 6%, transparent)' }}
-            >
-              <Printer className="w-3 h-3" /> Print
-            </button>
+            <button onClick={() => exportCSV(['Metric', 'Value'], [['Sent', totals.totalSent], ['Open Rate', openRate + '%'], ['Click Rate', clickRate + '%'], ['Revenue', '$' + totals.totalRevenue]], 'MEMTrak_Brief')} className="flex items-center gap-1 px-2 py-1 rounded-lg text-[9px] font-semibold border transition-all hover:scale-105" style={{ color: 'var(--accent)', borderColor: 'var(--card-border)', background: 'color-mix(in srgb, var(--accent) 6%, transparent)' }}><Download className="w-3 h-3" /> CSV</button>
+            <button onClick={() => memtrakPrint('daily')} className="flex items-center gap-1 px-2 py-1 rounded-lg text-[9px] font-semibold border transition-all hover:scale-105" style={{ color: 'var(--accent)', borderColor: 'var(--card-border)', background: 'color-mix(in srgb, var(--accent) 6%, transparent)' }}><Printer className="w-3 h-3" /> Print</button>
           </div>
         </div>
 
-        {/* Typewriter greeting */}
-        <div className="relative mb-10">
-          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight leading-snug" style={{ minHeight: '2.4em' }}>
-            <Typewriter
-              text={`${greeting}, Von. ${totals.campaignCount} campaigns tracked, ${openRate}% open rate, $${(totals.totalRevenue / 1000).toFixed(0)}K attributed revenue. ${demoDecayAlerts.filter(d => d.decay >= 50).length} members need attention.`}
-              speed={25}
-              delay={300}
-              onComplete={() => setTypewriterDone(true)}
-            />
-          </h1>
-          <p
-            className="text-[11px] mt-2 transition-opacity duration-700"
-            style={{ color: 'var(--text-muted)', opacity: typewriterDone ? 1 : 0 }}
-          >
-            {todayStr} — MEMTrak Intelligence · {totals.totalSent.toLocaleString()} emails tracked across MEMTrak, Higher Logic, and Outlook
-          </p>
-        </div>
-
-        {/* Hero metrics — fade/count in after typewriter */}
-        <div
-          className="relative grid grid-cols-1 md:grid-cols-3 gap-8 transition-all duration-1000"
-          style={{
-            opacity: heroVisible ? 1 : 0,
-            transform: heroVisible ? 'translateY(0)' : 'translateY(16px)',
-          }}
-        >
-          {/* Total Sent */}
-          <div>
-            <div className="text-[10px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>
-              Total Emails Sent
-            </div>
-            <div className="flex items-end gap-4">
-              <AnimatedCounter
-                value={totals.totalSent}
-                className="text-4xl md:text-5xl leading-none"
-                duration={2000}
-              />
-              <svg width="100" height="40" viewBox="0 0 100 40" className="flex-shrink-0 mb-1">
-                <defs>
-                  <linearGradient id="hero-spark-sent" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={C.blue} stopOpacity="0.3" />
-                    <stop offset="100%" stopColor={C.blue} stopOpacity="0" />
-                  </linearGradient>
-                </defs>
-                {(() => {
-                  const data = mSent;
-                  const min = Math.min(...data);
-                  const max = Math.max(...data);
-                  const range = max - min || 1;
-                  const pts = data.map((v, i) => {
-                    const x = 4 + (i / (data.length - 1)) * 92;
-                    const y = 38 - ((v - min) / range) * 34;
-                    return `${x},${y}`;
-                  });
-                  const fill = [...pts, '96,40', '4,40'];
-                  return (
-                    <>
-                      <polygon points={fill.join(' ')} fill="url(#hero-spark-sent)" />
-                      <polyline points={pts.join(' ')} fill="none" stroke={C.blue} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                      <circle cx={pts[pts.length - 1].split(',')[0]} cy={pts[pts.length - 1].split(',')[1]} r="3" fill={C.blue} />
-                    </>
-                  );
-                })()}
-              </svg>
-            </div>
-            <div className="text-[10px] mt-2" style={{ color: 'var(--text-muted)' }}>
-              {totals.campaignCount} campaigns this period
-            </div>
+        {/* Hero: 6 metric columns + 4 health gauges — ALL in one row */}
+        <div className="relative px-6 py-5">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-5" style={{ opacity: typewriterDone ? 1 : 0.3, transition: 'opacity 0.8s ease' }}>
+            {/* 5 hero metrics — larger, commanding */}
+            {[
+              { label: 'Emails Sent', value: totals.totalSent.toLocaleString(), sub: `${totals.campaignCount} campaigns`, color: C.blue, spark: mSent },
+              { label: 'Open Rate', value: openRate + '%', sub: 'Industry: 25-35%', color: parseFloat(openRate) >= 35 ? C.green : C.orange, spark: mOpenRates },
+              { label: 'Click Rate', value: clickRate + '%', sub: '3x industry avg', color: C.green, spark: mClicked.map((_,i) => +(mClicked[i] / mDeliv[i] * 100).toFixed(1)) },
+              { label: 'Revenue', value: '$' + (totals.totalRevenue / 1000).toFixed(0) + 'K', sub: 'Attributed to email', color: C.green, spark: [148, 212, 340, Math.round(totals.totalRevenue / 1000)] },
+              { label: 'Bounce Rate', value: bounceRate + '%', sub: `${totals.totalBounced} addresses`, color: parseFloat(bounceRate) > 3 ? C.red : C.green, spark: mBounced },
+            ].map(m => (
+              <div key={m.label} className="p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[8px] uppercase tracking-widest font-bold" style={{ color: 'var(--text-muted)' }}>{m.label}</span>
+                </div>
+                <div className="text-2xl font-extrabold leading-none" style={{ color: m.color }}>{m.value}</div>
+                <div className="text-[9px] mt-1" style={{ color: 'var(--text-muted)' }}>{m.sub}</div>
+              </div>
+            ))}
           </div>
 
-          {/* Open Rate */}
-          <div>
-            <div className="text-[10px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>
-              Overall Open Rate
-            </div>
-            <div className="flex items-end gap-4">
-              <AnimatedCounter
-                value={parseFloat(openRate)}
-                suffix="%"
-                decimals={1}
-                className="text-4xl md:text-5xl leading-none"
-                color={parseFloat(openRate) >= 35 ? C.green : C.orange}
-                duration={2000}
-              />
-              <svg width="100" height="40" viewBox="0 0 100 40" className="flex-shrink-0 mb-1">
-                <defs>
-                  <linearGradient id="hero-spark-open" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={C.green} stopOpacity="0.3" />
-                    <stop offset="100%" stopColor={C.green} stopOpacity="0" />
-                  </linearGradient>
-                </defs>
-                {(() => {
-                  const data = mOpenRates;
-                  const min = Math.min(...data);
-                  const max = Math.max(...data);
-                  const range = max - min || 1;
-                  const pts = data.map((v, i) => {
-                    const x = 4 + (i / (data.length - 1)) * 92;
-                    const y = 38 - ((v - min) / range) * 34;
-                    return `${x},${y}`;
-                  });
-                  const fill = [...pts, '96,40', '4,40'];
-                  return (
-                    <>
-                      <polygon points={fill.join(' ')} fill="url(#hero-spark-open)" />
-                      <polyline points={pts.join(' ')} fill="none" stroke={C.green} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                      <circle cx={pts[pts.length - 1].split(',')[0]} cy={pts[pts.length - 1].split(',')[1]} r="3" fill={C.green} />
-                    </>
-                  );
-                })()}
-              </svg>
-            </div>
-            <div className="text-[10px] mt-2" style={{ color: 'var(--text-muted)' }}>
-              Industry avg: 25-35% for associations
-            </div>
-          </div>
-
-          {/* Revenue */}
-          <div>
-            <div className="text-[10px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>
-              Revenue Attributed
-            </div>
-            <div className="flex items-end gap-4">
-              <AnimatedCounter
-                value={Math.round(totals.totalRevenue / 1000)}
-                prefix="$"
-                suffix="K"
-                className="text-4xl md:text-5xl leading-none"
-                color={C.green}
-                duration={2000}
-              />
-              <svg width="100" height="40" viewBox="0 0 100 40" className="flex-shrink-0 mb-1">
-                <defs>
-                  <linearGradient id="hero-spark-rev" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={C.green} stopOpacity="0.3" />
-                    <stop offset="100%" stopColor={C.green} stopOpacity="0" />
-                  </linearGradient>
-                </defs>
-                {(() => {
-                  const data = [148000, 212000, 340000, totals.totalRevenue];
-                  const min = Math.min(...data);
-                  const max = Math.max(...data);
-                  const range = max - min || 1;
-                  const pts = data.map((v, i) => {
-                    const x = 4 + (i / (data.length - 1)) * 92;
-                    const y = 38 - ((v - min) / range) * 34;
-                    return `${x},${y}`;
-                  });
-                  const fill = [...pts, '96,40', '4,40'];
-                  return (
-                    <>
-                      <polygon points={fill.join(' ')} fill="url(#hero-spark-rev)" />
-                      <polyline points={pts.join(' ')} fill="none" stroke={C.green} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                      <circle cx={pts[pts.length - 1].split(',')[0]} cy={pts[pts.length - 1].split(',')[1]} r="3" fill={C.green} />
-                    </>
-                  );
-                })()}
-              </svg>
-            </div>
-            <div className="text-[10px] mt-2" style={{ color: 'var(--text-muted)' }}>
-              From renewals, events, PFL, and advocacy
-            </div>
+          {/* System health + countdowns in one compact strip */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3" style={{ opacity: typewriterDone ? 1 : 0.3, transition: 'opacity 1s ease 0.3s' }}>
+            {/* 4 health gauges — compact inline */}
+            {[
+              { label: 'Delivery', value: demoHygiene.currentDelivery, target: '98%+' },
+              { label: 'Hygiene', value: demoHygiene.healthy.pct, target: '85%+' },
+              { label: 'Engagement', value: 72, target: '75+' },
+              { label: 'Reputation', value: 87, target: '85+' },
+            ].map(h => (
+              <div key={h.label} className="flex items-center gap-3 p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <PulsingMeter value={h.value} label="" color={meterColor(h.value)} size="sm" showPulse={h.value < 80} />
+                <div>
+                  <div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{h.label}</div>
+                  <div className="text-lg font-extrabold leading-none" style={{ color: meterColor(h.value) }}>{h.value}%</div>
+                  <div className="text-[8px]" style={{ color: 'var(--text-muted)' }}>Target: {h.target}</div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Keyframes for hero */}
         <style>{`
-          @keyframes heroShimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-          }
-          @keyframes livePulse {
-            0%, 100% { transform: scale(1); opacity: 0.75; }
-            50% { transform: scale(2); opacity: 0; }
-          }
+          @keyframes heroShimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+          @keyframes livePulse { 0%, 100% { transform: scale(1); opacity: 0.75; } 50% { transform: scale(2); opacity: 0; } }
         `}</style>
       </section>
 
       {/* ───────────────────────────────────────────────────────
-          2. SYSTEM PULSE: Live PulsingMeters
-          ─────────────────────────────────────────────────────── */}
-      <section
-        className="rounded-2xl border px-6 py-7"
-        style={{
-          background: 'var(--card)',
-          borderColor: 'var(--card-border)',
-          boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-        }}
-      >
-        <div className="flex items-center gap-3 mb-6">
-          <div
-            className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ background: 'color-mix(in srgb, var(--accent) 15%, transparent)' }}
-          >
-            <Activity className="w-4 h-4" style={{ color: 'var(--accent)' }} />
-          </div>
-          <div>
-            <h2 className="text-sm font-bold" style={{ color: 'var(--heading)' }}>System Pulse</h2>
-            <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Real-time platform health indicators</p>
-          </div>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 place-items-center">
-          <PulsingMeter
-            value={demoHygiene.currentDelivery}
-            label="Delivery"
-            color={meterColor(demoHygiene.currentDelivery)}
-            size="md"
-          />
-          <PulsingMeter
-            value={demoHygiene.healthy.pct}
-            label="Hygiene"
-            color={meterColor(demoHygiene.healthy.pct)}
-            size="md"
-          />
-          <PulsingMeter
-            value={72}
-            label="Engage"
-            color={meterColor(72)}
-            size="md"
-          />
-          <PulsingMeter
-            value={87}
-            label="Domain"
-            color={meterColor(87)}
-            size="md"
-          />
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-3">
-          <div className="text-center text-[9px] font-semibold" style={{ color: 'var(--text-muted)' }}>
-            Delivery Health — {demoHygiene.currentDelivery}%
-          </div>
-          <div className="text-center text-[9px] font-semibold" style={{ color: 'var(--text-muted)' }}>
-            List Hygiene — {demoHygiene.healthy.pct}%
-          </div>
-          <div className="text-center text-[9px] font-semibold" style={{ color: 'var(--text-muted)' }}>
-            Engagement Index — 72/100
-          </div>
-          <div className="text-center text-[9px] font-semibold" style={{ color: 'var(--text-muted)' }}>
-            Domain Reputation — 87/100
-          </div>
-        </div>
-      </section>
-
-      {/* ───────────────────────────────────────────────────────
-          3. COUNTDOWN: Active Campaigns + Renewal Timer
+          2. COUNTDOWN + PIPELINE — compact row
           ─────────────────────────────────────────────────────── */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Next Campaign Countdown */}
