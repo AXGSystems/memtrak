@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -151,30 +151,7 @@ const sections = [
 export default function Sidebar() {
   const pathname = usePathname();
 
-  const themes = [
-    { id: 'deep-blue', label: 'Midnight', color: '#0f1d2f', ring: '#8CC63F' },
-    { id: 'vibranium', label: 'Vibranium', color: '#14082a', ring: '#a855f7' },
-    { id: 'ember', label: 'Ember', color: '#261a0e', ring: '#F59E0B' },
-    { id: 'axg', label: 'AXG Gold', color: '#f8f7f4', ring: '#C6A75E' },
-    { id: 'light', label: 'ALTA Brand', color: '#f0f2f5', ring: '#D94A4A' },
-  ];
-
-  const [currentTheme, setCurrentTheme] = useState('deep-blue');
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
-
-  const switchTheme = (id: string) => {
-    document.documentElement.setAttribute('data-theme', id);
-    localStorage.setItem('memtrak-theme', id);
-    setCurrentTheme(id);
-  };
-
-  useEffect(() => {
-    const saved = localStorage.getItem('memtrak-theme');
-    if (saved) {
-      document.documentElement.setAttribute('data-theme', saved);
-      setCurrentTheme(saved);
-    }
-  }, []);
 
   // Auto-expand section containing the active page
   const activeSection = sections.find(s => s.items.some(i => i.href === pathname));
@@ -279,32 +256,6 @@ export default function Sidebar() {
           );
         })}
       </nav>
-
-      {/* Theme switcher */}
-      <div className="mx-5 h-px" style={{ background: 'rgba(255,255,255,0.06)' }} />
-      <div className="px-5 py-3 flex-shrink-0">
-        <div className="text-[9px] uppercase tracking-[0.12em] font-bold mb-2.5" style={{ color: 'var(--sidebar-text)' }}>Theme</div>
-        <div className="flex gap-2">
-          {themes.map(t => (
-            <button
-              key={t.id}
-              onClick={() => switchTheme(t.id)}
-              title={t.label}
-              className="transition-all duration-200"
-              style={{
-                width: 28,
-                height: 28,
-                borderRadius: '50%',
-                background: t.color,
-                border: `2.5px solid ${currentTheme === t.id ? t.ring : 'rgba(128,128,128,0.2)'}`,
-                boxShadow: currentTheme === t.id ? `0 0 12px ${t.ring}50` : 'none',
-                transform: currentTheme === t.id ? 'scale(1.15)' : 'scale(1)',
-                opacity: currentTheme === t.id ? 1 : 0.5,
-              }}
-            />
-          ))}
-        </div>
-      </div>
 
       {/* Status footer */}
       <div className="px-5 py-3 flex-shrink-0" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>

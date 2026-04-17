@@ -102,11 +102,11 @@ export default function AnimatedCounter({
       style={{ color: color || 'var(--heading)' }}
     >
       {prefix && (
-        <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>{prefix}</span>
+        <span style={{ color: 'var(--text-muted)', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{prefix}</span>
       )}
       {display}
       {suffix && (
-        <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>{suffix}</span>
+        <span style={{ color: 'var(--text-muted)', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{suffix}</span>
       )}
     </span>
   );

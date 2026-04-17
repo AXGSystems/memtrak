@@ -69,8 +69,8 @@ export default function ProgressRing({ value, max, color, size = 64 }: Props) {
       </svg>
       {/* Center percentage */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="font-extrabold text-white" style={{ fontSize: size * 0.24 }}>
-          {animatedPct}<span className="text-white/40" style={{ fontSize: size * 0.16 }}>%</span>
+        <span className="font-extrabold" style={{ fontSize: size * 0.24, color: 'var(--heading)' }}>
+          {animatedPct}<span style={{ fontSize: size * 0.16, color: 'var(--text-muted)' }}>%</span>
         </span>
       </div>
     </div>

@@ -5,7 +5,7 @@ import Card from '@/components/Card';
 import SparkKpi, { MiniBar } from '@/components/SparkKpi';
 import ProgressRing from '@/components/ProgressRing';
 import PageGuide, { type GuideContent } from '@/components/PageGuide';
-import { printContent } from '@/lib/export-utils';
+
 import {
   getCampaignTotals, demoDecayAlerts, demoChurnScores,
   demoCampaigns, demoSendTimes, demoRelationships, demoHygiene, demoMonthly,
@@ -267,12 +267,21 @@ export default function Briefing() {
         </div>
         <div className="flex gap-2 no-print flex-shrink-0">
           <button
-            onClick={() => printContent('MEMTrak Daily Briefing', briefingHtml)}
+            onClick={() => {
+              const w = window.open('', '_blank');
+              if (!w) return;
+              w.document.write(`<!DOCTYPE html><html><head><title>MEMTrak Daily Briefing</title><style>
+                body { margin: 0; padding: 40px; background: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+                @media print { body { padding: 20px; } @page { margin: 0.5in; } }
+              </style></head><body>${briefingHtml}</body></html>`);
+              w.document.close();
+              setTimeout(() => { w.print(); w.close(); }, 500);
+            }}
             className="flex items-center gap-2 rounded-xl transition-all hover:scale-[1.02]"
             style={{
               padding: '10px 16px',
-              background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)',
-              border: '1px solid rgba(255,255,255,0.10)',
+              background: 'linear-gradient(135deg, var(--glass-bg) 0%, transparent 100%)',
+              border: '1px solid var(--glass-border)',
               color: 'var(--heading)',
               fontSize: '12px',
               fontWeight: 700,
@@ -371,6 +380,25 @@ export default function Briefing() {
             icon={MousePointerClick}
             accent
             trend={{ value: parseFloat((clickRateSpark[clickRateSpark.length - 1] - clickRateSpark[clickRateSpark.length - 2]).toFixed(1)), label: 'vs last month' }}
+            detail={
+              <div className="space-y-3">
+                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Click-through rate by campaign with CTA analysis.</p>
+                <div className="space-y-1">
+                  {sent.filter(c => c.clicked > 0).slice(0, 5).map(c => {
+                    const ctr = (c.clicked / c.uniqueOpened * 100).toFixed(1);
+                    return (
+                      <div key={c.id} className="flex items-center justify-between p-2.5 rounded-lg" style={{ background: 'var(--background)' }}>
+                        <span className="text-xs font-semibold truncate max-w-[180px]" style={{ color: 'var(--heading)' }}>{c.name}</span>
+                        <span className="text-xs font-bold tabular-nums" style={{ color: C.green }}>{ctr}% CTR</span>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="p-2.5 rounded-lg text-[10px]" style={{ background: 'rgba(140,198,63,0.06)', color: 'var(--text-muted)' }}>
+                  Top CTA: &quot;Renew Your Membership&quot; at 39.2% — 8x better than generic &quot;Learn More&quot; links.
+                </div>
+              </div>
+            }
           />
           <SparkKpi
             label="Revenue"
@@ -382,6 +410,22 @@ export default function Briefing() {
             icon={DollarSign}
             accent
             trend={{ value: parseFloat(((totals.totalRevenue - revenueSpark[2]) / revenueSpark[2] * 100).toFixed(1)), label: 'vs Mar' }}
+            detail={
+              <div className="space-y-3">
+                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Revenue attributed to email campaigns via tracked conversions.</p>
+                <div className="space-y-1">
+                  {sent.filter(c => c.revenue > 0).sort((a, b) => b.revenue - a.revenue).map(c => (
+                    <div key={c.id} className="flex items-center justify-between p-2.5 rounded-lg" style={{ background: 'var(--background)' }}>
+                      <div className="min-w-0 flex-1">
+                        <span className="text-xs font-semibold truncate block" style={{ color: 'var(--heading)' }}>{c.name}</span>
+                        <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{c.listSize.toLocaleString()} sent</span>
+                      </div>
+                      <span className="text-sm font-extrabold" style={{ color: C.green }}>${(c.revenue / 1000).toFixed(0)}K</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            }
           />
           <SparkKpi
             label="Bounce Rate"

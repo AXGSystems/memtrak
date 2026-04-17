@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { Printer } from 'lucide-react';
 import { memtrakPrint } from '@/lib/print';
@@ -373,10 +374,38 @@ const guides: Record<string, GuideContent> = {
   },
 };
 
+const themes = [
+  { id: 'deep-blue', label: 'Midnight', color: '#0f1d2f', ring: '#8CC63F' },
+  { id: 'vibranium', label: 'Vibranium', color: '#14082a', ring: '#a855f7' },
+  { id: 'ember', label: 'Ember', color: '#261a0e', ring: '#F59E0B' },
+  { id: 'axg', label: 'AXG Gold', color: '#f8f7f4', ring: '#C6A75E' },
+  { id: 'light', label: 'ALTA Brand', color: '#f0f2f5', ring: '#D94A4A' },
+  { id: 'ocean', label: 'Ocean', color: '#0891b2', ring: '#0891b2' },
+  { id: 'sunset', label: 'Sunset', color: '#e85d3a', ring: '#e85d3a' },
+  { id: 'electric', label: 'Electric', color: '#3b82f6', ring: '#3b82f6' },
+  { id: 'forest', label: 'Forest', color: '#1a4a20', ring: '#22c55e' },
+];
+
 export default function TopBar() {
   const pathname = usePathname();
   const title = pageNames[pathname] || 'MEMTrak';
   const guide = guides[pathname];
+
+  const [currentTheme, setCurrentTheme] = useState('deep-blue');
+
+  const switchTheme = (id: string) => {
+    document.documentElement.setAttribute('data-theme', id);
+    localStorage.setItem('memtrak-theme', id);
+    setCurrentTheme(id);
+  };
+
+  useEffect(() => {
+    const saved = localStorage.getItem('memtrak-theme');
+    if (saved) {
+      document.documentElement.setAttribute('data-theme', saved);
+      setCurrentTheme(saved);
+    }
+  }, []);
 
   return (
     <div className="sticky top-0 z-40 px-6 py-2.5 flex items-center justify-between border-b no-print" style={{ background: 'var(--background)', borderColor: 'var(--card-border)' }}>
@@ -398,13 +427,36 @@ export default function TopBar() {
           </>
         )}
       </div>
-      <button
-        onClick={() => memtrakPrint(title)}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all hover:opacity-80"
-        style={{ color: 'var(--accent)', border: '1px solid var(--card-border)' }}
-      >
-        <Printer className="w-3.5 h-3.5" /> Print {title}
-      </button>
+      <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1.5">
+          {themes.map(t => (
+            <button
+              key={t.id}
+              onClick={() => switchTheme(t.id)}
+              title={t.label}
+              className="transition-all duration-200"
+              style={{
+                width: 20,
+                height: 20,
+                borderRadius: '50%',
+                background: t.color,
+                border: `2px solid ${currentTheme === t.id ? t.ring : 'rgba(128,128,128,0.2)'}`,
+                boxShadow: currentTheme === t.id ? `0 0 8px ${t.ring}50` : 'none',
+                transform: currentTheme === t.id ? 'scale(1.15)' : 'scale(1)',
+                opacity: currentTheme === t.id ? 1 : 0.5,
+              }}
+            />
+          ))}
+        </div>
+        <div className="w-px h-4" style={{ background: 'var(--card-border)' }} />
+        <button
+          onClick={() => memtrakPrint(title)}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all hover:opacity-80"
+          style={{ color: 'var(--accent)', border: '1px solid var(--card-border)' }}
+        >
+          <Printer className="w-3.5 h-3.5" /> Print {title}
+        </button>
+      </div>
     </div>
   );
 }

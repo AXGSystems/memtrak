@@ -112,7 +112,7 @@ export default function CountdownClock({
 
   const labelSize = size === 'sm' ? 'text-[9px]' : size === 'lg' ? 'text-xs' : 'text-[10px]';
   const sepSize = size === 'sm' ? 'text-sm' : size === 'lg' ? 'text-xl' : 'text-base';
-  const barHeight = size === 'sm' ? 3 : size === 'lg' ? 5 : 4;
+  const barHeight = size === 'sm' ? 4 : size === 'lg' ? 6 : 5;
 
   return (
     <div className="flex flex-col items-center gap-3">
@@ -142,22 +142,22 @@ export default function CountdownClock({
         <div className="flex items-center gap-1.5">
           <DigitBox value={timeLeft.days} unit="Days" size={size} color={color} />
           <span
-            className={`${sepSize} font-bold self-start mt-1.5`}
-            style={{ color: 'var(--text-muted)', opacity: 0.5 }}
+            className={`${sepSize} font-bold self-center`}
+            style={{ color: 'var(--text-muted)', opacity: 0.6 }}
           >
             :
           </span>
           <DigitBox value={timeLeft.hours} unit="Hrs" size={size} color={color} />
           <span
-            className={`${sepSize} font-bold self-start mt-1.5`}
-            style={{ color: 'var(--text-muted)', opacity: 0.5 }}
+            className={`${sepSize} font-bold self-center`}
+            style={{ color: 'var(--text-muted)', opacity: 0.6 }}
           >
             :
           </span>
           <DigitBox value={timeLeft.minutes} unit="Min" size={size} color={color} />
           <span
-            className={`${sepSize} font-bold self-start mt-1.5`}
-            style={{ color: 'var(--text-muted)', opacity: 0.5 }}
+            className={`${sepSize} font-bold self-center`}
+            style={{ color: 'var(--text-muted)', opacity: 0.6 }}
           >
             :
           </span>

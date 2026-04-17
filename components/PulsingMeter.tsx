@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useId } from 'react';
 
 interface PulsingMeterProps {
   value: number;
@@ -29,11 +29,9 @@ export default function PulsingMeter({
   const clamped = Math.min(100, Math.max(0, value));
   const dashOffset = circumference - (clamped / 100) * circumference;
 
-  // Unique ID for gradients/filters per instance
-  const uid = useMemo(
-    () => `pm-${Math.random().toString(36).slice(2, 8)}`,
-    [],
-  );
+  // Unique ID for gradients/filters per instance (deterministic for SSR)
+  const reactId = useId();
+  const uid = `pm-${reactId.replace(/:/g, '')}`;
 
   // Glow intensity scales with value: 0.15 at 0, 0.65 at 100
   const glowOpacity = 0.15 + (clamped / 100) * 0.5;

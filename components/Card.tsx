@@ -52,7 +52,7 @@ export default function Card({ children, title, subtitle, className = '', glass 
             {detailContent && (
               <button
                 onClick={(e) => { e.stopPropagation(); setShowDetail(true); }}
-                className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold transition-all hover:scale-105 ml-3 flex-shrink-0"
+                className="flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold transition-all hover:scale-[1.03] ml-3 flex-shrink-0"
                 style={{ color: 'var(--accent)', background: 'color-mix(in srgb, var(--accent) 10%, transparent)' }}
               >
                 <Maximize2 className="w-3 h-3" /> Detail
@@ -80,7 +80,7 @@ export default function Card({ children, title, subtitle, className = '', glass 
             {/* Modal header */}
             <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b backdrop-blur-md no-print" style={{ background: 'color-mix(in srgb, var(--card) 90%, transparent)', borderColor: 'var(--card-border)' }}>
               <div>
-                <h2 className="text-base font-bold" style={{ color: 'var(--heading)' }}>{detailTitle || title}</h2>
+                <h2 className="text-base font-extrabold" style={{ color: 'var(--heading)' }}>{detailTitle || title}</h2>
                 {subtitle && <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{subtitle}</p>}
               </div>
               <div className="flex items-center gap-2">
@@ -91,7 +91,7 @@ export default function Card({ children, title, subtitle, className = '', glass 
                 >
                   Print
                 </button>
-                <button onClick={() => setShowDetail(false)} className="p-1.5 rounded-lg transition-colors" style={{ color: 'var(--text-muted)' }}>
+                <button onClick={() => setShowDetail(false)} className="p-1.5 rounded-lg hover:bg-white/10 transition-colors" style={{ color: 'var(--text-muted)' }}>
                   <X className="w-4 h-4" />
                 </button>
               </div>
@@ -161,7 +161,7 @@ export function KpiCard({ label, value, sub, icon: Icon, color, detail }: {
                 >
                   Print
                 </button>
-                <button onClick={() => setShowDetail(false)} className="p-1 rounded-lg" style={{ color: 'var(--text-muted)' }}><X className="w-4 h-4" /></button>
+                <button onClick={() => setShowDetail(false)} className="p-1 rounded-lg hover:bg-white/10 transition-colors" style={{ color: 'var(--text-muted)' }}><X className="w-4 h-4" /></button>
               </div>
             </div>
             <div className="text-3xl font-extrabold mb-4" style={{ color: color || 'var(--heading)' }}>{value}</div>

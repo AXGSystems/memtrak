@@ -84,7 +84,7 @@ export default function SparkKpi({ label, value, sub, trend, sparkData, sparkCol
       >
         {/* Top row: label + icon */}
         <div className="flex items-center justify-between mb-2">
-          <span className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>{label}</span>
+          <span className="text-[10px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>{label}</span>
           {Icon && <Icon className={size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5'} style={{ color: color || 'var(--accent)' }} />}
         </div>
 
@@ -105,7 +105,7 @@ export default function SparkKpi({ label, value, sub, trend, sparkData, sparkCol
             )}
           </div>
           {sparkData && sparkData.length >= 2 && (
-            <Sparkline data={sparkData} color={sparkColor || color || 'var(--accent)'} height={size === 'lg' ? 40 : 32} width={size === 'lg' ? 100 : 72} />
+            <Sparkline data={sparkData} color={sparkColor || color || 'var(--accent)'} height={size === 'lg' ? 48 : 32} width={size === 'lg' ? 120 : 72} />
           )}
         </div>
 
@@ -114,7 +114,7 @@ export default function SparkKpi({ label, value, sub, trend, sparkData, sparkCol
           <div className={`text-[10px] ${trend ? 'mt-1' : 'mt-1.5'}`} style={{ color: 'var(--text-muted)' }}>{sub}</div>
         )}
 
-        {detail && <div className="text-[8px] mt-2 font-semibold" style={{ color: 'var(--accent)' }}>Click for details</div>}
+        {detail && <div className="text-[9px] mt-2 font-semibold" style={{ color: 'var(--accent)' }}>Click for details</div>}
       </div>
 
       {/* Detail modal */}
@@ -131,7 +131,7 @@ export default function SparkKpi({ label, value, sub, trend, sparkData, sparkCol
                 <h3 className="text-sm font-bold" style={{ color: 'var(--heading)' }}>{label}</h3>
                 <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Detailed breakdown</p>
               </div>
-              <button onClick={() => setShowDetail(false)} className="p-1.5 rounded-lg" style={{ color: 'var(--text-muted)' }}>
+              <button onClick={() => setShowDetail(false)} className="p-1.5 rounded-lg hover:bg-white/10 transition-colors" style={{ color: 'var(--text-muted)' }}>
                 <X className="w-4 h-4" />
               </button>
             </div>

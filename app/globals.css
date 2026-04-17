@@ -20,6 +20,9 @@
   --input-bg: rgba(255,255,255,0.04);
   --input-border: rgba(255,255,255,0.08);
   --table-header: #0a1628;
+  --glass-bg: rgba(255,255,255,0.06);
+  --glass-border: rgba(255,255,255,0.10);
+  --glass-bg-hover: rgba(255,255,255,0.10);
 }
 
 /* ═══════════════════════════════════════════════════════════ */
@@ -86,6 +89,9 @@
   --input-bg: #ffffff;
   --input-border: #ddd9d3;
   --table-header: #002D5C;
+  --glass-bg: rgba(0,0,0,0.03);
+  --glass-border: rgba(0,0,0,0.08);
+  --glass-bg-hover: rgba(0,0,0,0.06);
   color-scheme: light;
 }
 /* AXG light overrides */
@@ -124,6 +130,9 @@
   --input-bg: #ffffff;
   --input-border: #d1d9e2;
   --table-header: #1B3A5C;
+  --glass-bg: rgba(0,0,0,0.03);
+  --glass-border: rgba(0,0,0,0.08);
+  --glass-bg-hover: rgba(0,0,0,0.06);
   color-scheme: light;
 }
 /* ALTA light overrides */
@@ -141,6 +150,145 @@
 [data-theme="light"] .text-red-400 { color: #D94A4A !important; }
 [data-theme="light"] .text-amber-400 { color: #E8923F !important; }
 [data-theme="light"] .text-blue-400 { color: #4A90D9 !important; }
+
+/* ═══════════════════════════════════════════════════════════ */
+/* THEME 6: Ocean — Bright teal/cyan, light background        */
+/* ═══════════════════════════════════════════════════════════ */
+[data-theme="ocean"] {
+  --background: #f0fafa;
+  --foreground: #0d3b3b;
+  --heading: #0a2e2e;
+  --text-muted: #5a8a8a;
+  --card: #ffffff;
+  --card-border: #b2dfdf;
+  --card-hover: #e6f5f5;
+  --input-bg: #e6f5f5;
+  --input-border: #b2dfdf;
+  --accent: #0891b2;
+  --sidebar-bg: #0e4d5c;
+  --sidebar-text: #8cc8d4;
+  --sidebar-active: rgba(8,145,178,0.12);
+  --grid-line: #d1eaea;
+  --ring-track: #b2dfdf;
+  --table-header: #0e4d5c;
+  --glass-bg: rgba(0,0,0,0.03);
+  --glass-border: rgba(0,0,0,0.08);
+  --glass-bg-hover: rgba(0,0,0,0.06);
+  color-scheme: light;
+}
+/* Ocean light overrides */
+[data-theme="ocean"] .text-white { color: #0a2e2e !important; }
+[data-theme="ocean"] .text-white\/40,
+[data-theme="ocean"] .text-white\/30,
+[data-theme="ocean"] .text-white\/50,
+[data-theme="ocean"] .text-white\/60,
+[data-theme="ocean"] .text-white\/70 { color: #5a8a8a !important; }
+[data-theme="ocean"] .bg-white\/5,
+[data-theme="ocean"] .bg-white\/10 { background: rgba(14,77,92,0.04) !important; }
+[data-theme="ocean"] .border-white\/5,
+[data-theme="ocean"] .border-white\/10 { border-color: #b2dfdf !important; }
+[data-theme="ocean"] .text-green-400 { color: #0891b2 !important; }
+[data-theme="ocean"] .text-red-400 { color: #D94A4A !important; }
+[data-theme="ocean"] .text-amber-400 { color: #E8923F !important; }
+[data-theme="ocean"] .text-blue-400 { color: #0e7490 !important; }
+
+/* ═══════════════════════════════════════════════════════════ */
+/* THEME 7: Sunset — Warm coral/rose, golden accents          */
+/* ═══════════════════════════════════════════════════════════ */
+[data-theme="sunset"] {
+  --background: #fef7f4;
+  --foreground: #3d1f1a;
+  --heading: #2d1510;
+  --text-muted: #9a6e64;
+  --card: #ffffff;
+  --card-border: #f0cfc5;
+  --card-hover: #fef0eb;
+  --input-bg: #fef0eb;
+  --input-border: #f0cfc5;
+  --accent: #e85d3a;
+  --sidebar-bg: #4a1a10;
+  --sidebar-text: #d4a090;
+  --sidebar-active: rgba(232,93,58,0.12);
+  --grid-line: #f5ddd5;
+  --ring-track: #f0cfc5;
+  --table-header: #4a1a10;
+  --glass-bg: rgba(0,0,0,0.03);
+  --glass-border: rgba(0,0,0,0.08);
+  --glass-bg-hover: rgba(0,0,0,0.06);
+  color-scheme: light;
+}
+/* Sunset light overrides */
+[data-theme="sunset"] .text-white { color: #2d1510 !important; }
+[data-theme="sunset"] .text-white\/40,
+[data-theme="sunset"] .text-white\/30,
+[data-theme="sunset"] .text-white\/50,
+[data-theme="sunset"] .text-white\/60,
+[data-theme="sunset"] .text-white\/70 { color: #9a6e64 !important; }
+[data-theme="sunset"] .bg-white\/5,
+[data-theme="sunset"] .bg-white\/10 { background: rgba(74,26,16,0.04) !important; }
+[data-theme="sunset"] .border-white\/5,
+[data-theme="sunset"] .border-white\/10 { border-color: #f0cfc5 !important; }
+[data-theme="sunset"] .text-green-400 { color: #e85d3a !important; }
+[data-theme="sunset"] .text-red-400 { color: #C8102E !important; }
+[data-theme="sunset"] .text-amber-400 { color: #E8923F !important; }
+[data-theme="sunset"] .text-blue-400 { color: #c44a28 !important; }
+
+/* ═══════════════════════════════════════════════════════════ */
+/* THEME 8: Electric — Dark with vivid neon blue accents      */
+/* ═══════════════════════════════════════════════════════════ */
+[data-theme="electric"] {
+  --background: #0a0a1a;
+  --foreground: #e0e0f0;
+  --heading: #f0f0ff;
+  --text-muted: #7878a0;
+  --card: #12122a;
+  --card-border: #2a2a4a;
+  --card-hover: #18183a;
+  --input-bg: #18183a;
+  --input-border: #2a2a4a;
+  --accent: #3b82f6;
+  --sidebar-bg: #08081a;
+  --sidebar-text: #6a6a9a;
+  --sidebar-active: rgba(59,130,246,0.15);
+  --grid-line: #1e1e3e;
+  --ring-track: rgba(59,130,246,0.12);
+  --table-header: #08081a;
+  --glass-bg: rgba(255,255,255,0.06);
+  --glass-border: rgba(255,255,255,0.10);
+  --glass-bg-hover: rgba(255,255,255,0.10);
+}
+
+/* ═══════════════════════════════════════════════════════════ */
+/* THEME 9: Forest — Deep green dark, nature-inspired         */
+/* ═══════════════════════════════════════════════════════════ */
+[data-theme="forest"] {
+  --background: #0c1a10;
+  --foreground: #c8e0cc;
+  --heading: #e0f0e4;
+  --text-muted: #6a9a70;
+  --card: #142018;
+  --card-border: #2a4a30;
+  --card-hover: #1a2a1e;
+  --input-bg: #1a2a1e;
+  --input-border: #2a4a30;
+  --accent: #22c55e;
+  --sidebar-bg: #0a1410;
+  --sidebar-text: #5a8a60;
+  --sidebar-active: rgba(34,197,94,0.15);
+  --grid-line: #1e3a22;
+  --ring-track: rgba(34,197,94,0.12);
+  --table-header: #0a1410;
+  --glass-bg: rgba(255,255,255,0.06);
+  --glass-border: rgba(255,255,255,0.10);
+  --glass-bg-hover: rgba(255,255,255,0.10);
+}
+
+/* Glassmorphic card light-theme adjustments for Ocean & Sunset */
+[data-theme="ocean"] .rounded-xl,
+[data-theme="sunset"] .rounded-xl {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
 
 /* ═══════════════════════════════════════════════ */
 /* Global Styles                                  */
@@ -169,6 +317,8 @@ body {
 .stagger-children > *:nth-child(4) { animation-delay: 240ms; }
 .stagger-children > *:nth-child(5) { animation-delay: 320ms; }
 .stagger-children > *:nth-child(6) { animation-delay: 400ms; }
+.stagger-children > *:nth-child(7) { animation-delay: 480ms; }
+.stagger-children > *:nth-child(8) { animation-delay: 560ms; }
 
 @keyframes cardIn {
   from { opacity: 0; transform: translateY(16px); }
@@ -232,7 +382,7 @@ tr { transition: background 0.15s ease; }
 
 /* Modal scale-in animation */
 @keyframes scaleIn {
-  from { transform: scale(0.95); opacity: 0; }
+  from { transform: scale(0.96); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
 
@@ -329,7 +479,7 @@ tr:hover td {
   transition: all 0.15s ease;
 }
 tbody tr:hover {
-  background: color-mix(in srgb, var(--accent) 5%, transparent) !important;
+  background: color-mix(in srgb, var(--accent) 10%, transparent) !important;
 }
 
 /* 11. Button press effect */
@@ -343,3 +493,33 @@ input:focus, select:focus, textarea:focus {
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 25%, transparent);
   transition: box-shadow 0.2s ease;
 }
+
+/* 13. Hero shimmer — scrolling gradient shine */
+@keyframes heroShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* 14. Live pulse — expanding ring for live indicators */
+@keyframes livePulse {
+  0%, 100% { transform: scale(1); opacity: 0.75; }
+  50% { transform: scale(2); opacity: 0; }
+}
+
+/* 15. Action pulse — red glow for CRITICAL/HIGH urgency */
+@keyframes actionPulse {
+  0%, 100% { box-shadow: 0 0 0 0 transparent; }
+  50% { box-shadow: 0 0 12px 2px rgba(217,74,74,0.2); }
+}
+
+/* 16. Action pulse orange — amber glow for MEDIUM urgency */
+@keyframes actionPulseOrange {
+  0%, 100% { box-shadow: 0 0 0 0 transparent; }
+  50% { box-shadow: 0 0 12px 2px rgba(232,146,63,0.2); }
+}
+
+/* Elegant scrollbar for modals and panels */
+.overflow-y-auto::-webkit-scrollbar { width: 6px; }
+.overflow-y-auto::-webkit-scrollbar-track { background: transparent; }
+.overflow-y-auto::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--accent) 25%, transparent); border-radius: 3px; }
+.overflow-y-auto::-webkit-scrollbar-thumb:hover { background: color-mix(in srgb, var(--accent) 40%, transparent); }
