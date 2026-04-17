@@ -13,7 +13,7 @@ import CountdownClock from '@/components/CountdownClock';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import {
   demoCampaigns, demoMonthly, demoDecayAlerts, demoChurnScores,
-  demoSendTimes, demoHygiene, getCampaignTotals,
+  demoSendTimes, demoHygiene, demoRelationships, getCampaignTotals,
 } from '@/lib/demo-data';
 import { exportCSV } from '@/lib/export-utils';
 import { memtrakPrint } from '@/lib/print';
@@ -132,6 +132,7 @@ export default function DailyBriefing() {
   const [todayStr, setTodayStr] = useState('');
   const [daysUntilPFL, setDaysUntilPFL] = useState(20);
   const [daysUntilBounceClean, setDaysUntilBounceClean] = useState(0);
+  const [lastUpdated, setLastUpdated] = useState('');
   useEffect(() => {
     const now = Date.now();
     const h = new Date().getHours();
@@ -139,6 +140,7 @@ export default function DailyBriefing() {
     setTodayStr(new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }));
     setDaysUntilPFL(Math.max(0, Math.ceil((new Date('2026-05-05').getTime() - now) / (1000 * 60 * 60 * 24))));
     setDaysUntilBounceClean(nextCampaign ? Math.max(0, Math.ceil((new Date(nextCampaign.sentDate).getTime() - now) / (1000 * 60 * 60 * 24))) : 0);
+    setLastUpdated(new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }));
   }, []);
 
   /* Fade in hero metrics after typewriter finishes */
@@ -151,6 +153,11 @@ export default function DailyBriefing() {
 
   return (
     <div className="space-y-6 pb-24">
+
+      {/* Data freshness indicator */}
+      <div className="h-0.5 rounded-full overflow-hidden" style={{ background: 'var(--card-border)' }}>
+        <div className="h-full rounded-full" style={{ background: 'linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 50%, transparent))', width: '100%', animation: 'shimmer 3s ease-in-out infinite' }} />
+      </div>
 
       {/* ───────────────────────────────────────────────────────
           1. COMMAND BAR — compact, data-dense, one row
@@ -190,6 +197,7 @@ export default function DailyBriefing() {
             <PageGuide pageId="dashboard" guide={dashGuide} />
             <button onClick={() => exportCSV(['Metric', 'Value'], [['Sent', totals.totalSent], ['Open Rate', openRate + '%'], ['Click Rate', clickRate + '%'], ['Revenue', '$' + totals.totalRevenue]], 'MEMTrak_Brief')} className="flex items-center gap-1 px-2 py-1 rounded-lg text-[9px] font-semibold border transition-all hover:scale-105" style={{ color: 'var(--accent)', borderColor: 'var(--card-border)', background: 'color-mix(in srgb, var(--accent) 6%, transparent)' }}><Download className="w-3 h-3" /> CSV</button>
             <button onClick={() => memtrakPrint('daily')} className="flex items-center gap-1 px-2 py-1 rounded-lg text-[9px] font-semibold border transition-all hover:scale-105" style={{ color: 'var(--accent)', borderColor: 'var(--card-border)', background: 'color-mix(in srgb, var(--accent) 6%, transparent)' }}><Printer className="w-3 h-3" /> Print</button>
+            {lastUpdated && <span className="text-[9px] font-medium ml-2" style={{ color: 'var(--text-muted)' }}>Updated {lastUpdated}</span>}
           </div>
         </div>
 
@@ -203,7 +211,8 @@ export default function DailyBriefing() {
         <div className="flex-1 h-px" style={{ background: 'color-mix(in srgb, var(--accent) 15%, var(--card-border))' }} />
         <span className="text-[10px] font-semibold" style={{ color: 'var(--text-muted)' }}>4 indicators &middot; Real-time</span>
       </div>
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" style={{ opacity: typewriterDone ? 1 : 0.3, transition: 'opacity 1s ease 0.3s' }}>
+      {typewriterDone ? (
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: 'Delivery', value: demoHygiene.currentDelivery, target: '98%+' },
           { label: 'Hygiene', value: demoHygiene.healthy.pct, target: '85%+' },
@@ -225,6 +234,16 @@ export default function DailyBriefing() {
           </div>
         ))}
       </section>
+      ) : (
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[1,2,3,4].map(i => (
+          <div key={i} className="rounded-xl border p-4 h-[88px]" style={{ background: 'var(--card)', borderColor: 'var(--card-border)', animation: 'skeletonPulse 1.5s ease-in-out infinite' }}>
+            <div className="h-3 w-20 rounded-full mb-3" style={{ background: 'var(--card-border)' }} />
+            <div className="h-6 w-16 rounded-full" style={{ background: 'var(--card-border)' }} />
+          </div>
+        ))}
+      </section>
+      )}
 
       {healthDetail && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={() => setHealthDetail(null)}>
@@ -284,10 +303,11 @@ export default function DailyBriefing() {
         <span className="text-[10px] font-semibold" style={{ color: 'var(--text-muted)' }}>Countdowns &middot; Campaign status</span>
       </div>
       {/* Row 1: Two countdown tiles */}
+      {typewriterDone ? (
       <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Next Campaign */}
         <div
-          className="rounded-2xl border overflow-hidden cursor-pointer transition-all duration-300 hover:translate-y-[-2px]"
+          className="rounded-2xl border overflow-hidden cursor-pointer transition-all duration-300 hover:translate-y-[-2px] relative group"
           onClick={() => setCountdownDetail('campaign')}
           style={{
             background: 'linear-gradient(135deg, var(--glass-bg) 0%, transparent 100%)',
@@ -305,6 +325,7 @@ export default function DailyBriefing() {
             </div>
             <span className="text-[9px] px-2.5 py-1 rounded-full font-bold" style={{ background: 'rgba(74,144,217,0.15)', color: C.blue }}>SCHEDULED</span>
           </div>
+          <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full blur-3xl opacity-0 group-hover:opacity-15 transition-opacity duration-500 pointer-events-none" style={{ background: C.blue }} />
           <div className="p-5">
             <div className="text-xs font-semibold mb-4" style={{ color: 'var(--text-muted)' }}>PFL Compliance — May Wave 1 (Illinois Focus)</div>
             <div className="flex items-center justify-center mb-4">
@@ -329,7 +350,7 @@ export default function DailyBriefing() {
 
         {/* Renewal Season */}
         <div
-          className="rounded-2xl border overflow-hidden cursor-pointer transition-all duration-300 hover:translate-y-[-2px]"
+          className="rounded-2xl border overflow-hidden cursor-pointer transition-all duration-300 hover:translate-y-[-2px] relative group"
           onClick={() => setCountdownDetail('renewal')}
           style={{
             background: 'linear-gradient(135deg, var(--glass-bg) 0%, transparent 100%)',
@@ -347,6 +368,7 @@ export default function DailyBriefing() {
             </div>
             <span className="text-[9px] px-2.5 py-1 rounded-full font-bold" style={{ background: 'rgba(232,146,63,0.15)', color: C.orange }}>PLANNING</span>
           </div>
+          <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full blur-3xl opacity-0 group-hover:opacity-15 transition-opacity duration-500 pointer-events-none" style={{ background: C.orange }} />
           <div className="p-5">
             <div className="text-xs font-semibold mb-4" style={{ color: 'var(--text-muted)' }}>4,994 members &middot; August 1 – December 31, 2026</div>
             <div className="flex items-center justify-center mb-4">
@@ -369,8 +391,22 @@ export default function DailyBriefing() {
           </div>
         </div>
       </section>
+      ) : (
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {[1,2].map(i => (
+          <div key={i} className="rounded-2xl border p-5 h-[200px]" style={{ background: 'var(--card)', borderColor: 'var(--card-border)', animation: 'skeletonPulse 1.5s ease-in-out infinite' }}>
+            <div className="h-3 w-32 rounded-full mb-4" style={{ background: 'var(--card-border)' }} />
+            <div className="h-12 w-48 rounded-lg mx-auto mb-4" style={{ background: 'var(--card-border)' }} />
+            <div className="grid grid-cols-4 gap-2">
+              {[1,2,3,4].map(j => <div key={j} className="h-10 rounded-lg" style={{ background: 'var(--card-border)' }} />)}
+            </div>
+          </div>
+        ))}
+      </section>
+      )}
 
       {/* Row 2: Campaigns in Flight — full width with detailed status cards */}
+      {typewriterDone ? (
       <section
         className="rounded-2xl border overflow-hidden cursor-pointer transition-all duration-300 hover:translate-y-[-2px]"
         onClick={() => setCountdownDetail('pipeline')}
@@ -441,6 +477,14 @@ export default function DailyBriefing() {
           </div>
         </div>
       </section>
+      ) : (
+      <section className="rounded-2xl border p-5 h-[160px]" style={{ background: 'var(--card)', borderColor: 'var(--card-border)', animation: 'skeletonPulse 1.5s ease-in-out infinite' }}>
+        <div className="h-3 w-40 rounded-full mb-4" style={{ background: 'var(--card-border)' }} />
+        <div className="grid grid-cols-3 gap-4">
+          {[1,2,3].map(j => <div key={j} className="h-20 rounded-xl" style={{ background: 'var(--card-border)' }} />)}
+        </div>
+      </section>
+      )}
 
       {/* Countdown Detail Modal */}
       {countdownDetail && (
@@ -829,6 +873,55 @@ export default function DailyBriefing() {
       </section>
 
       {/* ───────────────────────────────────────────────────────
+          4B. LIVE ACTIVITY FEED
+          ─────────────────────────────────────────────────────── */}
+      <div className="flex items-center gap-3">
+        <div className="px-4 py-2 rounded-xl" style={{ background: 'linear-gradient(135deg, color-mix(in srgb, var(--accent) 12%, transparent) 0%, color-mix(in srgb, var(--accent) 4%, transparent) 100%)', border: '1px solid color-mix(in srgb, var(--accent) 15%, transparent)' }}>
+          <span className="text-xs font-extrabold uppercase tracking-widest" style={{ color: 'var(--accent)' }}>Live Activity</span>
+        </div>
+        <div className="flex-1 h-px" style={{ background: 'color-mix(in srgb, var(--accent) 15%, var(--card-border))' }} />
+        <span className="text-[10px] font-semibold flex items-center gap-1.5" style={{ color: 'var(--text-muted)' }}>
+          <span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: '#8CC63F', animation: 'livePulse 2s ease-in-out infinite' }} /><span className="relative inline-flex rounded-full h-2 w-2" style={{ background: '#8CC63F' }} /></span>
+          Real-time
+        </span>
+      </div>
+
+      <section className="rounded-2xl border overflow-hidden" style={{ background: 'var(--card)', borderColor: 'var(--card-border)' }}>
+        <div className="px-5 py-4 overflow-x-auto">
+          <div className="flex gap-3" style={{ minWidth: 'max-content' }}>
+            {[
+              { time: '2 min ago', event: 'Email Opened', detail: 'First American Title — Renewal Reminder', icon: 'eye', color: '#8CC63F' },
+              { time: '5 min ago', event: 'Link Clicked', detail: 'Stewart Info — "Renew Now" CTA', icon: 'click', color: '#4A90D9' },
+              { time: '8 min ago', event: 'Campaign Sent', detail: 'PFL Compliance Notice — 1,029 recipients', icon: 'send', color: '#a855f7' },
+              { time: '12 min ago', event: 'Bounce Detected', detail: 'invalid@oldtitleco.com — hard bounce', icon: 'alert', color: '#D94A4A' },
+              { time: '15 min ago', event: 'New Subscriber', detail: 'Jane Mitchell — Chicago Title Insurance', icon: 'user', color: '#8CC63F' },
+              { time: '18 min ago', event: 'Email Opened', detail: 'Fidelity National — ALTA ONE Invite', icon: 'eye', color: '#8CC63F' },
+              { time: '22 min ago', event: 'Decay Alert', detail: 'Old Republic — engagement dropped 62%', icon: 'alert', color: '#E8923F' },
+              { time: '25 min ago', event: 'Revenue Event', detail: 'Membership Renewal — $12,400 attributed', icon: 'dollar', color: '#8CC63F' },
+            ].map((item, i) => (
+              <div
+                key={i}
+                className="flex-shrink-0 w-[220px] rounded-xl border p-3.5 transition-all duration-300 hover:translate-y-[-2px] cursor-pointer"
+                style={{
+                  background: 'linear-gradient(135deg, var(--glass-bg) 0%, transparent 100%)',
+                  borderColor: 'var(--glass-border)',
+                  borderTopWidth: '2px',
+                  borderTopColor: item.color,
+                  animation: `slideInUp 0.4s ease-out ${i * 0.08}s both`,
+                }}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] font-bold" style={{ color: item.color }}>{item.event}</span>
+                  <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{item.time}</span>
+                </div>
+                <p className="text-[11px] font-medium leading-snug" style={{ color: 'var(--heading)' }}>{item.detail}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ───────────────────────────────────────────────────────
           5. ENGAGEMENT TIMELINE (full-width chart)
           ─────────────────────────────────────────────────────── */}
       <Card
@@ -1065,7 +1158,7 @@ export default function DailyBriefing() {
               urgency: 'CRITICAL',
               color: C.red,
               icon: AlertTriangle,
-              text: `${demoDecayAlerts.filter(d => d.decay >= 70).length} engagement decay alerts — $${demoDecayAlerts.filter(d => d.decay >= 70).reduce((s, d) => s + d.revenue, 0).toLocaleString()} at risk`,
+              text: <>{demoDecayAlerts.filter(d => d.decay >= 70).length} engagement decay alerts — <AnimatedCounter value={demoDecayAlerts.filter(d => d.decay >= 70).reduce((s, d) => s + d.revenue, 0)} prefix="$" suffix="" duration={2000} className="inline" /> at risk</>,
               action: 'View in Intelligence',
               href: '/decay-radar',
               revenue: '$62,071 revenue impact',
@@ -1110,6 +1203,7 @@ export default function DailyBriefing() {
                 style={{
                   background: 'color-mix(in srgb, var(--card-border) 30%, transparent)',
                   borderLeft: `3px solid ${item.color}`,
+                  animation: item.pulse ? `breathe 3s ease-in-out infinite, slideInUp 0.3s ease-out ${i * 0.1}s both` : `slideInUp 0.3s ease-out ${i * 0.1}s both`,
                 }}
               >
                 <span
@@ -1166,11 +1260,11 @@ export default function DailyBriefing() {
           }
         >
           <div className="space-y-2">
-            {demoChurnScores.map(c => (
+            {demoChurnScores.map((c, i) => (
               <div
                 key={c.org}
                 className="flex items-center gap-3 p-3 rounded-xl transition-all hover:translate-x-1"
-                style={{ background: 'color-mix(in srgb, var(--card-border) 30%, transparent)' }}
+                style={{ background: 'color-mix(in srgb, var(--card-border) 30%, transparent)', animation: `slideInUp 0.3s ease-out ${i * 0.08}s both` }}
               >
                 <PulsingMeter
                   value={c.score}
@@ -1226,8 +1320,8 @@ export default function DailyBriefing() {
           }
         >
           <div className="space-y-4 mt-1">
-            {healthTiers.map(tier => (
-              <div key={tier.label} className="flex items-center gap-4">
+            {healthTiers.map((tier, i) => (
+              <div key={tier.label} className="flex items-center gap-4" style={{ animation: `slideInUp 0.4s ease-out ${i * 0.12}s both` }}>
                 <ProgressRing value={tier.pct} max={100} color={tier.color} size={52} />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
@@ -1244,6 +1338,59 @@ export default function DailyBriefing() {
           </div>
         </Card>
       </div>
+
+      {/* ───────────────────────────────────────────────────────
+          8B. STAFF RELATIONSHIP SCOREBOARD
+          ─────────────────────────────────────────────────────── */}
+      <div className="flex items-center gap-3">
+        <div className="px-4 py-2 rounded-xl" style={{ background: 'linear-gradient(135deg, color-mix(in srgb, var(--accent) 12%, transparent) 0%, color-mix(in srgb, var(--accent) 4%, transparent) 100%)', border: '1px solid color-mix(in srgb, var(--accent) 15%, transparent)' }}>
+          <span className="text-xs font-extrabold uppercase tracking-widest" style={{ color: 'var(--accent)' }}>Staff Intelligence</span>
+        </div>
+        <div className="flex-1 h-px" style={{ background: 'color-mix(in srgb, var(--accent) 15%, var(--card-border))' }} />
+        <span className="text-[10px] font-semibold" style={{ color: 'var(--text-muted)' }}>Relationship strength &middot; Reply metrics</span>
+      </div>
+
+      <section className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        {demoRelationships.map((r, i) => {
+          const replyColor = r.replyRate >= 50 ? '#8CC63F' : r.replyRate >= 30 ? '#4A90D9' : '#E8923F';
+          const strengthBg = r.strength === 'Exceptional' ? 'rgba(140,198,63,0.12)' : r.strength === 'Strong' ? 'rgba(74,144,217,0.12)' : 'rgba(232,146,63,0.12)';
+          return (
+            <div
+              key={r.staff}
+              className="rounded-2xl border overflow-hidden cursor-pointer transition-all duration-300 hover:translate-y-[-2px]"
+              style={{
+                background: 'linear-gradient(135deg, var(--glass-bg) 0%, transparent 100%)',
+                borderColor: 'var(--glass-border)',
+                boxShadow: '0 4px 24px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.04)',
+                animation: `slideInUp 0.4s ease-out ${i * 0.1}s both`,
+              }}
+            >
+              {/* Glassmorphic header */}
+              <div className="px-4 py-2.5" style={{ background: `linear-gradient(135deg, ${strengthBg} 0%, transparent 100%)`, borderBottom: '1px solid var(--glass-border)' }}>
+                <div className="text-[11px] font-extrabold truncate" style={{ color: 'var(--heading)' }}>{r.staff}</div>
+                <span className="text-[9px] font-bold" style={{ color: replyColor }}>{r.strength}</span>
+              </div>
+              <div className="p-4 text-center space-y-3">
+                <div>
+                  <div className="text-2xl font-extrabold" style={{ color: replyColor }}>{r.replyRate}%</div>
+                  <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Reply Rate</div>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-center">
+                  <div>
+                    <div className="text-sm font-extrabold" style={{ color: 'var(--heading)' }}>{r.outreach}</div>
+                    <div className="text-[8px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Outreach</div>
+                  </div>
+                  <div>
+                    <div className="text-sm font-extrabold" style={{ color: 'var(--heading)' }}>{r.responseTime}</div>
+                    <div className="text-[8px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Avg Reply</div>
+                  </div>
+                </div>
+                <MiniBar value={r.replyRate} max={100} color={replyColor} height={4} />
+              </div>
+            </div>
+          );
+        })}
+      </section>
 
       {/* ───────────────────────────────────────────────────────
           9. INTELLIGENCE STRIP (4 glass cards)
@@ -1303,7 +1450,7 @@ export default function DailyBriefing() {
           return (
             <div
               key={i}
-              className="rounded-xl border p-5 backdrop-blur-md transition-all duration-200 hover:translate-y-[-2px] cursor-pointer"
+              className="rounded-xl border p-5 backdrop-blur-md transition-all duration-200 hover:translate-y-[-2px] cursor-pointer relative overflow-hidden group"
               onClick={() => router.push(card.href)}
               style={{
                 background: 'var(--glass-bg)',
@@ -1313,6 +1460,7 @@ export default function DailyBriefing() {
                 borderTopColor: card.color,
               }}
             >
+              <div className="absolute -top-6 -right-6 w-16 h-16 rounded-full blur-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-500 pointer-events-none" style={{ background: card.color }} />
               <div className="flex items-center gap-2 mb-3">
                 <div
                   className="w-8 h-8 rounded-lg flex items-center justify-center"
