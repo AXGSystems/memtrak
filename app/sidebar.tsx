@@ -168,7 +168,7 @@ export default function Sidebar() {
   return (
     <aside
       className="fixed left-0 top-0 bottom-0 w-[260px] border-r flex flex-col z-50 overflow-hidden transition-colors duration-300"
-      style={{ background: 'var(--sidebar-bg)', borderColor: 'rgba(255,255,255,0.06)' }}
+      style={{ background: 'var(--sidebar-bg)', borderColor: 'var(--glass-bg)' }}
     >
       {/* Brand */}
       <div className="px-5 py-5 flex-shrink-0">
@@ -191,7 +191,7 @@ export default function Sidebar() {
       </div>
 
       {/* Divider */}
-      <div className="mx-5 h-px" style={{ background: 'rgba(255,255,255,0.06)' }} />
+      <div className="mx-5 h-px" style={{ background: 'var(--glass-bg)' }} />
 
       {/* Navigation */}
       <nav className="flex-1 py-3 px-3 overflow-y-auto space-y-1">
@@ -234,7 +234,7 @@ export default function Sidebar() {
                         }}
                         onMouseEnter={e => {
                           if (!active) {
-                            (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.04)';
+                            (e.currentTarget as HTMLElement).style.background = 'var(--glass-bg)';
                             (e.currentTarget as HTMLElement).style.color = 'var(--heading)';
                           }
                         }}
@@ -258,7 +258,7 @@ export default function Sidebar() {
       </nav>
 
       {/* Status footer */}
-      <div className="px-5 py-3 flex-shrink-0" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+      <div className="px-5 py-3 flex-shrink-0" style={{ borderTop: '1px solid var(--glass-bg)' }}>
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: 'var(--accent)' }} />
           <span className="text-[10px] font-medium" style={{ color: 'var(--sidebar-text)' }}>All systems operational</span>

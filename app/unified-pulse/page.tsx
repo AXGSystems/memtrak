@@ -112,13 +112,14 @@ export default function UnifiedPulsePage() {
       </header>
 
       {/* ── 2. SparkKpi Row ───────────────────────────────── */}
-      <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+      <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6 stagger-children">
         <SparkKpi
           label="Total Platforms"
           value="3"
           sub="MEMTrak + Higher Logic + Outlook"
           icon={Layers}
           color={C.purple}
+          size="lg"
           accent
           sparkData={[1, 1, 2, 2, 3, 3, 3]}
           sparkColor={C.purple}
@@ -147,6 +148,7 @@ export default function UnifiedPulsePage() {
           sub={`${sentCampaigns.length} campaigns across all platforms`}
           icon={Zap}
           color={C.cyan}
+          size="lg"
           accent
           sparkData={monthlySent}
           sparkColor={C.cyan}
@@ -177,6 +179,7 @@ export default function UnifiedPulsePage() {
           sub="Weighted average across all sources"
           icon={BarChart3}
           color={C.green}
+          size="lg"
           accent
           sparkData={demoMonthly.map(m => m.delivered > 0 ? (m.opened / m.delivered) * 100 : 0)}
           sparkColor={C.green}
@@ -197,6 +200,8 @@ export default function UnifiedPulsePage() {
                         <span className="font-bold" style={{ color: 'var(--heading)' }}>{s.avgOpenRate.toFixed(1)}%</span>
                       </div>
                       <MiniBar value={s.avgOpenRate} color={SOURCE_COLORS[src]} />
+          size="lg"
+          accent
                     </div>
                   );
                 })}
@@ -210,6 +215,7 @@ export default function UnifiedPulsePage() {
           sub="All platforms syncing"
           icon={Activity}
           color={C.green}
+          size="lg"
           accent
           sparkData={[95, 96, 98, 97, 99, 100, 100]}
           sparkColor={C.green}

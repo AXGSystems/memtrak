@@ -187,10 +187,11 @@ export default function InboxGuard() {
           sub="Composite score across authentication, complaint rate, and reputation"
           icon={ShieldCheck}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[82, 83, 84, 84, 85, 86, 87]}
           sparkColor={C.green}
           trend={{ value: 2.4, label: 'vs last month' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -227,10 +228,11 @@ export default function InboxGuard() {
           sub="Google threshold: 0.3% | Recommended: under 0.1%"
           icon={AlertTriangle}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[0.05, 0.04, 0.08, 0.06, 0.05, 0.08]}
           sparkColor={C.green}
           trend={{ value: -2.5, label: 'vs last month' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -261,9 +263,10 @@ export default function InboxGuard() {
           sub="SPF, DKIM, DMARC, BIMI — 3 of 4 checks passing"
           icon={Lock}
           color={C.amber}
+          size="lg"
+          accent
           sparkData={[2, 2, 3, 3, 3, 3]}
           sparkColor={C.amber}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -287,6 +290,7 @@ export default function InboxGuard() {
           sub="Brand logo display in inboxes — requires DMARC upgrade"
           icon={Eye}
           color={C.gray}
+          size="lg"
           accent
           detail={
             <div className="space-y-3">

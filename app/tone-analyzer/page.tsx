@@ -225,10 +225,11 @@ export default function ToneAnalyzer() {
           sub="Across all campaigns this quarter"
           icon={Search}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[180, 210, 195, 240, 220, 260, 280]}
           sparkColor={C.blue}
           trend={{ value: 14.2, label: 'vs last quarter' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -255,10 +256,11 @@ export default function ToneAnalyzer() {
           sub="Composite tone score out of 100"
           icon={Sparkles}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[68, 70, 72, 74, 73, 75, 76]}
           sparkColor={C.green}
           trend={{ value: 5.6, label: 'vs last quarter' }}
-          accent
         />
         <SparkKpi
           label="Best Performing Tone"
@@ -266,10 +268,11 @@ export default function ToneAnalyzer() {
           sub="31% avg engagement rate"
           icon={TrendingUp}
           color={C.purple}
+          size="lg"
+          accent
           sparkData={[24, 26, 28, 27, 30, 29, 31]}
           sparkColor={C.purple}
           trend={{ value: 8.1, label: 'vs rational (16%)' }}
-          accent
         />
         <SparkKpi
           label="Spam Risk Flags"
@@ -277,10 +280,11 @@ export default function ToneAnalyzer() {
           sub="Subject lines flagged this quarter"
           icon={AlertTriangle}
           color={C.amber}
+          size="lg"
+          accent
           sparkData={[8, 6, 5, 7, 4, 3, 2]}
           sparkColor={C.amber}
           trend={{ value: -18.5, label: 'vs last quarter' }}
-          accent
         />
       </div>
 

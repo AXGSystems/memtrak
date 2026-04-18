@@ -161,10 +161,11 @@ export default function StaffPulse() {
           value={5}
           icon={Users}
           color={C.blue}
+          size="lg"
+          accent
           sub="Active outreach staff"
           sparkData={[3, 3, 4, 4, 5, 5, 5]}
           sparkColor={C.blue}
-          accent
           detail={
             <div className="space-y-2">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -186,11 +187,12 @@ export default function StaffPulse() {
           value={totalOutreach.toLocaleString()}
           icon={Mail}
           color={C.purple}
+          size="lg"
+          accent
           sub="Emails, calls, meetings"
           sparkData={[720, 780, 830, 870, 910, 940, totalOutreach]}
           sparkColor={C.purple}
           trend={{ value: 8.2, label: 'vs last quarter' }}
-          accent
           detail={
             <div className="space-y-2">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -211,11 +213,12 @@ export default function StaffPulse() {
           value={`${avgReplyRate}%`}
           icon={Zap}
           color={C.orange}
+          size="lg"
+          accent
           sub="Weighted by volume"
           sparkData={[30, 32, 31, 33, 35, 34, avgReplyRate]}
           sparkColor={C.orange}
           trend={{ value: 4.1, label: 'vs last quarter' }}
-          accent
           detail={
             <div className="space-y-2">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -237,10 +240,11 @@ export default function StaffPulse() {
           value={bestPerformer.staff.split(' (')[0]}
           icon={Trophy}
           color={C.green}
+          size="lg"
+          accent
           sub={`${bestPerformer.replyRate}% reply rate`}
           sparkData={[78, 80, 82, 85, 86, 87, 88]}
           sparkColor={C.green}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>

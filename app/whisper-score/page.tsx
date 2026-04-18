@@ -165,16 +165,17 @@ export default function WhisperScorePage() {
       </p>
 
       {/* ── 2. SparkKpi Row ────────────────────────────────── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 stagger-children">
         <SparkKpi
           label="Hidden Champions Found"
           value={hiddenChampions}
           icon={Eye}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[1, 2, 2, 3, 3, 4, hiddenChampions]}
           sparkColor={C.green}
           trend={{ value: 33, label: 'vs last quarter' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -197,10 +198,11 @@ export default function WhisperScorePage() {
           value={`$${silentRevenue.toLocaleString()}`}
           icon={DollarSign}
           color={C.amber}
+          size="lg"
+          accent
           sparkData={[2100, 2400, 2800, 3100, 3400, silentRevenue]}
           sparkColor={C.amber}
           trend={{ value: 12.5, label: 'at risk without WhisperScore' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -215,10 +217,11 @@ export default function WhisperScorePage() {
           value={6}
           icon={Activity}
           color={C.purple}
+          size="lg"
+          accent
           sparkData={[3, 3, 4, 4, 5, 6, 6]}
           sparkColor={C.purple}
           trend={{ value: 50, label: 'vs initial launch' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>WhisperScore tracks 6 distinct offline and indirect engagement signals:</p>
@@ -240,9 +243,10 @@ export default function WhisperScorePage() {
           sub="Avg gap between engagement and whisper"
           icon={BarChart3}
           color={C.orange}
+          size="lg"
+          accent
           sparkData={[22, 24, 26, 28, 30, 32, avgDivergence]}
           sparkColor={C.orange}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>

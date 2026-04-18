@@ -265,42 +265,46 @@ export default function EngagementLog() {
           value={24}
           icon={ClipboardCheck}
           color={C.green}
+          size="lg"
+          accent
           sub="Across all staff"
           sparkData={[14, 18, 20, 16, 22, 19, 24]}
           sparkColor={C.green}
           trend={{ value: 12.5, label: 'vs last week' }}
-          accent
         />
         <SparkKpi
           label="Staff Active"
           value={5}
           icon={UserCheck}
           color={C.blue}
+          size="lg"
+          accent
           sub="All hands logging"
           sparkData={[3, 4, 4, 5, 5, 5, 5]}
           sparkColor={C.blue}
-          accent
         />
         <SparkKpi
           label="Avg Response Time"
           value="1.8 days"
           icon={Clock}
           color={C.orange}
+          size="lg"
+          accent
           sub="Member reply latency"
           sparkData={[2.4, 2.2, 2.0, 1.9, 1.8, 1.9, 1.8]}
           sparkColor={C.orange}
           trend={{ value: -8.3, label: 'improving' }}
-          accent
         />
         <SparkKpi
           label="Top Performer"
           value="Chris Morton"
           icon={Trophy}
           color={C.purple}
+          size="lg"
+          accent
           sub="88% reply rate"
           sparkData={[78, 80, 82, 85, 86, 87, 88]}
           sparkColor={C.purple}
-          accent
         />
       </div>
 

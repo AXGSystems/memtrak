@@ -250,17 +250,18 @@ export default function ABVault() {
       </div>
 
       {/* ── 2. SparkKpi Row ───────────────────────────────────── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8 stagger-children">
         <SparkKpi
           label="Tests Completed"
           value={tests.length}
           sub="Since Sep 2025"
           icon={FlaskConical}
           color={C.purple}
+          size="lg"
+          accent
           sparkData={[1, 2, 3, 4, 5, 6, 7, 8]}
           sparkColor={C.purple}
           trend={{ value: 33, label: 'vs prior period' }}
-          accent
         />
         <SparkKpi
           label="Avg Lift"
@@ -268,10 +269,11 @@ export default function ABVault() {
           sub="Across all tests"
           icon={TrendingUp}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[33.2, 24.0, 21.8, 20.8, 24.4, 23.8, 25.2, 25.4]}
           sparkColor={C.green}
           trend={{ value: 2.1, label: 'trending up' }}
-          accent
         />
         <SparkKpi
           label="Best Insight"
@@ -279,9 +281,10 @@ export default function ABVault() {
           sub='Short CTAs ("Renew Now")'
           icon={Lightbulb}
           color={C.orange}
+          size="lg"
+          accent
           sparkData={[14, 18, 18, 21, 25, 29, 33, 42]}
           sparkColor={C.orange}
-          accent
         />
         <SparkKpi
           label="Cumulative Revenue Impact"
@@ -289,10 +292,11 @@ export default function ABVault() {
           sub="Attributed to test learnings"
           icon={DollarSign}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[68, 76, 88, 88, 144, 186, 205, 237]}
           sparkColor={C.blue}
           trend={{ value: 15.6, label: 'this quarter' }}
-          accent
         />
       </div>
 

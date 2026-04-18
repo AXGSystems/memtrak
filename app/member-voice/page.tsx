@@ -228,17 +228,18 @@ export default function MemberVoice() {
       </div>
 
       {/* ── 2. SparkKpi Row ───────────────────────────────────── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8 stagger-children">
         <SparkKpi
           label="NPS Score"
           value={currentNps}
           sub="Net Promoter Score"
           icon={BarChart3}
           color={C.green}
+          size="lg"
+          accent
           sparkData={npsScores}
           sparkColor={C.green}
           trend={{ value: 5.9, label: 'vs last quarter' }}
-          accent
         />
         <SparkKpi
           label="Replies This Month"
@@ -246,10 +247,11 @@ export default function MemberVoice() {
           sub="Across all campaigns"
           icon={Mail}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[520, 560, 610, 640, 660, 684]}
           sparkColor={C.blue}
           trend={{ value: 8.4, label: 'vs last month' }}
-          accent
         />
         <SparkKpi
           label="Positive Sentiment %"
@@ -257,10 +259,11 @@ export default function MemberVoice() {
           sub="Of all feedback"
           icon={ThumbsUp}
           color={C.teal}
+          size="lg"
+          accent
           sparkData={[68, 69, 71, 72, 73, 74]}
           sparkColor={C.teal}
           trend={{ value: 2.8, label: 'improving' }}
-          accent
         />
         <SparkKpi
           label="Action Items Open"
@@ -268,10 +271,11 @@ export default function MemberVoice() {
           sub="From feedback analysis"
           icon={AlertCircle}
           color={C.orange}
+          size="lg"
+          accent
           sparkData={[6, 5, 5, 4, 4, 3]}
           sparkColor={C.orange}
           trend={{ value: 25, label: 'resolved this quarter' }}
-          accent
         />
       </div>
 

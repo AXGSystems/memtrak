@@ -209,17 +209,18 @@ export default function ChannelMix() {
       </div>
 
       {/* ── 2. SparkKpi Row ───────────────────────────────────── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8 stagger-children">
         <SparkKpi
           label="Channels Active"
           value="5"
           sub="All channels operating"
           icon={Layers}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[3, 3, 4, 4, 5, 5, 5]}
           sparkColor={C.blue}
           trend={{ value: 25, label: 'vs last year' }}
-          accent
         />
         <SparkKpi
           label="Best ROI Channel"
@@ -227,10 +228,11 @@ export default function ChannelMix() {
           sub="ROI Score: 42"
           icon={Mail}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[34, 36, 37, 38, 39, 41, 42]}
           sparkColor={C.green}
           trend={{ value: 8.2, label: 'vs last quarter' }}
-          accent
         />
         <SparkKpi
           label="Total Touchpoints"
@@ -238,10 +240,11 @@ export default function ChannelMix() {
           sub="Across all channels this quarter"
           icon={Zap}
           color={C.purple}
+          size="lg"
+          accent
           sparkData={[32000, 35000, 38000, 41000, 43000, 46000, 48260]}
           sparkColor={C.purple}
           trend={{ value: 14.6, label: 'vs last quarter' }}
-          accent
         />
         <SparkKpi
           label="Cross-Channel Members"
@@ -249,10 +252,11 @@ export default function ChannelMix() {
           sub="Engaged on 2+ channels"
           icon={Users}
           color={C.orange}
+          size="lg"
+          accent
           sparkData={[1800, 1920, 2050, 2150, 2250, 2340, 2418]}
           sparkColor={C.orange}
           trend={{ value: 6.8, label: 'vs last quarter' }}
-          accent
         />
       </div>
 

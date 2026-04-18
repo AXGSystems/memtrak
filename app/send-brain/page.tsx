@@ -38,24 +38,31 @@ const C = {
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
 
+/* deterministic pseudo-random so SSR & client produce identical values */
+function seededRand(seed: number): number {
+  const x = Math.sin(seed * 9301 + 49297) * 49297;
+  return x - Math.floor(x);
+}
+
 function generateHeatmapData(): number[][] {
-  return DAYS.map((day, di) => {
+  return DAYS.map((_day, di) => {
     const isWeekend = di >= 5;
     return HOURS.map((hour) => {
+      const r = seededRand(di * 24 + hour);
       if (isWeekend) {
         // Weekend: low overall, small bump 9-11 AM
-        if (hour >= 9 && hour <= 11) return 15 + Math.random() * 10;
-        if (hour >= 6 && hour <= 14) return 5 + Math.random() * 8;
-        return 1 + Math.random() * 4;
+        if (hour >= 9 && hour <= 11) return 15 + r * 10;
+        if (hour >= 6 && hour <= 14) return 5 + r * 8;
+        return 1 + r * 4;
       }
       // Weekday peaks
-      if (hour >= 7 && hour <= 9) return 55 + Math.random() * 35; // morning peak
-      if (hour >= 10 && hour <= 11) return 30 + Math.random() * 20;
-      if (hour >= 12 && hour <= 13) return 40 + Math.random() * 25; // lunch peak
-      if (hour >= 14 && hour <= 16) return 20 + Math.random() * 15;
-      if (hour >= 17 && hour <= 19) return 10 + Math.random() * 10;
-      if (hour >= 5 && hour <= 6) return 8 + Math.random() * 10;
-      return 1 + Math.random() * 5;
+      if (hour >= 7 && hour <= 9) return 55 + r * 35; // morning peak
+      if (hour >= 10 && hour <= 11) return 30 + r * 20;
+      if (hour >= 12 && hour <= 13) return 40 + r * 25; // lunch peak
+      if (hour >= 14 && hour <= 16) return 20 + r * 15;
+      if (hour >= 17 && hour <= 19) return 10 + r * 10;
+      if (hour >= 5 && hour <= 6) return 8 + r * 10;
+      return 1 + r * 5;
     });
   });
 }
@@ -179,10 +186,11 @@ export default function SendBrain() {
           sub="Individual time profiles built"
           icon={Users}
           color={C.purple}
+          size="lg"
+          accent
           sparkData={[3200, 3600, 3900, 4200, 4500, 4750, 4994]}
           sparkColor={C.purple}
           trend={{ value: 8.2, label: 'vs last month' }}
-          accent
           detail={
             <div className="space-y-2">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -214,10 +222,11 @@ export default function SendBrain() {
           sub="vs random send time"
           icon={TrendingUp}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[10, 12, 13, 14.5, 15.8, 17.1, 18.4]}
           sparkColor={C.green}
           trend={{ value: 3.1, label: 'improving' }}
-          accent
           detail={
             <div className="space-y-2">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -249,6 +258,7 @@ export default function SendBrain() {
           sub="Largest segment peak"
           icon={Clock}
           color={C.cyan}
+          size="lg"
           accent
           detail={
             <div className="space-y-2">
@@ -266,10 +276,11 @@ export default function SendBrain() {
           sub="Members with individual prediction"
           icon={Target}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[68, 72, 75, 78, 81, 84, 87]}
           sparkColor={C.blue}
           trend={{ value: 5.4, label: 'vs last quarter' }}
-          accent
           detail={
             <div className="space-y-2">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>

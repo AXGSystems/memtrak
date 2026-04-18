@@ -114,10 +114,11 @@ export default function DecayRadar() {
           sub="All active members"
           icon={Users}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[4200, 4350, 4500, 4620, 4750, 4880, 4994]}
           sparkColor={C.blue}
           trend={{ value: 3.2, label: 'vs last quarter' }}
-          accent
         />
         <SparkKpi
           label="Active Alerts"
@@ -125,10 +126,11 @@ export default function DecayRadar() {
           sub={`${demoDecayAlerts.length} total tracked`}
           icon={AlertTriangle}
           color={C.red}
+          size="lg"
+          accent
           sparkData={[1, 1, 2, 2, 2, 3, 3]}
           sparkColor={C.red}
           trend={{ value: -50, label: 'new this month' }}
-          accent
           detail={
             <div className="space-y-2">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -156,10 +158,11 @@ export default function DecayRadar() {
           sub="From high-decay members"
           icon={DollarSign}
           color={C.orange}
+          size="lg"
+          accent
           sparkData={[18000, 24000, 32000, 45000, 52000, 58000, revenueAtRisk]}
           sparkColor={C.orange}
           trend={{ value: -12.4, label: 'growing exposure' }}
-          accent
           detail={
             <div className="space-y-2">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -190,10 +193,11 @@ export default function DecayRadar() {
           sub="Across alerted members"
           icon={TrendingDown}
           color={C.amber}
+          size="lg"
+          accent
           sparkData={[35, 40, 44, 48, 52, 58, avgDecay]}
           sparkColor={C.amber}
           trend={{ value: -8.2, label: 'worsening' }}
-          accent
         />
       </div>
 

@@ -153,17 +153,18 @@ export default function ROIDashboard() {
       </div>
 
       {/* ── 2. SparkKpi Row ───────────────────────────────────── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8 stagger-children">
         <SparkKpi
           label="Overall ROI"
           value="36x"
           sub="For every $1 spent"
           icon={TrendingUp}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[22, 24, 28, 30, 33, 36]}
           sparkColor={C.green}
           trend={{ value: 9.1, label: 'vs last year' }}
-          accent
           detail={
             <div className="space-y-2">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -185,10 +186,11 @@ export default function ROIDashboard() {
           sub="From campaign tracking"
           icon={DollarSign}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[420000, 480000, 540000, 590000, 640000, 673024]}
           sparkColor={C.blue}
           trend={{ value: 14.2, label: 'vs last year' }}
-          accent
         />
         <SparkKpi
           label="Annual Savings"
@@ -196,10 +198,11 @@ export default function ROIDashboard() {
           sub="vs avg competitor cost"
           icon={PiggyBank}
           color={C.orange}
+          size="lg"
+          accent
           sparkData={[28000, 30000, 32000, 34000, 35000, annualSavings]}
           sparkColor={C.orange}
           trend={{ value: 8.2, label: 'growing savings' }}
-          accent
         />
         <SparkKpi
           label="5-Year Projection"
@@ -207,10 +210,11 @@ export default function ROIDashboard() {
           sub="Cumulative value"
           icon={Target}
           color={C.purple}
+          size="lg"
+          accent
           sparkData={projectionRevenue.map((v) => v / 1000)}
           sparkColor={C.purple}
           trend={{ value: 10, label: 'annual growth' }}
-          accent
         />
       </div>
 

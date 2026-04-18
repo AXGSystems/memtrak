@@ -118,9 +118,10 @@ export default function CohortViewPage() {
           sub="2020 through 2026 join years"
           icon={Layers}
           color={C.purple}
+          size="lg"
+          accent
           sparkData={[5, 5, 6, 6, 7, 7]}
           sparkColor={C.purple}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -135,10 +136,11 @@ export default function CohortViewPage() {
           sub="74% retained at 36+ months"
           icon={TrendingUp}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[100, 92, 87, 83, 78, 74]}
           sparkColor={C.green}
           trend={{ value: 4.2, label: 'vs 2021 at same age' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -159,10 +161,11 @@ export default function CohortViewPage() {
           sub="All active cohorts at current age"
           icon={Activity}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={retentionRates}
           sparkColor={C.blue}
           trend={{ value: 1.8, label: 'vs last quarter' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -177,10 +180,11 @@ export default function CohortViewPage() {
           sub="Biggest drop-off window across cohorts"
           icon={AlertTriangle}
           color={C.red}
+          size="lg"
+          accent
           sparkData={[12, 11, 14, 15, 12, 16]}
           sparkColor={C.red}
           trend={{ value: -2.1, label: 'worsening' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -301,7 +305,7 @@ export default function CohortViewPage() {
               options={{
                 indexAxis: 'y',
                 scales: {
-                  x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { font: { size: 9 } } },
+                  x: { grid: { color: 'var(--glass-bg)' }, ticks: { font: { size: 9 } } },
                   y: { grid: { display: false }, ticks: { font: { size: 9, weight: 'bold' } } },
                 },
                 plugins: { legend: { display: false } },
@@ -407,7 +411,7 @@ export default function CohortViewPage() {
                     min: 80,
                     max: 90,
                     title: { display: true, text: 'Retention %', font: { size: 10 } },
-                    grid: { color: 'rgba(255,255,255,0.04)' },
+                    grid: { color: 'var(--glass-bg)' },
                   },
                   x: { grid: { display: false } },
                 },
@@ -449,7 +453,7 @@ export default function CohortViewPage() {
               }}
               options={{
                 scales: {
-                  y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { font: { size: 9 } } },
+                  y: { grid: { color: 'var(--glass-bg)' }, ticks: { font: { size: 9 } } },
                   x: { grid: { display: false }, ticks: { font: { size: 10, weight: 'bold' } } },
                 },
                 plugins: { legend: { display: false } },

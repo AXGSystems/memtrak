@@ -166,10 +166,11 @@ export default function CampaignPlanner() {
           sub={`${campaigns.filter((c) => c.status === 'Confirmed').length} confirmed`}
           icon={Calendar}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[5, 6, 7, 8, 9, 10, 12]}
           sparkColor={C.blue}
           trend={{ value: 20, label: 'vs last year' }}
-          accent
         />
         <SparkKpi
           label="Sends This Quarter"
@@ -177,10 +178,11 @@ export default function CampaignPlanner() {
           sub="Apr - Jun projected"
           icon={Send}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[8200, 9100, 10400, 11200, 12800, 14100, totalSendsQuarter]}
           sparkColor={C.green}
           trend={{ value: 15.2, label: 'vs Q1' }}
-          accent
         />
         <SparkKpi
           label="Peak Month"
@@ -188,9 +190,10 @@ export default function CampaignPlanner() {
           sub={`${Math.max(...monthlyVolumes).toLocaleString()} sends`}
           icon={TrendingUp}
           color={C.orange}
+          size="lg"
+          accent
           sparkData={monthlyVolumes.slice(0, 7)}
           sparkColor={C.orange}
-          accent
         />
         <SparkKpi
           label="Audience Coverage"
@@ -198,10 +201,11 @@ export default function CampaignPlanner() {
           sub="Of total membership"
           icon={Users}
           color={C.purple}
+          size="lg"
+          accent
           sparkData={[60, 65, 70, 75, 82, 88, Math.round((totalAudienceCoverage / 4994) * 100)]}
           sparkColor={C.purple}
           trend={{ value: 8.0, label: 'expanding reach' }}
-          accent
         />
       </div>
 

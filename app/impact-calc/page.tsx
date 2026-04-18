@@ -440,12 +440,12 @@ export default function ImpactCalc() {
               {
                 label: 'Current Trajectory',
                 data: currentTrajectory,
-                borderColor: 'rgba(255,255,255,0.25)',
+                borderColor: 'var(--glass-border)',
                 borderDash: [6, 4],
                 backgroundColor: 'transparent',
                 tension: 0.4,
                 pointRadius: 4,
-                pointBackgroundColor: 'rgba(255,255,255,0.3)',
+                pointBackgroundColor: 'var(--glass-border)',
                 pointBorderColor: 'var(--card)',
                 pointBorderWidth: 2,
                 borderWidth: 2,
@@ -468,7 +468,7 @@ export default function ImpactCalc() {
           options={{
             plugins: { legend: { display: true, position: 'bottom' as const, labels: { color: 'var(--text-muted)', usePointStyle: true, pointStyle: 'circle', padding: 14, font: { size: 10 } } } },
             scales: {
-              y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: 'var(--text-muted)', callback: (v: number) => '$' + (v / 1000).toFixed(0) + 'K' } },
+              y: { grid: { color: 'var(--glass-bg)' }, ticks: { color: 'var(--text-muted)', callback: (v: number) => '$' + (v / 1000).toFixed(0) + 'K' } },
               x: { grid: { display: false }, ticks: { color: 'var(--text-muted)' } },
             },
           }}

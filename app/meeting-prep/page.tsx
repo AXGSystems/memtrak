@@ -281,42 +281,46 @@ export default function MeetingPrepPage() {
           value={prepsToday}
           icon={Briefcase}
           color={C.purple}
+          size="lg"
+          accent
           sub="Briefings created"
           sparkData={[1, 2, 3, 2, 4, 3, prepsToday]}
           sparkColor={C.purple}
-          accent
         />
         <SparkKpi
           label="Members Briefed"
           value={Object.keys(BRIEFINGS).length}
           icon={Users}
           color={C.blue}
+          size="lg"
+          accent
           sub="In demo database"
           sparkData={[1, 1, 2, 2, 3, 3, 3]}
           sparkColor={C.blue}
-          accent
         />
         <SparkKpi
           label="Avg Prep Time"
           value="1.2s"
           icon={Clock}
           color={C.green}
+          size="lg"
+          accent
           sub="Instant AI generation"
           sparkData={[3.2, 2.8, 2.1, 1.8, 1.5, 1.3, 1.2]}
           sparkColor={C.green}
           trend={{ value: -25, label: 'faster this week' }}
-          accent
         />
         <SparkKpi
           label="Success Rate"
           value="87%"
           icon={Star}
           color={C.orange}
+          size="lg"
+          accent
           sub="Preps leading to meetings"
           sparkData={[72, 78, 80, 82, 85, 86, 87]}
           sparkColor={C.orange}
           trend={{ value: 5.4, label: 'vs last month' }}
-          accent
         />
       </div>
 

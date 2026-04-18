@@ -153,10 +153,11 @@ export default function GhostWatch() {
           sub="Zero engagement 60+ days"
           icon={Ghost}
           color={C.ghost}
+          size="lg"
+          accent
           sparkData={[12, 15, 19, 24, 28, 32, 38]}
           sparkColor={C.ghost}
           trend={{ value: 18.8, label: 'growing this quarter' }}
-          accent
           detail={
             <div className="space-y-2">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -182,10 +183,11 @@ export default function GhostWatch() {
           sub="Annual dues from ghost members"
           icon={DollarSign}
           color={C.red}
+          size="lg"
+          accent
           sparkData={[28000, 35000, 42000, 48000, 55000, 62000, totalRevenue]}
           sparkColor={C.red}
           trend={{ value: -22.5, label: 'growing exposure' }}
-          accent
           detail={
             <div className="space-y-2">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -210,10 +212,11 @@ export default function GhostWatch() {
           sub="Across all ghost members"
           icon={Clock}
           color={C.orange}
+          size="lg"
+          accent
           sparkData={[62, 68, 72, 76, 80, 84, avgDays]}
           sparkColor={C.orange}
           trend={{ value: -8.4, label: 'worsening' }}
-          accent
         />
         <SparkKpi
           label="Recovery Rate"
@@ -221,10 +224,11 @@ export default function GhostWatch() {
           sub="Re-engaged after outreach"
           icon={RefreshCw}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[15, 16, 18, 19, 20, 20.5, recoveryRate]}
           sparkColor={C.green}
           trend={{ value: 6.5, label: 'improving' }}
-          accent
         />
       </div>
 

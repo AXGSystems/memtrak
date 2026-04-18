@@ -232,10 +232,11 @@ export default function WinbackEngine() {
           sub="No email opens in 30+ days"
           icon={UserX}
           color={C.red}
+          size="lg"
+          accent
           sparkData={[3400, 3200, 3100, 3240]}
           sparkColor={C.red}
           trend={{ value: -4.7, label: 'vs last month' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -259,10 +260,11 @@ export default function WinbackEngine() {
           sub="Currently receiving winback emails"
           icon={Mail}
           color={C.amber}
+          size="lg"
+          accent
           sparkData={[320, 280, 310, 345, 360, 380, 345]}
           sparkColor={C.amber}
           trend={{ value: 11.3, label: 'vs last month' }}
-          accent
         />
         <SparkKpi
           label="Re-engaged"
@@ -270,10 +272,11 @@ export default function WinbackEngine() {
           sub="Opened future emails after winback"
           icon={UserCheck}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[38, 40, 42, 41, 43, 44, 45]}
           sparkColor={C.green}
           trend={{ value: 7.1, label: 'vs last quarter' }}
-          accent
         />
         <SparkKpi
           label="Sunset Candidates"
@@ -281,10 +284,11 @@ export default function WinbackEngine() {
           sub="90+ days inactive, recommend removal"
           icon={Sunset}
           color={C.gray}
+          size="lg"
+          accent
           sparkData={[480, 460, 440, 430, 425, 420]}
           sparkColor={C.gray}
           trend={{ value: -12.5, label: 'vs last month' }}
-          accent
         />
       </div>
 

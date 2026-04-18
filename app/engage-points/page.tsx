@@ -138,10 +138,11 @@ export default function EngagePoints() {
           sub="81% of active membership"
           icon={Users}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[3200, 3400, 3550, 3680, 3790, 3920, 4042]}
           sparkColor={C.blue}
           trend={{ value: 8.4, label: 'vs last quarter' }}
-          accent
         />
         <SparkKpi
           label="Total Points Earned"
@@ -149,10 +150,11 @@ export default function EngagePoints() {
           sub="This quarter"
           icon={Star}
           color={C.gold}
+          size="lg"
+          accent
           sparkData={[180000, 220000, 280000, 310000, 350000, 390000, 420000]}
           sparkColor={C.gold}
           trend={{ value: 22.6, label: 'vs last quarter' }}
-          accent
           detail={
             <div className="space-y-2">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -176,10 +178,11 @@ export default function EngagePoints() {
           sub="Members with 1+ week streak"
           icon={Flame}
           color={C.orange}
+          size="lg"
+          accent
           sparkData={[2800, 2900, 3050, 3120, 3200, 3280, 3370]}
           sparkColor={C.orange}
           trend={{ value: 5.8, label: 'vs last month' }}
-          accent
         />
         <SparkKpi
           label="Badges Awarded"
@@ -187,10 +190,11 @@ export default function EngagePoints() {
           sub="Across 6 badge types"
           icon={Award}
           color={C.purple}
+          size="lg"
+          accent
           sparkData={[4200, 4600, 5000, 5400, 5800, 6200, 6543]}
           sparkColor={C.purple}
           trend={{ value: 18.2, label: 'vs last quarter' }}
-          accent
         />
       </div>
 

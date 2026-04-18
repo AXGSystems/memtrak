@@ -197,9 +197,10 @@ export default function LinkSentryPage() {
           sub="Across all active campaigns"
           icon={Link2}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[6, 7, 8, 8, 9, totalLinks]}
           sparkColor={C.blue}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -222,9 +223,10 @@ export default function LinkSentryPage() {
           sub="Requiring immediate attention"
           icon={XCircle}
           color={C.red}
+          size="lg"
+          accent
           sparkData={[0, 1, 0, 2, 1, brokenLinks]}
           sparkColor={C.red}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -245,10 +247,11 @@ export default function LinkSentryPage() {
           sub={`${utmIssues.length} issues found across campaigns`}
           icon={Tag}
           color={utmCompliance >= 90 ? C.green : C.amber}
+          size="lg"
+          accent
           sparkData={[82, 85, 88, 87, 89, utmCompliance]}
           sparkColor={utmCompliance >= 90 ? C.green : C.amber}
           trend={{ value: 3.2, label: 'vs last month' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -272,10 +275,11 @@ export default function LinkSentryPage() {
           sub={avgLoadTime <= 500 ? 'Excellent performance' : avgLoadTime <= 1500 ? 'Within acceptable range' : 'Some links are slow'}
           icon={Clock}
           color={loadTimeColor(avgLoadTime)}
+          size="lg"
+          accent
           sparkData={[920, 880, 810, 780, 750, avgLoadTime]}
           sparkColor={loadTimeColor(avgLoadTime)}
           trend={{ value: -8.4, label: 'faster vs last month' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -490,7 +494,7 @@ export default function LinkSentryPage() {
               options={{
                 indexAxis: 'y',
                 scales: {
-                  x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { font: { size: 9 } } },
+                  x: { grid: { color: 'var(--glass-bg)' }, ticks: { font: { size: 9 } } },
                   y: { grid: { display: false }, ticks: { font: { size: 8 } } },
                 },
                 plugins: { legend: { display: false } },
@@ -575,7 +579,7 @@ export default function LinkSentryPage() {
               }}
               options={{
                 scales: {
-                  y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { font: { size: 9 } } },
+                  y: { grid: { color: 'var(--glass-bg)' }, ticks: { font: { size: 9 } } },
                   x: { grid: { display: false }, ticks: { font: { size: 8 } } },
                 },
                 plugins: {

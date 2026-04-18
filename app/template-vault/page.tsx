@@ -170,17 +170,18 @@ export default function TemplateVault() {
       </div>
 
       {/* -- 2. SparkKpi Row -- */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8 stagger-children">
         <SparkKpi
           label="Templates Available"
           value={templates.length}
           sub="Across 6 categories"
           icon={LayoutTemplate}
           color={C.indigo}
+          size="lg"
+          accent
           sparkData={[6, 7, 8, 9, 10, 11, 12]}
           sparkColor={C.indigo}
           trend={{ value: 20, label: 'vs last quarter' }}
-          accent
         />
         <SparkKpi
           label="Avg Score"
@@ -188,10 +189,11 @@ export default function TemplateVault() {
           sub="Out of 100"
           icon={Star}
           color={C.amber}
+          size="lg"
+          accent
           sparkData={[68, 70, 72, 74, 76, 78, avgScore]}
           sparkColor={C.amber}
           trend={{ value: 5.2, label: 'improving' }}
-          accent
         />
         <SparkKpi
           label="Best Performer"
@@ -199,9 +201,10 @@ export default function TemplateVault() {
           sub={`Score: ${bestPerformer.score} | ${bestPerformer.openRate}% open rate`}
           icon={Award}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[85, 87, 89, 90, 92, 94, bestPerformer.score]}
           sparkColor={C.green}
-          accent
         />
         <SparkKpi
           label="Templates Used (30d)"
@@ -209,10 +212,11 @@ export default function TemplateVault() {
           sub={`of ${templates.length} total`}
           icon={Mail}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[5, 6, 7, 8, 8, 9, usedLast30]}
           sparkColor={C.blue}
           trend={{ value: 12.5, label: 'vs prior 30d' }}
-          accent
         />
       </div>
 

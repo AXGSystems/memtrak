@@ -192,7 +192,7 @@ export default function MemtrakAI() {
         animate: true,
       };
       setMessages(prev => [...prev, aiMsg]);
-    }, 1500 + Math.random() * 1000);
+    }, 2000);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

@@ -118,10 +118,11 @@ export default function RevenueTrace() {
           sub="All sent campaigns"
           icon={DollarSign}
           color={C.green}
+          size="lg"
+          accent
           sparkData={monthlyRevenueTrend.map((m) => m.revenue)}
           sparkColor={C.green}
           trend={{ value: 18.4, label: 'vs last quarter' }}
-          accent
         />
         <SparkKpi
           label="Revenue Per Send"
@@ -129,10 +130,11 @@ export default function RevenueTrace() {
           sub={`${totalSent.toLocaleString()} total sends`}
           icon={Send}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[28.2, 30.1, 32.5, 35.8, 38.2, 42.1, revenuePerSend]}
           sparkColor={C.blue}
           trend={{ value: 12.1, label: 'vs last month' }}
-          accent
         />
         <SparkKpi
           label="Top Campaign Revenue"
@@ -140,9 +142,10 @@ export default function RevenueTrace() {
           sub={topCampaign.name.length > 30 ? topCampaign.name.slice(0, 30) + '...' : topCampaign.name}
           icon={Trophy}
           color={C.gold}
+          size="lg"
+          accent
           sparkData={revenueCampaigns.slice(0, 7).map((c) => c.revenue).reverse()}
           sparkColor={C.gold}
-          accent
           detail={
             <div>
               <p className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>
@@ -178,6 +181,7 @@ export default function RevenueTrace() {
           sub="Multi-touch weighted"
           icon={Clock}
           color={C.purple}
+          size="lg"
           accent
           detail={
             <div>

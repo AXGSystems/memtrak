@@ -158,10 +158,11 @@ export default function AnomalyAlert() {
           sub="4 this week"
           icon={AlertTriangle}
           color={C.red}
+          size="lg"
+          accent
           sparkData={[2, 3, 1, 4, 2, 3, 5, 4, 3, 2, 4, 3]}
           sparkColor={C.red}
           trend={{ value: 15.4, label: 'vs last month' }}
-          accent
           detail={
             <div className="space-y-2">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -188,10 +189,11 @@ export default function AnomalyAlert() {
           sub="Requiring action"
           icon={AlertOctagon}
           color={C.orange}
+          size="lg"
+          accent
           sparkData={[1, 2, 1, 3, 2, 1, 2, 3, 2, 3]}
           sparkColor={C.orange}
           trend={{ value: -25, label: 'vs last week' }}
-          accent
         />
         <SparkKpi
           label="Avg Detection Time"
@@ -199,10 +201,11 @@ export default function AnomalyAlert() {
           sub="From event to alert"
           icon={Clock}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[8, 7, 6, 5.5, 5, 4.8, 4.5, 4.2]}
           sparkColor={C.blue}
           trend={{ value: -12.5, label: 'faster this month' }}
-          accent
         />
         <SparkKpi
           label="False Positive Rate"
@@ -210,10 +213,11 @@ export default function AnomalyAlert() {
           sub="Industry avg: 12%"
           icon={Shield}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[8, 7, 6.5, 5.8, 5.2, 4.5, 4.0, 3.8]}
           sparkColor={C.green}
           trend={{ value: -18.3, label: 'improving' }}
-          accent
         />
       </div>
 

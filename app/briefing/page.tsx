@@ -61,11 +61,11 @@ const bounceSpark = demoMonthly.map(m => parseFloat(((m.bounced / m.sent) * 100)
 /* ── Section label ──────────────────────────────────────── */
 function SectionLabel({ children }: { children: string }) {
   return (
-    <div
-      className="text-[10px] font-extrabold tracking-[2.5px] uppercase mb-4"
-      style={{ color: GOLD }}
-    >
-      {children}
+    <div className="flex items-center gap-3 mb-4">
+      <div className="px-4 py-2 rounded-xl" style={{ background: 'linear-gradient(135deg, color-mix(in srgb, var(--accent) 12%, transparent) 0%, color-mix(in srgb, var(--accent) 4%, transparent) 100%)', border: '1px solid color-mix(in srgb, var(--accent) 15%, transparent)' }}>
+        <span className="text-xs font-extrabold uppercase tracking-widest" style={{ color: GOLD }}>{children}</span>
+      </div>
+      <div className="flex-1 h-px" style={{ background: 'color-mix(in srgb, var(--accent) 15%, var(--card-border))' }} />
     </div>
   );
 }
@@ -353,6 +353,7 @@ export default function Briefing() {
             color={C.green}
             icon={Eye}
             accent
+            size="lg"
             trend={{ value: parseFloat((openRateSpark[openRateSpark.length - 1] - openRateSpark[openRateSpark.length - 2]).toFixed(1)), label: 'vs last month' }}
             detail={
               <div className="space-y-3">
@@ -379,6 +380,7 @@ export default function Briefing() {
             color={C.green}
             icon={MousePointerClick}
             accent
+            size="lg"
             trend={{ value: parseFloat((clickRateSpark[clickRateSpark.length - 1] - clickRateSpark[clickRateSpark.length - 2]).toFixed(1)), label: 'vs last month' }}
             detail={
               <div className="space-y-3">
@@ -409,6 +411,7 @@ export default function Briefing() {
             color={C.blue}
             icon={DollarSign}
             accent
+            size="lg"
             trend={{ value: parseFloat(((totals.totalRevenue - revenueSpark[2]) / revenueSpark[2] * 100).toFixed(1)), label: 'vs Mar' }}
             detail={
               <div className="space-y-3">
@@ -436,6 +439,7 @@ export default function Briefing() {
             color={parseFloat(bounceRate) > 3 ? C.red : C.green}
             icon={AlertOctagon}
             accent
+            size="lg"
             detail={
               <div className="space-y-2">
                 <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -692,11 +696,11 @@ export default function Briefing() {
               </tr>
             </thead>
             <tbody>
-              {[...sent].sort((a, b) => b.revenue - a.revenue).slice(0, 7).map((c) => {
+              {[...sent].sort((a, b) => b.revenue - a.revenue).slice(0, 7).map((c, i) => {
                 const or = (c.uniqueOpened / c.delivered * 100);
                 const orColor = or >= 50 ? C.green : or >= 35 ? C.blue : or >= 25 ? C.orange : C.red;
                 return (
-                  <tr key={c.id} style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                  <tr key={c.id} style={{ borderTop: '1px solid var(--glass-bg)', animation: `slideInUp 0.3s ease-out ${i * 0.05}s both` }}>
                     <td className="py-2.5 pr-3">
                       <span className="font-semibold text-[11px]" style={{ color: 'var(--heading)' }}>{c.name}</span>
                     </td>
@@ -751,18 +755,18 @@ export default function Briefing() {
       >
         <SectionLabel>Engagement Health</SectionLabel>
         <div className="space-y-3">
-          {engagementTiers.map(t => {
+          {engagementTiers.map((t, i) => {
             const TierIcon = t.icon;
             const pctOfTotal = (t.count / totalMembers * 100).toFixed(1);
             return (
-              <div key={t.label} className="flex items-center gap-3">
+              <div key={t.label} className="flex items-center gap-3" style={{ animation: `slideInUp 0.3s ease-out ${i * 0.05}s both` }}>
                 <TierIcon className="w-3.5 h-3.5 flex-shrink-0" style={{ color: t.color }} />
                 <div className="w-[130px] flex-shrink-0">
                   <span className="text-[11px] font-semibold" style={{ color: 'var(--heading)' }}>{t.label}</span>
                 </div>
                 <div className="flex-1">
                   <div className="relative" style={{ height: 22 }}>
-                    <div className="absolute inset-0 rounded-md" style={{ background: 'rgba(255,255,255,0.04)' }} />
+                    <div className="absolute inset-0 rounded-md" style={{ background: 'var(--glass-bg)' }} />
                     <div
                       className="absolute inset-y-0 left-0 rounded-md transition-all duration-700"
                       style={{ width: `${(t.count / maxTier) * 100}%`, background: t.color, opacity: 0.85 }}
@@ -820,10 +824,11 @@ export default function Briefing() {
               impact: '$278K',
               icon: Zap,
             },
-          ].map((action) => {
+          ].map((action, i) => {
             const ActionIcon = action.icon;
             return (
-              <Card key={action.title} glass accent={action.color}>
+              <div key={action.title} style={{ animation: `slideInUp 0.3s ease-out ${i * 0.05}s both` }}>
+              <Card glass accent={action.color}>
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-start gap-3">
                     <div
@@ -843,6 +848,7 @@ export default function Briefing() {
                   </div>
                 </div>
               </Card>
+              </div>
             );
           })}
         </div>
@@ -895,11 +901,11 @@ export default function Briefing() {
               </tr>
             </thead>
             <tbody>
-              {demoRelationships.map(r => {
+              {demoRelationships.map((r, i) => {
                 const replyColor = r.replyRate >= 50 ? C.green : r.replyRate >= 30 ? C.blue : C.orange;
                 const strengthColor = r.strength === 'Exceptional' ? C.green : r.strength === 'Strong' ? C.blue : C.orange;
                 return (
-                  <tr key={r.staff} style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                  <tr key={r.staff} style={{ borderTop: '1px solid var(--glass-bg)', animation: `slideInUp 0.3s ease-out ${i * 0.05}s both` }}>
                     <td className="py-2.5 pr-3">
                       <span className="font-semibold" style={{ color: 'var(--heading)' }}>{r.staff}</span>
                     </td>
@@ -935,7 +941,7 @@ export default function Briefing() {
         <SectionLabel>Optimal Send Windows</SectionLabel>
         <div className="space-y-2">
           {demoSendTimes.map(s => (
-            <div key={s.segment} className="flex items-center gap-3 py-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+            <div key={s.segment} className="flex items-center gap-3 py-2" style={{ borderBottom: '1px solid var(--glass-bg)' }}>
               <CalendarClock className="w-3.5 h-3.5 flex-shrink-0" style={{ color: s.openRate >= 50 ? C.green : C.blue }} />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
@@ -961,7 +967,7 @@ export default function Briefing() {
           MEMTrak &mdash; Email Intelligence Platform &mdash; American Land Title Association
         </p>
         <p className="text-[9px] mt-1" style={{ color: 'var(--text-muted)', opacity: 0.6 }}>
-          Generated {new Date().toLocaleString()} &mdash; Confidential: Internal Use Only &mdash; Data reflects campaigns processed through {date}
+          Generated {date} &mdash; Confidential: Internal Use Only &mdash; Data reflects campaigns processed through {date}
         </p>
       </div>
     </div>

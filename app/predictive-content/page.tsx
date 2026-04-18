@@ -139,16 +139,17 @@ export default function PredictiveContentPage() {
       </p>
 
       {/* ── 2. SparkKpi Row ────────────────────────────────── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 stagger-children">
         <SparkKpi
           label="Content Variants Active"
           value={12}
           icon={Layers}
           color={C.purple}
+          size="lg"
+          accent
           sparkData={[4, 5, 6, 8, 9, 10, 12]}
           sparkColor={C.purple}
           trend={{ value: 20, label: 'vs last month' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -178,10 +179,11 @@ export default function PredictiveContentPage() {
           value="4,994"
           icon={Users}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[3200, 3500, 3800, 4100, 4400, 4700, 4994]}
           sparkColor={C.blue}
           trend={{ value: 15.2, label: 'reach expansion' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -206,10 +208,11 @@ export default function PredictiveContentPage() {
           value="87%"
           icon={Target}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[68, 72, 75, 79, 82, 85, 87]}
           sparkColor={C.green}
           trend={{ value: 8.7, label: 'vs static baseline' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -224,10 +227,11 @@ export default function PredictiveContentPage() {
           value="+52%"
           icon={TrendingUp}
           color={C.amber}
+          size="lg"
+          accent
           sparkData={[18, 25, 30, 36, 42, 48, 52]}
           sparkColor={C.amber}
           trend={{ value: 52, label: 'conversion increase' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>

@@ -133,10 +133,11 @@ export default function ComplianceVault() {
           sub={`${passCount}/${totalChecks} requirements passing`}
           icon={ShieldCheck}
           color={complianceScore >= 90 ? C.green : complianceScore >= 70 ? C.amber : C.red}
+          size="lg"
+          accent
           sparkData={[82, 85, 88, 90, 88, 91, complianceScore]}
           sparkColor={C.emerald}
           trend={{ value: 2.1, label: 'vs last month' }}
-          accent
           detail={
             <div className="space-y-2">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -166,10 +167,11 @@ export default function ComplianceVault() {
           sub="Across all regulations"
           icon={Users}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[4600, 4680, 4720, 4780, 4810, 4840, activeConsents]}
           sparkColor={C.blue}
           trend={{ value: 1.8, label: 'net new this month' }}
-          accent
         />
         <SparkKpi
           label="Suppression List Size"
@@ -177,10 +179,11 @@ export default function ComplianceVault() {
           sub={`Last sync: ${suppressionStats.lastSync}`}
           icon={Database}
           color={C.orange}
+          size="lg"
+          accent
           sparkData={[380, 390, 400, 410, 418, 425, suppressionStats.total]}
           sparkColor={C.orange}
           trend={{ value: -3.2, label: 'growth rate slowing' }}
-          accent
           detail={
             <div className="space-y-2">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -207,10 +210,11 @@ export default function ComplianceVault() {
           sub="Internal compliance review"
           icon={Clock}
           color={daysSinceAudit <= 30 ? C.green : daysSinceAudit <= 60 ? C.amber : C.red}
+          size="lg"
+          accent
           sparkData={[45, 38, 30, 22, 18, 15, daysSinceAudit]}
           sparkColor={C.green}
           trend={{ value: 40, label: 'more frequent audits' }}
-          accent
         />
       </div>
 

@@ -170,10 +170,11 @@ export default function TrustScorePage() {
           value="72 / 100"
           icon={ShieldCheck}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={trendScores}
           sparkColor={C.blue}
           trend={{ value: 2.9, label: 'vs last quarter' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -193,10 +194,11 @@ export default function TrustScorePage() {
           value="1,800"
           icon={Users}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[1620, 1680, 1740, 1800]}
           sparkColor={C.green}
           trend={{ value: 5.1, label: 'vs last quarter' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -216,10 +218,11 @@ export default function TrustScorePage() {
           value="420"
           icon={AlertTriangle}
           color={C.orange}
+          size="lg"
+          accent
           sparkData={[480, 460, 440, 420]}
           sparkColor={C.orange}
           trend={{ value: -6.2, label: 'improving' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -239,10 +242,11 @@ export default function TrustScorePage() {
           value="$312K"
           icon={DollarSign}
           color={C.red}
+          size="lg"
+          accent
           sparkData={[340, 328, 318, 312]}
           sparkColor={C.red}
           trend={{ value: -8.2, label: 'improving' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -623,13 +627,13 @@ export default function TrustScorePage() {
               x: {
                 title: { display: true, text: 'Engagement Score', color: 'var(--text-muted)', font: { size: 11, weight: 'bold' as const } },
                 min: 0, max: 100,
-                grid: { color: 'rgba(255,255,255,0.05)' },
+                grid: { color: 'var(--glass-bg)' },
                 ticks: { color: 'var(--text-muted)' },
               },
               y: {
                 title: { display: true, text: 'Trust Score', color: 'var(--text-muted)', font: { size: 11, weight: 'bold' as const } },
                 min: 0, max: 100,
-                grid: { color: 'rgba(255,255,255,0.05)' },
+                grid: { color: 'var(--glass-bg)' },
                 ticks: { color: 'var(--text-muted)' },
               },
             },
@@ -646,8 +650,8 @@ export default function TrustScorePage() {
               // Quadrant lines
               annotation: {
                 annotations: {
-                  hLine: { type: 'line', yMin: 50, yMax: 50, borderColor: 'rgba(255,255,255,0.12)', borderWidth: 1, borderDash: [4, 4] },
-                  vLine: { type: 'line', xMin: 50, xMax: 50, borderColor: 'rgba(255,255,255,0.12)', borderWidth: 1, borderDash: [4, 4] },
+                  hLine: { type: 'line', yMin: 50, yMax: 50, borderColor: 'var(--glass-border)', borderWidth: 1, borderDash: [4, 4] },
+                  vLine: { type: 'line', xMin: 50, xMax: 50, borderColor: 'var(--glass-border)', borderWidth: 1, borderDash: [4, 4] },
                 },
               },
             },
@@ -723,7 +727,7 @@ export default function TrustScorePage() {
             scales: {
               y: {
                 min: 60, max: 80,
-                grid: { color: 'rgba(255,255,255,0.05)' },
+                grid: { color: 'var(--glass-bg)' },
                 ticks: { color: 'var(--text-muted)', stepSize: 5 },
               },
               x: {

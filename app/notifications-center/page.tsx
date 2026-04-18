@@ -163,12 +163,14 @@ export default function NotificationsCenter() {
   return (
     <div className="p-6 space-y-6" style={{ animation: 'fadeIn 0.4s ease-out' }}>
       {/* SparkKPIs */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-4 gap-4 stagger-children">
         <SparkKpi
           label="Unread"
           value={unreadCount}
           icon={Bell}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[8, 12, 6, 10, 4, 7, 9, 5, 3, 6, 4, unreadCount]}
           trend={{ value: -22.0, label: 'vs yesterday' }}
           sub="Notifications pending review"
@@ -178,16 +180,19 @@ export default function NotificationsCenter() {
           value={criticalCount}
           icon={AlertTriangle}
           color={C.red}
+          size="lg"
+          accent
           sparkData={[2, 1, 3, 2, 4, 1, 2, 3, 1, 2, 3, criticalCount]}
           trend={{ value: 50.0, label: 'vs yesterday' }}
           sub="Requires immediate attention"
-          accent
         />
         <SparkKpi
           label="Resolved Today"
           value={resolvedToday}
           icon={CheckCircle2}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[4, 6, 3, 5, 7, 4, 6, 5, 8, 6, 4, resolvedToday]}
           sub="Completed actions today"
         />
@@ -196,6 +201,8 @@ export default function NotificationsCenter() {
           value="2.4h"
           icon={Clock}
           color={C.purple}
+          size="lg"
+          accent
           sparkData={[4.2, 3.8, 3.1, 2.9, 3.5, 2.8, 2.6, 3.0, 2.2, 2.5, 2.3, 2.4]}
           trend={{ value: -18.5, label: 'vs last week' }}
           sub="Time to first action"

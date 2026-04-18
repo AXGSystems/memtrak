@@ -117,10 +117,11 @@ export default function FatigueShield() {
           sub="All active contacts"
           icon={Users}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[4200, 4350, 4500, 4620, 4750, 4880, 4994]}
           sparkColor={C.blue}
           trend={{ value: 3.2, label: 'vs last quarter' }}
-          accent
         />
         <SparkKpi
           label="Avg Emails/Week"
@@ -128,10 +129,11 @@ export default function FatigueShield() {
           sub="Per member across all channels"
           icon={Mail}
           color={C.teal}
+          size="lg"
+          accent
           sparkData={[2.8, 3.1, 3.4, 3.2, 3.6, 3.8, Number(avgEmailsWeek)]}
           sparkColor={C.teal}
           trend={{ value: -8.3, label: 'rising trend' }}
-          accent
         />
         <SparkKpi
           label="Fatigue Risk High"
@@ -139,10 +141,11 @@ export default function FatigueShield() {
           sub={`${fatigueMembers.length} members approaching threshold`}
           icon={AlertTriangle}
           color={C.red}
+          size="lg"
+          accent
           sparkData={[1, 1, 2, 2, 3, 3, highRisk]}
           sparkColor={C.red}
           trend={{ value: -33, label: 'new this week' }}
-          accent
           detail={
             <div className="space-y-2">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -164,10 +167,11 @@ export default function FatigueShield() {
           sub="This quarter via suppression"
           icon={Heart}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[8, 12, 18, 24, 31, 39, preventedUnsubs]}
           sparkColor={C.green}
           trend={{ value: 22.5, label: 'vs last quarter' }}
-          accent
           detail={
             <div className="space-y-2">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>

@@ -235,10 +235,11 @@ export default function BoardBrief() {
           sub="Top decile nationally"
           icon={TrendingUp}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[34.2, 35.8, 37.1, 38.5, 39.2, 40.1, Number(openRate)]}
           sparkColor={C.blue}
           trend={{ value: 5.2, label: 'vs last quarter' }}
-          accent
         />
         <SparkKpi
           label="Email Revenue"
@@ -246,10 +247,11 @@ export default function BoardBrief() {
           sub={`${totals.campaignCount} campaigns attributed`}
           icon={DollarSign}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[420, 480, 520, 560, 610, 645, totalRevenue / 1000]}
           sparkColor={C.green}
           trend={{ value: 12.8, label: 'growth' }}
-          accent
         />
         <SparkKpi
           label="Member Health"
@@ -257,10 +259,11 @@ export default function BoardBrief() {
           sub={`${demoHygiene.total.toLocaleString()} total contacts`}
           icon={Heart}
           color={C.purple}
+          size="lg"
+          accent
           sparkData={[72.1, 73.5, 74.8, 75.2, 76.0, 76.8, demoHygiene.healthy.pct]}
           sparkColor={C.purple}
           trend={{ value: 2.4, label: 'improving' }}
-          accent
         />
         <SparkKpi
           label="Cost Savings"
@@ -268,10 +271,11 @@ export default function BoardBrief() {
           sub="vs avg commercial platform"
           icon={Shield}
           color={C.gold}
+          size="lg"
+          accent
           sparkData={[28, 30, 32, 34, 35, 36, avgAlternativeCost / 1000]}
           sparkColor={C.gold}
           trend={{ value: 100, label: 'MEMTrak is $0' }}
-          accent
         />
       </div>
 

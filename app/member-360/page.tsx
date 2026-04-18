@@ -277,7 +277,7 @@ export default function Member360() {
       </div>
 
       {/* ── 4 SparkKpi Cards ─────────────────────────────────── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 stagger-children">
         <SparkKpi
           label="Open Rate"
           value={`${m.openRate}%`}
@@ -377,7 +377,7 @@ export default function Member360() {
           options={{
             plugins: { legend: { display: false } },
             scales: {
-              y: { min: 0, max: 60, grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: 'var(--text-muted)', callback: (v: number) => v + '%' } },
+              y: { min: 0, max: 60, grid: { color: 'var(--glass-bg)' }, ticks: { color: 'var(--text-muted)', callback: (v: number) => v + '%' } },
               x: { grid: { display: false }, ticks: { color: 'var(--text-muted)' } },
             },
           }}

@@ -203,10 +203,11 @@ export default function RiskMatrix() {
           sub="Across all categories"
           icon={Shield}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[6, 7, 7, 8, 9, 9, 10]}
           sparkColor={C.blue}
           trend={{ value: 11.1, label: 'new this quarter' }}
-          accent
         />
         <SparkKpi
           label="Critical Risks"
@@ -214,10 +215,11 @@ export default function RiskMatrix() {
           sub={`${criticalRisks} critical, ${highRisks} high`}
           icon={AlertTriangle}
           color={C.red}
+          size="lg"
+          accent
           sparkData={[2, 2, 3, 3, 3, 4, criticalRisks + highRisks]}
           sparkColor={C.red}
           trend={{ value: -25, label: 'need attention' }}
-          accent
           detail={
             <div className="space-y-2">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -240,10 +242,11 @@ export default function RiskMatrix() {
           sub="Total quantified risk"
           icon={DollarSign}
           color={C.orange}
+          size="lg"
+          accent
           sparkData={[2.1, 2.4, 2.8, 3.0, 3.2, 3.5, totalRevenueExposure / 1000000]}
           sparkColor={C.orange}
           trend={{ value: -8.4, label: 'growing exposure' }}
-          accent
         />
         <SparkKpi
           label="Mitigations Active"
@@ -251,10 +254,11 @@ export default function RiskMatrix() {
           sub={`of ${risks.length} risks addressed`}
           icon={CheckCircle}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[3, 4, 4, 5, 5, 6, mitigationsActive]}
           sparkColor={C.green}
           trend={{ value: 16.7, label: 'improving' }}
-          accent
         />
       </div>
 

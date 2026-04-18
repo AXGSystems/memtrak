@@ -130,10 +130,11 @@ export default function DataQuality() {
           sub="Overall data health"
           icon={ShieldCheck}
           color={C.green}
+          size="lg"
+          accent
           sparkData={trendScores}
           sparkColor={C.green}
           trend={{ value: 9.0, label: 'vs 6 months ago' }}
-          accent
         />
         <SparkKpi
           label="Issues Found"
@@ -141,10 +142,11 @@ export default function DataQuality() {
           sub="Across all dimensions"
           icon={AlertTriangle}
           color={C.red}
+          size="lg"
+          accent
           sparkData={[3200, 3050, 2900, 2780, 2700, totalIssues]}
           sparkColor={C.red}
           trend={{ value: -6.8, label: 'decreasing' }}
-          accent
         />
         <SparkKpi
           label="Records Cleaned (30d)"
@@ -152,10 +154,11 @@ export default function DataQuality() {
           sub="Automated + manual"
           icon={Sparkles}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[980, 1100, 1250, 1400, 1600, 1842]}
           sparkColor={C.blue}
           trend={{ value: 22.5, label: 'vs prior 30d' }}
-          accent
         />
         <SparkKpi
           label="Improvement Rate"
@@ -163,10 +166,11 @@ export default function DataQuality() {
           sub="Average monthly gain"
           icon={TrendingUp}
           color={C.purple}
+          size="lg"
+          accent
           sparkData={[0.8, 1.0, 1.2, 1.0, 1.5, 1.5]}
           sparkColor={C.purple}
           trend={{ value: 12.0, label: 'accelerating' }}
-          accent
         />
       </div>
 

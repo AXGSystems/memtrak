@@ -219,17 +219,18 @@ export default function SentimentPulse() {
       </div>
 
       {/* ── 2. SparkKpi Row ───────────────────────────────────── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8 stagger-children">
         <SparkKpi
           label="Overall Sentiment"
           value="7.2 / 10"
           sub="Across all channels"
           icon={Heart}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[6.8, 6.9, 7.0, 7.1, 7.0, 7.2]}
           sparkColor={C.green}
           trend={{ value: 5.9, label: 'vs last quarter' }}
-          accent
         />
         <SparkKpi
           label="Positive %"
@@ -237,10 +238,11 @@ export default function SentimentPulse() {
           sub="Of all interactions"
           icon={ThumbsUp}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[62, 63, 65, 66, 67, 68]}
           sparkColor={C.blue}
           trend={{ value: 3.0, label: 'vs last month' }}
-          accent
         />
         <SparkKpi
           label="Negative %"
@@ -248,10 +250,11 @@ export default function SentimentPulse() {
           sub="Needs attention"
           icon={ThumbsDown}
           color={C.red}
+          size="lg"
+          accent
           sparkData={[18, 17, 16, 16, 15, 14]}
           sparkColor={C.red}
           trend={{ value: 6.7, label: 'improving' }}
-          accent
         />
         <SparkKpi
           label="Trend Direction"
@@ -259,10 +262,11 @@ export default function SentimentPulse() {
           sub="+0.4 pts over 6 months"
           icon={TrendingUp}
           color={C.teal}
+          size="lg"
+          accent
           sparkData={[6.8, 6.9, 7.0, 7.1, 7.0, 7.2]}
           sparkColor={C.teal}
           trend={{ value: 5.9, label: 'steady climb' }}
-          accent
         />
       </div>
 

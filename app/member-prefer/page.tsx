@@ -114,10 +114,11 @@ export default function MemberPreferPage() {
           sub="51.4% of total membership"
           icon={Users}
           color={C.teal}
+          size="lg"
+          accent
           sparkData={[6200, 7100, 7800, 8400, 9000, 9460]}
           sparkColor={C.teal}
           trend={{ value: 14.2, label: 'vs last quarter' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -138,10 +139,11 @@ export default function MemberPreferPage() {
           sub="Among members with preferences set"
           icon={TrendingDown}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[4.2, 4.5, 3.2, 2.4, 2.1, 1.8]}
           sparkColor={C.green}
           trend={{ value: 12.5, label: 'vs last month' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -162,9 +164,10 @@ export default function MemberPreferPage() {
           sub="82% of members selected this topic"
           icon={CheckSquare}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[78, 79, 80, 80, 81, 82]}
           sparkColor={C.blue}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -185,9 +188,10 @@ export default function MemberPreferPage() {
           sub="64% prefer weekly or bi-weekly"
           icon={Clock}
           color={C.purple}
+          size="lg"
+          accent
           sparkData={[2.8, 2.6, 2.4, 2.2, 2.1, 2.0]}
           sparkColor={C.purple}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -463,7 +467,7 @@ export default function MemberPreferPage() {
                 scales: {
                   y: {
                     title: { display: true, text: 'Unsub Rate (%)', font: { size: 10 } },
-                    grid: { color: 'rgba(255,255,255,0.04)' },
+                    grid: { color: 'var(--glass-bg)' },
                     min: 0,
                     max: 6,
                   },

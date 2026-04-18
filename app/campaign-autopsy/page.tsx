@@ -227,10 +227,11 @@ export default function CampaignAutopsy() {
           sub="Sent campaigns with data"
           icon={BarChart3}
           color={C.indigo}
+          size="lg"
+          accent
           sparkData={[4, 5, 6, 7, 7, 8, campaignsAnalyzed]}
           sparkColor={C.indigo}
           trend={{ value: 12.5, label: 'vs last month' }}
-          accent
         />
         <SparkKpi
           label="Avg Score"
@@ -238,10 +239,11 @@ export default function CampaignAutopsy() {
           sub="Out of 100"
           icon={Award}
           color={avgScore >= 70 ? C.green : C.blue}
+          size="lg"
+          accent
           sparkData={[58, 62, 64, 67, 68, 70, avgScore]}
           sparkColor={avgScore >= 70 ? C.green : C.blue}
           trend={{ value: 8.4, label: 'improving trend' }}
-          accent
           detail={
             <div className="space-y-2">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -263,10 +265,11 @@ export default function CampaignAutopsy() {
           sub="+4.2pp from last quarter"
           icon={TrendingUp}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[6.8, 7.2, 7.8, 8.5, 9.1, 10.2, 11.0]}
           sparkColor={C.green}
           trend={{ value: 4.2, label: 'click rate lift' }}
-          accent
         />
         <SparkKpi
           label="Biggest Opportunity"
@@ -274,10 +277,11 @@ export default function CampaignAutopsy() {
           sub="3 campaigns under avg open rate"
           icon={Target}
           color={C.orange}
+          size="lg"
+          accent
           sparkData={[35, 33, 30, 28, 32, 29, 31]}
           sparkColor={C.orange}
           trend={{ value: -6.1, label: 'below benchmark' }}
-          accent
         />
       </div>
 

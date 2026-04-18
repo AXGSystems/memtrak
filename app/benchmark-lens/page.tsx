@@ -157,16 +157,17 @@ export default function BenchmarkLensPage() {
       </p>
 
       {/* ── 2. SparkKpi Row ────────────────────────────────── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 stagger-children">
         <SparkKpi
           label="Metrics Above Avg"
           value={`${aboveAvgCount} / ${benchmarks.length}`}
           icon={Award}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[3, 3, 4, 5, 5, 6, aboveAvgCount]}
           sparkColor={C.green}
           trend={{ value: 16.7, label: 'vs last quarter' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -194,9 +195,10 @@ export default function BenchmarkLensPage() {
           sub={`${gapPct(biggestGapMetric) > 0 ? '+' : ''}${gapPct(biggestGapMetric)}% vs industry`}
           icon={BarChart3}
           color={C.orange}
+          size="lg"
+          accent
           sparkData={biggestGapMetric.trend}
           sparkColor={C.orange}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -221,9 +223,10 @@ export default function BenchmarkLensPage() {
           sub={`+${Math.abs(gapPct(bestPerforming))}% above avg`}
           icon={Trophy}
           color={C.amber}
+          size="lg"
+          accent
           sparkData={bestPerforming.trend}
           sparkColor={C.amber}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -239,10 +242,11 @@ export default function BenchmarkLensPage() {
           sub="Among US trade associations"
           icon={Gauge}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[25, 22, 20, 18, 17, 16, 15]}
           sparkColor={C.blue}
           trend={{ value: 5, label: 'percentile improvement' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>

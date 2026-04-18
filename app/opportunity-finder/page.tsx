@@ -271,17 +271,18 @@ export default function OpportunityFinder() {
       </div>
 
       {/* -- 2. SparkKpi Row -- */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8 stagger-children">
         <SparkKpi
           label="Opportunities Found"
           value={opportunities.length}
           sub="AI-identified growth actions"
           icon={Lightbulb}
           color={C.emerald}
+          size="lg"
+          accent
           sparkData={[4, 5, 6, 7, 8, 9, 10]}
           sparkColor={C.emerald}
           trend={{ value: 25, label: 'vs last scan' }}
-          accent
         />
         <SparkKpi
           label="Total Revenue Potential"
@@ -289,10 +290,11 @@ export default function OpportunityFinder() {
           sub="Combined pipeline value"
           icon={DollarSign}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[1.2, 1.5, 1.8, 2.0, 2.2, 2.4, totalRevenue / 1000000]}
           sparkColor={C.green}
           trend={{ value: 18.4, label: 'growing pipeline' }}
-          accent
           detail={
             <div className="space-y-2">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -313,9 +315,10 @@ export default function OpportunityFinder() {
           sub="Opportunities above $200K"
           icon={Target}
           color={C.purple}
+          size="lg"
+          accent
           sparkData={[1, 2, 2, 3, 3, 3, highImpact]}
           sparkColor={C.purple}
-          accent
         />
         <SparkKpi
           label="Quick Wins"
@@ -323,10 +326,11 @@ export default function OpportunityFinder() {
           sub="Low effort, high confidence"
           icon={Zap}
           color={C.amber}
+          size="lg"
+          accent
           sparkData={[2, 2, 3, 3, 4, 4, quickWins]}
           sparkColor={C.amber}
           trend={{ value: 33, label: 'more than last month' }}
-          accent
         />
       </div>
 

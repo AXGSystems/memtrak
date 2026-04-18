@@ -238,16 +238,17 @@ export default function PerformancePulse() {
       </div>
 
       {/* -- 2. SparkKpi Row -- */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8 stagger-children">
         <SparkKpi
           label="Weekly Grade"
           value={overallGrade}
           sub={`Score: ${overallScore}/100`}
           icon={Award}
           color={gradeColor(overallGrade)}
+          size="lg"
+          accent
           sparkData={gradeHistory.map(g => g.score)}
           sparkColor={gradeColor(overallGrade)}
-          accent
           detail={
             <div className="space-y-2">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -269,10 +270,11 @@ export default function PerformancePulse() {
           sub={`+${bestMetric.delta}% this week`}
           icon={TrendingUp}
           color={C.green}
+          size="lg"
+          accent
           sparkData={bestMetric.sparkData}
           sparkColor={C.green}
           trend={{ value: bestMetric.delta, label: 'week-over-week' }}
-          accent
         />
         <SparkKpi
           label="Worst Metric"
@@ -280,10 +282,11 @@ export default function PerformancePulse() {
           sub={`${worstMetric.delta}% this week`}
           icon={TrendingDown}
           color={C.orange}
+          size="lg"
+          accent
           sparkData={worstMetric.sparkData}
           sparkColor={C.orange}
           trend={{ value: worstMetric.delta, label: 'week-over-week' }}
-          accent
         />
         <SparkKpi
           label="Week-over-Week Change"
@@ -291,9 +294,10 @@ export default function PerformancePulse() {
           sub="Average across all metrics"
           icon={BarChart3}
           color={avgDelta >= 0 ? C.blue : C.orange}
+          size="lg"
+          accent
           sparkData={[3.2, 4.1, 2.8, 5.2, 3.9, 6.1, avgDelta]}
           sparkColor={avgDelta >= 0 ? C.blue : C.orange}
-          accent
         />
       </div>
 

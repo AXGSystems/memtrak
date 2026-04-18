@@ -176,39 +176,43 @@ export default function ActivityTimelinePage() {
           value={eventsToday}
           icon={Zap}
           color={C.green}
+          size="lg"
+          accent
           sub={`Since midnight`}
           sparkData={[3, 5, 4, 6, 8, 7, eventsToday]}
           sparkColor={C.green}
           trend={{ value: 18, label: 'vs yesterday' }}
-          accent
         />
         <SparkKpi
           label="Events Per Hour"
           value={eventsPerHour}
           icon={TrendingUp}
           color={C.blue}
+          size="lg"
+          accent
           sub="Average rate today"
           sparkData={[0.8, 1.2, 1.0, 1.4, 1.6, 1.3, parseFloat(eventsPerHour)]}
           sparkColor={C.blue}
-          accent
         />
         <SparkKpi
           label="Most Active Campaign"
           value={mostActiveCampaign.length > 18 ? mostActiveCampaign.slice(0, 18) + '...' : mostActiveCampaign}
           icon={Send}
           color={C.purple}
-          sub={`${campaignCounts[mostActiveCampaign] || 0} events`}
+          size="lg"
           accent
+          sub={`${campaignCounts[mostActiveCampaign] || 0} events`}
         />
         <SparkKpi
           label="Top Event Type"
           value={topTypeLabel}
           icon={BarChart3}
           color={C.orange}
+          size="lg"
+          accent
           sub={`${topEventType?.[1] || 0} occurrences`}
           sparkData={[2, 3, 4, 3, 5, 4, topEventType?.[1] || 0]}
           sparkColor={C.orange}
-          accent
         />
       </div>
 

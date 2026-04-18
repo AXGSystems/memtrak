@@ -226,7 +226,7 @@ export default function AudienceBuilder() {
   }
 
   function loadSegment(seg: SavedSegment) {
-    setFilters(seg.filters.map((f) => ({ ...f, id: `f-${Date.now()}-${Math.random()}` })));
+    setFilters(seg.filters.map((f, i) => ({ ...f, id: `f-${Date.now()}-${i}` })));
   }
 
   return (
@@ -267,10 +267,11 @@ export default function AudienceBuilder() {
           sub="Reusable targeting segments"
           icon={Bookmark}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[2, 2, 3, 3, 4, 4, 5]}
           sparkColor={C.blue}
           trend={{ value: 25, label: 'this quarter' }}
-          accent
         />
         <SparkKpi
           label="Avg Segment Size"
@@ -278,10 +279,11 @@ export default function AudienceBuilder() {
           sub="Members per segment"
           icon={Users}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[980, 1020, 1100, 1150, 1200, 1250, 1274]}
           sparkColor={C.green}
           trend={{ value: 8.4, label: 'vs last quarter' }}
-          accent
         />
         <SparkKpi
           label="Largest Segment"
@@ -289,10 +291,11 @@ export default function AudienceBuilder() {
           sub="All Members"
           icon={Layers}
           color={C.purple}
+          size="lg"
+          accent
           sparkData={[4200, 4350, 4500, 4620, 4750, 4880, 4994]}
           sparkColor={C.purple}
           trend={{ value: 3.2, label: 'growing' }}
-          accent
         />
         <SparkKpi
           label="Most Used Segment"
@@ -300,10 +303,11 @@ export default function AudienceBuilder() {
           sub="Used in 8 campaigns"
           icon={Target}
           color={C.orange}
+          size="lg"
+          accent
           sparkData={[3, 4, 5, 5, 6, 7, 8]}
           sparkColor={C.orange}
           trend={{ value: 14.3, label: 'vs last quarter' }}
-          accent
         />
       </div>
 

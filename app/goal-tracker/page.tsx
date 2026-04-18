@@ -287,7 +287,7 @@ export default function GoalTracker() {
               {
                 label: '100% Target',
                 data: [100, 100, 100, 100],
-                borderColor: 'rgba(255,255,255,0.15)',
+                borderColor: 'var(--glass-border)',
                 borderDash: [6, 4],
                 backgroundColor: 'transparent',
                 tension: 0,
@@ -299,7 +299,7 @@ export default function GoalTracker() {
           options={{
             plugins: { legend: { display: true, position: 'bottom' as const, labels: { color: 'var(--text-muted)', usePointStyle: true, pointStyle: 'circle', padding: 14, font: { size: 10 } } } },
             scales: {
-              y: { min: 0, max: 110, grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: 'var(--text-muted)', callback: (v: number) => v + '%' } },
+              y: { min: 0, max: 110, grid: { color: 'var(--glass-bg)' }, ticks: { color: 'var(--text-muted)', callback: (v: number) => v + '%' } },
               x: { grid: { display: false }, ticks: { color: 'var(--text-muted)' } },
             },
           }}

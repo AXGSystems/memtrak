@@ -193,7 +193,7 @@ export default function TrendRadar() {
       </div>
 
       {/* ── Summary KPIs ─────────────────────────────────────── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 stagger-children">
         <SparkKpi label="Trends Detected" value={trends.length} icon={Radar} color="var(--accent)" sub="Active pattern signals" accent />
         <SparkKpi label="High Confidence" value={highConf} icon={CheckCircle2} color={C.green} sub="Actionable with certainty" accent />
         <SparkKpi label="Positive Trends" value={positiveCount} icon={TrendingUp} color={C.green} sub="Working in your favor" accent />
@@ -238,8 +238,8 @@ export default function TrendRadar() {
               r: {
                 beginAtZero: true,
                 max: 100,
-                grid: { color: 'rgba(255,255,255,0.06)' },
-                angleLines: { color: 'rgba(255,255,255,0.06)' },
+                grid: { color: 'var(--glass-bg)' },
+                angleLines: { color: 'var(--glass-bg)' },
                 pointLabels: { color: 'var(--text-muted)', font: { size: 10, weight: 'bold' as const } },
                 ticks: { display: false },
               },

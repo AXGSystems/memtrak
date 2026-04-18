@@ -221,10 +221,11 @@ export default function WhiteLabel() {
           sub="Organizations on platform"
           icon={Building2}
           color={C.teal}
+          size="lg"
+          accent
           sparkData={[1, 1, 2, 2, 3, 3]}
           sparkColor={C.teal}
           trend={{ value: 50, label: 'vs last quarter' }}
-          accent
         />
         <SparkKpi
           label="Total Members"
@@ -232,10 +233,11 @@ export default function WhiteLabel() {
           sub="Across all tenants"
           icon={Users}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[5200, 8400, 11200, 13800, 15200, 16694]}
           sparkColor={C.blue}
           trend={{ value: 28.4, label: 'vs last quarter' }}
-          accent
           detail={
             <div className="space-y-2">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -256,10 +258,11 @@ export default function WhiteLabel() {
           sub="Platform licensing fees"
           icon={DollarSign}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[4500, 6200, 8800, 10500, 11800, 12500]}
           sparkColor={C.green}
           trend={{ value: 34.2, label: 'vs last quarter' }}
-          accent
         />
         <SparkKpi
           label="Feature Adoption"
@@ -267,10 +270,11 @@ export default function WhiteLabel() {
           sub={`Avg ${avgFeatures} of 18 features used`}
           icon={BarChart3}
           color={C.purple}
+          size="lg"
+          accent
           sparkData={[60, 65, 70, 74, 78, 83]}
           sparkColor={C.purple}
           trend={{ value: 12.1, label: 'vs last quarter' }}
-          accent
         />
       </div>
 

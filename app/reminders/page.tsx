@@ -184,42 +184,46 @@ export default function RemindersPage() {
           value={active.length}
           icon={Bell}
           color={C.blue}
+          size="lg"
+          accent
           sub="Pending follow-ups"
           sparkData={[4, 5, 6, 5, 7, 6, active.length]}
           sparkColor={C.blue}
-          accent
         />
         <SparkKpi
           label="Overdue"
           value={overdue.length}
           icon={AlertTriangle}
           color={C.red}
+          size="lg"
+          accent
           sub="Needs immediate action"
           sparkData={[1, 0, 2, 1, 0, 1, overdue.length]}
           sparkColor={C.red}
           trend={overdue.length > 0 ? { value: overdue.length * 50, label: 'past due' } : undefined}
-          accent
         />
         <SparkKpi
           label="Due Today"
           value={active.filter(r => r.dueDate.startsWith('2026-04-14')).length}
           icon={Clock}
           color={C.orange}
+          size="lg"
+          accent
           sub="Reminders for today"
           sparkData={[2, 1, 3, 2, 1, 2, active.filter(r => r.dueDate.startsWith('2026-04-14')).length]}
           sparkColor={C.orange}
-          accent
         />
         <SparkKpi
           label="Completed This Week"
           value={completed.length}
           icon={CheckCircle2}
           color={C.green}
+          size="lg"
+          accent
           sub="Closed out successfully"
           sparkData={[1, 2, 1, 2, 3, 2, completed.length]}
           sparkColor={C.green}
           trend={{ value: 15, label: 'vs last week' }}
-          accent
         />
       </div>
 

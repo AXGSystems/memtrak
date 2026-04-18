@@ -143,9 +143,10 @@ export default function CollisionGuardPage() {
           sub="Across MEMTrak + Higher Logic"
           icon={Calendar}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[6, 5, 7, 9, 8, totalScheduled]}
           sparkColor={C.blue}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -167,10 +168,11 @@ export default function CollisionGuardPage() {
           sub={`${collisions.filter(c => c.severity === 'critical').length} critical, ${collisions.filter(c => c.severity === 'warning').length} warnings`}
           icon={AlertTriangle}
           color={C.red}
+          size="lg"
+          accent
           sparkData={[1, 2, 3, 2, 4, totalCollisions]}
           sparkColor={C.red}
           trend={{ value: -25, label: 'vs last week' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -191,9 +193,10 @@ export default function CollisionGuardPage() {
           sub="Would receive 2+ emails same day"
           icon={Users}
           color={C.orange}
+          size="lg"
+          accent
           sparkData={[1800, 2200, 3100, 2600, 3800, totalOverlap]}
           sparkColor={C.orange}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -208,10 +211,11 @@ export default function CollisionGuardPage() {
           sub="Collisions resolved in the last 30 days"
           icon={Zap}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[2, 3, 4, 3, 5, totalPrevented]}
           sparkColor={C.green}
           trend={{ value: 15, label: 'vs last month' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>

@@ -106,16 +106,17 @@ export default function DarkModeProofPage() {
       </p>
 
       {/* ── 2. SparkKpi Row ────────────────────────────────── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 stagger-children">
         <SparkKpi
           label="Clients Tested"
           value={8}
           icon={Monitor}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[5, 5, 6, 6, 7, 8, 8]}
           sparkColor={C.blue}
           trend={{ value: 14.3, label: 'vs last quarter' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -137,10 +138,11 @@ export default function DarkModeProofPage() {
           value="35%"
           icon={Moon}
           color={C.purple}
+          size="lg"
+          accent
           sparkData={[22, 24, 27, 29, 30, 33, 35]}
           sparkColor={C.purple}
           trend={{ value: 8.2, label: 'YoY increase' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -166,10 +168,11 @@ export default function DarkModeProofPage() {
           value={3}
           icon={AlertTriangle}
           color={C.orange}
+          size="lg"
+          accent
           sparkData={[8, 7, 6, 5, 5, 4, 3]}
           sparkColor={C.orange}
           trend={{ value: -25, label: 'vs last campaign' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -197,10 +200,11 @@ export default function DarkModeProofPage() {
           value="94/100"
           icon={Eye}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[82, 84, 87, 89, 91, 93, 94]}
           sparkColor={C.green}
           trend={{ value: 4.4, label: 'vs last quarter' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -258,7 +262,7 @@ export default function DarkModeProofPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Light Mode Preview */}
           <div className="rounded-xl overflow-hidden border" style={{ borderColor: 'var(--card-border)' }}>
-            <div className="flex items-center gap-2 px-3 py-2 border-b" style={{ background: 'rgba(255,255,255,0.05)', borderColor: 'var(--card-border)' }}>
+            <div className="flex items-center gap-2 px-3 py-2 border-b" style={{ background: 'var(--glass-bg)', borderColor: 'var(--card-border)' }}>
               <Sun className="w-3.5 h-3.5" style={{ color: C.amber }} />
               <span className="text-[10px] font-bold" style={{ color: 'var(--heading)' }}>Light Mode</span>
             </div>
@@ -297,7 +301,7 @@ export default function DarkModeProofPage() {
 
           {/* Dark Mode Preview */}
           <div className="rounded-xl overflow-hidden border" style={{ borderColor: 'var(--card-border)' }}>
-            <div className="flex items-center gap-2 px-3 py-2 border-b" style={{ background: 'rgba(255,255,255,0.05)', borderColor: 'var(--card-border)' }}>
+            <div className="flex items-center gap-2 px-3 py-2 border-b" style={{ background: 'var(--glass-bg)', borderColor: 'var(--card-border)' }}>
               <Moon className="w-3.5 h-3.5" style={{ color: C.purple }} />
               <span className="text-[10px] font-bold" style={{ color: 'var(--heading)' }}>Dark Mode</span>
             </div>

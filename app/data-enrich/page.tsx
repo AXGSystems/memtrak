@@ -239,10 +239,11 @@ export default function DataEnrich() {
           sub="Of 18,400 total members"
           icon={UserCheck}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[11200, 12100, 13000, 13800, 14280]}
           sparkColor={C.green}
           trend={{ value: 12.4, label: 'vs last month' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -266,10 +267,11 @@ export default function DataEnrich() {
           sub="Average across all tracked fields"
           icon={BarChart3}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[58, 62, 64, 66, 68, overallCompleteness]}
           sparkColor={C.blue}
           trend={{ value: 8.2, label: 'vs last quarter' }}
-          accent
         />
         <SparkKpi
           label="Fields Added This Month"
@@ -277,10 +279,11 @@ export default function DataEnrich() {
           sub="Individual data points enriched in April"
           icon={Layers}
           color={C.purple}
+          size="lg"
+          accent
           sparkData={[5200, 6100, 7400, 8764]}
           sparkColor={C.purple}
           trend={{ value: 18.4, label: 'vs last month' }}
-          accent
         />
         <SparkKpi
           label="Enrichment Sources"
@@ -288,9 +291,10 @@ export default function DataEnrich() {
           sub="Active integrations syncing data"
           icon={Zap}
           color={C.amber}
+          size="lg"
+          accent
           sparkData={[2, 2, 3, 3, 3]}
           sparkColor={C.amber}
-          accent
         />
       </div>
 

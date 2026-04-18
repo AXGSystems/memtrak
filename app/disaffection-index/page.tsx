@@ -177,9 +177,10 @@ export default function DisaffectionIndex() {
           sub={`${getBand(Math.round(overallIndex)).label} range`}
           icon={Shield}
           color={getBand(Math.round(overallIndex)).color}
+          size="lg"
+          accent
           sparkData={trendValues}
           sparkColor={getBand(Math.round(overallIndex)).color}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -207,6 +208,8 @@ export default function DisaffectionIndex() {
           sub={`of ${demoCampaigns.length} total`}
           icon={Activity}
           color={C.blue}
+          size="lg"
+          accent
         />
         <SparkKpi
           label="Highest Risk"
@@ -214,6 +217,7 @@ export default function DisaffectionIndex() {
           sub={worstCampaign.name.length > 28 ? worstCampaign.name.slice(0, 28) + '...' : worstCampaign.name}
           icon={AlertTriangle}
           color={worstCampaign.band.color}
+          size="lg"
           accent
           detail={
             <div className="space-y-3">
@@ -242,6 +246,8 @@ export default function DisaffectionIndex() {
           sub={trendChange <= 0 ? 'Improving (lower is better)' : 'Increasing — investigate'}
           icon={trendChange <= 0 ? TrendingDown : TrendingUp}
           color={trendChange <= 0 ? C.green : C.red}
+          size="lg"
+          accent
           trend={{ value: trendChange <= 0 ? Math.abs(trendChange) : -Math.abs(trendChange), label: 'vs last month' }}
           sparkData={trendValues}
           sparkColor={trendChange <= 0 ? C.green : C.red}

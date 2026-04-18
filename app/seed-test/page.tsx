@@ -198,10 +198,11 @@ export default function SeedTest() {
           sub="PFL Compliance — April Wave 3"
           icon={ShieldCheck}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[83, 86, 87, 91, 92, 87, 89]}
           sparkColor={C.green}
           trend={{ value: 2.3, label: 'vs previous test' }}
-          accent
           detail={
             <div className="space-y-3">
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -225,10 +226,11 @@ export default function SeedTest() {
           sub="Weighted average across all providers"
           icon={Inbox}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[84, 85, 86, 87, 87, 88, overallPlacement]}
           sparkColor={C.blue}
           trend={{ value: 3.1, label: 'vs last month' }}
-          accent
         />
         <SparkKpi
           label="Spam Folder %"
@@ -236,10 +238,11 @@ export default function SeedTest() {
           sub="Average spam rate across providers"
           icon={AlertTriangle}
           color={overallSpam <= 8 ? C.amber : C.red}
+          size="lg"
+          accent
           sparkData={[12, 10, 9, 8, 9, 8, overallSpam]}
           sparkColor={C.amber}
           trend={{ value: -5.2, label: 'vs last month' }}
-          accent
         />
         <SparkKpi
           label="Tests Run This Month"
@@ -247,10 +250,11 @@ export default function SeedTest() {
           sub="Pre-send seed tests completed"
           icon={BarChart3}
           color={C.navy}
+          size="lg"
+          accent
           sparkData={[5, 6, 7, 6, 8]}
           sparkColor={C.navy}
           trend={{ value: 14.3, label: 'vs last month' }}
-          accent
         />
       </div>
 

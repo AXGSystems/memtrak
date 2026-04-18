@@ -286,17 +286,18 @@ export default function CompetitorRadarPage() {
       </div>
 
       {/* ── 2. SparkKpi Row ───────────────────────────────────── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8 stagger-children">
         <SparkKpi
           label="Features Ahead"
           value={`+${featuresAhead}`}
           sub="vs next-best competitor"
           icon={Trophy}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[2, 2, 3, 3, 3, 4, featuresAhead]}
           sparkColor={C.green}
           trend={{ value: 33, label: 'vs last audit' }}
-          accent
         />
         <SparkKpi
           label="Annual Savings"
@@ -304,10 +305,11 @@ export default function CompetitorRadarPage() {
           sub="vs avg competitor cost"
           icon={DollarSign}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[28000, 30000, 32000, 34000, 35000, 36000, annualSavings]}
           sparkColor={C.blue}
           trend={{ value: 8.2, label: 'vs last year' }}
-          accent
         />
         <SparkKpi
           label="Unique Features"
@@ -315,10 +317,11 @@ export default function CompetitorRadarPage() {
           sub="No competitor offers"
           icon={Star}
           color={C.orange}
+          size="lg"
+          accent
           sparkData={[2, 2, 3, 3, 4, 4, uniqueFeatures]}
           sparkColor={C.orange}
           trend={{ value: 33, label: 'new this year' }}
-          accent
         />
         <SparkKpi
           label="Market Position"
@@ -326,10 +329,11 @@ export default function CompetitorRadarPage() {
           sub="For association email"
           icon={Award}
           color={C.purple}
+          size="lg"
+          accent
           sparkData={[3, 3, 2, 2, 1, 1, 1]}
           sparkColor={C.purple}
           trend={{ value: 100, label: 'moved to top' }}
-          accent
         />
       </div>
 

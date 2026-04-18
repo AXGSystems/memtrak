@@ -220,17 +220,18 @@ export default function ConversionFunnel() {
       </div>
 
       {/* ── 2. SparkKpi Row ───────────────────────────────────── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8 stagger-children">
         <SparkKpi
           label="Overall Conversion"
           value={`${overallConversion}%`}
           sub="List to conversion"
           icon={Target}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[3.8, 4.0, 4.2, 4.4, 4.6, 4.8, 5.3]}
           sparkColor={C.green}
           trend={{ value: 10.4, label: 'vs last quarter' }}
-          accent
         />
         <SparkKpi
           label="Biggest Drop-off"
@@ -238,10 +239,11 @@ export default function ConversionFunnel() {
           sub="56.8% lost at this stage"
           icon={AlertTriangle}
           color={C.red}
+          size="lg"
+          accent
           sparkData={[62, 60, 59, 58, 57, 57, 56.8]}
           sparkColor={C.red}
           trend={{ value: 3.2, label: 'improving' }}
-          accent
         />
         <SparkKpi
           label="Best Converting Type"
@@ -249,10 +251,11 @@ export default function ConversionFunnel() {
           sub="23.6% sent-to-converted"
           icon={Zap}
           color={C.purple}
+          size="lg"
+          accent
           sparkData={[18, 19, 20, 21, 22, 23, 23.6]}
           sparkColor={C.purple}
           trend={{ value: 8.1, label: 'vs last quarter' }}
-          accent
         />
         <SparkKpi
           label="Revenue Per Subscriber"
@@ -260,10 +263,11 @@ export default function ConversionFunnel() {
           sub="Total revenue / list size"
           icon={DollarSign}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[28, 30, 32, 33, 34, 35, 36.58]}
           sparkColor={C.blue}
           trend={{ value: 12.8, label: 'vs last quarter' }}
-          accent
         />
       </div>
 

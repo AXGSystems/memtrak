@@ -141,17 +141,18 @@ export default function RetentionMap() {
       </div>
 
       {/* ── 2. SparkKpi Row ───────────────────────────────────── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8 stagger-children">
         <SparkKpi
           label="Overall Retention"
           value="84.3%"
           sub="Across all member types"
           icon={Shield}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[80.1, 81.4, 82.0, 82.8, 83.2, 83.9, 84.3]}
           sparkColor={C.blue}
           trend={{ value: 1.4, label: 'vs last year' }}
-          accent
         />
         <SparkKpi
           label="Best Segment"
@@ -159,10 +160,11 @@ export default function RetentionMap() {
           sub="Underwriter retention"
           icon={Award}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[96, 96.5, 97, 97.2, 97.5, 97.8, 98]}
           sparkColor={C.green}
           trend={{ value: 0.3, label: 'vs last year' }}
-          accent
         />
         <SparkKpi
           label="Worst Segment"
@@ -170,10 +172,11 @@ export default function RetentionMap() {
           sub="Real estate broker agents"
           icon={AlertTriangle}
           color={C.red}
+          size="lg"
+          accent
           sparkData={[78, 77, 76, 75, 74, 73, 72]}
           sparkColor={C.red}
           trend={{ value: -4.2, label: 'vs last year' }}
-          accent
         />
         <SparkKpi
           label="Year-1 Retention"
@@ -181,10 +184,11 @@ export default function RetentionMap() {
           sub="First-year member retention"
           icon={Target}
           color={C.orange}
+          size="lg"
+          accent
           sparkData={[68, 70, 71, 72, 73, 74, 76]}
           sparkColor={C.orange}
           trend={{ value: 3.8, label: 'vs last year' }}
-          accent
         />
       </div>
 

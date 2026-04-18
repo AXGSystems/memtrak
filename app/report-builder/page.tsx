@@ -389,12 +389,14 @@ export default function ReportBuilder() {
   return (
     <div className="p-6 space-y-6" style={{ animation: 'fadeIn 0.4s ease-out' }}>
       {/* SparkKPIs */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-4 gap-4 stagger-children">
         <SparkKpi
           label="Reports Generated"
           value={47}
           icon={FileText}
           color={C.blue}
+          size="lg"
+          accent
           sparkData={[12, 15, 10, 18, 14, 22, 17, 20, 24, 19, 28, 31]}
           trend={{ value: 18.5, label: 'vs last month' }}
           sub="This quarter"
@@ -404,6 +406,8 @@ export default function ReportBuilder() {
           value="5.2"
           icon={BarChart3}
           color={C.green}
+          size="lg"
+          accent
           sparkData={[4, 5, 4, 6, 5, 5, 6, 5, 4, 6, 5, 5]}
           trend={{ value: 4.0, label: 'vs last month' }}
           sub="Most include 4-7 sections"
@@ -413,6 +417,8 @@ export default function ReportBuilder() {
           value="Executive"
           icon={Briefcase}
           color={C.gold}
+          size="lg"
+          accent
           sparkData={[42, 44, 40, 45, 43, 47, 44, 46, 47, 45, 46, 47]}
           sub="Included in 94% of reports"
         />
@@ -421,6 +427,8 @@ export default function ReportBuilder() {
           value="2h ago"
           icon={Clock}
           color={C.purple}
+          size="lg"
+          accent
           sparkData={[1, 3, 2, 1, 4, 2, 3, 1, 2, 3, 2, 1]}
           sub="Board Meeting template"
         />
