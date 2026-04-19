@@ -5,6 +5,7 @@ import Card from '@/components/Card';
 import SparkKpi from '@/components/SparkKpi';
 import ClientChart from '@/components/ClientChart';
 import ProgressRing from '@/components/ProgressRing';
+import AnimatedCounter from '@/components/AnimatedCounter';
 import { demoDecayAlerts, demoChurnScores } from '@/lib/demo-data';
 import {
   Radio,
@@ -217,7 +218,7 @@ export default function DecayRadar() {
         </div>
 
         <div className="space-y-3">
-          {demoDecayAlerts.map((alert) => {
+          {demoDecayAlerts.map((alert, i) => {
             const tc = trendConfig[alert.trend] || trendConfig.Stable;
             const isExpanded = expandedAlert === alert.org;
             const action = alertActions[alert.org] || 'Monitor engagement patterns.';
@@ -225,8 +226,9 @@ export default function DecayRadar() {
             return (
               <div
                 key={alert.email}
-                className="rounded-xl border overflow-hidden transition-all duration-200 hover:translate-y-[-1px]"
+                className="rounded-xl border overflow-hidden transition-all duration-200 hover:translate-y-[-2px]"
                 style={{
+                  animation: `slideInUp 0.3s ease-out ${i * 0.06}s both`,
                   background: 'var(--card)',
                   borderColor: isExpanded ? tc.color : 'var(--card-border)',
                   borderLeftWidth: '4px',
@@ -315,7 +317,7 @@ export default function DecayRadar() {
                     {/* Revenue + expand */}
                     <div className="text-right flex-shrink-0 flex flex-col items-end gap-1">
                       <div className="text-lg font-extrabold" style={{ color: C.red }}>
-                        ${alert.revenue.toLocaleString()}
+                        $<AnimatedCounter value={alert.revenue} />
                       </div>
                       <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
                         annual revenue at risk
@@ -433,6 +435,7 @@ export default function DecayRadar() {
 
       {/* ── 4. Decay Timeline Chart ───────────────────────────── */}
       <Card
+        glass
         title="Engagement Decay Timeline"
         subtitle="90-day rolling open rate for top 3 at-risk members"
         className="mb-8"
@@ -537,6 +540,7 @@ export default function DecayRadar() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* ── 5. How DecayRadar Works ──────────────────────────── */}
         <Card
+          glass
           title="How DecayRadar Works"
           subtitle="The algorithm behind the alerts"
           detailTitle="DecayRadar Algorithm"
@@ -636,6 +640,7 @@ export default function DecayRadar() {
 
         {/* ── 6. Revenue Impact Summary ────────────────────────── */}
         <Card
+          glass
           title="Revenue Impact by Severity"
           subtitle="Total annual revenue at risk per decay tier"
           detailTitle="Revenue Impact Analysis"

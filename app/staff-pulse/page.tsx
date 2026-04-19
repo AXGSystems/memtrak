@@ -5,6 +5,7 @@ import Card from '@/components/Card';
 import SparkKpi from '@/components/SparkKpi';
 import ClientChart from '@/components/ClientChart';
 import ProgressRing from '@/components/ProgressRing';
+import AnimatedCounter from '@/components/AnimatedCounter';
 import { demoRelationships } from '@/lib/demo-data';
 import { Users, Mail, Zap, Trophy, ArrowRight, Lightbulb, Network, BarChart3 } from 'lucide-react';
 
@@ -266,6 +267,7 @@ export default function StaffPulse() {
 
       {/* ── 3. Staff Scoreboard ────────────────────────────────────── */}
       <Card
+        glass
         title="Staff Scoreboard"
         subtitle="Individual performance across all outreach channels"
         className="mb-6"
@@ -285,12 +287,13 @@ export default function StaffPulse() {
         }
       >
         <div className="space-y-3">
-          {staffProfiles.map((s) => (
+          {staffProfiles.map((s, i) => (
             <div
               key={s.name}
               onClick={() => setSelectedStaff(selectedStaff?.name === s.name ? null : s)}
-              className="rounded-xl border p-4 transition-all duration-200 hover:translate-y-[-1px] cursor-pointer"
+              className="rounded-xl border p-4 transition-all duration-200 hover:translate-y-[-2px] cursor-pointer"
               style={{
+                animation: `slideInUp 0.3s ease-out ${i * 0.06}s both`,
                 background: selectedStaff?.name === s.name
                   ? 'color-mix(in srgb, var(--accent) 8%, var(--card))'
                   : 'var(--input-bg)',
@@ -320,11 +323,11 @@ export default function StaffPulse() {
                 {/* Metrics */}
                 <div className="flex items-center gap-6 flex-wrap">
                   <div className="text-center">
-                    <div className="text-xs font-extrabold" style={{ color: 'var(--heading)' }}>{s.outreach}</div>
+                    <div className="text-xs font-extrabold" style={{ color: 'var(--heading)' }}><AnimatedCounter value={s.outreach} /></div>
                     <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Outreach</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-xs font-extrabold" style={{ color: strengthColors[s.strength] }}>{s.replyRate}%</div>
+                    <div className="text-xs font-extrabold" style={{ color: strengthColors[s.strength] }}><AnimatedCounter value={s.replyRate} suffix="%" /></div>
                     <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Reply Rate</div>
                   </div>
                   <div className="text-center">
@@ -380,6 +383,7 @@ export default function StaffPulse() {
 
       {/* ── 4. Relationship Matrix ─────────────────────────────────── */}
       <Card
+        glass
         title="Relationship Routing Matrix"
         subtitle="Staff vs member type reply rates \u2014 the routing visualization"
         className="mb-6"
@@ -409,8 +413,8 @@ export default function StaffPulse() {
               </tr>
             </thead>
             <tbody>
-              {staffProfiles.map(s => (
-                <tr key={s.name}>
+              {staffProfiles.map((s, i) => (
+                <tr key={s.name} style={{ animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
                   <td className="py-2 px-3 font-semibold whitespace-nowrap" style={{ color: 'var(--heading)' }}>
                     {s.name}
                   </td>
@@ -463,6 +467,7 @@ export default function StaffPulse() {
 
         {/* Outreach Distribution Chart */}
         <Card
+          glass
           title="Outreach Distribution"
           subtitle="Volume by staff member"
           detailTitle="Outreach Volume Analysis"
@@ -515,6 +520,7 @@ export default function StaffPulse() {
 
         {/* Routing Recommendations */}
         <Card
+          glass
           title="Routing Recommendations"
           subtitle="Auto-generated from relationship intelligence"
           accent={C.blue}
@@ -538,7 +544,7 @@ export default function StaffPulse() {
             {recommendations.map((rec, i) => {
               const Icon = rec.icon;
               return (
-                <div key={i} className="flex items-start gap-3 p-3 rounded-xl transition-all duration-200 hover:translate-x-1" style={{ background: 'var(--input-bg)' }}>
+                <div key={i} className="flex items-start gap-3 p-3 rounded-xl transition-all duration-200 hover:translate-x-1" style={{ background: 'var(--input-bg)', animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
                   <div
                     className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
                     style={{ background: `color-mix(in srgb, ${rec.color} 15%, transparent)` }}
@@ -563,6 +569,7 @@ export default function StaffPulse() {
 
       {/* ── 7. How StaffPulse Works ────────────────────────────────── */}
       <Card
+        glass
         title="How StaffPulse Works"
         subtitle="The algorithm behind relationship intelligence"
         accent={C.purple}

@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import Card from '@/components/Card';
 import SparkKpi from '@/components/SparkKpi';
 import ClientChart from '@/components/ClientChart';
 import ProgressRing from '@/components/ProgressRing';
+import AnimatedCounter from '@/components/AnimatedCounter';
 import {
   DollarSign,
   TrendingUp,
@@ -29,40 +30,6 @@ const C = {
   purple: '#a855f7',
   teal: '#14b8a6',
 };
-
-/* ── AnimatedCounter (useEffect-safe) ────────────────── */
-function AnimatedCounter({ target, prefix = '', suffix = '', duration = 2000 }: {
-  target: number;
-  prefix?: string;
-  suffix?: string;
-  duration?: number;
-}) {
-  const [count, setCount] = useState(0);
-  const frameRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    const start = performance.now();
-    function animate(now: number) {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.round(eased * target));
-      if (progress < 1) {
-        frameRef.current = requestAnimationFrame(animate);
-      }
-    }
-    frameRef.current = requestAnimationFrame(animate);
-    return () => {
-      if (frameRef.current) cancelAnimationFrame(frameRef.current);
-    };
-  }, [target, duration]);
-
-  return (
-    <span>
-      {prefix}{count.toLocaleString()}{suffix}
-    </span>
-  );
-}
 
 /* ── Cost breakdown data ─────────────────────────────── */
 const costBreakdown = [
@@ -220,10 +187,10 @@ export default function ROIDashboard() {
 
       {/* ── 3. Hero ROI Display ───────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        <Card title="Overall ROI" subtitle="Return for every $1 invested">
+        <Card glass title="Overall ROI" subtitle="Return for every $1 invested">
           <div className="flex flex-col items-center py-6">
             <div className="text-5xl font-extrabold mb-1" style={{ color: C.green }}>
-              $<AnimatedCounter target={overallROI} />
+              $<AnimatedCounter value={overallROI} />
             </div>
             <div className="text-sm font-bold" style={{ color: 'var(--text-muted)' }}>
               for every <span style={{ color: 'var(--heading)' }}>$1</span> spent
@@ -251,7 +218,7 @@ export default function ROIDashboard() {
           </div>
         </Card>
 
-        <Card title="Cost Breakdown" subtitle="MEMTrak annual investment" className="lg:col-span-2">
+        <Card glass title="Cost Breakdown" subtitle="MEMTrak annual investment" className="lg:col-span-2">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             {costBreakdown.map((c) => (
               <div
@@ -305,6 +272,7 @@ export default function ROIDashboard() {
 
       {/* ── 4. Cost Savings vs Alternatives ───────────────────── */}
       <Card
+        glass
         title="Cost Savings vs Alternatives"
         subtitle="Monthly and annual savings compared to each competitor"
         className="mb-8"
@@ -392,6 +360,7 @@ export default function ROIDashboard() {
       {/* ── 5. ROI Waterfall + Comparison ─────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <Card
+          glass
           title="ROI Waterfall"
           subtitle="How each component contributes to total value"
           detailTitle="Value Component Breakdown"
@@ -476,6 +445,7 @@ export default function ROIDashboard() {
         </Card>
 
         <Card
+          glass
           title="ROI Comparison"
           subtitle="MEMTrak vs industry and competitors"
           detailTitle="ROI Benchmark Analysis"
@@ -546,6 +516,7 @@ export default function ROIDashboard() {
 
       {/* ── 6. Per-Campaign ROI Table ─────────────────────────── */}
       <Card
+        glass
         title="Per-Campaign ROI"
         subtitle="Revenue and ROI for each tracked campaign"
         className="mb-8"
@@ -594,11 +565,11 @@ export default function ROIDashboard() {
               </tr>
             </thead>
             <tbody>
-              {campaignROI.map((c) => (
+              {campaignROI.map((c, i) => (
                 <tr
                   key={c.campaign}
                   className="border-b cursor-pointer transition-all hover:bg-[var(--input-bg)]"
-                  style={{ borderColor: 'var(--card-border)' }}
+                  style={{ borderColor: 'var(--card-border)', animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}
                   onClick={() => setSelectedCampaign(c)}
                 >
                   <td className="py-3 px-2 font-semibold" style={{ color: 'var(--heading)' }}>
@@ -726,6 +697,7 @@ export default function ROIDashboard() {
 
       {/* ── 7. 5-Year Projection Chart ────────────────────────── */}
       <Card
+        glass
         title="5-Year Value Projection"
         subtitle="Projected cumulative value with 10% annual growth"
         detailTitle="Projection Methodology"

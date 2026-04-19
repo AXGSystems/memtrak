@@ -5,6 +5,7 @@ import Card from '@/components/Card';
 import ClientChart from '@/components/ClientChart';
 import ProgressRing from '@/components/ProgressRing';
 import SparkKpi from '@/components/SparkKpi';
+import AnimatedCounter from '@/components/AnimatedCounter';
 import { exportCSV } from '@/lib/export-utils';
 import {
   ShieldCheck, Heart, TrendingUp, TrendingDown, Minus,
@@ -267,6 +268,7 @@ export default function TrustScorePage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Doughnut */}
         <Card
+          glass
           title="Trust Score Distribution"
           subtitle={`${totalMembers.toLocaleString()} scored members across 5 trust tiers`}
           detailTitle="Trust Score Distribution — Full Breakdown"
@@ -316,6 +318,7 @@ export default function TrustScorePage() {
 
         {/* Trust Framework */}
         <Card
+          glass
           title="Trust Equation Framework"
           subtitle="Credibility + Reliability + Intimacy - Self-Orientation"
           detailTitle="The Trust Equation — How TrustScore Works"
@@ -379,6 +382,7 @@ export default function TrustScorePage() {
 
       {/* ── 5. Per-Member Trust Table ─────────────────────── */}
       <Card
+        glass
         title="Per-Member Trust Scoreboard"
         subtitle="Trust factor breakdown for each member organization"
         detailTitle="Per-Member Trust Analysis"
@@ -448,11 +452,11 @@ export default function TrustScorePage() {
               </tr>
             </thead>
             <tbody>
-              {memberTrust.map(m => (
+              {memberTrust.map((m, i) => (
                 <tr
                   key={m.org}
-                  className="cursor-pointer transition-colors"
-                  style={{ borderBottom: '1px solid var(--card-border)' }}
+                  className="cursor-pointer transition-colors hover:translate-y-[-2px]"
+                  style={{ borderBottom: '1px solid var(--card-border)', animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}
                   onClick={() => setSelectedMember(m)}
                 >
                   <td className="py-2.5 font-semibold" style={{ color: 'var(--heading)' }}>
@@ -567,6 +571,7 @@ export default function TrustScorePage() {
 
       {/* ── 6. Trust vs Engagement Scatter ────────────────── */}
       <Card
+        glass
         title="Trust vs. Engagement — They Are Not the Same"
         subtitle="Some members engage heavily but don't trust you. Others trust deeply but engage quietly."
         detailTitle="Understanding the Trust-Engagement Gap"
@@ -676,6 +681,7 @@ export default function TrustScorePage() {
 
       {/* ── 7. Trust Trend Over Time ──────────────────────── */}
       <Card
+        glass
         title="Org-Wide Trust Trend"
         subtitle="Average TrustScore over the past 4 months"
         detailTitle="Trust Trend Analysis"
@@ -751,6 +757,7 @@ export default function TrustScorePage() {
 
       {/* ── 8. TrustScore vs Engagement Scoring ──────────── */}
       <Card
+        glass
         title="How TrustScore Differs from Engagement Scoring"
         subtitle="Why measuring trust matters more than measuring clicks"
         detailTitle="TrustScore vs. Engagement Scoring — Full Comparison"
@@ -797,7 +804,7 @@ export default function TrustScorePage() {
         <div className="space-y-4">
           {/* Comparison grid */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="rounded-xl p-4" style={{ background: 'rgba(232,146,63,0.06)', border: '1px solid rgba(232,146,63,0.15)' }}>
+            <div className="rounded-xl p-4 transition-all duration-200 hover:translate-y-[-2px]" style={{ background: 'rgba(232,146,63,0.06)', border: '1px solid rgba(232,146,63,0.15)' }}>
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: 'rgba(232,146,63,0.15)' }}>
                   <Users className="w-3 h-3" style={{ color: C.orange }} />
@@ -808,7 +815,7 @@ export default function TrustScorePage() {
                 Activity-based. Did they open? Did they click? How many times? Treats all interactions as positive signals regardless of intent or sentiment.
               </p>
             </div>
-            <div className="rounded-xl p-4" style={{ background: 'rgba(74,144,217,0.06)', border: '1px solid rgba(74,144,217,0.15)' }}>
+            <div className="rounded-xl p-4 transition-all duration-200 hover:translate-y-[-2px]" style={{ background: 'rgba(74,144,217,0.06)', border: '1px solid rgba(74,144,217,0.15)' }}>
               <div className="flex items-center gap-2 mb-2">
                 <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ background: 'rgba(74,144,217,0.15)' }}>
                   <ShieldCheck className="w-3 h-3" style={{ color: C.blue }} />

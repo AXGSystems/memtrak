@@ -6,6 +6,7 @@ import SparkKpi from '@/components/SparkKpi';
 import ClientChart from '@/components/ClientChart';
 import { MiniBar } from '@/components/SparkKpi';
 import PulsingMeter from '@/components/PulsingMeter';
+import AnimatedCounter from '@/components/AnimatedCounter';
 import {
   Server,
   Activity,
@@ -247,36 +248,36 @@ export default function SystemDashboard() {
       {/* -- 3. System Health Meter + Performance Metrics -- */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         {/* PulsingMeter */}
-        <Card title="Overall System Health" subtitle="Real-time aggregate health score">
+        <Card glass title="Overall System Health" subtitle="Real-time aggregate health score">
           <div className="flex justify-center py-4">
             <PulsingMeter value={healthPct} label="Health" color={C.green} size="lg" />
           </div>
         </Card>
 
         {/* Performance Metrics */}
-        <Card title="Performance Metrics" subtitle="Current system performance indicators" className="lg:col-span-2">
+        <Card glass title="Performance Metrics" subtitle="Current system performance indicators" className="lg:col-span-2">
           <div className="grid grid-cols-2 gap-4">
             <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
               <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Avg Response Time</div>
-              <div className="text-xl font-extrabold" style={{ color: C.blue }}>{avgResponseTime}ms</div>
+              <div className="text-xl font-extrabold" style={{ color: C.blue }}><AnimatedCounter value={avgResponseTime} suffix="ms" /></div>
               <MiniBar value={avgResponseTime} max={200} color={C.blue} height={3} />
               <div className="text-[8px] mt-1" style={{ color: 'var(--text-muted)' }}>Target: under 200ms</div>
             </div>
             <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
               <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Peak Load</div>
-              <div className="text-xl font-extrabold" style={{ color: C.purple }}>{peakLoad} req/min</div>
+              <div className="text-xl font-extrabold" style={{ color: C.purple }}><AnimatedCounter value={peakLoad} suffix=" req/min" /></div>
               <MiniBar value={peakLoad} max={1000} color={C.purple} height={3} />
               <div className="text-[8px] mt-1" style={{ color: 'var(--text-muted)' }}>Capacity: 1,000 req/min</div>
             </div>
             <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
               <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Cache Hit Rate</div>
-              <div className="text-xl font-extrabold" style={{ color: C.teal }}>{cacheHitRate}%</div>
+              <div className="text-xl font-extrabold" style={{ color: C.teal }}><AnimatedCounter value={cacheHitRate} suffix="%" decimals={1} /></div>
               <MiniBar value={cacheHitRate} max={100} color={C.teal} height={3} />
               <div className="text-[8px] mt-1" style={{ color: 'var(--text-muted)' }}>Target: above 90%</div>
             </div>
             <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
               <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Error Rate</div>
-              <div className="text-xl font-extrabold" style={{ color: errorRate < 0.1 ? C.green : C.red }}>{errorRate}%</div>
+              <div className="text-xl font-extrabold" style={{ color: errorRate < 0.1 ? C.green : C.red }}><AnimatedCounter value={errorRate} suffix="%" decimals={2} /></div>
               <MiniBar value={errorRate} max={1} color={errorRate < 0.1 ? C.green : C.red} height={3} />
               <div className="text-[8px] mt-1" style={{ color: 'var(--text-muted)' }}>Target: under 0.1%</div>
             </div>
@@ -286,6 +287,7 @@ export default function SystemDashboard() {
 
       {/* -- 4. API Endpoints -- */}
       <Card
+        glass
         title={`API Endpoints (${apiEndpoints.length})`}
         subtitle="All endpoints healthy — response times under 200ms"
         className="mb-8"
@@ -307,7 +309,7 @@ export default function SystemDashboard() {
       >
         <div className="space-y-1.5">
           {apiEndpoints.slice(0, showEndpoints ? undefined : 6).map((ep, i) => (
-            <div key={i} className="flex items-center gap-3 py-1.5">
+            <div key={i} className="flex items-center gap-3 py-1.5" style={{ animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
               <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: statusColors[ep.status] }} />
               <span className="text-[10px] font-mono font-semibold flex-shrink-0 w-10" style={{ color: 'var(--text-muted)' }}>{ep.method}</span>
               <span className="text-[10px] font-mono flex-1 truncate" style={{ color: 'var(--heading)' }}>{ep.path}</span>
@@ -332,7 +334,7 @@ export default function SystemDashboard() {
       {/* -- 5. Database + Email Tracking -- */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Database */}
-        <Card title="Database (Supabase)" subtitle="Primary event store">
+        <Card glass title="Database (Supabase)" subtitle="Primary event store">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <div className="w-3 h-3 rounded-full" style={{ background: C.green }} />
@@ -341,7 +343,7 @@ export default function SystemDashboard() {
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
                 <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Events Stored</div>
-                <div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>{eventsProcessed.toLocaleString()}</div>
+                <div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}><AnimatedCounter value={eventsProcessed} /></div>
               </div>
               <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
                 <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Storage Used</div>
@@ -359,10 +361,10 @@ export default function SystemDashboard() {
         </Card>
 
         {/* Email Tracking */}
-        <Card title="Email Tracking Endpoints" subtitle="Pixel, logo, click, confirm, and receipt tracking">
+        <Card glass title="Email Tracking Endpoints" subtitle="Pixel, logo, click, confirm, and receipt tracking">
           <div className="space-y-3">
             {trackingEndpoints.map((te, i) => (
-              <div key={i} className="flex items-center justify-between py-2 border-b" style={{ borderColor: 'var(--card-border)' }}>
+              <div key={i} className="flex items-center justify-between py-2 border-b" style={{ borderColor: 'var(--card-border)', animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full" style={{ background: statusColors[te.status] }} />
                   <div>
@@ -382,6 +384,7 @@ export default function SystemDashboard() {
 
       {/* -- 6. Integrations -- */}
       <Card
+        glass
         title="Integrations"
         subtitle="Third-party service connections and sync status"
         className="mb-8"
@@ -391,7 +394,7 @@ export default function SystemDashboard() {
             const sColor = statusColors[ig.status];
             const StatusIcon = ig.status === 'connected' ? CheckCircle2 : ig.status === 'pending' ? Clock : XCircle;
             return (
-              <div key={i} className="rounded-lg p-4" style={{ background: 'var(--input-bg)', borderLeft: `3px solid ${sColor}` }}>
+              <div key={i} className="rounded-lg p-4 transition-all duration-200 hover:translate-y-[-2px]" style={{ background: 'var(--input-bg)', borderLeft: `3px solid ${sColor}`, animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-2">
                     <StatusIcon className="w-4 h-4" style={{ color: sColor }} />
@@ -416,6 +419,7 @@ export default function SystemDashboard() {
 
       {/* -- 7. Uptime Bar -- */}
       <Card
+        glass
         title={`Uptime: ${uptime}% (30 Days)`}
         subtitle="Green = fully operational | Yellow = partial outage | Red = down"
         className="mb-8"
@@ -442,13 +446,14 @@ export default function SystemDashboard() {
 
       {/* -- 8. Error Log -- */}
       <Card
+        glass
         title={`Error Log (${errorRate}% error rate)`}
         subtitle="Last 5 errors across all endpoints"
         className="mb-8"
       >
         <div className="space-y-2">
           {errorLog.map((err, i) => (
-            <div key={i} className="rounded-lg p-3" style={{ background: 'var(--input-bg)', borderLeft: `3px solid ${err.code >= 500 ? C.red : C.orange}` }}>
+            <div key={i} className="rounded-lg p-3" style={{ background: 'var(--input-bg)', borderLeft: `3px solid ${err.code >= 500 ? C.red : C.orange}`, animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2">
                   <span
@@ -472,6 +477,7 @@ export default function SystemDashboard() {
 
       {/* -- 9. API Latency Chart -- */}
       <Card
+        glass
         title="API Response Time Distribution"
         subtitle="Average response time per endpoint"
         className="mb-8"

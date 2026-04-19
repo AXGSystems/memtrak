@@ -3,6 +3,7 @@
 import ClientChart from '@/components/ClientChart';
 import Card from '@/components/Card';
 import ProgressRing from '@/components/ProgressRing';
+import AnimatedCounter from '@/components/AnimatedCounter';
 import { demoHygiene } from '@/lib/demo-data';
 
 const C = { green: '#8CC63F', orange: '#E8923F', red: '#D94A4A', navy: '#1B3A5C', blue: '#4A90D9' };
@@ -15,30 +16,30 @@ export default function Hygiene() {
 
       {/* Health Rings — bigger, better spacing */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 stagger-children">
-        <Card className="p-5 flex flex-col items-center text-center" title="Healthy Addresses" detailTitle="Healthy Addresses" detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>These {h.healthy.count.toLocaleString()} addresses have valid DNS, no bounce history, and recent engagement activity. They represent {h.healthy.pct}% of your total list and are safe to send to.</p></div>}>
+        <Card glass className="p-5 flex flex-col items-center text-center" title="Healthy Addresses" detailTitle="Healthy Addresses" detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>These {h.healthy.count.toLocaleString()} addresses have valid DNS, no bounce history, and recent engagement activity. They represent {h.healthy.pct}% of your total list and are safe to send to.</p></div>}>
           <ProgressRing value={h.healthy.pct} max={100} size={80} color={C.green} />
           <div className="mt-3">
-            <div className="text-sm font-bold" style={{ color: 'var(--heading)' }}>{h.healthy.count.toLocaleString()}</div>
+            <div className="text-sm font-bold" style={{ color: 'var(--heading)' }}><AnimatedCounter value={h.healthy.count} /></div>
             <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Healthy addresses</div>
           </div>
         </Card>
-        <Card className="p-5 flex flex-col items-center text-center" title="Stale Addresses" detailTitle="Stale Addresses" detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>These {h.stale.count.toLocaleString()} addresses have not opened or clicked any email in 6+ months. A re-engagement campaign can recover ~15% of stale addresses. The rest should be suppressed to protect deliverability.</p></div>}>
+        <Card glass className="p-5 flex flex-col items-center text-center" title="Stale Addresses" detailTitle="Stale Addresses" detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>These {h.stale.count.toLocaleString()} addresses have not opened or clicked any email in 6+ months. A re-engagement campaign can recover ~15% of stale addresses. The rest should be suppressed to protect deliverability.</p></div>}>
           <ProgressRing value={h.stale.pct} max={100} size={80} color={C.orange} />
           <div className="mt-3">
-            <div className="text-sm font-bold text-amber-400">{h.stale.count.toLocaleString()}</div>
+            <div className="text-sm font-bold text-amber-400"><AnimatedCounter value={h.stale.count} /></div>
             <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Stale (6 months+)</div>
           </div>
         </Card>
-        <Card className="p-5 flex flex-col items-center text-center" title="Hard Bounced" detailTitle="Hard Bounced" detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>These {h.bounced.count} addresses have permanently failed delivery (invalid mailbox or domain not found). They should be removed immediately as continued sending damages your sender reputation.</p></div>}>
+        <Card glass className="p-5 flex flex-col items-center text-center" title="Hard Bounced" detailTitle="Hard Bounced" detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>These {h.bounced.count} addresses have permanently failed delivery (invalid mailbox or domain not found). They should be removed immediately as continued sending damages your sender reputation.</p></div>}>
           <ProgressRing value={h.bounced.pct} max={100} size={80} color={C.red} />
           <div className="mt-3">
-            <div className="text-sm font-bold text-red-400">{h.bounced.count}</div>
+            <div className="text-sm font-bold text-red-400"><AnimatedCounter value={h.bounced.count} /></div>
             <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Hard bounced</div>
           </div>
         </Card>
-        <Card className="p-5 flex flex-col items-center text-center" title="Projected Delivery" detailTitle="Projected Delivery Rate" detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>After removing invalid and bounced addresses and running a re-engagement campaign, the projected delivery rate improves from {h.currentDelivery}% to {h.projectedDelivery}%. This means approximately 480 more emails reaching inboxes per campaign.</p></div>}>
+        <Card glass className="p-5 flex flex-col items-center text-center" title="Projected Delivery" detailTitle="Projected Delivery Rate" detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>After removing invalid and bounced addresses and running a re-engagement campaign, the projected delivery rate improves from {h.currentDelivery}% to {h.projectedDelivery}%. This means approximately 480 more emails reaching inboxes per campaign.</p></div>}>
           <div className="relative w-[80px] h-[80px] flex items-center justify-center">
-            <div className="text-2xl font-extrabold text-green-400">{h.projectedDelivery}%</div>
+            <div className="text-2xl font-extrabold text-green-400"><AnimatedCounter value={h.projectedDelivery} suffix="%" decimals={1} /></div>
           </div>
           <div className="mt-3">
             <div className="text-sm font-bold" style={{ color: 'var(--heading)' }}>After Cleanup</div>
@@ -48,7 +49,7 @@ export default function Hygiene() {
       </div>
 
       {/* Doughnut — with better sizing */}
-      <Card title="Address Health Distribution" subtitle="All 18,400 addresses categorized" className="mb-6" detailTitle="Health Analysis" detailContent={<div><p className="text-xs" style={{ color: "var(--text-muted)" }}>A clean list improves deliverability for everyone. Removing 900 invalid+bounced addresses and re-engaging 15% of stale addresses could improve delivery rate from 96.2% to 98.8% — meaning 480 more emails reaching inboxes per campaign.</p></div>}>
+      <Card glass title="Address Health Distribution" subtitle="All 18,400 addresses categorized" className="mb-6" detailTitle="Health Analysis" detailContent={<div><p className="text-xs" style={{ color: "var(--text-muted)" }}>A clean list improves deliverability for everyone. Removing 900 invalid+bounced addresses and re-engaging 15% of stale addresses could improve delivery rate from 96.2% to 98.8% — meaning 480 more emails reaching inboxes per campaign.</p></div>}>
         <h3 className="text-xs font-bold mb-1" style={{ color: 'var(--heading)' }}>Address Health Distribution</h3>
         <p className="text-[10px] mb-3" style={{ color: 'var(--text-muted)' }}>{h.total.toLocaleString()} total addresses in the system</p>
         <div className="max-w-md mx-auto">
@@ -57,7 +58,7 @@ export default function Hygiene() {
       </Card>
 
       {/* Improvement projection */}
-      <Card title="Delivery Rate Projection" subtitle="Projected improvement after each cleanup step" className="mb-6" detailTitle="Projection Analysis" detailContent={<div><p className="text-xs" style={{ color: "var(--text-muted)" }}>Each cleanup step incrementally improves your delivery rate. Removing invalid addresses yields the largest single improvement (+1.2%), followed by bounce cleanup (+0.7%). The re-engagement campaign recovers approximately 420 stale addresses, representing ~$63K in annual revenue at risk.</p></div>}>
+      <Card glass title="Delivery Rate Projection" subtitle="Projected improvement after each cleanup step" className="mb-6" detailTitle="Projection Analysis" detailContent={<div><p className="text-xs" style={{ color: "var(--text-muted)" }}>Each cleanup step incrementally improves your delivery rate. Removing invalid addresses yields the largest single improvement (+1.2%), followed by bounce cleanup (+0.7%). The re-engagement campaign recovers approximately 420 stale addresses, representing ~$63K in annual revenue at risk.</p></div>}>
         <h3 className="text-xs font-bold mb-3" style={{ color: 'var(--heading)' }}>Delivery Rate Projection</h3>
         <ClientChart type="bar" height={200} data={{
           labels: ['Current', 'After Invalid Removal', 'After Bounce Cleanup', 'After Re-engagement', 'Target'],
@@ -74,7 +75,7 @@ export default function Hygiene() {
       </Card>
 
       {/* Cleanup Actions */}
-      <Card className="p-5 border-l-4 border-l-[#8CC63F]" title="Recommended Cleanup Actions" subtitle="Priority-ordered steps to improve list health" detailTitle="Cleanup Plan" detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>This cleanup plan follows industry best practices: remove known-bad addresses first, then re-engage dormant contacts, and finally purge non-responders. Expected outcome: bounce rate drops by ~5%, delivery rate improves to 98.8%, and ~$63K in at-risk revenue is recovered through re-engagement.</p></div>}>
+      <Card glass className="p-5 border-l-4 border-l-[#8CC63F]" title="Recommended Cleanup Actions" subtitle="Priority-ordered steps to improve list health" detailTitle="Cleanup Plan" detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>This cleanup plan follows industry best practices: remove known-bad addresses first, then re-engage dormant contacts, and finally purge non-responders. Expected outcome: bounce rate drops by ~5%, delivery rate improves to 98.8%, and ~$63K in at-risk revenue is recovered through re-engagement.</p></div>}>
         <h3 className="text-xs font-bold mb-3" style={{ color: 'var(--heading)' }}>Recommended Cleanup Actions</h3>
         <div className="space-y-2">
           {[
@@ -84,7 +85,7 @@ export default function Hygiene() {
             { action: 'Verify 80 risky addresses', impact: 'Protect domain reputation', when: 'This month', color: 'bg-amber-500/20 text-amber-400' },
             { action: 'Purge non-responders after 30 days', impact: 'Clean list benefits everyone', when: 'Next month', color: 'bg-blue-500/20 text-blue-400' },
           ].map((r, i) => (
-            <div key={i} className="flex items-center justify-between p-3.5 rounded-lg transition-colors" style={{ background: 'var(--input-bg)' }}>
+            <div key={i} className="flex items-center justify-between p-3.5 rounded-lg transition-all duration-200 hover:translate-y-[-2px]" style={{ background: 'var(--input-bg)', animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
               <div className="flex-1">
                 <div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{r.action}</div>
                 <div className="text-[10px] text-green-400 mt-0.5">{r.impact}</div>

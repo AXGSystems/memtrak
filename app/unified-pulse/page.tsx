@@ -5,6 +5,7 @@ import { Layers, Zap, BarChart3, Activity, CheckCircle, XCircle, MinusCircle, In
 import Card from '@/components/Card';
 import SparkKpi, { MiniBar } from '@/components/SparkKpi';
 import ClientChart from '@/components/ClientChart';
+import AnimatedCounter from '@/components/AnimatedCounter';
 import { demoCampaigns, demoMonthly, type DemoCampaign } from '@/lib/demo-data';
 
 /* ── Palette ──────────────────────────────────────────────── */
@@ -265,10 +266,11 @@ export default function UnifiedPulsePage() {
             statusColor: C.amber,
             desc: 'Staff-logged sends with self-reported open data. No automated tracking.',
           },
-        ]).map(platform => {
+        ]).map((platform, i) => {
           const Icon = SOURCE_ICONS[platform.name];
           return (
             <Card
+              glass
               key={platform.name}
               title={platform.name}
               subtitle={platform.desc}
@@ -324,15 +326,15 @@ export default function UnifiedPulsePage() {
                 <div className="grid grid-cols-3 gap-3">
                   <div>
                     <div className="text-[9px] uppercase tracking-wider mb-0.5" style={{ color: 'var(--text-muted)' }}>Campaigns</div>
-                    <div className="text-base font-extrabold" style={{ color: 'var(--heading)' }}>{platform.stats.count}</div>
+                    <div className="text-base font-extrabold" style={{ color: 'var(--heading)' }}><AnimatedCounter value={platform.stats.count} /></div>
                   </div>
                   <div>
                     <div className="text-[9px] uppercase tracking-wider mb-0.5" style={{ color: 'var(--text-muted)' }}>Delivered</div>
-                    <div className="text-base font-extrabold" style={{ color: 'var(--heading)' }}>{platform.stats.totalSent.toLocaleString()}</div>
+                    <div className="text-base font-extrabold" style={{ color: 'var(--heading)' }}><AnimatedCounter value={platform.stats.totalSent} /></div>
                   </div>
                   <div>
                     <div className="text-[9px] uppercase tracking-wider mb-0.5" style={{ color: 'var(--text-muted)' }}>Open Rate</div>
-                    <div className="text-base font-extrabold" style={{ color: SOURCE_COLORS[platform.name] }}>{platform.stats.avgOpenRate.toFixed(1)}%</div>
+                    <div className="text-base font-extrabold" style={{ color: SOURCE_COLORS[platform.name] }}><AnimatedCounter value={parseFloat(platform.stats.avgOpenRate.toFixed(1))} suffix="%" decimals={1} /></div>
                   </div>
                 </div>
                 <MiniBar value={platform.stats.avgOpenRate} color={SOURCE_COLORS[platform.name]} />
@@ -344,6 +346,7 @@ export default function UnifiedPulsePage() {
 
       {/* ── 4. Unified Timeline ───────────────────────────── */}
       <Card
+        glass
         title="Unified Timeline"
         subtitle="All campaigns across all sources, sorted by date"
         className="mb-6"
@@ -382,7 +385,7 @@ export default function UnifiedPulsePage() {
             const color = SOURCE_COLORS[c.source];
             const openRate = c.delivered > 0 ? ((c.uniqueOpened / c.delivered) * 100).toFixed(1) : '0.0';
             return (
-              <div key={c.id} className="relative pb-4 last:pb-0">
+              <div key={c.id} className="relative pb-4 last:pb-0" style={{ animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
                 {/* dot */}
                 <div
                   className="absolute -left-6 top-1.5 w-[10px] h-[10px] rounded-full border-2"
@@ -420,7 +423,7 @@ export default function UnifiedPulsePage() {
 
       {/* ── 5. Source Comparison Charts ────────────────────── */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <Card title="Volume by Source" subtitle="Total emails delivered per platform">
+        <Card glass title="Volume by Source" subtitle="Total emails delivered per platform">
           <div className="mt-2">
             <ClientChart
               type="bar"
@@ -461,7 +464,7 @@ export default function UnifiedPulsePage() {
           </div>
         </Card>
 
-        <Card title="Open Rate by Source" subtitle="Which platform performs best">
+        <Card glass title="Open Rate by Source" subtitle="Which platform performs best">
           <div className="mt-2">
             <ClientChart
               type="bar"
@@ -509,6 +512,7 @@ export default function UnifiedPulsePage() {
 
       {/* ── 6. Platform Coverage Matrix ───────────────────── */}
       <Card
+        glass
         title="Platform Coverage Matrix"
         subtitle="What each connected platform can track"
         className="mb-6"
@@ -550,7 +554,7 @@ export default function UnifiedPulsePage() {
             </thead>
             <tbody>
               {coverageMatrix.map((row, i) => (
-                <tr key={row.capability} className="border-b" style={{ borderColor: 'var(--card-border)' }}>
+                <tr key={row.capability} className="border-b" style={{ borderColor: 'var(--card-border)', animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
                   <td className="py-2.5 pr-4 font-semibold" style={{ color: 'var(--heading)' }}>{row.capability}</td>
                   <td className="py-2.5 px-3 text-center">
                     <div className="flex items-center justify-center gap-1.5">
@@ -579,6 +583,7 @@ export default function UnifiedPulsePage() {
 
       {/* ── 7. Unified Metrics Over Time ──────────────────── */}
       <Card
+        glass
         title="Unified Metrics Over Time"
         subtitle="Combined sends and opens across all platforms by month"
         className="mb-6"
@@ -637,7 +642,7 @@ export default function UnifiedPulsePage() {
       </Card>
 
       {/* ── 8. Why UnifiedPulse Matters ───────────────────── */}
-      <Card className="mb-6">
+      <Card glass className="mb-6">
         <div className="flex items-start gap-4">
           <div
             className="flex items-center justify-center w-10 h-10 rounded-xl flex-shrink-0 mt-0.5"
