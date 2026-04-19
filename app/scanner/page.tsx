@@ -15,6 +15,7 @@ export default function Scanner() {
   const [form, setForm] = useState({ org: '', address: '', reason: 'Return to Sender — No such address' });
   const [result, setResult] = useState<string | null>(null);
   const [hasFile, setHasFile] = useState(false);
+  const [returnStatuses, setReturnStatuses] = useState<Record<string, string>>({});
   const fileRef = useRef<HTMLInputElement>(null);
 
   const submit = async () => {
@@ -77,14 +78,14 @@ export default function Scanner() {
           </div>
 
           <div className="flex gap-2 pt-2" style={{ borderTop: '1px solid var(--card-border)' }}>
-            <button className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[10px] font-semibold bg-green-500/10 text-green-400 hover:bg-green-500/20 transition-colors">
-              <ShieldCheck className="w-3 h-3" /> Verify
+            <button onClick={() => setReturnStatuses(prev => ({ ...prev, [r.id]: 'Verified' }))} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[10px] font-semibold bg-green-500/10 text-green-400 hover:bg-green-500/20 transition-colors">
+              <ShieldCheck className="w-3 h-3" /> {returnStatuses[r.id] === 'Verified' ? 'Verified' : 'Verify'}
             </button>
-            <button className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[10px] font-semibold bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 transition-colors">
-              <XCircle className="w-3 h-3" /> Dismiss
+            <button onClick={() => setReturnStatuses(prev => ({ ...prev, [r.id]: 'Dismissed' }))} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[10px] font-semibold bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 transition-colors">
+              <XCircle className="w-3 h-3" /> {returnStatuses[r.id] === 'Dismissed' ? 'Dismissed' : 'Dismiss'}
             </button>
-            <button className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[10px] font-semibold bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition-colors">
-              <RotateCcw className="w-3 h-3" /> Re-scan
+            <button onClick={() => setReturnStatuses(prev => ({ ...prev, [r.id]: 'Re-scanning' }))} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[10px] font-semibold bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition-colors">
+              <RotateCcw className="w-3 h-3" /> {returnStatuses[r.id] === 'Re-scanning' ? 'Re-scanning…' : 'Re-scan'}
             </button>
           </div>
         </div>

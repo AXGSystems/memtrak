@@ -564,7 +564,7 @@ export default function ReportBuilder() {
                     <div className="text-[11px] font-semibold truncate" style={{ color: 'var(--heading)' }}>{r.title}</div>
                     <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{r.date} | {r.sections} sections | {r.template}</div>
                   </div>
-                  <button className="flex-shrink-0 ml-2 p-1 rounded" style={{ color: 'var(--accent)' }}>
+                  <button onClick={() => { setTitle(r.title); setShowHistory(false); }} className="flex-shrink-0 ml-2 p-1 rounded" style={{ color: 'var(--accent)' }} title="Load this report">
                     <Eye className="w-3 h-3" />
                   </button>
                 </div>

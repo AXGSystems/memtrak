@@ -111,7 +111,7 @@ export default function Segments() {
           </div>
           <div className="flex gap-2">
             <button onClick={addFilter} className="flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-semibold border" style={{ borderColor: 'var(--card-border)', color: 'var(--heading)' }}><Plus className="w-3 h-3" /> Add Filter</button>
-            <button className="flex items-center gap-1 px-4 py-2 rounded-lg text-xs font-bold" style={{ background: 'var(--accent)', color: 'white' }}><Filter className="w-3 h-3" /> Preview Segment</button>
+            <button onClick={() => { const complete = builderFilters.filter(f => f.field && f.operator && f.value); alert(complete.length > 0 ? `Previewing segment with ${complete.length} filter${complete.length > 1 ? 's' : ''}: ${complete.map(f => `${f.field} ${f.operator} ${f.value}`).join(' AND ')}` : 'Add at least one complete filter to preview.'); }} className="flex items-center gap-1 px-4 py-2 rounded-lg text-xs font-bold" style={{ background: 'var(--accent)', color: 'white' }}><Filter className="w-3 h-3" /> Preview Segment</button>
           </div>
         </div>
       )}

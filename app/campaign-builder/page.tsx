@@ -236,10 +236,10 @@ export default function CampaignBuilder() {
               >
                 Back
               </button>
-              <button className="flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold text-white bg-amber-500 hover:bg-amber-600">
+              <button onClick={() => alert(`Campaign "${campaign.name}" scheduled for ${campaign.sendDate || 'next available slot'}. Tracking code: ${cid}`)} className="flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold text-white bg-amber-500 hover:bg-amber-600">
                 <Calendar className="w-4 h-4" /> Schedule
               </button>
-              <button className="flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold text-white bg-[#8CC63F] hover:bg-[#6fa030]">
+              <button onClick={() => alert(`Campaign "${campaign.name}" queued for immediate send to ${selectedSegment?.count.toLocaleString()} recipients. Tracking code: ${cid}`)} className="flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold text-white bg-[#8CC63F] hover:bg-[#6fa030]">
                 <Send className="w-4 h-4" /> Send Now ({selectedSegment?.count.toLocaleString()} recipients)
               </button>
             </div>

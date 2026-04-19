@@ -335,6 +335,7 @@ export default function TemplateVault() {
       {/* -- Action Buttons -- */}
       <div className="flex gap-3 mb-8">
         <button
+          onClick={() => alert('Template creation requires connecting to your email platform. Use Campaign Builder to compose emails with existing templates.')}
           className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-[11px] font-bold transition-all hover:scale-[1.02]"
           style={{
             background: `linear-gradient(135deg, ${C.indigo}, ${C.purple})`,
@@ -345,6 +346,7 @@ export default function TemplateVault() {
           <Plus className="w-4 h-4" /> Create New Template
         </button>
         <button
+          onClick={() => { setSelectedTemplate(bestPerformer); }}
           className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-[11px] font-bold transition-all hover:scale-[1.02]"
           style={{
             background: 'var(--input-bg)',
@@ -498,12 +500,14 @@ export default function TemplateVault() {
               {/* Action buttons */}
               <div className="flex gap-3">
                 <button
+                  onClick={() => { navigator.clipboard.writeText(`Template: ${selectedTemplate.name}\nSubject: ${selectedTemplate.subjectLine}\nPreview: ${selectedTemplate.previewText}`); alert(`"${selectedTemplate.name}" template copied to clipboard.`); }}
                   className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-[11px] font-bold transition-all hover:scale-[1.02]"
                   style={{ background: `linear-gradient(135deg, ${C.indigo}, ${C.purple})`, color: '#fff' }}
                 >
                   <Copy className="w-3.5 h-3.5" /> Clone Template
                 </button>
                 <button
+                  onClick={() => { setSelectedTemplate(null); window.location.href = '/campaign-builder'; }}
                   className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-[11px] font-bold transition-all hover:scale-[1.02]"
                   style={{ background: 'var(--input-bg)', color: 'var(--heading)', border: '1px solid var(--card-border)' }}
                 >

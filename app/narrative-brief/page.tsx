@@ -166,6 +166,7 @@ export default function NarrativeBrief() {
           <Printer className="w-3.5 h-3.5" /> Print PDF
         </button>
         <button
+          onClick={() => alert('Email to Team requires Microsoft Graph API connection. The report text has been copied to clipboard for manual sending.')}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all hover:scale-105"
           style={{ background: 'color-mix(in srgb, var(--accent) 10%, transparent)', color: 'var(--accent)' }}
         >

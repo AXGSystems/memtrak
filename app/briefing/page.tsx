@@ -210,6 +210,7 @@ function buildBriefingHtml(date: string) {
    ═══════════════════════════════════════════════════════════ */
 export default function Briefing() {
   const [copied, setCopied] = useState(false);
+  const [teamSent, setTeamSent] = useState(false);
   const date = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
   const briefingHtml = buildBriefingHtml(date);
 
@@ -314,10 +315,15 @@ export default function Briefing() {
             }
           </button>
           <button
+            onClick={() => {
+              navigator.clipboard.writeText(briefingHtml);
+              setTeamSent(true);
+              setTimeout(() => setTeamSent(false), 3000);
+            }}
             className="flex items-center gap-2 rounded-xl transition-all hover:scale-[1.02]"
             style={{
               padding: '10px 16px',
-              background: 'var(--accent)',
+              background: teamSent ? '#8CC63F' : 'var(--accent)',
               border: 'none',
               color: '#ffffff',
               fontSize: '12px',
@@ -325,7 +331,7 @@ export default function Briefing() {
               cursor: 'pointer',
             }}
           >
-            <Mail className="w-3.5 h-3.5" /> Send to Team
+            <Mail className="w-3.5 h-3.5" /> {teamSent ? 'Copied for Email!' : 'Send to Team'}
           </button>
         </div>
       </div>
