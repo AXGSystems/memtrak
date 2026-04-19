@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Card from '@/components/Card';
+import AnimatedCounter from '@/components/AnimatedCounter';
 import { getCampaignTotals, demoCampaigns, demoDecayAlerts, demoChurnScores, demoRelationships, demoMonthly, demoHygiene } from '@/lib/demo-data';
 import { printContent } from '@/lib/export-utils';
 import { FileText, Calendar, Copy, Printer, Mail, Clock, CheckCircle, History, Cpu, BookOpen } from 'lucide-react';
@@ -208,12 +209,12 @@ export default function NarrativeBrief() {
         <Prose>
           Good morning. Today is {reportDate}. This is your automated MEMTrak intelligence briefing
           covering the last 24 hours of email activity across all platforms. <strong style={{ color: 'var(--heading)' }}>
-          {totals.totalSent.toLocaleString()} emails</strong> were tracked across <strong style={{ color: 'var(--heading)' }}>
-          {totals.campaignCount} campaigns</strong>, with a combined open rate of <strong style={{ color: 'var(--heading)' }}>
-          {openRate}%</strong> and click-through rate of <strong style={{ color: 'var(--heading)' }}>{clickRate}%</strong>.
+          <AnimatedCounter value={totals.totalSent} duration={1800} /> emails</strong> were tracked across <strong style={{ color: 'var(--heading)' }}>
+          <AnimatedCounter value={totals.campaignCount} duration={1200} /> campaigns</strong>, with a combined open rate of <strong style={{ color: 'var(--heading)' }}>
+          <AnimatedCounter value={parseFloat(openRate)} duration={1800} decimals={1} suffix="%" /></strong> and click-through rate of <strong style={{ color: 'var(--heading)' }}><AnimatedCounter value={parseFloat(clickRate)} duration={1800} decimals={1} suffix="%" /></strong>.
           {decayHigh.length > 0 && (
-            <> There are <strong style={{ color: '#D94A4A' }}>{decayHigh.length} items requiring your attention today</strong>,
-            representing <strong style={{ color: '#D94A4A' }}>${decayRevenue.toLocaleString()} in annual revenue at risk</strong>.</>
+            <> There are <strong style={{ color: '#D94A4A' }}><AnimatedCounter value={decayHigh.length} duration={1200} color="#D94A4A" /> items requiring your attention today</strong>,
+            representing <strong style={{ color: '#D94A4A' }}><AnimatedCounter value={decayRevenue} duration={1800} prefix="$" color="#D94A4A" /> in annual revenue at risk</strong>.</>
           )}
         </Prose>
 
@@ -320,7 +321,7 @@ export default function NarrativeBrief() {
           March&rsquo;s {lastMonthClickRate}%. This inverse relationship between volume and engagement rate is
           consistent with best practices &mdash; smaller, more targeted sends generate proportionally higher
           engagement. Total attributed revenue for April currently stands at{' '}
-          <strong style={{ color: 'var(--heading)' }}>${totals.totalRevenue.toLocaleString()}</strong>, driven primarily by
+          <strong style={{ color: 'var(--heading)' }}><AnimatedCounter value={totals.totalRevenue} duration={1800} prefix="$" /></strong>, driven primarily by
           the membership renewal batch and ALTA ONE registrations. Bounce rates have held steady
           at {bounceRate}%, within acceptable tolerances, though the goal of sub-3% remains a priority
           for Q2.
@@ -369,8 +370,9 @@ export default function NarrativeBrief() {
         {/* ── Section: Staff Briefing Notes ── */}
         <SectionHeading>VI. Staff Briefing Notes</SectionHeading>
 
-        {demoRelationships.map((r) => (
-          <Prose key={r.staff}>
+        {demoRelationships.map((r, i) => (
+          <div key={r.staff} style={{ animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
+          <Prose>
             <strong style={{ color: 'var(--heading)' }}>{r.staff}</strong> &mdash;{' '}
             {r.staff.includes('Morton')
               ? `Priority action today: personal outreach to First American Title regarding their declining engagement. Your reply rate of ${r.replyRate}% is the highest on staff, and ACU accounts respond best to CEO-level contact. Secondary: review the ALTA ONE Sponsor Thank You draft for final approval before it ships this week.`
@@ -383,6 +385,7 @@ export default function NarrativeBrief() {
               : `Review your current engagement metrics (${r.outreach} touches, ${r.replyRate}% reply rate, ${r.responseTime} avg response). Focus on reducing response time where possible, and coordinate with the team on any bounce-list cleanup tasks assigned to your member segments before the May 5 compliance send.`
             }
           </Prose>
+          </div>
         ))}
 
         {/* Report footer */}
@@ -406,7 +409,7 @@ export default function NarrativeBrief() {
       {/* ══════════════════════════════════════════════════════
           HOW NARRATIVEBRIEF WORKS
           ══════════════════════════════════════════════════════ */}
-      <Card title="How NarrativeBrief\u2122 Works" subtitle="Automated intelligence reporting without AI APIs">
+      <Card glass title="How NarrativeBrief\u2122 Works" subtitle="Automated intelligence reporting without AI APIs">
         <div className="space-y-4 mt-2">
           {[
             { icon: Clock, label: 'Runs automatically every morning at 6:00 AM', detail: 'A scheduled task triggers the report generation pipeline before staff arrive, ensuring the briefing is ready when the day begins.' },
@@ -414,8 +417,8 @@ export default function NarrativeBrief() {
             { icon: Cpu, label: 'Compares against historical baselines', detail: 'Current metrics are measured against 90-day rolling averages and industry benchmarks to identify anomalies, trends, and opportunities.' },
             { icon: BookOpen, label: 'Generates prose using pattern-matching rules', detail: 'No AI API is required. The narrative engine uses conditional templates and data-driven sentence construction to produce readable intelligence reports from raw metrics.' },
             { icon: Mail, label: 'Can be emailed automatically via Microsoft Graph', detail: 'When connected to Microsoft 365, the briefing is delivered directly to staff inboxes as a formatted HTML email each morning.' },
-          ].map((item) => (
-            <div key={item.label} className="flex gap-3 items-start">
+          ].map((item, i) => (
+            <div key={item.label} className="flex gap-3 items-start" style={{ animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
               <div
                 className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
                 style={{ background: 'color-mix(in srgb, #C6A75E 12%, transparent)' }}
@@ -434,13 +437,13 @@ export default function NarrativeBrief() {
       {/* ══════════════════════════════════════════════════════
           REPORT HISTORY
           ══════════════════════════════════════════════════════ */}
-      <Card title="Report History" subtitle="Previous NarrativeBrief\u2122 reports" className="mt-6">
+      <Card glass title="Report History" subtitle="Previous NarrativeBrief\u2122 reports" className="mt-6">
         <div className="space-y-2 mt-2">
           {reportHistory.map((r, i) => (
             <div
               key={r.date}
               className="flex items-center justify-between p-3 rounded-lg"
-              style={{ background: i === 0 ? 'color-mix(in srgb, #C6A75E 8%, transparent)' : 'var(--input-bg)' }}
+              style={{ background: i === 0 ? 'color-mix(in srgb, #C6A75E 8%, transparent)' : 'var(--input-bg)', animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}
             >
               <div className="flex items-center gap-3">
                 <History className="w-3.5 h-3.5" style={{ color: i === 0 ? '#C6A75E' : 'var(--text-muted)' }} />

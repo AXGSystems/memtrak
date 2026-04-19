@@ -1,6 +1,7 @@
 'use client';
 
 import Card, { KpiCard } from '@/components/Card';
+import AnimatedCounter from '@/components/AnimatedCounter';
 import ClientChart from '@/components/ClientChart';
 import ProgressRing from '@/components/ProgressRing';
 import { exportCSV } from '@/lib/export-utils';
@@ -92,6 +93,7 @@ export default function Scoring() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         {/* Scoring Model */}
         <Card
+          glass
           title="Scoring Model (6 Factors)"
           subtitle="Each member gets a 0-100 engagement score based on weighted factors. Updated in real-time as new data arrives."
           detailTitle="Engagement Scoring Model — Full Breakdown"
@@ -133,8 +135,8 @@ export default function Scoring() {
           }
         >
           <div className="space-y-2">
-            {scoringModel.map(f => (
-              <div key={f.factor} className="flex items-center gap-3">
+            {scoringModel.map((f, i) => (
+              <div key={f.factor} className="flex items-center gap-3" style={{ animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
                 <div className="w-full">
                   <div className="flex justify-between text-[10px] mb-1">
                     <span style={{ color: 'var(--heading)' }}>{f.factor}</span>
@@ -152,6 +154,7 @@ export default function Scoring() {
 
         {/* Score Distribution Chart */}
         <Card
+          glass
           title="Member Score Distribution"
           detailTitle="Member Score Distribution — Analysis"
           detailContent={
@@ -193,6 +196,7 @@ export default function Scoring() {
 
       {/* Member Scoreboard with LTV */}
       <Card
+        glass
         title="Member Scoreboard — Engagement + Lifetime Value"
         detailTitle="Per-Member Engagement Analysis"
         detailContent={
@@ -249,11 +253,11 @@ export default function Scoring() {
               <th className="text-center pb-2" style={{ color: 'var(--text-muted)' }}>Risk</th>
             </tr></thead>
             <tbody>
-              {memberScores.map(m => (
-                <tr key={m.org} style={{ borderBottom: '1px solid var(--card-border)' }}>
+              {memberScores.map((m, i) => (
+                <tr key={m.org} style={{ borderBottom: '1px solid var(--card-border)', animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
                   <td className="py-2.5 font-semibold" style={{ color: 'var(--heading)' }}>{m.org} <span className="font-normal" style={{ color: 'var(--text-muted)' }}>({m.type})</span></td>
                   <td className="py-2.5 text-center">
-                    <span className="inline-flex items-center justify-center w-10 h-10 rounded-full font-extrabold text-sm" style={{ background: m.score >= 80 ? 'rgba(140,198,63,0.15)' : m.score >= 50 ? 'rgba(74,144,217,0.15)' : m.score >= 25 ? 'rgba(232,146,63,0.15)' : 'rgba(217,74,74,0.15)', color: m.score >= 80 ? C.green : m.score >= 50 ? C.blue : m.score >= 25 ? C.orange : C.red }}>{m.score}</span>
+                    <span className="inline-flex items-center justify-center w-10 h-10 rounded-full font-extrabold text-sm" style={{ background: m.score >= 80 ? 'rgba(140,198,63,0.15)' : m.score >= 50 ? 'rgba(74,144,217,0.15)' : m.score >= 25 ? 'rgba(232,146,63,0.15)' : 'rgba(217,74,74,0.15)', color: m.score >= 80 ? C.green : m.score >= 50 ? C.blue : m.score >= 25 ? C.orange : C.red }}><AnimatedCounter value={m.score} duration={1200} color={m.score >= 80 ? C.green : m.score >= 50 ? C.blue : m.score >= 25 ? C.orange : C.red} /></span>
                   </td>
                   <td className="py-2.5 text-right font-bold" style={{ color: 'var(--accent)' }}>${m.ltv.toLocaleString()}</td>
                   <td className="py-2.5 text-right" style={{ color: m.emails >= 70 ? C.green : m.emails >= 40 ? C.orange : C.red }}>{m.emails}%</td>
@@ -271,6 +275,7 @@ export default function Scoring() {
 
       {/* LTV Chart */}
       <Card
+        glass
         title="5-Year Lifetime Value by Member"
         detailTitle="Lifetime Value Analysis"
         detailContent={

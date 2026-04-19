@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import Card from '@/components/Card';
+import AnimatedCounter from '@/components/AnimatedCounter';
 import ClientChart from '@/components/ClientChart';
 
 const C = { green: '#8CC63F', red: '#D94A4A', navy: '#002D5C' };
@@ -18,7 +20,7 @@ export default function ROICalc() {
   const [currentSpend, setCurrentSpend] = useState(2500);
 
   const savings = (currentSpend * 12) - 900;
-  const savingsPct = ((savings / (currentSpend * 12)) * 100).toFixed(0);
+  const savingsPct = Math.round((savings / (currentSpend * 12)) * 100);
 
   return (
     <div className="p-6">
@@ -26,31 +28,30 @@ export default function ROICalc() {
       <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>See exactly how much MEMTrak saves compared to your current tools.</p>
 
       {/* Interactive Calculator */}
-      <div className="rounded-xl border p-6 mb-6" style={{ background: 'var(--card)', borderColor: 'var(--card-border)' }}>
+      <Card glass title="Cost Comparison" subtitle="Adjust your current monthly spend" className="mb-6">
         <h3 className="text-sm font-bold mb-4" style={{ color: 'var(--heading)' }}>What do you currently spend on email/marketing tools?</h3>
         <input type="range" min={0} max={5000} step={50} value={currentSpend} onChange={e => setCurrentSpend(Number(e.target.value))} className="w-full h-2 rounded-full appearance-none cursor-pointer" style={{ background: 'var(--card-border)', accentColor: 'var(--accent)' }} />
         <div className="flex justify-between text-[10px] mt-1" style={{ color: 'var(--text-muted)' }}><span>$0/mo</span><span className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>${currentSpend.toLocaleString()}/mo</span><span>$5,000/mo</span></div>
 
         <div className="grid grid-cols-3 gap-4 mt-6">
-          <div className="p-4 rounded-xl text-center" style={{ background: 'var(--background)' }}>
+          <div className="p-4 rounded-xl text-center transition-all duration-300 hover:translate-y-[-2px]" style={{ background: 'var(--background)' }}>
             <div className="text-[10px] uppercase" style={{ color: 'var(--text-muted)' }}>Current Annual</div>
-            <div className="text-xl font-extrabold" style={{ color: C.red }}>${(currentSpend * 12).toLocaleString()}</div>
+            <div className="text-xl font-extrabold" style={{ color: C.red }}><AnimatedCounter value={currentSpend * 12} prefix="$" duration={1800} /></div>
           </div>
-          <div className="p-4 rounded-xl text-center" style={{ background: 'var(--background)' }}>
+          <div className="p-4 rounded-xl text-center transition-all duration-300 hover:translate-y-[-2px]" style={{ background: 'var(--background)' }}>
             <div className="text-[10px] uppercase" style={{ color: 'var(--text-muted)' }}>MEMTrak Annual</div>
-            <div className="text-xl font-extrabold" style={{ color: C.green }}>$900</div>
+            <div className="text-xl font-extrabold" style={{ color: C.green }}><AnimatedCounter value={900} prefix="$" duration={1800} /></div>
           </div>
-          <div className="p-4 rounded-xl text-center" style={{ background: 'color-mix(in srgb, var(--accent) 10%, transparent)' }}>
+          <div className="p-4 rounded-xl text-center transition-all duration-300 hover:translate-y-[-2px]" style={{ background: 'color-mix(in srgb, var(--accent) 10%, transparent)' }}>
             <div className="text-[10px] uppercase" style={{ color: 'var(--text-muted)' }}>You Save</div>
-            <div className="text-xl font-extrabold" style={{ color: 'var(--accent)' }}>${savings.toLocaleString()}/yr</div>
-            <div className="text-xs font-bold" style={{ color: 'var(--accent)' }}>{savingsPct}% savings</div>
+            <div className="text-xl font-extrabold" style={{ color: 'var(--accent)' }}><AnimatedCounter value={savings} prefix="$" suffix="/yr" duration={1800} /></div>
+            <div className="text-xs font-bold" style={{ color: 'var(--accent)' }}><AnimatedCounter value={savingsPct} suffix="% savings" duration={1800} /></div>
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* Competitor Comparison */}
-      <div className="rounded-xl border p-5" style={{ background: 'var(--card)', borderColor: 'var(--card-border)' }}>
-        <h3 className="text-xs font-bold mb-3" style={{ color: 'var(--heading)' }}>Competitor Comparison</h3>
+      <Card glass title="Competitor Comparison" subtitle="Annual pricing vs. MEMTrak" className="mb-6">
         <ClientChart type="bar" height={260} data={{
           labels: competitors.map(c => c.name),
           datasets: [{ label: 'Annual Cost', data: competitors.map(c => c.annual), backgroundColor: competitors.map(c => c.name === 'MEMTrak' ? C.green : C.navy), borderRadius: 6 }],
@@ -58,6 +59,29 @@ export default function ROICalc() {
           plugins: { legend: { display: false }, datalabels: { display: true, anchor: 'end' as const, align: 'top' as const, color: 'var(--heading)', font: { weight: 'bold' as const, size: 10 }, formatter: (v: number) => '$' + (v / 1000).toFixed(1) + 'K' } },
           scales: { y: { beginAtZero: true, grid: { color: 'var(--grid-line)' }, ticks: { color: 'var(--text-muted)', callback: (v: number) => '$' + (v / 1000).toFixed(0) + 'K' } }, x: { grid: { display: false }, ticks: { color: 'var(--text-muted)', font: { size: 9 } } } },
         }} />
+      </Card>
+
+      {/* Competitor Detail Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {competitors.map((c, i) => (
+          <Card
+            key={c.name}
+            glass
+            className={`transition-all duration-300 hover:translate-y-[-2px] ${c.name === 'MEMTrak' ? '!border-[#8CC63F]/50' : ''}`}
+          >
+            <div style={{ animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{c.name}</span>
+                <span className="text-sm font-extrabold" style={{ color: c.name === 'MEMTrak' ? C.green : 'var(--heading)' }}>
+                  <AnimatedCounter value={c.annual} prefix="$" duration={1800} /><span className="text-[10px] font-normal" style={{ color: 'var(--text-muted)' }}>/yr</span>
+                </span>
+              </div>
+              <div className="text-[10px] mb-1" style={{ color: 'var(--text-muted)' }}>{c.features}</div>
+              {c.missing && <div className="text-[10px] text-red-400">{c.missing}</div>}
+              {!c.missing && <div className="text-[10px] text-green-400 font-semibold">Full-stack association engagement platform</div>}
+            </div>
+          </Card>
+        ))}
       </div>
     </div>
   );

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Card, { KpiCard } from '@/components/Card';
+import AnimatedCounter from '@/components/AnimatedCounter';
 import { Zap, Play, Pause, CheckCircle, Clock, Mail, Phone, AlertTriangle, ArrowRight, Users, DollarSign, TrendingUp } from 'lucide-react';
 
 const workflows = [
@@ -193,13 +194,14 @@ export default function Workflows() {
 
       {/* Workflow Cards */}
       <div className="space-y-4">
-        {workflows.map(w => {
+        {workflows.map((w, i) => {
           const isExpanded = expanded === w.id;
           const autoSteps = w.steps.filter(s => s.status === 'auto').length;
           const manualSteps = w.steps.filter(s => s.status === 'manual').length;
           return (
+            <div key={w.id} style={{ animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
             <Card
-              key={w.id}
+              glass
               title={w.name}
               subtitle={`Trigger: ${w.trigger}`}
               detailTitle={`${w.name} — Full Analysis`}
@@ -360,10 +362,10 @@ export default function Workflows() {
                   {/* Stats */}
                   {w.enrolled > 0 && (
                     <div className="grid grid-cols-4 gap-3 py-4">
-                      <div><div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>{w.enrolled}</div><div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Enrolled</div></div>
-                      <div><div className="text-lg font-extrabold" style={{ color: 'var(--accent)' }}>{w.converted}</div><div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Converted</div></div>
-                      <div><div className="text-lg font-extrabold" style={{ color: 'var(--accent)' }}>{w.conversionRate}%</div><div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Rate</div></div>
-                      <div><div className="text-lg font-extrabold" style={{ color: 'var(--accent)' }}>${(w.revenueProtected / 1000).toFixed(0)}K</div><div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Protected</div></div>
+                      <div><div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}><AnimatedCounter value={w.enrolled} duration={1800} /></div><div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Enrolled</div></div>
+                      <div><div className="text-lg font-extrabold" style={{ color: 'var(--accent)' }}><AnimatedCounter value={w.converted} duration={1800} color="var(--accent)" /></div><div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Converted</div></div>
+                      <div><div className="text-lg font-extrabold" style={{ color: 'var(--accent)' }}><AnimatedCounter value={w.conversionRate} duration={1800} decimals={1} suffix="%" color="var(--accent)" /></div><div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Rate</div></div>
+                      <div><div className="text-lg font-extrabold" style={{ color: 'var(--accent)' }}><AnimatedCounter value={Math.round(w.revenueProtected / 1000)} duration={1800} prefix="$" suffix="K" color="var(--accent)" /></div><div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Protected</div></div>
                     </div>
                   )}
 
@@ -374,7 +376,7 @@ export default function Workflows() {
                       {w.steps.map((step, i) => {
                         const Icon = channelIcons[step.channel] || Mail;
                         return (
-                          <div key={i} className="relative flex items-start gap-3">
+                          <div key={i} className="relative flex items-start gap-3" style={{ animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
                             <div className="absolute -left-6 w-5 h-5 rounded-full flex items-center justify-center" style={{ background: step.status === 'auto' ? 'rgba(140,198,63,0.15)' : 'rgba(74,144,217,0.15)' }}>
                               <Icon className="w-2.5 h-2.5" style={{ color: step.status === 'auto' ? '#8CC63F' : '#4A90D9' }} />
                             </div>
@@ -393,6 +395,7 @@ export default function Workflows() {
                 </div>
               )}
             </Card>
+            </div>
           );
         })}
       </div>

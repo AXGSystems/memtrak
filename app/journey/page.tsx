@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Search, Mail, Phone, Users, Calendar, CheckCircle, XCircle, Eye, MousePointerClick, DollarSign, Clock } from 'lucide-react';
 import Card from '@/components/Card';
+import AnimatedCounter from '@/components/AnimatedCounter';
 
 interface TouchEvent {
   date: string;
@@ -54,6 +55,9 @@ const demoOrgs: { name: string; type: string; email: string; member: string; due
 const typeIcons: Record<string, typeof Mail> = { 'email-sent': Mail, 'email-opened': Eye, 'email-clicked': MousePointerClick, phone: Phone, meeting: Users, event: Calendar, payment: DollarSign, bounced: XCircle };
 const typeColors: Record<string, string> = { 'email-sent': 'bg-blue-500/20 text-blue-400', 'email-opened': 'bg-green-500/20 text-green-400', 'email-clicked': 'bg-purple-500/20 text-purple-400', phone: 'bg-amber-500/20 text-amber-400', meeting: 'bg-cyan-500/20 text-cyan-400', event: 'bg-indigo-500/20 text-indigo-400', payment: 'bg-green-500/20 text-green-400', bounced: 'bg-red-500/20 text-red-400' };
 const typeLabels: Record<string, string> = { 'email-sent': 'Emails Sent', 'email-opened': 'Emails Opened', 'email-clicked': 'Links Clicked', phone: 'Phone Calls', meeting: 'Meetings', event: 'Events', payment: 'Payments', bounced: 'Bounced' };
+
+const totalDues = demoOrgs.reduce((s, o) => s + o.dues, 0);
+const totalTouchpoints = demoOrgs.reduce((s, o) => s + o.events.length, 0);
 
 function MemberDetailModal({ org }: { org: typeof demoOrgs[0] }) {
   const typeCounts: Record<string, number> = {};
@@ -123,10 +127,10 @@ function MemberDetailModal({ org }: { org: typeof demoOrgs[0] }) {
       <div>
         <div className="text-xs font-bold mb-2" style={{ color: 'var(--heading)' }}>Touchpoint Breakdown</div>
         <div className="grid grid-cols-2 gap-2">
-          {Object.entries(typeIcons).map(([type, Icon]) => {
+          {Object.entries(typeIcons).map(([type, Icon], i) => {
             const count = typeCounts[type] || 0;
             return (
-              <div key={type} className="flex items-center gap-2 p-2 rounded-lg" style={{ background: 'var(--input-bg)' }}>
+              <div key={type} className="flex items-center gap-2 p-2 rounded-lg" style={{ background: 'var(--input-bg)', animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
                 <div className={`w-6 h-6 rounded-full flex items-center justify-center ${typeColors[type]}`}>
                   <Icon className="w-3 h-3" />
                 </div>
@@ -144,8 +148,8 @@ function MemberDetailModal({ org }: { org: typeof demoOrgs[0] }) {
       <div>
         <div className="text-xs font-bold mb-2" style={{ color: 'var(--heading)' }}>Dues History</div>
         <div className="space-y-1.5">
-          {[2026, 2025, 2024].map(year => (
-            <div key={year} className="flex items-center justify-between p-2 rounded-lg" style={{ background: 'var(--input-bg)' }}>
+          {[2026, 2025, 2024].map((year, i) => (
+            <div key={year} className="flex items-center justify-between p-2 rounded-lg" style={{ background: 'var(--input-bg)', animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
               <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{year}</span>
               <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>${org.dues.toLocaleString()}</span>
               <span className="text-[9px] px-1.5 py-0.5 rounded-full font-semibold bg-green-500/20 text-green-400">Paid</span>
@@ -165,7 +169,27 @@ export default function Journey() {
 
   return (
     <div className="p-6">
-      <h1 className="text-lg font-extrabold mb-6" style={{ color: 'var(--heading)' }}>Member Journey</h1>
+      <h1 className="text-lg font-extrabold mb-2" style={{ color: 'var(--heading)' }}>Member Journey</h1>
+      <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>Complete member engagement timeline with every touchpoint tracked.</p>
+
+      {/* Hero Summary Stats */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+        {[
+          { label: 'Organizations', value: demoOrgs.length, color: 'var(--heading)' },
+          { label: 'Total Dues', value: totalDues, prefix: '$', color: '#8CC63F' },
+          { label: 'Touchpoints', value: totalTouchpoints, color: 'var(--heading)' },
+          { label: 'Avg Tenure', value: Math.round(demoOrgs.reduce((s, o) => s + (2026 - o.since), 0) / demoOrgs.length), suffix: ' yrs', color: '#4A90D9' },
+        ].map((stat, i) => (
+          <Card key={stat.label} glass className="transition-all duration-300 hover:translate-y-[-2px]">
+            <div style={{ animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
+              <div className="text-[10px] uppercase" style={{ color: 'var(--text-muted)' }}>{stat.label}</div>
+              <div className="text-xl font-extrabold mt-1">
+                <AnimatedCounter value={stat.value} prefix={stat.prefix} suffix={stat.suffix} duration={1800} color={stat.color} />
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Org List */}
@@ -182,12 +206,15 @@ export default function Journey() {
             />
           </div>
           <div className="space-y-2">
-            {filtered.map(org => (
+            {filtered.map((org, i) => (
               <button
                 key={org.member}
                 onClick={() => setSelected(org)}
-                className={`w-full text-left p-3.5 rounded-xl transition-all ${selected.member === org.member ? 'bg-[#8CC63F]/20 border-2 border-[#8CC63F]/50' : 'hover:border-[var(--text-muted)]'}`}
-                style={selected.member === org.member ? undefined : { background: 'var(--card)', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--card-border)' }}
+                className={`w-full text-left p-3.5 rounded-xl transition-all duration-300 hover:translate-y-[-2px] ${selected.member === org.member ? 'bg-[#8CC63F]/20 border-2 border-[#8CC63F]/50' : 'hover:border-[var(--text-muted)]'}`}
+                style={{
+                  ...(selected.member === org.member ? {} : { background: 'var(--card)', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--card-border)' }),
+                  animation: `slideInUp 0.3s ease-out ${i * 0.06}s both`,
+                }}
               >
                 <div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{org.name}</div>
                 <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{org.type} · {org.email}</div>
@@ -200,6 +227,7 @@ export default function Journey() {
         {/* Timeline */}
         <div className="lg:col-span-2">
           <Card
+            glass
             title={selected.name}
             subtitle={`${selected.type} · ${selected.email} · ${selected.member} · Since ${selected.since}`}
             className="mb-4"
@@ -209,7 +237,9 @@ export default function Journey() {
             <div className="flex items-center justify-between">
               <div />
               <div className="text-right">
-                <div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>${selected.dues.toLocaleString()}</div>
+                <div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>
+                  <AnimatedCounter value={selected.dues} prefix="$" duration={1800} />
+                </div>
                 <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>annual dues</div>
               </div>
             </div>
@@ -223,11 +253,11 @@ export default function Journey() {
               {selected.events.map((ev, i) => {
                 const Icon = typeIcons[ev.type] || Mail;
                 return (
-                  <div key={i} className="relative">
+                  <div key={i} className="relative" style={{ animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
                     <div className={`absolute -left-6 w-6 h-6 rounded-full flex items-center justify-center ${typeColors[ev.type]}`}>
                       <Icon className="w-3 h-3" />
                     </div>
-                    <div className="rounded-lg p-3 ml-4" style={{ background: 'var(--card)', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--card-border)' }}>
+                    <div className="rounded-lg p-3 ml-4 transition-all duration-300 hover:translate-y-[-2px]" style={{ background: 'var(--card)', borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--card-border)' }}>
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-semibold" style={{ color: 'var(--heading)' }}>{ev.description}</span>
                         <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{ev.date}</span>

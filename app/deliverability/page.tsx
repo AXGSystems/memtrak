@@ -2,6 +2,7 @@
 
 import ClientChart from '@/components/ClientChart';
 import Card from '@/components/Card';
+import AnimatedCounter from '@/components/AnimatedCounter';
 import ProgressRing from '@/components/ProgressRing';
 
 const C = { navy: '#1B3A5C', blue: '#4A90D9', green: '#8CC63F', red: '#D94A4A', orange: '#E8923F' };
@@ -35,34 +36,36 @@ export default function Deliverability() {
           { label: 'Soft Bounce', value: 2.0, ringValue: 2.0, color: C.orange },
           { label: 'Spam Complaints', value: 0.02, ringValue: 0.02, color: C.green },
           { label: 'Invalid Addresses', value: 332, ringValue: 0, color: C.blue },
-        ].map(m => (
-          <Card key={m.label} className="p-4 flex flex-col items-center text-center" detailTitle={m.label} detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>{m.label === 'Delivery Rate' ? 'Current delivery rate of 96.2% means ~700 emails per campaign fail to reach inboxes. Industry benchmark for associations is 97-98%. Cleaning invalid and bounced addresses would push this above 98%.' : m.label === 'Hard Bounce' ? 'Hard bounces (1.8%) indicate permanently undeliverable addresses — invalid mailboxes or non-existent domains. These should be removed immediately as ISPs penalize senders with high hard bounce rates.' : m.label === 'Soft Bounce' ? 'Soft bounces (2.0%) are temporary failures — full mailboxes, server timeouts, or rate limiting. Most resolve on retry, but addresses that soft bounce repeatedly (3+ times) should be investigated.' : m.label === 'Spam Complaints' ? 'Spam complaint rate of 0.02% is well below the 0.1% danger threshold. Above 0.1%, major ISPs (Gmail, Outlook) may throttle or block your emails entirely.' : 'There are 332 addresses flagged as invalid through DNS verification and syntax checks. These have never received a send attempt but would hard bounce if included. Remove them proactively.'}</p></div>}>
+        ].map((m, i) => (
+          <div key={m.label} style={{ animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
+          <Card glass className="p-4 flex flex-col items-center text-center" detailTitle={m.label} detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>{m.label === 'Delivery Rate' ? 'Current delivery rate of 96.2% means ~700 emails per campaign fail to reach inboxes. Industry benchmark for associations is 97-98%. Cleaning invalid and bounced addresses would push this above 98%.' : m.label === 'Hard Bounce' ? 'Hard bounces (1.8%) indicate permanently undeliverable addresses — invalid mailboxes or non-existent domains. These should be removed immediately as ISPs penalize senders with high hard bounce rates.' : m.label === 'Soft Bounce' ? 'Soft bounces (2.0%) are temporary failures — full mailboxes, server timeouts, or rate limiting. Most resolve on retry, but addresses that soft bounce repeatedly (3+ times) should be investigated.' : m.label === 'Spam Complaints' ? 'Spam complaint rate of 0.02% is well below the 0.1% danger threshold. Above 0.1%, major ISPs (Gmail, Outlook) may throttle or block your emails entirely.' : 'There are 332 addresses flagged as invalid through DNS verification and syntax checks. These have never received a send attempt but would hard bounce if included. Remove them proactively.'}</p></div>}>
             {m.ringValue > 0 ? (
               <ProgressRing value={m.label.includes('Rate') ? m.ringValue : m.ringValue} max={m.label.includes('Rate') ? 100 : 10} size={64} color={m.color} />
             ) : (
               <div className="w-[64px] h-[64px] flex items-center justify-center">
-                <span className="text-xl font-extrabold" style={{ color: 'var(--heading)' }}>{m.value.toLocaleString()}</span>
+                <span className="text-xl font-extrabold" style={{ color: 'var(--heading)' }}><AnimatedCounter value={m.value} duration={1800} /></span>
               </div>
             )}
             <div className="mt-2">
-              {m.ringValue > 0 && <div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{m.value}%</div>}
+              {m.ringValue > 0 && <div className="text-xs font-bold" style={{ color: 'var(--heading)' }}><AnimatedCounter value={m.value} duration={1800} decimals={m.value < 1 ? 2 : 1} suffix="%" /></div>}
               <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{m.label}</div>
             </div>
           </Card>
+          </div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <Card title="7-Month Trend" subtitle="Delivery rate and open rate over time" detailTitle="Trend Analysis" detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>Delivery rate dipped to 95.4% in December (holiday bounces) but recovered to 96.2%. The upward trend in open rates (32% → 40%) suggests improving list quality and content relevance. Target: maintain delivery above 96% and open rates above 35%.</p></div>}>
+        <Card glass title="7-Month Trend" subtitle="Delivery rate and open rate over time" detailTitle="Trend Analysis" detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>Delivery rate dipped to 95.4% in December (holiday bounces) but recovered to 96.2%. The upward trend in open rates (32% → 40%) suggests improving list quality and content relevance. Target: maintain delivery above 96% and open rates above 35%.</p></div>}>
           <ClientChart type="line" height={240} data={{ labels: trend.map(t => t.month), datasets: [
             { label: 'Delivery %', data: trend.map(t => t.delivery), borderColor: C.green, borderWidth: 2.5, fill: false, tension: 0.3, pointRadius: 4 },
             { label: 'Open %', data: trend.map(t => t.open), borderColor: C.blue, borderWidth: 2, fill: false, tension: 0.3, pointRadius: 4, borderDash: [5, 5] },
           ] }} options={{ plugins: { legend: { display: true, position: 'top' as const, labels: { color: '#8899aa', usePointStyle: true, padding: 16, font: { size: 10 } } }, datalabels: { display: false } }, scales: { y: { min: 30, max: 100, grid: { color: '#1e3350' }, ticks: { color: '#8899aa', callback: (v: number) => v + '%' } }, x: { grid: { display: false }, ticks: { color: '#8899aa' } } } }} />
         </Card>
-        <Card title="Bounce Breakdown" subtitle="What's causing emails to fail?" detailTitle="Bounce Analysis" detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>59% of bounces are hard bounces (invalid mailbox + domain not found) — these should be permanently removed. 32% are soft bounces that may resolve. The 5% content-blocked bounces suggest some receiving servers are flagging ALTA emails as promotional — review subject lines for spam triggers.</p></div>}>
+        <Card glass title="Bounce Breakdown" subtitle="What's causing emails to fail?" detailTitle="Bounce Analysis" detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>59% of bounces are hard bounces (invalid mailbox + domain not found) — these should be permanently removed. 32% are soft bounces that may resolve. The 5% content-blocked bounces suggest some receiving servers are flagging ALTA emails as promotional — review subject lines for spam triggers.</p></div>}>
           <div className="space-y-3">
-            {bounces.map(b => (
-              <div key={b.reason}>
+            {bounces.map((b, i) => (
+              <div key={b.reason} style={{ animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
                 <div className="flex justify-between text-[10px] mb-1"><span style={{ color: 'var(--text-muted)' }}>{b.reason}</span><span className="font-bold" style={{ color: 'var(--heading)' }}>{b.count} ({b.pct}%)</span></div>
                 <div className="h-2 rounded-full" style={{ background: 'var(--input-bg)' }}><div className="h-2 rounded-full" style={{ width: `${b.pct}%`, background: b.pct > 20 ? C.red : b.pct > 10 ? C.orange : C.blue }} /></div>
               </div>
@@ -71,10 +74,10 @@ export default function Deliverability() {
         </Card>
       </div>
 
-      <Card title="Email Authentication (SPF / DKIM / DMARC)" subtitle="Domain security for alta.org" className="mb-6" detailTitle="Authentication Explained" detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>SPF verifies alta.org servers are authorized to send. DKIM cryptographically signs messages. DMARC tells receiving servers what to do with failed messages. All three must pass for maximum deliverability. ALTA has SPF and DKIM configured correctly, but DMARC is in monitoring mode only — upgrading to "quarantine" would prevent spoofing and improve inbox placement.</p></div>}>
+      <Card glass title="Email Authentication (SPF / DKIM / DMARC)" subtitle="Domain security for alta.org" className="mb-6" detailTitle="Authentication Explained" detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>SPF verifies alta.org servers are authorized to send. DKIM cryptographically signs messages. DMARC tells receiving servers what to do with failed messages. All three must pass for maximum deliverability. ALTA has SPF and DKIM configured correctly, but DMARC is in monitoring mode only — upgrading to "quarantine" would prevent spoofing and improve inbox placement.</p></div>}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {auth.map(a => (
-            <div key={a.name} className="p-4 rounded-lg" style={{ background: 'var(--input-bg)' }}>
+          {auth.map((a, i) => (
+            <div key={a.name} className="p-4 rounded-lg" style={{ background: 'var(--input-bg)', animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
               <div className="flex items-center gap-2 mb-2">
                 <span className={`w-2 h-2 rounded-full ${a.status === 'Pass' ? 'bg-green-400' : 'bg-amber-400'}`} />
                 <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{a.name}</span>
@@ -86,7 +89,7 @@ export default function Deliverability() {
         </div>
       </Card>
 
-      <Card className="p-5 border-l-4 border-l-[#8CC63F]" title="Recommended Actions" subtitle="Steps to improve deliverability" detailTitle="Action Plan" detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>These actions are prioritized by impact. Removing hard bounces and upgrading DMARC are the highest-leverage changes. Full list verification will uncover additional invalid addresses beyond those already identified. A/B testing subject lines can improve open rates by 5-10% based on industry benchmarks for association emails.</p></div>}>
+      <Card glass className="p-5 border-l-4 border-l-[#8CC63F]" title="Recommended Actions" subtitle="Steps to improve deliverability" detailTitle="Action Plan" detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>These actions are prioritized by impact. Removing hard bounces and upgrading DMARC are the highest-leverage changes. Full list verification will uncover additional invalid addresses beyond those already identified. A/B testing subject lines can improve open rates by 5-10% based on industry benchmarks for association emails.</p></div>}>
         <h3 className="text-xs font-bold mb-3" style={{ color: 'var(--heading)' }}>Recommended Actions</h3>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
           {[
@@ -95,7 +98,7 @@ export default function Deliverability() {
             { action: 'Verify full 18,400 address list', impact: 'Find 500+ more invalid', when: 'This month' },
             { action: 'A/B test Title News subject lines', impact: '+5-10% open rate', when: 'Next send' },
           ].map((r, i) => (
-            <div key={i} className="flex items-center justify-between p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
+            <div key={i} className="flex items-center justify-between p-3 rounded-lg" style={{ background: 'var(--input-bg)', animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
               <div><div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{r.action}</div><div className="text-[10px] text-green-400">{r.impact}</div></div>
               <span className="text-[9px] px-2 py-0.5 rounded-full font-semibold" style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}>{r.when}</span>
             </div>
