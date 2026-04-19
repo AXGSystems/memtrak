@@ -718,7 +718,7 @@ export default function DailyBriefing() {
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Click-through rate by campaign with CTA analysis.</p>
               <div className="space-y-1">
                 {sentCampaigns.filter(c => c.clicked > 0).slice(0, 6).map(c => {
-                  const ctr = (c.clicked / c.uniqueOpened * 100).toFixed(1);
+                  const ctr = c.uniqueOpened > 0 ? (c.clicked / c.uniqueOpened * 100).toFixed(1) : '0';
                   return (
                     <div key={c.id} className="flex items-center justify-between p-2.5 rounded-lg" style={{ background: 'var(--background)' }}>
                       <span className="text-xs font-semibold truncate max-w-[180px]" style={{ color: 'var(--heading)' }}>{c.name}</span>
