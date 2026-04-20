@@ -269,7 +269,7 @@ export default function Briefing() {
         <div className="flex gap-2 no-print flex-shrink-0">
           <button
             onClick={() => {
-              const w = window.open('', '_blank');
+              const w = window.open('', '_blank', 'noopener,width=900,height=700');
               if (!w) return;
               w.document.write(`<!DOCTYPE html><html><head><title>MEMTrak Daily Briefing</title><style>
                 body { margin: 0; padding: 40px; background: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }

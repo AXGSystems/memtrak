@@ -428,7 +428,7 @@ export default function TopBar() {
         )}
       </div>
       <div className="flex items-center gap-3">
-        <div className="flex items-center gap-1.5">
+        <div className="hidden md:flex items-center gap-1.5">
           {themes.map(t => (
             <button
               key={t.id}
@@ -448,13 +448,13 @@ export default function TopBar() {
             />
           ))}
         </div>
-        <div className="w-px h-4" style={{ background: 'var(--card-border)' }} />
+        <div className="hidden md:block w-px h-4" style={{ background: 'var(--card-border)' }} />
         <button
           onClick={() => memtrakPrint(title)}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all hover:opacity-80"
           style={{ color: 'var(--accent)', border: '1px solid var(--card-border)' }}
         >
-          <Printer className="w-3.5 h-3.5" /> Print {title}
+          <Printer className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Print {title}</span>
         </button>
       </div>
     </div>

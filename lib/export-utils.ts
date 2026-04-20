@@ -3,7 +3,11 @@ export function exportCSV(headers: string[], rows: (string | number)[][], filena
   const csvContent = [
     headers.join(','),
     ...rows.map(row => row.map(cell => {
-      const str = String(cell);
+      let str = String(cell);
+      // Prevent CSV formula injection
+      if (/^[=+\-@|\t]/.test(str)) {
+        str = "'" + str;
+      }
       return str.includes(',') || str.includes('"') || str.includes('\n') || str.includes('\r') ? `"${str.replace(/"/g, '""')}"` : str;
     }).join(','))
   ].join('\n');
@@ -20,7 +24,7 @@ export function exportCSV(headers: string[], rows: (string | number)[][], filena
 /** Print a specific element's content in a new window */
 export function printContent(title: string, html: string) {
   const safeTitle = title.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  const w = window.open('', '_blank');
+  const w = window.open('', '_blank', 'noopener,width=900,height=700');
   if (!w) return;
   w.document.write(`<!DOCTYPE html><html><head><title>${safeTitle}</title><style>
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 40px; color: #2c3e50; max-width: 900px; margin: 0 auto; }

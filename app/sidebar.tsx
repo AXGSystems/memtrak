@@ -224,7 +224,7 @@ export default function Sidebar() {
                       <Link
                         key={item.href}
                         href={item.href}
-                        className="flex items-center gap-2.5 px-3 py-[7px] rounded-lg text-[13px] font-medium transition-all duration-150"
+                        className="flex items-center gap-2.5 px-3 py-[7px] rounded-lg text-[13px] font-medium transition-all duration-150 min-w-0"
                         style={active ? {
                           background: 'var(--sidebar-active)',
                           color: 'var(--accent)',
@@ -246,7 +246,7 @@ export default function Sidebar() {
                         }}
                       >
                         <Icon className="w-4 h-4 flex-shrink-0" style={{ opacity: active ? 1 : 0.6 }} />
-                        {item.label}
+                        <span className="truncate">{item.label}</span>
                       </Link>
                     );
                   })}
