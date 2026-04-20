@@ -11,7 +11,7 @@ import {
   ShieldAlert, Gauge, Moon, Ear, Sparkles, Trophy, Settings, Link2,
   Type, UserX, Radar, Database, Bell, Gamepad2, Eye, Crown, Briefcase,
   User, Crosshair, SlidersHorizontal, TrendingDown, Lightbulb, HeartPulse,
-  Server, LayoutGrid, Palette, CircleDot,
+  Server, LayoutGrid, Palette, CircleDot, Menu, X,
 } from 'lucide-react';
 
 const sections = [
@@ -152,6 +152,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   // Auto-expand section containing the active page
   const activeSection = sections.find(s => s.items.some(i => i.href === pathname));
@@ -166,9 +167,29 @@ export default function Sidebar() {
   };
 
   return (
+    <>
+    {/* Mobile hamburger toggle */}
+    <button
+      onClick={() => setMobileOpen(!mobileOpen)}
+      className="fixed top-3 left-3 z-[60] lg:hidden flex items-center justify-center w-10 h-10 rounded-xl border transition-all"
+      style={{ background: 'var(--card)', borderColor: 'var(--card-border)', color: 'var(--heading)' }}
+      aria-label="Toggle navigation"
+    >
+      {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+    </button>
+
+    {/* Mobile backdrop overlay */}
+    {mobileOpen && (
+      <div
+        className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+        onClick={() => setMobileOpen(false)}
+      />
+    )}
+
     <aside
-      className="fixed left-0 top-0 bottom-0 w-[260px] border-r flex flex-col z-50 overflow-hidden transition-colors duration-300"
-      style={{ background: 'var(--sidebar-bg)', borderColor: 'var(--glass-bg)' }}
+      className={`fixed left-0 top-0 bottom-0 w-[260px] border-r flex flex-col z-50 overflow-hidden transition-all duration-300
+        ${mobileOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}
+      style={{ background: 'var(--sidebar-bg)', borderColor: 'var(--glass-border)' }}
     >
       {/* Brand */}
       <div className="px-5 py-5 flex-shrink-0">
@@ -224,6 +245,7 @@ export default function Sidebar() {
                       <Link
                         key={item.href}
                         href={item.href}
+                        onClick={() => setMobileOpen(false)}
                         className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150 min-w-0 ${active ? '' : 'sidebar-link'}`}
                         style={active ? {
                           background: 'var(--sidebar-active)',
@@ -253,5 +275,6 @@ export default function Sidebar() {
         </div>
       </div>
     </aside>
+    </>
   );
 }

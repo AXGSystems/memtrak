@@ -336,13 +336,12 @@ canvas { max-width: 100% !important; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
 :focus:not(:focus-visible) { outline: none; }
 
-/* Mobile: hide sidebar, full-width main */
-@media (max-width: 768px) {
-  aside { display: none !important; }
+/* Mobile responsive — sidebar slides in via toggle, main takes full width */
+@media (max-width: 1023px) {
   main { margin-left: 0 !important; }
 }
-/* Sidebar width sync */
-@media (min-width: 769px) {
+/* Desktop — sidebar always visible, main offset */
+@media (min-width: 1024px) {
   main { margin-left: 260px !important; }
 }
 

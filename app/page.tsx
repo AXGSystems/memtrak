@@ -126,6 +126,7 @@ export default function DailyBriefing() {
   const [heroVisible, setHeroVisible] = useState(false);
   const [countdownDetail, setCountdownDetail] = useState<string | null>(null);
   const [healthDetail, setHealthDetail] = useState<string | null>(null);
+  const [loginStreak, setLoginStreak] = useState(1);
 
   /* Greeting + time-dependent values — client-side only to avoid hydration mismatch */
   const [greeting, setGreeting] = useState('Good morning');
@@ -141,6 +142,18 @@ export default function DailyBriefing() {
     setDaysUntilPFL(Math.max(0, Math.ceil((new Date('2026-05-05').getTime() - now) / (1000 * 60 * 60 * 24))));
     setDaysUntilBounceClean(nextCampaign ? Math.max(0, Math.ceil((new Date(nextCampaign.sentDate).getTime() - now) / (1000 * 60 * 60 * 24))) : 0);
     setLastUpdated(new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }));
+    const streak = parseInt(localStorage.getItem('memtrak-streak') || '0');
+    const lastLogin = localStorage.getItem('memtrak-last-login');
+    const today = new Date().toDateString();
+    if (lastLogin === today) {
+      setLoginStreak(streak);
+    } else {
+      const yesterday = new Date(Date.now() - 86400000).toDateString();
+      const newStreak = lastLogin === yesterday ? streak + 1 : 1;
+      localStorage.setItem('memtrak-streak', String(newStreak));
+      localStorage.setItem('memtrak-last-login', today);
+      setLoginStreak(newStreak);
+    }
   }, []);
 
   /* Fade in hero metrics after typewriter finishes */
@@ -201,6 +214,36 @@ export default function DailyBriefing() {
           </div>
         </div>
 
+      </section>
+
+      {/* ── WHAT CHANGED ── */}
+      <section className="rounded-2xl border overflow-hidden" style={{ background: 'var(--card)', borderColor: 'var(--card-border)' }}>
+        <div className="px-5 py-3 flex items-center justify-between" style={{ background: 'linear-gradient(135deg, color-mix(in srgb, var(--accent) 10%, transparent) 0%, transparent 100%)', borderBottom: '1px solid var(--card-border)' }}>
+          <div className="flex items-center gap-2">
+            <Activity className="w-4 h-4" style={{ color: 'var(--accent)' }} />
+            <span className="text-xs font-extrabold" style={{ color: 'var(--heading)' }}>Since Your Last Check-In</span>
+          </div>
+          <span className="text-[10px] font-semibold" style={{ color: 'var(--text-muted)' }}>Updated {lastUpdated}</span>
+        </div>
+        <div className="px-5 py-3 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          {[
+            { label: 'New Opens', value: '+1,247', color: C.green, icon: Eye },
+            { label: 'New Clicks', value: '+318', color: C.blue, icon: MousePointerClick },
+            { label: 'Bounces Fixed', value: '12', color: C.green, icon: Shield },
+            { label: 'Members At Risk', value: `${demoDecayAlerts.filter(d => d.decay >= 50).length}`, color: C.red, icon: AlertTriangle },
+            { label: 'Revenue Today', value: '+$4.2K', color: C.green, icon: DollarSign },
+            { label: 'Login Streak', value: `${loginStreak} days`, color: C.purple, icon: Zap },
+          ].map((item, i) => {
+            const Icon = item.icon;
+            return (
+              <div key={item.label} className="text-center p-2.5 rounded-xl cursor-pointer transition-all hover:translate-y-[-2px]" style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
+                <Icon className="w-3.5 h-3.5 mx-auto mb-1.5" style={{ color: item.color }} />
+                <div className="text-sm font-extrabold" style={{ color: item.color }}>{item.value}</div>
+                <div className="text-[9px] font-semibold" style={{ color: 'var(--text-muted)' }}>{item.label}</div>
+              </div>
+            );
+          })}
+        </div>
       </section>
 
       {/* ── 1B. SYSTEM HEALTH ── */}
@@ -1224,6 +1267,14 @@ export default function DailyBriefing() {
                 <div className="flex items-center gap-1 text-[10px] font-bold flex-shrink-0 mt-0.5 cursor-pointer" style={{ color: 'var(--accent)' }} onClick={(e) => { e.stopPropagation(); router.push(item.href); }}>
                   {item.action} <ArrowRight className="w-3 h-3" />
                 </div>
+                <button
+                  onClick={(e) => { e.stopPropagation(); router.push('/reminders'); }}
+                  className="text-[9px] px-2 py-1 rounded-lg font-bold transition-all hover:scale-[1.03]"
+                  style={{ background: 'color-mix(in srgb, var(--accent) 10%, transparent)', color: 'var(--accent)', border: '1px solid color-mix(in srgb, var(--accent) 20%, transparent)' }}
+                  title="Create a reminder for this action"
+                >
+                  + Remind
+                </button>
               </div>
             );
           })}
@@ -1592,6 +1643,40 @@ export default function DailyBriefing() {
           </table>
         </div>
       </Card>
+
+      {/* ── RECOMMENDED ── */}
+      <div className="flex items-center gap-3 mb-2">
+        <div className="px-4 py-2 rounded-xl" style={{ background: 'linear-gradient(135deg, color-mix(in srgb, var(--accent) 12%, transparent) 0%, color-mix(in srgb, var(--accent) 4%, transparent) 100%)', border: '1px solid color-mix(in srgb, var(--accent) 15%, transparent)' }}>
+          <span className="text-xs font-extrabold uppercase tracking-widest" style={{ color: 'var(--accent)' }}>Explore More</span>
+        </div>
+        <div className="flex-1 h-px" style={{ background: 'color-mix(in srgb, var(--accent) 15%, var(--card-border))' }} />
+      </div>
+      <section className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        {[
+          { label: 'DecayRadar', desc: 'Predict who leaves next', href: '/decay-radar', icon: Radio, color: C.red },
+          { label: 'StaffPulse', desc: 'Who knows who best', href: '/staff-pulse', icon: Users, color: C.blue },
+          { label: 'SendBrain', desc: 'Optimal send times', href: '/send-brain', icon: Clock, color: C.green },
+          { label: 'TrustScore', desc: 'Relationship health', href: '/trust-score', icon: Heart, color: C.purple },
+          { label: 'BoardBrief', desc: 'Executive reports', href: '/board-brief', icon: FileText, color: C.orange },
+          { label: 'CampaignAutopsy', desc: 'Why it failed', href: '/campaign-autopsy', icon: Target, color: C.red },
+        ].map((page, i) => {
+          const Icon = page.icon;
+          return (
+            <div
+              key={page.label}
+              onClick={() => router.push(page.href)}
+              className="rounded-xl border p-4 cursor-pointer transition-all duration-300 hover:translate-y-[-2px] text-center group"
+              style={{ background: 'linear-gradient(135deg, var(--glass-bg) 0%, transparent 100%)', borderColor: 'var(--glass-border)', animation: `slideInUp 0.3s ease-out ${i * 0.08}s both` }}
+            >
+              <div className="w-10 h-10 rounded-xl mx-auto mb-2 flex items-center justify-center transition-transform group-hover:scale-110" style={{ background: `color-mix(in srgb, ${page.color} 12%, transparent)` }}>
+                <Icon className="w-5 h-5" style={{ color: page.color }} />
+              </div>
+              <div className="text-xs font-extrabold mb-0.5" style={{ color: 'var(--heading)' }}>{page.label}</div>
+              <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{page.desc}</div>
+            </div>
+          );
+        })}
+      </section>
 
       {/* ───────────────────────────────────────────────────────
           11. QUICK ACTIONS BAR (Floating Bottom)

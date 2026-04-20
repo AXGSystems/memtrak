@@ -408,7 +408,7 @@ export default function TopBar() {
   }, []);
 
   return (
-    <div className="sticky top-0 z-40 px-6 py-2.5 flex items-center justify-between border-b no-print" style={{ background: 'var(--background)', borderColor: 'var(--card-border)' }}>
+    <div className="sticky top-0 z-40 pl-14 pr-6 lg:px-6 py-2.5 flex items-center justify-between border-b no-print" style={{ background: 'var(--background)', borderColor: 'var(--card-border)' }}>
       <div className="flex items-center gap-3">
         <div className="text-[10px] font-medium" style={{ color: 'var(--text-muted)' }}>
           {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}

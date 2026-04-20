@@ -15,7 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" data-theme="deep-blue" className="h-full antialiased">
       <body className="min-h-full flex">
         <Sidebar />
-        <main className="flex-1 ml-[260px] min-h-screen">
+        <main className="flex-1 lg:ml-[260px] min-h-screen">
           <TopBar />
           {children}
         </main>
