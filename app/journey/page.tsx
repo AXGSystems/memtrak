@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Mail, Phone, Users, Calendar, CheckCircle, XCircle, Eye, MousePointerClick, DollarSign, Clock } from 'lucide-react';
 import Card from '@/components/Card';
 import AnimatedCounter from '@/components/AnimatedCounter';
+import { SkeletonCard, SkeletonKPI } from '@/components/Skeleton';
+import { getOrganizations, type Organization } from '@/lib/member-data';
 
 interface TouchEvent {
   date: string;
@@ -13,53 +15,65 @@ interface TouchEvent {
   campaign?: string;
 }
 
-const demoOrgs: { name: string; type: string; email: string; member: string; dues: number; since: number; events: TouchEvent[] }[] = [
-  {
-    name: 'First American Title', type: 'ACU', email: 'jsmith@firstam.com', member: 'M-1001', dues: 61554, since: 2008,
-    events: [
-      { date: '2026-04-11', type: 'email-opened', description: 'Opened: Title News Weekly #15', campaign: 'title-news-w15' },
-      { date: '2026-04-10', type: 'phone', description: 'ACU Retention Check-in — happy with DASH 2.0', staff: 'Paul Martin' },
-      { date: '2026-04-07', type: 'email-clicked', description: 'Clicked ALTA ONE registration link', campaign: 'alta-one-earlybird' },
-      { date: '2026-04-07', type: 'email-opened', description: 'Opened: ALTA ONE Early Bird', campaign: 'alta-one-earlybird' },
-      { date: '2026-04-01', type: 'payment', description: 'Membership renewal payment — $61,554', staff: 'System' },
-      { date: '2026-03-28', type: 'email-opened', description: 'Opened: State Legislation Alert', campaign: 'advocacy-alert-state' },
-      { date: '2026-03-15', type: 'event', description: 'Attended: Q1 Industry Outlook Webinar', staff: 'Deirdre Green' },
-      { date: '2026-03-01', type: 'email-sent', description: 'Sent: Membership Renewal Notice', campaign: 'renewal-apr-batch', staff: 'Taylor Spolidoro' },
-      { date: '2026-01-15', type: 'meeting', description: 'Annual strategy review with CEO', staff: 'Chris Morton' },
-    ],
-  },
-  {
-    name: 'Heritage Abstract LLC', type: 'ACB', email: 'info@heritageabstract.com', member: 'M-4421', dues: 517, since: 2019,
-    events: [
-      { date: '2026-04-09', type: 'bounced', description: 'BOUNCED: PFL Compliance Notice — invalid address', campaign: 'pfl-compliance-apr-w3' },
-      { date: '2026-03-15', type: 'email-sent', description: 'Sent: PFL Compliance Wave 2', campaign: 'pfl-compliance-mar', staff: 'Taylor Spolidoro' },
-      { date: '2026-01-20', type: 'email-opened', description: 'Opened: Title News Weekly #3 (LAST OPEN)', campaign: 'title-news-w3' },
-      { date: '2025-11-10', type: 'email-sent', description: 'Sent: Membership Renewal', campaign: 'renewal-2026', staff: 'Taylor Spolidoro' },
-      { date: '2025-09-15', type: 'email-opened', description: 'Opened: ALTA ONE Save the Date', campaign: 'alta-one-std' },
-    ],
-  },
-  {
-    name: 'Liberty Title Group', type: 'ACA', email: 'swilliams@libertytitle.com', member: 'M-2205', dues: 1216, since: 2015,
-    events: [
-      { date: '2026-04-08', type: 'meeting', description: 'CEO met regional director — considering multi-office upgrade', staff: 'Chris Morton' },
-      { date: '2026-04-05', type: 'email-opened', description: 'Opened: ALTA ONE Early Bird', campaign: 'alta-one-earlybird' },
-      { date: '2026-04-01', type: 'email-clicked', description: 'Clicked renewal link', campaign: 'renewal-apr-batch' },
-      { date: '2026-03-25', type: 'email-opened', description: 'Opened: TIPAC Pledge Drive', campaign: 'tipac-q2-pledge' },
-      { date: '2026-03-15', type: 'event', description: 'Attended: EDge Spring Cohort', staff: 'Deirdre Green' },
-      { date: '2026-02-20', type: 'payment', description: 'Membership renewal payment — $1,216', staff: 'System' },
-      { date: '2026-01-10', type: 'phone', description: 'New year check-in — positive', staff: 'Paul Martin' },
-    ],
-  },
-];
+/** Per-org journey enrichment keyed by org_name */
+const journeyEvents: Record<string, TouchEvent[]> = {
+  'First American Title Insurance': [
+    { date: '2026-04-11', type: 'email-opened', description: 'Opened: Title News Weekly #15', campaign: 'title-news-w15' },
+    { date: '2026-04-10', type: 'phone', description: 'ACU Retention Check-in — happy with DASH 2.0', staff: 'Paul Martin' },
+    { date: '2026-04-07', type: 'email-clicked', description: 'Clicked ALTA ONE registration link', campaign: 'alta-one-earlybird' },
+    { date: '2026-04-07', type: 'email-opened', description: 'Opened: ALTA ONE Early Bird', campaign: 'alta-one-earlybird' },
+    { date: '2026-04-01', type: 'payment', description: 'Membership renewal payment — $61,554', staff: 'System' },
+    { date: '2026-03-28', type: 'email-opened', description: 'Opened: State Legislation Alert', campaign: 'advocacy-alert-state' },
+    { date: '2026-03-15', type: 'event', description: 'Attended: Q1 Industry Outlook Webinar', staff: 'Deirdre Green' },
+    { date: '2026-03-01', type: 'email-sent', description: 'Sent: Membership Renewal Notice', campaign: 'renewal-apr-batch', staff: 'Taylor Spolidoro' },
+    { date: '2026-01-15', type: 'meeting', description: 'Annual strategy review with CEO', staff: 'Chris Morton' },
+  ],
+  'Heritage Abstract Company': [
+    { date: '2026-04-09', type: 'bounced', description: 'BOUNCED: PFL Compliance Notice — invalid address', campaign: 'pfl-compliance-apr-w3' },
+    { date: '2026-03-15', type: 'email-sent', description: 'Sent: PFL Compliance Wave 2', campaign: 'pfl-compliance-mar', staff: 'Taylor Spolidoro' },
+    { date: '2026-01-20', type: 'email-opened', description: 'Opened: Title News Weekly #3 (LAST OPEN)', campaign: 'title-news-w3' },
+    { date: '2025-11-10', type: 'email-sent', description: 'Sent: Membership Renewal', campaign: 'renewal-2026', staff: 'Taylor Spolidoro' },
+    { date: '2025-09-15', type: 'email-opened', description: 'Opened: ALTA ONE Save the Date', campaign: 'alta-one-std' },
+  ],
+  'Stewart Information Services': [
+    { date: '2026-04-08', type: 'meeting', description: 'CEO met regional director — considering multi-office upgrade', staff: 'Chris Morton' },
+    { date: '2026-04-05', type: 'email-opened', description: 'Opened: ALTA ONE Early Bird', campaign: 'alta-one-earlybird' },
+    { date: '2026-04-01', type: 'email-clicked', description: 'Clicked renewal link', campaign: 'renewal-apr-batch' },
+    { date: '2026-03-25', type: 'email-opened', description: 'Opened: TIPAC Pledge Drive', campaign: 'tipac-q2-pledge' },
+    { date: '2026-03-15', type: 'event', description: 'Attended: EDge Spring Cohort', staff: 'Deirdre Green' },
+    { date: '2026-02-20', type: 'payment', description: 'Membership renewal payment — $1,216', staff: 'System' },
+    { date: '2026-01-10', type: 'phone', description: 'New year check-in — positive', staff: 'Paul Martin' },
+  ],
+};
+
+/** Build a unified JourneyOrg from an Organization + its enrichment events */
+interface JourneyOrg {
+  name: string;
+  type: string;
+  email: string;
+  member: string;
+  dues: number;
+  since: number;
+  events: TouchEvent[];
+}
+
+function toJourneyOrg(org: Organization): JourneyOrg {
+  return {
+    name: org.org_name,
+    type: org.org_type,
+    email: `info@${org.org_name.toLowerCase().replace(/\s+/g, '')}.com`,
+    member: org.member_id,
+    dues: org.annual_dues,
+    since: new Date(org.join_date).getFullYear(),
+    events: journeyEvents[org.org_name] ?? [],
+  };
+}
 
 const typeIcons: Record<string, typeof Mail> = { 'email-sent': Mail, 'email-opened': Eye, 'email-clicked': MousePointerClick, phone: Phone, meeting: Users, event: Calendar, payment: DollarSign, bounced: XCircle };
 const typeColors: Record<string, string> = { 'email-sent': 'bg-blue-500/20 text-blue-400', 'email-opened': 'bg-green-500/20 text-green-400', 'email-clicked': 'bg-purple-500/20 text-purple-400', phone: 'bg-amber-500/20 text-amber-400', meeting: 'bg-cyan-500/20 text-cyan-400', event: 'bg-indigo-500/20 text-indigo-400', payment: 'bg-green-500/20 text-green-400', bounced: 'bg-red-500/20 text-red-400' };
 const typeLabels: Record<string, string> = { 'email-sent': 'Emails Sent', 'email-opened': 'Emails Opened', 'email-clicked': 'Links Clicked', phone: 'Phone Calls', meeting: 'Meetings', event: 'Events', payment: 'Payments', bounced: 'Bounced' };
 
-const totalDues = demoOrgs.reduce((s, o) => s + o.dues, 0);
-const totalTouchpoints = demoOrgs.reduce((s, o) => s + o.events.length, 0);
-
-function MemberDetailModal({ org }: { org: typeof demoOrgs[0] }) {
+function MemberDetailModal({ org }: { org: JourneyOrg }) {
   const typeCounts: Record<string, number> = {};
   org.events.forEach(ev => { typeCounts[ev.type] = (typeCounts[ev.type] || 0) + 1; });
 
@@ -162,10 +176,49 @@ function MemberDetailModal({ org }: { org: typeof demoOrgs[0] }) {
 }
 
 export default function Journey() {
-  const [selected, setSelected] = useState(demoOrgs[0]);
+  const [journeyOrgs, setJourneyOrgs] = useState<JourneyOrg[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState<JourneyOrg | null>(null);
   const [search, setSearch] = useState('');
 
-  const filtered = search ? demoOrgs.filter(o => o.name.toLowerCase().includes(search.toLowerCase())) : demoOrgs;
+  useEffect(() => {
+    getOrganizations().then(data => {
+      const mapped = data.map(toJourneyOrg);
+      setJourneyOrgs(mapped);
+      if (mapped.length > 0) setSelected(mapped[0]);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="p-6">
+        <h1 className="text-lg font-extrabold mb-2" style={{ color: 'var(--heading)' }}>Member Journey</h1>
+        <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>Complete member engagement timeline with every touchpoint tracked.</p>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+          <SkeletonKPI /><SkeletonKPI /><SkeletonKPI /><SkeletonKPI />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="space-y-2"><SkeletonCard height={80} /><SkeletonCard height={80} /><SkeletonCard height={80} /></div>
+          <div className="lg:col-span-2"><SkeletonCard height={400} /></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!selected || journeyOrgs.length === 0) {
+    return (
+      <div className="p-6">
+        <h1 className="text-lg font-extrabold mb-2" style={{ color: 'var(--heading)' }}>Member Journey</h1>
+        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No member data available.</p>
+      </div>
+    );
+  }
+
+  const filtered = search ? journeyOrgs.filter(o => o.name.toLowerCase().includes(search.toLowerCase())) : journeyOrgs;
+
+  const totalDues = journeyOrgs.reduce((s, o) => s + o.dues, 0);
+  const totalTouchpoints = journeyOrgs.reduce((s, o) => s + o.events.length, 0);
 
   return (
     <div className="p-6">
@@ -175,10 +228,10 @@ export default function Journey() {
       {/* Hero Summary Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
         {[
-          { label: 'Organizations', value: demoOrgs.length, color: 'var(--heading)' },
+          { label: 'Organizations', value: journeyOrgs.length, color: 'var(--heading)' },
           { label: 'Total Dues', value: totalDues, prefix: '$', color: '#8CC63F' },
           { label: 'Touchpoints', value: totalTouchpoints, color: 'var(--heading)' },
-          { label: 'Avg Tenure', value: Math.round(demoOrgs.reduce((s, o) => s + (2026 - o.since), 0) / demoOrgs.length), suffix: ' yrs', color: '#4A90D9' },
+          { label: 'Avg Tenure', value: Math.round(journeyOrgs.reduce((s, o) => s + (2026 - o.since), 0) / journeyOrgs.length), suffix: ' yrs', color: '#4A90D9' },
         ].map((stat, i) => (
           <Card key={stat.label} glass className="transition-all duration-300 hover:translate-y-[-2px]">
             <div style={{ animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>

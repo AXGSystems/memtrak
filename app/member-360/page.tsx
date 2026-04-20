@@ -1,12 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Card from '@/components/Card';
 import SparkKpi from '@/components/SparkKpi';
 import ClientChart from '@/components/ClientChart';
 import ProgressRing from '@/components/ProgressRing';
 import PulsingMeter from '@/components/PulsingMeter';
 import AnimatedCounter from '@/components/AnimatedCounter';
+import { SkeletonCard, SkeletonKPI } from '@/components/Skeleton';
+import { getOrganizations, type Organization } from '@/lib/member-data';
 import {
   User, Building2, Mail, Phone, CalendarCheck, Clock, Star, Shield,
   TrendingUp, TrendingDown, DollarSign, AlertTriangle, Send,
@@ -26,33 +28,33 @@ const C = {
   teal: '#14b8a6',
 };
 
-/* ── member data ──────────────────────────────────────────── */
-const members = [
-  {
-    id: 'ACU-10042',
-    org: 'First American Title',
-    type: 'ACU',
-    typeFull: 'Associate — Corporate Underwriter',
+/* ── per-member enrichment data (touchpoints, sparks, actions) */
+/* This stays local — the data layer provides the core org fields,
+   this map adds the engagement detail that the 360 view needs.     */
+interface MemberEnrichment {
+  email: string;
+  openRate: number;
+  clickRate: number;
+  eventsAttended: number;
+  responseTime: string;
+  revenueAtRisk: number;
+  sparkOpen: number[];
+  sparkClick: number[];
+  sparkEvents: number[];
+  sparkResponse: number[];
+  emailTrend: number[];
+  touchpoints: { date: string; type: string; subject: string; staff: string; status: string }[];
+  staffRelationships: { staff: string; contacts: number; replyRate: number; lastContact: string }[];
+  actions: { label: string; priority: string }[];
+}
+
+const enrichmentMap: Record<string, MemberEnrichment> = {
+  'First American Title Insurance': {
     email: 'jsmith@firstam.com',
-    joinYear: 2008,
-    annualDues: 61554,
-    renewalStatus: 'Current',
-    renewalDate: '2026-12-31',
-    engagementScore: 72,
-    trustScore: 84,
-    openRate: 38.2,
-    clickRate: 11.4,
-    eventsAttended: 6,
-    responseTime: '1.4 days',
-    decayScore: 75,
-    churnProb: 68,
+    openRate: 38.2, clickRate: 11.4, eventsAttended: 6, responseTime: '1.4 days',
     revenueAtRisk: 61554,
-    lifetimeValue: 1108000,
-    paymentStatus: 'Paid — Auto-Renew',
-    sparkOpen: [42, 40, 38, 35, 32, 38],
-    sparkClick: [14, 12, 11, 10, 9, 11],
-    sparkEvents: [2, 1, 2, 1, 0, 0],
-    sparkResponse: [0.8, 1.0, 1.2, 1.4, 1.6, 1.4],
+    sparkOpen: [42, 40, 38, 35, 32, 38], sparkClick: [14, 12, 11, 10, 9, 11],
+    sparkEvents: [2, 1, 2, 1, 0, 0], sparkResponse: [0.8, 1.0, 1.2, 1.4, 1.6, 1.4],
     emailTrend: [44, 42, 40, 36, 32, 38],
     touchpoints: [
       { date: '2026-04-10', type: 'Email', subject: 'ACU Underwriter Retention Check-in', staff: 'Paul Martin', status: 'Opened' },
@@ -72,31 +74,12 @@ const members = [
       { label: 'Add to "Underwriter Re-Engagement" drip campaign', priority: 'medium' },
     ],
   },
-  {
-    id: 'ACB-20188',
-    org: 'Heritage Abstract LLC',
-    type: 'ACB',
-    typeFull: 'Associate — Corporate Business',
+  'Heritage Abstract Company': {
     email: 'info@heritageabstract.com',
-    joinYear: 2019,
-    annualDues: 517,
-    renewalStatus: 'At Risk',
-    renewalDate: '2026-06-30',
-    engagementScore: 8,
-    trustScore: 22,
-    openRate: 0,
-    clickRate: 0,
-    eventsAttended: 0,
-    responseTime: 'N/A',
-    decayScore: 100,
-    churnProb: 92,
+    openRate: 0, clickRate: 0, eventsAttended: 0, responseTime: 'N/A',
     revenueAtRisk: 517,
-    lifetimeValue: 3619,
-    paymentStatus: 'Late — 30 days overdue',
-    sparkOpen: [15, 10, 5, 2, 0, 0],
-    sparkClick: [3, 2, 1, 0, 0, 0],
-    sparkEvents: [0, 0, 0, 0, 0, 0],
-    sparkResponse: [4, 5, 0, 0, 0, 0],
+    sparkOpen: [15, 10, 5, 2, 0, 0], sparkClick: [3, 2, 1, 0, 0, 0],
+    sparkEvents: [0, 0, 0, 0, 0, 0], sparkResponse: [4, 5, 0, 0, 0, 0],
     emailTrend: [18, 12, 8, 3, 0, 0],
     touchpoints: [
       { date: '2026-01-15', type: 'Email', subject: 'Membership Renewal Reminder', staff: 'System', status: 'Not Opened' },
@@ -115,31 +98,12 @@ const members = [
       { label: 'Send physical mail — certified letter with renewal form', priority: 'medium' },
     ],
   },
-  {
-    id: 'ACA-30255',
-    org: 'Liberty Title Group',
-    type: 'ACA',
-    typeFull: 'Associate — Corporate Agent',
+  'Stewart Information Services': {
     email: 'swilliams@libertytitle.com',
-    joinYear: 2015,
-    annualDues: 1216,
-    renewalStatus: 'Current',
-    renewalDate: '2026-12-31',
-    engagementScore: 64,
-    trustScore: 71,
-    openRate: 45.1,
-    clickRate: 14.8,
-    eventsAttended: 3,
-    responseTime: '2.2 days',
-    decayScore: 41,
-    churnProb: 35,
+    openRate: 45.1, clickRate: 14.8, eventsAttended: 3, responseTime: '2.2 days',
     revenueAtRisk: 1216,
-    lifetimeValue: 13376,
-    paymentStatus: 'Paid — Invoice',
-    sparkOpen: [40, 42, 44, 46, 45, 45],
-    sparkClick: [12, 13, 14, 15, 15, 15],
-    sparkEvents: [1, 0, 1, 1, 0, 0],
-    sparkResponse: [2.5, 2.4, 2.3, 2.2, 2.2, 2.2],
+    sparkOpen: [40, 42, 44, 46, 45, 45], sparkClick: [12, 13, 14, 15, 15, 15],
+    sparkEvents: [1, 0, 1, 1, 0, 0], sparkResponse: [2.5, 2.4, 2.3, 2.2, 2.2, 2.2],
     emailTrend: [38, 40, 42, 44, 46, 45],
     touchpoints: [
       { date: '2026-04-09', type: 'Email', subject: 'PFL Compliance Notice — April Wave 3', staff: 'System', status: 'Clicked' },
@@ -159,7 +123,20 @@ const members = [
       { label: 'Add to advocacy outreach for state legislation alerts', priority: 'low' },
     ],
   },
-];
+};
+
+/** Fallback enrichment for orgs without detailed data */
+const defaultEnrichment: MemberEnrichment = {
+  email: '',
+  openRate: 0, clickRate: 0, eventsAttended: 0, responseTime: 'N/A',
+  revenueAtRisk: 0,
+  sparkOpen: [0, 0, 0, 0, 0, 0], sparkClick: [0, 0, 0, 0, 0, 0],
+  sparkEvents: [0, 0, 0, 0, 0, 0], sparkResponse: [0, 0, 0, 0, 0, 0],
+  emailTrend: [0, 0, 0, 0, 0, 0],
+  touchpoints: [],
+  staffRelationships: [],
+  actions: [],
+};
 
 /* ── touchpoint icon helper ───────────────────────────────── */
 function touchpointIcon(type: string) {
@@ -178,9 +155,83 @@ function statusColor(status: string) {
 }
 
 export default function Member360() {
+  const [orgs, setOrgs] = useState<Organization[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [actionModal, setActionModal] = useState<string | null>(null);
-  const m = members[selectedIdx];
+
+  useEffect(() => {
+    getOrganizations().then(data => {
+      setOrgs(data);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="p-6 space-y-6">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <div className="p-1.5 rounded-lg" style={{ background: 'color-mix(in srgb, var(--accent) 15%, transparent)' }}>
+              <User className="w-4 h-4" style={{ color: 'var(--accent)' }} />
+            </div>
+            <h1 className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>Member360&#8482;</h1>
+          </div>
+          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Every member, one complete picture.</p>
+        </div>
+        <SkeletonCard height={64} />
+        <SkeletonCard height={140} />
+        <div className="grid grid-cols-2 gap-4"><SkeletonCard height={180} /><SkeletonCard height={180} /></div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+          <SkeletonKPI /><SkeletonKPI /><SkeletonKPI /><SkeletonKPI />
+        </div>
+        <SkeletonCard height={260} />
+      </div>
+    );
+  }
+
+  if (orgs.length === 0) {
+    return (
+      <div className="p-6">
+        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No member data available.</p>
+      </div>
+    );
+  }
+
+  const org = orgs[selectedIdx];
+  const enrich = enrichmentMap[org.org_name] ?? defaultEnrichment;
+
+  /* Derive a unified view object `m` so the rest of the JSX stays unchanged */
+  const m = {
+    id: org.member_id,
+    org: org.org_name,
+    type: org.org_type,
+    typeFull: org.tier,
+    email: enrich.email || `info@${org.org_name.toLowerCase().replace(/\s+/g, '')}.com`,
+    joinYear: new Date(org.join_date).getFullYear(),
+    annualDues: org.annual_dues,
+    renewalStatus: org.status !== 'Active' || org.churn_risk >= 50 ? 'At Risk' : 'Current',
+    renewalDate: org.renewal_date,
+    engagementScore: org.engagement_score,
+    trustScore: org.trust_score,
+    openRate: enrich.openRate,
+    clickRate: enrich.clickRate,
+    eventsAttended: enrich.eventsAttended,
+    responseTime: enrich.responseTime,
+    decayScore: org.decay_score,
+    churnProb: org.churn_risk,
+    revenueAtRisk: enrich.revenueAtRisk || org.annual_dues,
+    lifetimeValue: org.lifetime_revenue,
+    paymentStatus: org.dues_status,
+    sparkOpen: enrich.sparkOpen,
+    sparkClick: enrich.sparkClick,
+    sparkEvents: enrich.sparkEvents,
+    sparkResponse: enrich.sparkResponse,
+    emailTrend: enrich.emailTrend,
+    touchpoints: enrich.touchpoints,
+    staffRelationships: enrich.staffRelationships,
+    actions: enrich.actions,
+  };
 
   const renewalColor = m.renewalStatus === 'Current' ? C.green : m.renewalStatus === 'At Risk' ? C.red : C.amber;
   const paymentColor = m.paymentStatus.startsWith('Paid') ? C.green : C.red;
@@ -208,9 +259,9 @@ export default function Member360() {
           className="w-full rounded-lg border px-3 py-2 text-sm font-semibold"
           style={{ background: 'var(--input-bg)', borderColor: 'var(--card-border)', color: 'var(--heading)' }}
         >
-          {members.map((mem, i) => (
-            <option key={mem.id} value={i}>
-              {mem.org} — {mem.type} — ${mem.annualDues.toLocaleString()}/yr
+          {orgs.map((o, i) => (
+            <option key={o.id} value={i}>
+              {o.org_name} — {o.org_type} — ${o.annual_dues.toLocaleString()}/yr
             </option>
           ))}
         </select>

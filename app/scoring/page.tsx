@@ -1,10 +1,13 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Card, { KpiCard } from '@/components/Card';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import ClientChart from '@/components/ClientChart';
 import ProgressRing from '@/components/ProgressRing';
+import { SkeletonCard, SkeletonKPI } from '@/components/Skeleton';
 import { exportCSV } from '@/lib/export-utils';
+import { getOrganizations, type Organization } from '@/lib/member-data';
 import { Download, Users, DollarSign, AlertTriangle } from 'lucide-react';
 
 const C = { navy: '#002D5C', blue: '#4A90D9', green: '#8CC63F', red: '#D94A4A', orange: '#E8923F', purple: '#a855f7' };
@@ -19,16 +22,60 @@ const scoringModel = [
   { factor: 'Website Activity (GA4)', weight: 10, description: 'Page views, resource downloads, login frequency' },
 ];
 
-// Member scores — what Klaviyo charges $150/mo+ for
-const memberScores = [
-  { org: 'First American Title', type: 'ACU', score: 94, ltv: 308000, trend: 'stable', emails: 92, clicks: 45, events: 8, dues: 'Early', risk: 'Low' },
-  { org: 'Commonwealth Land Title', type: 'ACA', score: 87, ltv: 12160, trend: 'rising', emails: 88, clicks: 38, events: 5, dues: 'On-time', risk: 'Low' },
-  { org: 'Old Republic Title', type: 'ACU', score: 82, ltv: 246000, trend: 'stable', emails: 78, clicks: 32, events: 4, dues: 'On-time', risk: 'Low' },
-  { org: 'Liberty Title Group', type: 'ACA', score: 65, ltv: 8512, trend: 'declining', emails: 50, clicks: 18, events: 2, dues: 'On-time', risk: 'Medium' },
-  { org: 'Stewart Title', type: 'ACU', score: 58, ltv: 184662, trend: 'declining', emails: 42, clicks: 12, events: 1, dues: 'Late', risk: 'High' },
-  { org: 'National Title Services', type: 'REA', score: 38, ltv: 2646, trend: 'declining', emails: 30, clicks: 5, events: 0, dues: 'Late', risk: 'High' },
-  { org: 'Heritage Abstract LLC', type: 'ACB', score: 8, ltv: 1551, trend: 'gone-dark', emails: 0, clicks: 0, events: 0, dues: 'Overdue', risk: 'Critical' },
-];
+/** Derive a scoreboard row from an Organization record */
+interface ScoreRow {
+  org: string;
+  type: string;
+  score: number;
+  ltv: number;
+  trend: string;
+  emails: number;
+  clicks: number;
+  events: number;
+  dues: string;
+  risk: string;
+}
+
+function toScoreRow(o: Organization): ScoreRow {
+  // Derive trend from decay_score
+  const trend = o.decay_score <= 10 ? 'rising'
+    : o.decay_score <= 30 ? 'stable'
+    : o.decay_score <= 70 ? 'declining'
+    : 'gone-dark';
+
+  // Derive dues status category
+  const dues = o.dues_status.toLowerCase().includes('past due') || o.dues_status.toLowerCase().includes('overdue') || o.dues_status === 'Cancelled'
+    ? 'Overdue'
+    : o.dues_status.toLowerCase().includes('late')
+    ? 'Late'
+    : o.engagement_score >= 80
+    ? 'Early'
+    : 'On-time';
+
+  // Derive risk tier
+  const risk = o.churn_risk >= 80 ? 'Critical'
+    : o.churn_risk >= 50 ? 'High'
+    : o.churn_risk >= 30 ? 'Medium'
+    : 'Low';
+
+  // Estimate email/click/event metrics from engagement_score (until real email data is wired)
+  const emails = Math.min(100, Math.round(o.engagement_score * 1.05));
+  const clicks = Math.min(100, Math.round(o.engagement_score * 0.5));
+  const events = Math.max(0, Math.round(o.engagement_score / 15));
+
+  return {
+    org: o.org_name,
+    type: o.org_type,
+    score: o.engagement_score,
+    ltv: o.lifetime_revenue,
+    trend,
+    emails,
+    clicks,
+    events,
+    dues,
+    risk,
+  };
+}
 
 const scoreDistribution = [
   { range: '90-100 (Champions)', count: 420, pct: 8.4, color: C.green },
@@ -41,10 +88,36 @@ const scoreDistribution = [
 const riskColors: Record<string, string> = { Low: 'text-green-400', Medium: 'text-amber-400', High: 'text-red-400', Critical: 'text-red-500 font-extrabold' };
 
 export default function Scoring() {
+  const [memberScores, setMemberScores] = useState<ScoreRow[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getOrganizations().then(data => {
+      setMemberScores(data.map(toScoreRow));
+      setLoading(false);
+    });
+  }, []);
+
   const totalMembers = scoreDistribution.reduce((s, d) => s + d.count, 0);
-  const avgScore = Math.round(memberScores.reduce((s, m) => s + m.score, 0) / memberScores.length);
+  const avgScore = memberScores.length > 0 ? Math.round(memberScores.reduce((s, m) => s + m.score, 0) / memberScores.length) : 0;
   const totalLTV = memberScores.reduce((s, m) => s + m.ltv, 0);
   const atRiskCount = memberScores.filter(m => m.risk === 'High' || m.risk === 'Critical').length;
+
+  if (loading) {
+    return (
+      <div className="p-6">
+        <h1 className="text-lg font-extrabold mb-1" style={{ color: 'var(--heading)' }}>Engagement Scoring & Member Lifetime Value</h1>
+        <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>Per-member composite scoring + predicted lifetime revenue — what ActiveCampaign and Klaviyo charge $300+/mo for. MEMTrak does it for free.</p>
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-6">
+          <SkeletonKPI /><SkeletonKPI /><SkeletonKPI /><SkeletonKPI /><SkeletonKPI />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <SkeletonCard height={300} /><SkeletonCard height={300} />
+        </div>
+        <SkeletonCard height={400} />
+      </div>
+    );
+  }
 
   return (
     <div className="p-6">
