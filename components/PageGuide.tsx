@@ -73,7 +73,7 @@ export default function PageGuide({ pageId, guide }: PageGuideProps) {
                     <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Page Guide</p>
                   </div>
                 </div>
-                <button onClick={markSeen} className="p-1.5 rounded-lg hover:scale-110 transition-transform" style={{ color: 'var(--text-muted)' }}>
+                <button onClick={markSeen} aria-label="Close guide" className="p-1.5 rounded-lg hover:scale-110 hover:bg-white/10 transition-all" style={{ color: 'var(--text-muted)' }}>
                   <X className="w-4 h-4" />
                 </button>
               </div>

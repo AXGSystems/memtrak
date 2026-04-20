@@ -162,7 +162,7 @@ export default function Sidebar() {
 
   const isSectionOpen = (label: string) => {
     if (collapsed[label] !== undefined) return !collapsed[label];
-    return label === activeSection?.label || label === 'Overview';
+    return true; // All sections open by default
   };
 
   return (
@@ -204,13 +204,13 @@ export default function Sidebar() {
               {/* Section header — clickable to collapse */}
               <button
                 onClick={() => toggleSection(section.label)}
-                className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-[10px] uppercase tracking-[0.12em] font-bold transition-colors"
-                style={{ color: hasActive ? 'var(--accent)' : 'var(--sidebar-text)' }}
+                className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-[12px] uppercase tracking-[0.08em] font-extrabold"
+                style={{ color: '#ffffff' }}
               >
                 {section.label}
                 <ChevronDown
                   className="w-3 h-3 transition-transform duration-200"
-                  style={{ transform: isOpen ? 'rotate(0deg)' : 'rotate(-90deg)', opacity: 0.5 }}
+                  style={{ transform: isOpen ? 'rotate(0deg)' : 'rotate(-90deg)', color: '#ffffff' }}
                 />
               </button>
 
