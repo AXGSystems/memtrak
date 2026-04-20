@@ -291,7 +291,7 @@ export default function DailyBriefing() {
       {healthDetail && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={() => setHealthDetail(null)}>
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-          <div className="relative w-full max-w-md max-h-[80vh] overflow-y-auto rounded-2xl border" style={{ background: 'var(--card)', borderColor: 'var(--card-border)', boxShadow: '0 25px 60px rgba(0,0,0,0.4)', animation: 'scaleIn 0.2s ease-out' }} onClick={e => e.stopPropagation()}>
+          <div className="relative w-full max-w-[95vw] sm:max-w-md max-h-[80vh] overflow-y-auto rounded-2xl border" style={{ background: 'var(--card)', borderColor: 'var(--card-border)', boxShadow: '0 25px 60px rgba(0,0,0,0.4)', animation: 'scaleIn 0.2s ease-out' }} onClick={e => e.stopPropagation()}>
             <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b backdrop-blur-md" style={{ background: 'color-mix(in srgb, var(--card) 90%, transparent)', borderColor: 'var(--card-border)' }}>
               <h3 className="text-sm font-bold" style={{ color: 'var(--heading)' }}>{healthDetail} Health — Details</h3>
               <button onClick={() => setHealthDetail(null)} className="p-1.5 rounded-lg hover:bg-white/5" style={{ color: 'var(--text-muted)' }}><X className="w-4 h-4" /></button>
@@ -440,7 +440,7 @@ export default function DailyBriefing() {
           <div key={i} className="rounded-2xl border p-5 h-[200px]" style={{ background: 'var(--card)', borderColor: 'var(--card-border)', animation: 'skeletonPulse 1.5s ease-in-out infinite' }}>
             <div className="h-3 w-32 rounded-full mb-4" style={{ background: 'var(--card-border)' }} />
             <div className="h-12 w-48 rounded-lg mx-auto mb-4" style={{ background: 'var(--card-border)' }} />
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {[1,2,3,4].map(j => <div key={j} className="h-10 rounded-lg" style={{ background: 'var(--card-border)' }} />)}
             </div>
           </div>
@@ -523,7 +523,7 @@ export default function DailyBriefing() {
       ) : (
       <section className="rounded-2xl border p-5 h-[160px]" style={{ background: 'var(--card)', borderColor: 'var(--card-border)', animation: 'skeletonPulse 1.5s ease-in-out infinite' }}>
         <div className="h-3 w-40 rounded-full mb-4" style={{ background: 'var(--card-border)' }} />
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[1,2,3].map(j => <div key={j} className="h-20 rounded-xl" style={{ background: 'var(--card-border)' }} />)}
         </div>
       </section>
@@ -534,7 +534,7 @@ export default function DailyBriefing() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={() => setCountdownDetail(null)}>
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
           <div
-            className="relative w-full max-w-lg max-h-[80vh] overflow-y-auto rounded-2xl border"
+            className="relative w-full max-w-[95vw] sm:max-w-lg max-h-[80vh] overflow-y-auto rounded-2xl border"
             style={{ background: 'var(--card)', borderColor: 'var(--card-border)', boxShadow: '0 25px 60px rgba(0,0,0,0.4)', animation: 'scaleIn 0.2s ease-out' }}
             onClick={e => e.stopPropagation()}
           >
@@ -1401,7 +1401,7 @@ export default function DailyBriefing() {
         <span className="text-[10px] font-semibold" style={{ color: 'var(--text-muted)' }}>Relationship strength &middot; Reply metrics</span>
       </div>
 
-      <section className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {demoRelationships.map((r, i) => {
           const replyColor = r.replyRate >= 50 ? '#8CC63F' : r.replyRate >= 30 ? '#4A90D9' : '#E8923F';
           const strengthBg = r.strength === 'Exceptional' ? 'rgba(140,198,63,0.12)' : r.strength === 'Strong' ? 'rgba(74,144,217,0.12)' : 'rgba(232,146,63,0.12)';
@@ -1571,7 +1571,7 @@ export default function DailyBriefing() {
         }
       >
         <div className="overflow-x-auto -mx-5">
-          <table className="w-full text-xs" style={{ minWidth: 700 }}>
+          <table className="w-full text-xs min-w-[500px] md:min-w-0">
             <thead>
               <tr style={{ borderBottom: '1px solid var(--card-border)' }}>
                 {['Campaign', 'Source', 'Status', 'Sent', 'Open Rate', 'Clicks', 'Revenue'].map(h => (
@@ -1709,7 +1709,7 @@ export default function DailyBriefing() {
                   key={i}
                   aria-label={btn.label}
                   title={btn.label}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-[11px] font-bold transition-all duration-200 hover:scale-[1.03] group"
+                  className="flex items-center gap-2 px-2 sm:px-4 py-2.5 rounded-xl text-[11px] font-bold transition-all duration-200 hover:scale-[1.03] group"
                   style={{
                     color: 'var(--heading)',
                     background: 'transparent',

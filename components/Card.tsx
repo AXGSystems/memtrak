@@ -68,7 +68,7 @@ export default function Card({ children, title, subtitle, className = '', glass 
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={() => setShowDetail(false)}>
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
           <div
-            className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl border print-modal"
+            className="relative w-full max-w-[95vw] sm:max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl border print-modal"
             style={{
               background: 'var(--card)',
               borderColor: 'var(--card-border)',
@@ -142,7 +142,7 @@ export function KpiCard({ label, value, sub, icon: Icon, color, detail }: {
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={() => setShowDetail(false)}>
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
           <div
-            className="relative w-full max-w-lg max-h-[80vh] overflow-y-auto rounded-2xl border p-6 print-modal"
+            className="relative w-full max-w-[95vw] sm:max-w-lg max-h-[80vh] overflow-y-auto rounded-2xl border p-6 print-modal"
             style={{
               background: 'var(--card)',
               borderColor: 'var(--card-border)',

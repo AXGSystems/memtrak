@@ -56,7 +56,7 @@ function DigitBox({
           border: '1px solid var(--card-border)',
           color: 'var(--heading)',
           boxShadow: `0 2px 8px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.03)`,
-          minWidth: size === 'sm' ? 36 : size === 'lg' ? 56 : 46,
+          minWidth: size === 'sm' ? 30 : size === 'lg' ? 48 : 38,
           textAlign: 'center',
         }}
       >

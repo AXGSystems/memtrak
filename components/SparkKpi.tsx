@@ -122,7 +122,7 @@ export default function SparkKpi({ label, value, sub, trend, sparkData, sparkCol
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={() => setShowDetail(false)}>
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
           <div
-            className="relative w-full max-w-lg max-h-[80vh] overflow-y-auto rounded-2xl border"
+            className="relative w-full max-w-[95vw] sm:max-w-lg max-h-[80vh] overflow-y-auto rounded-2xl border"
             style={{ background: 'var(--card)', borderColor: 'var(--card-border)', boxShadow: '0 25px 60px rgba(0,0,0,0.4)' }}
             onClick={e => e.stopPropagation()}
           >
