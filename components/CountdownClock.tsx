@@ -42,7 +42,7 @@ function DigitBox({
   size: 'sm' | 'md' | 'lg';
   color: string;
 }) {
-  const pad = String(value).padStart(unit === 'DAYS' ? 1 : 2, '0');
+  const pad = String(value).padStart(2, '0');
   const numSize = size === 'sm' ? 'text-lg' : size === 'lg' ? 'text-3xl' : 'text-2xl';
   const unitSize = size === 'sm' ? 'text-[7px]' : size === 'lg' ? 'text-[10px]' : 'text-[8px]';
   const boxPad = size === 'sm' ? 'px-2 py-1.5' : size === 'lg' ? 'px-4 py-3' : 'px-3 py-2';

@@ -414,7 +414,7 @@ export default function TopBar() {
           {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
         </div>
         <kbd
-          className="text-[9px] font-bold px-1.5 py-0.5 rounded border cursor-pointer transition-all hover:opacity-80"
+          className="text-[10px] font-bold px-1.5 py-0.5 rounded border cursor-pointer transition-all hover:opacity-80"
           style={{ color: 'var(--text-muted)', borderColor: 'var(--card-border)', background: 'var(--input-bg)' }}
           title="Quick navigation"
         >

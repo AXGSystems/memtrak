@@ -180,7 +180,7 @@ export default function DailyBriefing() {
               <h1 className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>
                 <Typewriter text={`${greeting}, Von. Here is your daily intelligence briefing.`} speed={20} delay={200} onComplete={() => setTypewriterDone(true)} />
               </h1>
-              <div className="mt-3 space-y-2 transition-all duration-700" style={{ opacity: typewriterDone ? 1 : 0, transform: typewriterDone ? 'translateY(0)' : 'translateY(8px)' }}>
+              <div className="mt-3 space-y-2 transition-all duration-500" style={{ opacity: typewriterDone ? 1 : 0, transform: typewriterDone ? 'translateY(0)' : 'translateY(8px)' }}>
                 <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
                   Since your last session, MEMTrak has processed <strong style={{ color: 'var(--heading)' }}>{totals.totalSent.toLocaleString()} emails</strong> across {totals.campaignCount} campaigns, generating <strong style={{ color: C.green }}>${(totals.totalRevenue / 1000).toFixed(0)}K in attributed revenue</strong>. Your open rate of <strong style={{ color: parseFloat(openRate) >= 35 ? C.green : C.orange }}>{openRate}%</strong> continues to outperform the 25–35% industry benchmark for association email programs.
                 </p>

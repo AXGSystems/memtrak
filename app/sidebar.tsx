@@ -184,7 +184,7 @@ export default function Sidebar() {
             M
           </div>
           <div>
-            <div className="font-extrabold text-[15px] tracking-tight" style={{ color: 'var(--heading)' }}>MEMTrak</div>
+            <div className="font-extrabold text-base tracking-tight" style={{ color: 'var(--heading)' }}>MEMTrak</div>
             <div className="text-[10px] font-medium tracking-wide" style={{ color: 'var(--sidebar-text)' }}>Email Intelligence</div>
           </div>
         </div>
@@ -205,12 +205,12 @@ export default function Sidebar() {
               <button
                 onClick={() => toggleSection(section.label)}
                 className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-[12px] uppercase tracking-[0.08em] font-extrabold"
-                style={{ color: '#ffffff' }}
+                style={{ color: 'var(--heading)' }}
               >
                 {section.label}
                 <ChevronDown
                   className="w-3 h-3 transition-transform duration-200"
-                  style={{ transform: isOpen ? 'rotate(0deg)' : 'rotate(-90deg)', color: '#ffffff' }}
+                  style={{ transform: isOpen ? 'rotate(0deg)' : 'rotate(-90deg)', color: 'var(--heading)' }}
                 />
               </button>
 
@@ -224,7 +224,7 @@ export default function Sidebar() {
                       <Link
                         key={item.href}
                         href={item.href}
-                        className="flex items-center gap-2.5 px-3 py-[7px] rounded-lg text-[13px] font-medium transition-all duration-150 min-w-0"
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150 min-w-0"
                         style={active ? {
                           background: 'var(--sidebar-active)',
                           color: 'var(--accent)',
