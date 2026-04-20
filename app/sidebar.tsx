@@ -224,25 +224,13 @@ export default function Sidebar() {
                       <Link
                         key={item.href}
                         href={item.href}
-                        className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150 min-w-0"
+                        className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150 min-w-0 ${active ? '' : 'sidebar-link'}`}
                         style={active ? {
                           background: 'var(--sidebar-active)',
                           color: 'var(--accent)',
                           boxShadow: 'inset 3px 0 0 var(--accent)',
                         } : {
                           color: 'var(--sidebar-text)',
-                        }}
-                        onMouseEnter={e => {
-                          if (!active) {
-                            (e.currentTarget as HTMLElement).style.background = 'var(--glass-bg)';
-                            (e.currentTarget as HTMLElement).style.color = 'var(--heading)';
-                          }
-                        }}
-                        onMouseLeave={e => {
-                          if (!active) {
-                            (e.currentTarget as HTMLElement).style.background = 'transparent';
-                            (e.currentTarget as HTMLElement).style.color = 'var(--sidebar-text)';
-                          }
                         }}
                       >
                         <Icon className="w-4 h-4 flex-shrink-0" style={{ opacity: active ? 1 : 0.6 }} />

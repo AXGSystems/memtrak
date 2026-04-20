@@ -33,7 +33,7 @@ function Sparkline({ data, color = 'var(--accent)', height = 32, width = 80 }: {
   const fillPoints = [...points, `${pad + ((data.length - 1) / (data.length - 1)) * (width - pad * 2)},${height}`, `${pad},${height}`];
 
   return (
-    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="flex-shrink-0">
+    <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="flex-shrink-0">
       <defs>
         <linearGradient id={`spark-fill-${color.replace(/[^a-z0-9]/gi, '')}`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor={color} stopOpacity="0.25" />

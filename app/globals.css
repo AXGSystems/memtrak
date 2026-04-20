@@ -374,6 +374,9 @@ main > div { animation: pageIn 0.3s ease-out; }
 /* Interactive list items — slide on hover */
 .hover\:translate-x-1:hover { transform: translateX(4px); }
 
+/* Sidebar nav link hover — replaces inline DOM manipulation */
+.sidebar-link:hover { background: var(--glass-bg); color: var(--heading); }
+
 /* Better table row hover */
 tr { transition: background 0.15s ease; }
 

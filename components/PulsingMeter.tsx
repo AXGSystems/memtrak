@@ -43,6 +43,7 @@ export default function PulsingMeter({
     <div className="flex flex-col items-center gap-1">
       <div className="relative" style={{ width: dim, height: dim }}>
         <svg
+          xmlns="http://www.w3.org/2000/svg"
           width={dim}
           height={dim}
           viewBox={`0 0 ${dim} ${dim}`}

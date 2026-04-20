@@ -1382,7 +1382,7 @@ export default function DailyBriefing() {
                   </div>
                   <div>
                     <div className="text-sm font-extrabold" style={{ color: 'var(--heading)' }}>{r.responseTime}</div>
-                    <div className="text-[8px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Avg Reply</div>
+                    <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Avg Response</div>
                   </div>
                 </div>
                 <MiniBar value={r.replyRate} max={100} color={replyColor} height={4} />

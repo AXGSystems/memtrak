@@ -20,7 +20,7 @@ interface CardProps {
 export default function Card({ children, title, subtitle, className = '', glass = false, accent, detailTitle, detailContent, noPad, solid }: CardProps) {
   const [showDetail, setShowDetail] = useState(false);
 
-  const isGlass = glass || !solid;
+  const isGlass = glass;
 
   return (
     <>
