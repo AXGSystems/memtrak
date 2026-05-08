@@ -9,6 +9,7 @@ import PulsingMeter from '@/components/PulsingMeter';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import { SkeletonCard, SkeletonKPI } from '@/components/Skeleton';
 import { getOrganizations, type Organization } from '@/lib/member-data';
+import ContactsPanel from '@/components/ContactsPanel';
 import {
   User, Building2, Mail, Phone, CalendarCheck, Clock, Star, Shield,
   TrendingUp, TrendingDown, DollarSign, AlertTriangle, Send,
@@ -492,6 +493,9 @@ export default function Member360() {
           ))}
         </div>
       </Card>
+
+      {/* ── Contacts ─────────────────────────────────────────── */}
+      <ContactsPanel orgId={org.id} orgName={org.org_name} />
 
       {/* ── Recommended Actions ──────────────────────────────── */}
       <Card title="Recommended Actions" subtitle="AI-generated next steps" accent="var(--accent)">

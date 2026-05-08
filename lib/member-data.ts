@@ -869,6 +869,120 @@ export async function bulkCreateOrganizations(rows: OrganizationInput[]): Promis
   return { inserted: data?.length ?? 0, failed: [] };
 }
 
+// ── Contacts ─────────────────────────────────────────────────
+
+export type ContactInput = Partial<Omit<Contact, 'id'>> & {
+  org_id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  role: string;
+};
+
+const demoContactsByOrg: Record<string, Contact[]> = {
+  'demo-acu-001': [
+    { id: 'c-001-1', org_id: 'demo-acu-001', first_name: 'Sarah', last_name: 'Mitchell', email: 'smitchell@firstam.com', title: 'VP Government Affairs', role: 'Primary', phone: '714-555-0142', is_primary: true, total_opens: 47, total_clicks: 12, last_email_open: '2026-04-22' },
+    { id: 'c-001-2', org_id: 'demo-acu-001', first_name: 'David', last_name: 'Chen', email: 'dchen@firstam.com', title: 'CFO', role: 'Billing', phone: '714-555-0188', is_primary: false, total_opens: 23, total_clicks: 4 },
+  ],
+  'demo-acu-004': [
+    { id: 'c-004-1', org_id: 'demo-acu-004', first_name: 'Patrick', last_name: 'Sullivan', email: 'psullivan@fnf.com', title: 'EVP', role: 'Primary', phone: '904-555-0100', is_primary: true, total_opens: 89, total_clicks: 34, last_email_open: '2026-05-01' },
+    { id: 'c-004-2', org_id: 'demo-acu-004', first_name: 'Linda', last_name: 'Park', email: 'lpark@fnf.com', title: 'AVP Compliance', role: 'Operations', phone: '904-555-0205', is_primary: false, total_opens: 56, total_clicks: 18, last_email_open: '2026-04-28' },
+  ],
+  'demo-acb-020': [
+    { id: 'c-020-1', org_id: 'demo-acb-020', first_name: 'Michael', last_name: 'Thompson', email: 'mthompson@chicagotitle.com', title: 'Branch Manager', role: 'Primary', phone: '312-555-0301', is_primary: true, total_opens: 38, total_clicks: 9, last_email_open: '2026-04-18' },
+  ],
+};
+
+const demoContactsAll: Contact[] = Object.values(demoContactsByOrg).flat();
+
+/**
+ * Lists contacts for a given organization.
+ */
+export async function listContacts(org_id: string): Promise<Contact[]> {
+  if (isSupabaseConfigured()) {
+    try {
+      const { data, error } = await supabase
+        .from('memtrak_contacts')
+        .select('*')
+        .eq('org_id', org_id)
+        .order('is_primary', { ascending: false })
+        .order('last_name', { ascending: true });
+      if (data && !error) return data;
+    } catch {
+      // fall through
+    }
+  }
+  return demoContactsByOrg[org_id] ?? [];
+}
+
+/**
+ * Returns a single contact by id.
+ */
+export async function getContact(id: string): Promise<Contact | null> {
+  if (isSupabaseConfigured()) {
+    try {
+      const { data, error } = await supabase
+        .from('memtrak_contacts')
+        .select('*')
+        .eq('id', id)
+        .single();
+      if (data && !error) return data;
+    } catch {
+      // fall through
+    }
+  }
+  return demoContactsAll.find((c) => c.id === id) ?? null;
+}
+
+/**
+ * Creates a contact. Requires Supabase configuration.
+ */
+export async function createContact(input: ContactInput): Promise<Contact> {
+  if (!isSupabaseConfigured()) {
+    throw new Error('Supabase not configured — cannot create contact');
+  }
+  const { data, error } = await supabase
+    .from('memtrak_contacts')
+    .insert(input)
+    .select()
+    .single();
+  if (error || !data) throw new Error(error?.message ?? 'Insert failed');
+  return data;
+}
+
+/**
+ * Updates a contact by id. Requires Supabase configuration.
+ */
+export async function updateContact(id: string, patch: Partial<Contact>): Promise<Contact> {
+  if (!isSupabaseConfigured()) {
+    throw new Error('Supabase not configured — cannot update contact');
+  }
+  const { id: _ignore, ...rest } = patch;
+  void _ignore;
+  const { data, error } = await supabase
+    .from('memtrak_contacts')
+    .update(rest)
+    .eq('id', id)
+    .select()
+    .single();
+  if (error || !data) throw new Error(error?.message ?? 'Update failed');
+  return data;
+}
+
+/**
+ * Deletes a contact by id. Requires Supabase configuration.
+ */
+export async function deleteContact(id: string): Promise<void> {
+  if (!isSupabaseConfigured()) {
+    throw new Error('Supabase not configured — cannot delete contact');
+  }
+  const { error } = await supabase
+    .from('memtrak_contacts')
+    .delete()
+    .eq('id', id);
+  if (error) throw new Error(error.message);
+}
+
 /**
  * Returns the distinct list of US states present in the dataset.
  * Used to populate filter dropdowns.
