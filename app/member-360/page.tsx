@@ -12,6 +12,7 @@ import { getOrganizations, type Organization } from '@/lib/member-data';
 import ContactsPanel from '@/components/ContactsPanel';
 import EventsPanel from '@/components/EventsPanel';
 import EngagementBreakdownPanel from '@/components/EngagementBreakdownPanel';
+import GroupsPanel from '@/components/GroupsPanel';
 import {
   User, Building2, Mail, Phone, CalendarCheck, Clock, Star, Shield,
   TrendingUp, TrendingDown, DollarSign, AlertTriangle, Send,
@@ -504,6 +505,9 @@ export default function Member360() {
 
       {/* ── Engagement breakdown ─────────────────────────────── */}
       <EngagementBreakdownPanel orgId={org.id} orgName={org.org_name} />
+
+      {/* ── Group / Committee Memberships ────────────────────── */}
+      <GroupsPanel orgId={org.id} orgName={org.org_name} />
 
       {/* ── Recommended Actions ──────────────────────────────── */}
       <Card title="Recommended Actions" subtitle="AI-generated next steps" accent="var(--accent)">

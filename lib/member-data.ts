@@ -49,6 +49,40 @@ export interface Invoice {
   created_at?: string;
 }
 
+export type GroupType = 'Committee' | 'Board' | 'Task Force' | 'Section' | 'Working Group' | 'Interest Group';
+export type GroupRole = 'Chair' | 'Vice Chair' | 'Secretary' | 'Member' | 'Liaison' | 'Observer';
+
+export interface Group {
+  id: string;
+  name: string;
+  group_type: GroupType;
+  description?: string | null;
+  is_active: boolean;
+  chair_contact_id?: string | null;
+  staff_liaison?: string | null;
+  meeting_frequency?: string | null;
+  created_at?: string;
+}
+
+export interface GroupMember {
+  id: string;
+  group_id: string;
+  contact_id: string;
+  role: GroupRole;
+  joined_date: string;
+  term_end?: string | null;
+  is_active: boolean;
+}
+
+/** Aggregated view: a group plus its member roster (joined to contacts/orgs). */
+export interface GroupWithRoster {
+  group: Group;
+  members: Array<GroupMember & {
+    contact?: Contact | null;
+    org?: Organization | null;
+  }>;
+}
+
 export type EventType = 'Conference' | 'Webinar' | 'Workshop' | 'Committee Meeting' | 'Board Meeting' | 'Social' | 'Training';
 export type RegistrationStatus = 'Registered' | 'Attended' | 'No Show' | 'Cancelled';
 
@@ -1268,6 +1302,160 @@ function pastDueBucket(dueIso: string, today: string): keyof Omit<FinanceStats['
   if (days <= 60) return 'd31_60';
   if (days <= 90) return 'd61_90';
   return 'd91_plus';
+}
+
+// ── Groups / Committees ─────────────────────────────────────
+
+export type GroupInput = Partial<Omit<Group, 'id' | 'created_at'>> & {
+  name: string;
+  group_type: GroupType;
+};
+
+export type GroupMemberInput = Partial<Omit<GroupMember, 'id'>> & {
+  group_id: string;
+  contact_id: string;
+};
+
+const demoGroups: Group[] = [
+  { id: 'grp-001', name: 'Board of Governors', group_type: 'Board', description: 'ALTA governing body — fiduciary oversight and strategic direction.', is_active: true, chair_contact_id: 'c-004-1', staff_liaison: 'Chris Morton', meeting_frequency: 'quarterly' },
+  { id: 'grp-002', name: 'TIPAC Steering Committee', group_type: 'Committee', description: 'Federal advocacy and political action committee oversight.', is_active: true, chair_contact_id: 'c-001-1', staff_liaison: 'Paul Martin', meeting_frequency: 'monthly' },
+  { id: 'grp-003', name: 'Compliance & Standards Working Group', group_type: 'Working Group', description: 'Updates ALTA Best Practices and reviews regulatory developments.', is_active: true, chair_contact_id: 'c-020-1', staff_liaison: 'Caroline Ehrenfeld', meeting_frequency: 'monthly' },
+  { id: 'grp-004', name: 'Technology Section', group_type: 'Section', description: 'Cross-industry forum for title automation, RON, eClosing, and AI.', is_active: true, staff_liaison: 'Taylor Spolidoro', meeting_frequency: 'quarterly' },
+  { id: 'grp-005', name: 'Membership Recruitment Task Force', group_type: 'Task Force', description: 'Time-bound initiative to grow ACA agent membership 2026-2027.', is_active: true, staff_liaison: 'Emily Mincey', meeting_frequency: 'as-needed' },
+];
+
+const demoGroupMembers: GroupMember[] = [
+  // Board of Governors
+  { id: 'gm-001', group_id: 'grp-001', contact_id: 'c-004-1', role: 'Chair',     joined_date: '2024-01-15', term_end: '2027-01-15', is_active: true },
+  { id: 'gm-002', group_id: 'grp-001', contact_id: 'c-001-1', role: 'Vice Chair', joined_date: '2025-01-15', term_end: '2028-01-15', is_active: true },
+  { id: 'gm-003', group_id: 'grp-001', contact_id: 'c-020-1', role: 'Member',    joined_date: '2024-06-01', term_end: '2027-06-01', is_active: true },
+  // TIPAC
+  { id: 'gm-101', group_id: 'grp-002', contact_id: 'c-001-1', role: 'Chair',     joined_date: '2025-01-15', term_end: '2027-01-15', is_active: true },
+  { id: 'gm-102', group_id: 'grp-002', contact_id: 'c-004-1', role: 'Member',    joined_date: '2024-03-01', term_end: '2027-03-01', is_active: true },
+  // Compliance
+  { id: 'gm-201', group_id: 'grp-003', contact_id: 'c-020-1', role: 'Chair',     joined_date: '2025-04-01', term_end: '2027-04-01', is_active: true },
+  { id: 'gm-202', group_id: 'grp-003', contact_id: 'c-001-2', role: 'Member',    joined_date: '2024-09-15', term_end: '2026-09-15', is_active: true },
+  // Technology Section
+  { id: 'gm-301', group_id: 'grp-004', contact_id: 'c-004-2', role: 'Member',    joined_date: '2025-02-01', term_end: '2027-02-01', is_active: true },
+];
+
+export async function listGroups(): Promise<Group[]> {
+  if (isSupabaseConfigured()) {
+    try {
+      const { data, error } = await supabase
+        .from('memtrak_groups')
+        .select('*')
+        .order('name', { ascending: true });
+      if (data && !error) return data;
+    } catch { /* fall through */ }
+  }
+  return [...demoGroups].sort((a, b) => a.name.localeCompare(b.name));
+}
+
+export async function getGroup(id: string): Promise<GroupWithRoster | null> {
+  // Look up the group
+  let group: Group | null = null;
+  if (isSupabaseConfigured()) {
+    try {
+      const { data, error } = await supabase.from('memtrak_groups').select('*').eq('id', id).single();
+      if (data && !error) group = data;
+    } catch { /* fall through */ }
+  }
+  if (!group) group = demoGroups.find((g) => g.id === id) ?? null;
+  if (!group) return null;
+
+  // Look up members
+  let memberRows: GroupMember[] = [];
+  if (isSupabaseConfigured()) {
+    try {
+      const { data, error } = await supabase
+        .from('memtrak_group_members')
+        .select('*')
+        .eq('group_id', id);
+      if (data && !error) memberRows = data;
+    } catch { /* fall through */ }
+  }
+  if (!memberRows.length) memberRows = demoGroupMembers.filter((m) => m.group_id === id);
+
+  // Resolve contact + org for each row (best-effort; uses cached lookups)
+  const enriched = await Promise.all(memberRows.map(async (m) => {
+    const contact = await getContact(m.contact_id);
+    const org = contact ? await getOrganization(contact.org_id) : null;
+    return { ...m, contact, org };
+  }));
+
+  // Sort: Chair → Vice Chair → Secretary → Member → Liaison → Observer
+  const order: GroupRole[] = ['Chair', 'Vice Chair', 'Secretary', 'Member', 'Liaison', 'Observer'];
+  enriched.sort((a, b) => order.indexOf(a.role) - order.indexOf(b.role));
+
+  return { group, members: enriched };
+}
+
+/** Returns groups that any contact at the given org is a member of. */
+export async function listGroupsForOrg(org_id: string): Promise<Array<{ group: Group; member: GroupMember; contact: Contact }>> {
+  const contacts = await listContacts(org_id);
+  if (!contacts.length) return [];
+  const contactIds = new Set(contacts.map((c) => c.id));
+
+  let memberRows: GroupMember[] = [];
+  if (isSupabaseConfigured()) {
+    try {
+      const { data, error } = await supabase
+        .from('memtrak_group_members')
+        .select('*')
+        .in('contact_id', [...contactIds]);
+      if (data && !error) memberRows = data;
+    } catch { /* fall through */ }
+  }
+  if (!memberRows.length) memberRows = demoGroupMembers.filter((m) => contactIds.has(m.contact_id));
+
+  const groups = await listGroups();
+  const groupsById = new Map(groups.map((g) => [g.id, g]));
+  const contactsById = new Map(contacts.map((c) => [c.id, c]));
+
+  const out: Array<{ group: Group; member: GroupMember; contact: Contact }> = [];
+  for (const m of memberRows) {
+    const group = groupsById.get(m.group_id);
+    const contact = contactsById.get(m.contact_id);
+    if (group && contact) out.push({ group, member: m, contact });
+  }
+  return out;
+}
+
+export async function createGroup(input: GroupInput): Promise<Group> {
+  if (!isSupabaseConfigured()) throw new Error('Supabase not configured — cannot create group');
+  const { data, error } = await supabase.from('memtrak_groups').insert({ is_active: true, ...input }).select().single();
+  if (error || !data) throw new Error(error?.message ?? 'Insert failed');
+  return data;
+}
+
+export async function updateGroup(id: string, patch: Partial<Group>): Promise<Group> {
+  if (!isSupabaseConfigured()) throw new Error('Supabase not configured — cannot update group');
+  const { id: _i, created_at: _c, ...rest } = patch;
+  void _i; void _c;
+  const { data, error } = await supabase.from('memtrak_groups').update(rest).eq('id', id).select().single();
+  if (error || !data) throw new Error(error?.message ?? 'Update failed');
+  return data;
+}
+
+export async function deleteGroup(id: string): Promise<void> {
+  if (!isSupabaseConfigured()) throw new Error('Supabase not configured — cannot delete group');
+  const { error } = await supabase.from('memtrak_groups').delete().eq('id', id);
+  if (error) throw new Error(error.message);
+}
+
+export async function addGroupMember(input: GroupMemberInput): Promise<GroupMember> {
+  if (!isSupabaseConfigured()) throw new Error('Supabase not configured — cannot add member');
+  const payload = { is_active: true, role: 'Member' as GroupRole, joined_date: todayIso(), ...input };
+  const { data, error } = await supabase.from('memtrak_group_members').insert(payload).select().single();
+  if (error || !data) throw new Error(error?.message ?? 'Insert failed');
+  return data;
+}
+
+export async function removeGroupMember(membershipId: string): Promise<void> {
+  if (!isSupabaseConfigured()) throw new Error('Supabase not configured — cannot remove member');
+  const { error } = await supabase.from('memtrak_group_members').delete().eq('id', membershipId);
+  if (error) throw new Error(error.message);
 }
 
 // ── Events / Attendance ─────────────────────────────────────

@@ -30,6 +30,7 @@ const sections = [
       { label: 'Member Journey', href: '/journey', icon: GitBranch },
       { label: 'New Members', href: '/new-members', icon: UserPlus },
       { label: 'Events', href: '/events', icon: Calendar },
+      { label: 'Committees', href: '/groups', icon: Briefcase },
       { label: 'Invoices', href: '/invoices', icon: FileText },
       { label: 'Finance', href: '/finance', icon: DollarSign },
       { label: 'Fiscal Year', href: '/finance/fiscal-year', icon: Calendar },
