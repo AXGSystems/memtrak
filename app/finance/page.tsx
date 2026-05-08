@@ -54,13 +54,22 @@ export default function FinancePage() {
               : 'Loading invoice stats…'}
           </p>
         </div>
-        <Link
-          href="/invoices"
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all hover:scale-[1.03]"
-          style={{ color: 'var(--accent)', background: 'color-mix(in srgb, var(--accent) 12%, transparent)' }}
-        >
-          <Receipt className="w-3.5 h-3.5" /> Open invoices
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/finance/fiscal-year"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all hover:scale-[1.03]"
+            style={{ color: 'var(--accent)', background: 'color-mix(in srgb, var(--accent) 12%, transparent)' }}
+          >
+            <TrendingUp className="w-3.5 h-3.5" /> FY Report
+          </Link>
+          <Link
+            href="/invoices"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all hover:scale-[1.03]"
+            style={{ color: 'var(--accent)', background: 'color-mix(in srgb, var(--accent) 12%, transparent)' }}
+          >
+            <Receipt className="w-3.5 h-3.5" /> Open invoices
+          </Link>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 stagger-children">

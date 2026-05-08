@@ -31,6 +31,7 @@ const sections = [
       { label: 'New Members', href: '/new-members', icon: UserPlus },
       { label: 'Invoices', href: '/invoices', icon: FileText },
       { label: 'Finance', href: '/finance', icon: DollarSign },
+      { label: 'Fiscal Year', href: '/finance/fiscal-year', icon: Calendar },
     ]
   },
   {

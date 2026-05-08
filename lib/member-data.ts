@@ -1213,6 +1213,140 @@ function pastDueBucket(dueIso: string, today: string): keyof Omit<FinanceStats['
   return 'd91_plus';
 }
 
+export interface FiscalYearReport {
+  fiscal_year: number;
+  /** All non-cancelled invoices issued in the year, summed */
+  billed: number;
+  /** Cash actually received during the year (date_paid in year), regardless of issue date */
+  collected: number;
+  /** Issued in year, not yet paid (and not cancelled / refunded) */
+  outstanding: number;
+  /** Issued in year that are past their due date and unpaid */
+  pastDue: number;
+  /** Cancelled or Refunded amounts issued in the year */
+  writeOffs: number;
+  /** Collected count of invoices */
+  invoiceCount: { billed: number; collected: number; outstanding: number; pastDue: number; writeOffs: number };
+  /** Monthly billed vs collected. 12 entries Jan→Dec for that year */
+  monthly: { month: string; billed: number; collected: number }[];
+  /** By-org-type collected dollars */
+  byOrgType: { org_type: string; billed: number; collected: number }[];
+  /** Top-10 paying orgs in the year */
+  topPayers: { org_id: string; org_name: string; org_type: string; amount: number }[];
+  /** Active member organizations whose join_date falls in the year */
+  newMembers: number;
+  /** Active member organizations whose join_date predates the year (renewing) */
+  renewingMembers: number;
+  /** Lapsed/Cancelled organizations as of report time */
+  lapsedMembers: number;
+}
+
+const startOfYear = (year: number) => `${year}-01-01`;
+const endOfYear = (year: number) => `${year}-12-31`;
+
+export async function getFiscalYearReport(year: number): Promise<FiscalYearReport> {
+  const orgs = await getOrganizations();
+  const orgsById = new Map(orgs.map((o) => [o.id, o]));
+
+  // Pull a generous slice of invoices and filter in-process. The volume in this
+  // deployment is small; if it grows we can swap to per-FY filtered queries.
+  const { rows: invoices } = await listInvoices({ pageSize: 200, page: 1 });
+
+  const yearStart = startOfYear(year);
+  const yearEnd = endOfYear(year);
+  const today = todayIso();
+
+  let billed = 0, collected = 0, outstanding = 0, pastDue = 0, writeOffs = 0;
+  const counts = { billed: 0, collected: 0, outstanding: 0, pastDue: 0, writeOffs: 0 };
+
+  const monthly: { month: string; billed: number; collected: number }[] = [];
+  for (let m = 1; m <= 12; m++) {
+    monthly.push({ month: `${year}-${String(m).padStart(2, '0')}`, billed: 0, collected: 0 });
+  }
+  const monthIdx = new Map(monthly.map((m, i) => [m.month, i]));
+
+  const byTypeMap = new Map<string, { billed: number; collected: number }>();
+  const byOrgMap = new Map<string, number>();
+
+  for (const inv of invoices) {
+    const issuedInYear = inv.date_issued >= yearStart && inv.date_issued <= yearEnd;
+    const paidInYear = inv.date_paid && inv.date_paid >= yearStart && inv.date_paid <= yearEnd;
+    const org = orgsById.get(inv.org_id);
+
+    if (issuedInYear) {
+      if (inv.status === 'Cancelled' || inv.status === 'Refunded') {
+        writeOffs += inv.amount;
+        counts.writeOffs++;
+      } else {
+        billed += inv.amount;
+        counts.billed++;
+        const idx = monthIdx.get(monthKey(inv.date_issued));
+        if (idx !== undefined) monthly[idx].billed += inv.amount;
+        if (org) {
+          const t = byTypeMap.get(org.org_type) ?? { billed: 0, collected: 0 };
+          t.billed += inv.amount;
+          byTypeMap.set(org.org_type, t);
+        }
+        if (inv.status !== 'Paid') {
+          outstanding += inv.amount;
+          counts.outstanding++;
+          if (inv.status === 'Past Due' || inv.date_due < today) {
+            pastDue += inv.amount;
+            counts.pastDue++;
+          }
+        }
+      }
+    }
+
+    // Cash collected during the FY — counts even if invoice issued in a prior year.
+    if (paidInYear && inv.status === 'Paid') {
+      collected += inv.amount;
+      counts.collected++;
+      const idx = monthIdx.get(monthKey(inv.date_paid!));
+      if (idx !== undefined) monthly[idx].collected += inv.amount;
+      if (org) {
+        const t = byTypeMap.get(org.org_type) ?? { billed: 0, collected: 0 };
+        t.collected += inv.amount;
+        byTypeMap.set(org.org_type, t);
+        byOrgMap.set(org.id, (byOrgMap.get(org.id) ?? 0) + inv.amount);
+      }
+    }
+  }
+
+  const byOrgType = [...byTypeMap.entries()]
+    .map(([org_type, v]) => ({ org_type, ...v }))
+    .sort((a, b) => b.collected - a.collected);
+
+  const topPayers = [...byOrgMap.entries()]
+    .map(([org_id, amount]) => {
+      const org = orgsById.get(org_id);
+      return {
+        org_id,
+        org_name: org?.org_name ?? org_id,
+        org_type: org?.org_type ?? '—',
+        amount,
+      };
+    })
+    .sort((a, b) => b.amount - a.amount)
+    .slice(0, 10);
+
+  let newMembers = 0, renewingMembers = 0, lapsedMembers = 0;
+  for (const o of orgs) {
+    const lapsed = o.status === 'Lapsed' || o.status === 'Cancelled' || o.status === 'Suspended';
+    if (lapsed) lapsedMembers++;
+    else if (o.join_date >= yearStart && o.join_date <= yearEnd) newMembers++;
+    else if (o.join_date < yearStart) renewingMembers++;
+  }
+
+  return {
+    fiscal_year: year,
+    billed, collected, outstanding, pastDue, writeOffs,
+    invoiceCount: counts,
+    monthly, byOrgType, topPayers,
+    newMembers, renewingMembers, lapsedMembers,
+  };
+}
+
 export async function getFinanceStats(): Promise<FinanceStats> {
   // Pull all (active-status) invoices: Pending/Sent/Paid/Past Due
   const { rows: invoices } = await listInvoices({ pageSize: 200, page: 1 });
