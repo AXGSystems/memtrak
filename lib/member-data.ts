@@ -31,6 +31,24 @@ export interface Organization {
   notes?: string;
 }
 
+export type InvoiceStatus = 'Pending' | 'Sent' | 'Paid' | 'Past Due' | 'Cancelled' | 'Refunded';
+
+export interface Invoice {
+  id: string;
+  org_id: string;
+  invoice_number: string;
+  amount: number;
+  description?: string | null;
+  date_issued: string;
+  date_due: string;
+  date_paid?: string | null;
+  status: InvoiceStatus;
+  payment_method?: string | null;
+  payment_reference?: string | null;
+  fiscal_year?: number | null;
+  created_at?: string;
+}
+
 export interface Contact {
   id: string;
   org_id: string;
@@ -992,6 +1010,221 @@ export async function deleteContact(id: string): Promise<void> {
     .delete()
     .eq('id', id);
   if (error) throw new Error(error.message);
+}
+
+// ── Invoices ────────────────────────────────────────────────
+
+export type InvoiceInput = Partial<Omit<Invoice, 'id' | 'created_at'>> & {
+  org_id: string;
+  invoice_number: string;
+  amount: number;
+  date_due: string;
+};
+
+const todayIso = () => new Date().toISOString().slice(0, 10);
+const yearOf = (iso: string) => Number(iso.slice(0, 4)) || new Date().getFullYear();
+
+const demoInvoices: Invoice[] = [
+  // Paid invoices for Champion orgs (proof of payment behavior)
+  { id: 'inv-001', org_id: 'demo-acu-004', invoice_number: 'INV-2025-001', amount: 61554, description: '2025 Annual Dues — ACU', date_issued: '2025-09-01', date_due: '2025-10-01', date_paid: '2025-09-28', status: 'Paid', payment_method: 'ACH', payment_reference: 'CHK-44521', fiscal_year: 2025 },
+  { id: 'inv-002', org_id: 'demo-acu-001', invoice_number: 'INV-2025-002', amount: 61554, description: '2025 Annual Dues — ACU', date_issued: '2025-09-01', date_due: '2025-10-01', date_paid: '2025-10-15', status: 'Paid', payment_method: 'Check', payment_reference: 'CHK-90122', fiscal_year: 2025 },
+  { id: 'inv-003', org_id: 'demo-acb-020', invoice_number: 'INV-2025-003', amount: 2450, description: '2025 Annual Dues — ACB', date_issued: '2025-09-01', date_due: '2025-10-01', date_paid: '2025-09-22', status: 'Paid', payment_method: 'Stripe', payment_reference: 'ch_1A2B3C', fiscal_year: 2025 },
+  // Pending invoices for upcoming renewals
+  { id: 'inv-101', org_id: 'demo-acu-005', invoice_number: 'INV-2026-101', amount: 61554, description: '2026 Annual Dues — ACU', date_issued: '2026-04-15', date_due: '2026-10-01', status: 'Sent', fiscal_year: 2026 },
+  { id: 'inv-102', org_id: 'demo-acb-022', invoice_number: 'INV-2026-102', amount: 2450, description: '2026 Annual Dues — ACB', date_issued: '2026-04-15', date_due: '2026-10-01', status: 'Sent', fiscal_year: 2026 },
+  // Past due
+  { id: 'inv-201', org_id: 'demo-lapsed-070', invoice_number: 'INV-2025-201', amount: 2450, description: '2025 Annual Dues — ACB', date_issued: '2025-09-01', date_due: '2025-10-01', status: 'Past Due', fiscal_year: 2025 },
+  { id: 'inv-202', org_id: 'demo-lapsed-072', invoice_number: 'INV-2025-202', amount: 2450, description: '2025 Annual Dues — ACB', date_issued: '2025-09-01', date_due: '2025-10-01', status: 'Past Due', fiscal_year: 2025 },
+];
+
+export interface ListInvoicesParams {
+  org_id?: string;
+  status?: InvoiceStatus;
+  fiscal_year?: number;
+  due_from?: string;
+  due_to?: string;
+  q?: string;
+  page?: number;
+  pageSize?: number;
+}
+
+export interface ListInvoicesResult {
+  rows: Invoice[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totals: { amount: number; paid: number; outstanding: number; pastDue: number };
+}
+
+export async function listInvoices(params: ListInvoicesParams = {}): Promise<ListInvoicesResult> {
+  const page = Math.max(1, params.page ?? 1);
+  const pageSize = Math.min(200, Math.max(1, params.pageSize ?? 50));
+
+  if (isSupabaseConfigured()) {
+    try {
+      let query = supabase.from('memtrak_invoices').select('*', { count: 'exact' });
+      if (params.org_id) query = query.eq('org_id', params.org_id);
+      if (params.status) query = query.eq('status', params.status);
+      if (params.fiscal_year) query = query.eq('fiscal_year', params.fiscal_year);
+      if (params.due_from) query = query.gte('date_due', params.due_from);
+      if (params.due_to) query = query.lte('date_due', params.due_to);
+      if (params.q) {
+        const pattern = `%${params.q}%`;
+        query = query.or(`invoice_number.ilike.${pattern},description.ilike.${pattern},payment_reference.ilike.${pattern}`);
+      }
+      const from = (page - 1) * pageSize;
+      const to = from + pageSize - 1;
+      const { data, error, count } = await query
+        .order('date_due', { ascending: false })
+        .range(from, to);
+      if (data && !error) {
+        const totals = computeInvoiceTotals(data);
+        return { rows: data, total: count ?? data.length, page, pageSize, totals };
+      }
+    } catch {
+      // fall through
+    }
+  }
+
+  let rows = [...demoInvoices];
+  if (params.org_id) rows = rows.filter((i) => i.org_id === params.org_id);
+  if (params.status) rows = rows.filter((i) => i.status === params.status);
+  if (params.fiscal_year) rows = rows.filter((i) => i.fiscal_year === params.fiscal_year);
+  if (params.due_from) rows = rows.filter((i) => i.date_due >= params.due_from!);
+  if (params.due_to) rows = rows.filter((i) => i.date_due <= params.due_to!);
+  if (params.q) {
+    const lower = params.q.toLowerCase();
+    rows = rows.filter((i) =>
+      i.invoice_number.toLowerCase().includes(lower) ||
+      (i.description ?? '').toLowerCase().includes(lower) ||
+      (i.payment_reference ?? '').toLowerCase().includes(lower),
+    );
+  }
+  rows.sort((a, b) => b.date_due.localeCompare(a.date_due));
+  const total = rows.length;
+  const totals = computeInvoiceTotals(rows);
+  const fromIdx = (page - 1) * pageSize;
+  return { rows: rows.slice(fromIdx, fromIdx + pageSize), total, page, pageSize, totals };
+}
+
+function computeInvoiceTotals(rows: Invoice[]) {
+  const today = todayIso();
+  let amount = 0, paid = 0, outstanding = 0, pastDue = 0;
+  for (const i of rows) {
+    amount += i.amount;
+    if (i.status === 'Paid') paid += i.amount;
+    else if (i.status === 'Cancelled' || i.status === 'Refunded') { /* skip */ }
+    else {
+      outstanding += i.amount;
+      if (i.status === 'Past Due' || i.date_due < today) pastDue += i.amount;
+    }
+  }
+  return { amount, paid, outstanding, pastDue };
+}
+
+export async function getInvoice(id: string): Promise<Invoice | null> {
+  if (isSupabaseConfigured()) {
+    try {
+      const { data, error } = await supabase.from('memtrak_invoices').select('*').eq('id', id).single();
+      if (data && !error) return data;
+    } catch { /* fall through */ }
+  }
+  return demoInvoices.find((i) => i.id === id) ?? null;
+}
+
+export async function createInvoice(input: InvoiceInput): Promise<Invoice> {
+  if (!isSupabaseConfigured()) {
+    throw new Error('Supabase not configured — cannot create invoice');
+  }
+  const payload: InvoiceInput = {
+    status: 'Pending',
+    date_issued: todayIso(),
+    fiscal_year: yearOf(input.date_due),
+    ...input,
+  };
+  const { data, error } = await supabase.from('memtrak_invoices').insert(payload).select().single();
+  if (error || !data) throw new Error(error?.message ?? 'Insert failed');
+  return data;
+}
+
+export async function updateInvoice(id: string, patch: Partial<Invoice>): Promise<Invoice> {
+  if (!isSupabaseConfigured()) {
+    throw new Error('Supabase not configured — cannot update invoice');
+  }
+  const { id: _ignore, created_at: _c, ...rest } = patch;
+  void _ignore; void _c;
+  const { data, error } = await supabase.from('memtrak_invoices').update(rest).eq('id', id).select().single();
+  if (error || !data) throw new Error(error?.message ?? 'Update failed');
+  return data;
+}
+
+export async function markInvoicePaid(id: string, payment: { payment_method: string; payment_reference?: string; date_paid?: string }): Promise<Invoice> {
+  return updateInvoice(id, {
+    status: 'Paid',
+    date_paid: payment.date_paid ?? todayIso(),
+    payment_method: payment.payment_method,
+    payment_reference: payment.payment_reference ?? null,
+  });
+}
+
+export async function deleteInvoice(id: string): Promise<void> {
+  if (!isSupabaseConfigured()) {
+    throw new Error('Supabase not configured — cannot delete invoice');
+  }
+  const { error } = await supabase.from('memtrak_invoices').delete().eq('id', id);
+  if (error) throw new Error(error.message);
+}
+
+export interface GenerateInvoicesResult {
+  generated: number;
+  skipped: number;
+  invoices: Invoice[];
+}
+
+/**
+ * Generates Pending invoices for every active org with a renewal_date in
+ * [from, to] that does NOT already have an invoice for that fiscal year.
+ * Requires Supabase. Idempotent within a fiscal year.
+ */
+export async function generateInvoices(from: string, to: string): Promise<GenerateInvoicesResult> {
+  if (!isSupabaseConfigured()) {
+    throw new Error('Supabase not configured — cannot generate invoices');
+  }
+
+  const { rows: orgs } = await listOrganizations({
+    renewal_from: from,
+    renewal_to: to,
+    status: 'Active',
+    pageSize: 200,
+  });
+
+  const fiscalYear = yearOf(to);
+  const { data: existing } = await supabase
+    .from('memtrak_invoices')
+    .select('org_id, fiscal_year')
+    .eq('fiscal_year', fiscalYear);
+  const taken = new Set((existing ?? []).map((r: { org_id: string }) => r.org_id));
+
+  const candidates = orgs.filter((o) => !taken.has(o.id));
+  if (!candidates.length) {
+    return { generated: 0, skipped: orgs.length - candidates.length, invoices: [] };
+  }
+
+  const issued = todayIso();
+  const payload = candidates.map((o, i) => ({
+    org_id: o.id,
+    invoice_number: `INV-${fiscalYear}-${String(Date.now()).slice(-4)}-${String(i + 1).padStart(3, '0')}`,
+    amount: o.annual_dues,
+    description: `${fiscalYear} Annual Dues — ${o.org_type}`,
+    date_issued: issued,
+    date_due: o.renewal_date,
+    status: 'Pending' as InvoiceStatus,
+    fiscal_year: fiscalYear,
+  }));
+
+  const { data, error } = await supabase.from('memtrak_invoices').insert(payload).select();
+  if (error) throw new Error(error.message);
+  return { generated: data?.length ?? 0, skipped: orgs.length - candidates.length, invoices: data ?? [] };
 }
 
 /**
