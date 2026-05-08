@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Printer } from 'lucide-react';
 import { memtrakPrint } from '@/lib/print';
 import PageGuide, { type GuideContent } from '@/components/PageGuide';
+import AuthIndicator from '@/components/AuthIndicator';
 
 const pageNames: Record<string, string> = {
   '/': 'Daily Briefing',
@@ -456,6 +457,7 @@ export default function TopBar() {
         >
           <Printer className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Print {title}</span>
         </button>
+        <AuthIndicator />
       </div>
     </div>
   );

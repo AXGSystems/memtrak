@@ -1,12 +1,33 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { isAuthEnabled, verifySession, SESSION_COOKIE } from '@/lib/auth';
 
 /**
  * MEMTrak Security Middleware
  * - Security headers on all responses
  * - Basic rate limiting on API routes (in-memory, per-IP)
  * - Input sanitization on tracking endpoints
+ * - Optional passphrase auth gate (off by default — see lib/auth.ts)
  */
+
+// Paths that must remain reachable even when auth is enabled.
+const AUTH_BYPASS_PREFIXES = [
+  '/login',
+  '/api/auth/',
+  '/api/memtrak/pixel',
+  '/api/memtrak/logo',
+  '/api/memtrak/click',
+  '/api/memtrak/unsubscribe',
+  '/api/memtrak/confirm',
+  '/api/memtrak/mail-return',
+  '/_next/',
+  '/favicon.ico',
+  '/alta-shield.png',
+];
+
+function shouldBypassAuth(pathname: string): boolean {
+  return AUTH_BYPASS_PREFIXES.some((prefix) => pathname === prefix || pathname.startsWith(prefix));
+}
 
 // Simple in-memory rate limiter (per IP, resets every minute)
 const rateLimits = new Map<string, { count: number; resetAt: number }>();
@@ -36,18 +57,40 @@ if (typeof setInterval !== 'undefined') {
   }, 300_000);
 }
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
+  const pathname = request.nextUrl.pathname;
 
   // Rate limit API routes
-  if (request.nextUrl.pathname.startsWith('/api/')) {
+  if (pathname.startsWith('/api/')) {
     if (!checkRateLimit(ip)) {
       return new NextResponse(JSON.stringify({ error: 'Rate limit exceeded. Max 100 requests/minute.' }), {
         status: 429,
         headers: { 'Content-Type': 'application/json', 'Retry-After': '60' },
       });
     }
+  }
+
+  // Optional auth gate. Activates only when MEMTRAK_AUTH_ENABLED=true and a
+  // passphrase is set — otherwise falls through completely.
+  if (isAuthEnabled() && !shouldBypassAuth(pathname)) {
+    const cookie = request.cookies.get(SESSION_COOKIE.name)?.value;
+    const session = await verifySession(cookie);
+    if (!session) {
+      // API routes get 401; page routes redirect to /login.
+      if (pathname.startsWith('/api/')) {
+        return new NextResponse(JSON.stringify({ error: 'Authentication required' }), {
+          status: 401,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+      const loginUrl = new URL('/login', request.url);
+      loginUrl.searchParams.set('next', pathname + request.nextUrl.search);
+      return NextResponse.redirect(loginUrl);
+    }
+    // Surface the role to downstream handlers.
+    response.headers.set('x-memtrak-role', session.role);
   }
 
   // Security headers
