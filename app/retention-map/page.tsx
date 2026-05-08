@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Card from '@/components/Card';
+import type { Organization } from '@/lib/member-data';
 import SparkKpi from '@/components/SparkKpi';
 import ClientChart from '@/components/ClientChart';
 import ProgressRing from '@/components/ProgressRing';
@@ -91,13 +92,41 @@ const funnelStages = [
 ];
 
 /* ── At-risk members ─────────────────────────────────────── */
-const atRisk = [
+type AtRiskRow = { org: string; type: string; renewalDate: string; engScore: number; dues: number; lastOpen: string; id?: string };
+
+const demoAtRisk: AtRiskRow[] = [
   { org: 'Valley Abstract Co.', type: 'ACB', renewalDate: 'May 2026', engScore: 18, dues: 441, lastOpen: '62 days ago' },
   { org: 'Pacific Title Services', type: 'REA', renewalDate: 'Jun 2026', engScore: 22, dues: 441, lastOpen: '45 days ago' },
   { org: 'Mountain State Surveyors', type: 'AS', renewalDate: 'May 2026', engScore: 12, dues: 290, lastOpen: '78 days ago' },
   { org: 'Lone Star Affiliates', type: 'ATXA', renewalDate: 'Jul 2026', engScore: 28, dues: 517, lastOpen: '34 days ago' },
   { org: 'Crossroads Title Group', type: 'REB', renewalDate: 'May 2026', engScore: 8, dues: 290, lastOpen: '90+ days ago' },
 ];
+
+const monthYear = (iso: string) => {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleString('en-US', { month: 'short', year: 'numeric' });
+};
+
+const lastOpenFromDecay = (decay: number): string => {
+  if (decay >= 80) return '90+ days ago';
+  if (decay >= 50) return `${Math.round(decay / 2)} days ago`;
+  if (decay >= 30) return `${Math.max(7, Math.round(decay / 4))} days ago`;
+  return '14 days ago';
+};
+
+function orgToAtRisk(o: Organization): AtRiskRow {
+  return {
+    id: o.id,
+    org: o.org_name,
+    type: o.org_type,
+    renewalDate: monthYear(o.renewal_date),
+    engScore: Math.round(o.engagement_score ?? 0),
+    dues: o.annual_dues ?? 0,
+    lastOpen: lastOpenFromDecay(Math.round(o.decay_score ?? 0)),
+  };
+}
 
 /* ── Recommendations ─────────────────────────────────────── */
 const recommendations = [
@@ -109,6 +138,24 @@ const recommendations = [
 
 export default function RetentionMap() {
   const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [atRisk, setAtRisk] = useState<AtRiskRow[]>(demoAtRisk);
+
+  useEffect(() => {
+    fetch('/api/memtrak/members?pageSize=200&sort=churn_risk&order=desc')
+      .then((r) => r.json())
+      .then((d: { rows: Organization[] }) => {
+        const live = (d.rows ?? [])
+          .filter((o) => (o.engagement_score ?? 100) < 30)
+          .sort((a, b) => (a.engagement_score ?? 0) - (b.engagement_score ?? 0))
+          .slice(0, 5)
+          .map(orgToAtRisk);
+        if (live.length) setAtRisk(live);
+      })
+      .catch(() => { /* keep fallback */ });
+  }, []);
+
+  const atRiskCount = atRisk.length;
+  const atRiskTotalDues = atRisk.reduce((s, m) => s + m.dues, 0);
 
   return (
     <div className="p-6">
@@ -352,7 +399,7 @@ export default function RetentionMap() {
             <div className="flex items-center gap-2 mb-1">
               <AlertTriangle className="w-3.5 h-3.5" style={{ color: C.orange }} />
               <span className="text-[10px] font-bold" style={{ color: 'var(--heading)' }}>
-                5 members with $1,979 in combined dues approaching renewal with sub-30% engagement
+                {atRiskCount} members with ${atRiskTotalDues.toLocaleString()} in combined dues approaching renewal with sub-30% engagement
               </span>
             </div>
             <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>

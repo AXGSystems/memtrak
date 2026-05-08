@@ -1,16 +1,98 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import ClientChart from '@/components/ClientChart';
 import Card from '@/components/Card';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import { demoDecayAlerts, demoChurnScores, demoSendTimes, demoRelationships } from '@/lib/demo-data';
+import type { Organization } from '@/lib/member-data';
 
 const C = { navy: '#1B3A5C', blue: '#4A90D9', green: '#8CC63F', red: '#D94A4A', orange: '#E8923F' };
 
-const revenueAtRisk = demoDecayAlerts.filter(d => d.decay >= 50).reduce((s, d) => s + d.revenue, 0);
-const highRiskCount = demoChurnScores.filter(c => c.score >= 70).length;
+type DecayAlert = typeof demoDecayAlerts[number];
+type ChurnScore = typeof demoChurnScores[number];
+
+function decayAlertFromOrg(o: Organization): DecayAlert {
+  const decay = Math.round(o.decay_score ?? 0);
+  const recent = Math.round(o.engagement_score ?? 50);
+  const historical = Math.min(100, recent + decay);
+  const trend: DecayAlert['trend'] =
+    decay >= 80 ? 'Gone Dark' : decay >= 50 ? 'Declining' : decay >= 30 ? 'Slipping' : 'Stable';
+  const lastOpen =
+    decay >= 80 ? '90+ days ago' :
+    decay >= 50 ? `${Math.round(decay / 2)} days ago` :
+    decay >= 30 ? `${Math.max(7, Math.round(decay / 4))} days ago` :
+    '2 days ago';
+  const slug = o.org_name.toLowerCase().replace(/[^a-z0-9]+/g, '');
+  return {
+    org: o.org_name,
+    type: o.org_type,
+    email: `info@${slug || 'member'}.com`,
+    decay,
+    trend,
+    recent,
+    historical,
+    lastOpen,
+    revenue: o.annual_dues ?? 0,
+  };
+}
+
+function churnFactorsFromOrg(o: Organization): string[] {
+  const f: string[] = [];
+  if ((o.engagement_score ?? 100) < 30) f.push('Email engagement below 30%');
+  else if ((o.engagement_score ?? 100) < 50) f.push('Email engagement declining');
+  if (o.dues_status && o.dues_status !== 'Current') f.push(`Dues: ${o.dues_status}`);
+  if (o.health_tier === 'Gone Dark') f.push('No engagement 90+ days');
+  else if (o.health_tier === 'Disengaged') f.push('Skipped recent events');
+  if ((o.trust_score ?? 100) < 40) f.push('Low trust score');
+  if (!f.length) f.push('Multiple risk indicators');
+  return f.slice(0, 3);
+}
+
+function churnActionFromOrg(o: Organization): string {
+  const dues = o.annual_dues ?? 0;
+  if (o.org_type === 'ACU' && (o.churn_risk ?? 0) >= 50) return `CEO check-in — $${(dues / 1000).toFixed(0)}K account`;
+  if ((o.churn_risk ?? 0) >= 80) return 'Immediate phone outreach';
+  if ((o.churn_risk ?? 0) >= 60) return 'Schedule retention call this week';
+  if ((o.churn_risk ?? 0) >= 40) return 'Soft touch — value email';
+  return 'Nurture — low risk';
+}
+
+function churnScoreFromOrg(o: Organization): ChurnScore {
+  return {
+    org: o.org_name,
+    type: o.org_type,
+    score: Math.round(o.churn_risk ?? 0),
+    revenue: o.annual_dues ?? 0,
+    factors: churnFactorsFromOrg(o),
+    action: churnActionFromOrg(o),
+  };
+}
 
 export default function Intelligence() {
+  const [decayAlerts, setDecayAlerts] = useState<DecayAlert[]>(demoDecayAlerts);
+  const [churnScores, setChurnScores] = useState<ChurnScore[]>(demoChurnScores);
+
+  useEffect(() => {
+    fetch('/api/memtrak/members?pageSize=200&sort=churn_risk&order=desc')
+      .then((r) => r.json())
+      .then((d: { rows: Organization[] }) => {
+        const rows = d.rows ?? [];
+        const decay = rows
+          .filter((o) => (o.decay_score ?? 0) > 0)
+          .sort((a, b) => (b.decay_score ?? 0) - (a.decay_score ?? 0))
+          .slice(0, 5)
+          .map(decayAlertFromOrg);
+        const churn = rows.slice(0, 6).map(churnScoreFromOrg);
+        if (decay.length) setDecayAlerts(decay);
+        if (churn.length) setChurnScores(churn);
+      })
+      .catch(() => { /* keep fallback */ });
+  }, []);
+
+  const revenueAtRisk = decayAlerts.filter((d) => d.decay >= 50).reduce((s, d) => s + d.revenue, 0);
+  const highRiskCount = churnScores.filter((c) => c.score >= 70).length;
+
   return (
     <div className="p-6">
       <h1 className="text-lg font-extrabold mb-2" style={{ color: 'var(--heading)' }}>Intelligence</h1>
@@ -19,7 +101,7 @@ export default function Intelligence() {
       {/* Hero Metrics */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
         {[
-          { label: 'Decay Alerts', value: demoDecayAlerts.length, color: '#D94A4A' },
+          { label: 'Decay Alerts', value: decayAlerts.length, color: '#D94A4A' },
           { label: 'Revenue at Risk', value: revenueAtRisk, prefix: '$', color: '#D94A4A' },
           { label: 'High-Risk Churn', value: highRiskCount, color: '#E8923F' },
           { label: 'Staff Tracked', value: demoRelationships.length, color: '#8CC63F' },
@@ -36,11 +118,11 @@ export default function Intelligence() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <Card glass title="Engagement Decay Alerts" subtitle="Members going dark" accent="#D94A4A" detailTitle="Decay Analysis" detailContent={<div><p className="text-xs" style={{ color: "var(--text-muted)" }}>Members whose email open rate has dropped significantly. A decay score of 70+ typically predicts non-renewal within 3-6 months. Total revenue at risk from decaying members: ${demoDecayAlerts.filter(d => d.decay >= 50).reduce((s: number, d: {revenue: number}) => s + d.revenue, 0).toLocaleString()}.</p></div>}>
+        <Card glass title="Engagement Decay Alerts" subtitle="Members going dark" accent="#D94A4A" detailTitle="Decay Analysis" detailContent={<div><p className="text-xs" style={{ color: "var(--text-muted)" }}>Members whose email open rate has dropped significantly. A decay score of 70+ typically predicts non-renewal within 3-6 months. Total revenue at risk from decaying members: ${revenueAtRisk.toLocaleString()}.</p></div>}>
           <h3 className="text-xs font-bold mb-3" style={{ color: 'var(--heading)' }}>Engagement Decay Alerts</h3>
-          <p className="text-[10px] mb-3" style={{ color: 'var(--text-muted)' }}>Members going dark — early churn warning. ${demoDecayAlerts.filter(d => d.decay >= 50).reduce((s, d) => s + d.revenue, 0).toLocaleString()} revenue at risk.</p>
+          <p className="text-[10px] mb-3" style={{ color: 'var(--text-muted)' }}>Members going dark — early churn warning. ${revenueAtRisk.toLocaleString()} revenue at risk.</p>
           <div className="space-y-2">
-            {demoDecayAlerts.map((d, i) => (
+            {decayAlerts.map((d, i) => (
               <div key={d.email} className="flex items-center gap-3 p-3 rounded-lg transition-all duration-300 hover:translate-y-[-2px]" style={{ background: 'var(--input-bg)', animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
                 <div className={`text-lg font-extrabold w-10 text-center ${d.decay >= 70 ? 'text-red-400' : d.decay >= 40 ? 'text-amber-400' : 'text-green-400'}`}>{d.decay}</div>
                 <div className="flex-1 min-w-0">
@@ -56,7 +138,7 @@ export default function Intelligence() {
           <h3 className="text-xs font-bold mb-3" style={{ color: 'var(--heading)' }}>Predictive Churn Scores</h3>
           <p className="text-[10px] mb-3" style={{ color: 'var(--text-muted)' }}>AI-scored non-renewal probability with recommended actions.</p>
           <div className="space-y-2">
-            {demoChurnScores.map((c, i) => (
+            {churnScores.map((c, i) => (
               <div key={c.org} className="p-3 rounded-lg transition-all duration-300 hover:translate-y-[-2px]" style={{ background: 'var(--input-bg)', animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{c.org} <span style={{ color: 'var(--text-muted)' }}>{c.type}</span></span>
