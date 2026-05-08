@@ -29,6 +29,8 @@ export interface Organization {
   last_payment_date: string;
   tags: string[];
   notes?: string;
+  /** Free-form key/value pairs driven by lib/custom-fields.ts definitions. */
+  custom_fields?: Record<string, string | number | boolean | null>;
 }
 
 export type InvoiceStatus = 'Pending' | 'Sent' | 'Paid' | 'Past Due' | 'Cancelled' | 'Refunded';
@@ -234,6 +236,14 @@ const demoOrganizations: Organization[] = [
     lifetime_revenue: 1723512.00,
     last_payment_date: '2025-10-01',
     tags: ['underwriter', 'board-member', 'tipac-contributor'],
+    custom_fields: {
+      license_number: 'FL-TI-08842',
+      license_state: 'FL',
+      license_expires: '2027-08-22',
+      tipac_level: "Chairman's Circle",
+      board_seat_number: 4,
+      best_practices_certified: true,
+    },
   },
   {
     id: 'demo-acu-005',
@@ -279,6 +289,13 @@ const demoOrganizations: Organization[] = [
     lifetime_revenue: 51450.00,
     last_payment_date: '2025-10-01',
     tags: ['agent', 'alta-one-attendee', 'pac-contributor'],
+    custom_fields: {
+      license_number: 'IL-AG-44219',
+      license_state: 'IL',
+      license_expires: '2026-12-31',
+      tipac_level: 'Gold',
+      best_practices_certified: true,
+    },
   },
   {
     id: 'demo-acb-022',
@@ -323,6 +340,14 @@ const demoOrganizations: Organization[] = [
     lifetime_revenue: 41650.00,
     last_payment_date: '2025-10-01',
     tags: ['agent', 'board-member', 'tipac-leader'],
+    custom_fields: {
+      license_number: 'FL-AG-77501',
+      license_state: 'FL',
+      license_expires: '2027-03-15',
+      tipac_level: 'Platinum',
+      board_seat_number: 7,
+      best_practices_certified: true,
+    },
   },
   // ACA Abstracters (mix of health tiers)
   {
@@ -391,6 +416,12 @@ const demoOrganizations: Organization[] = [
     lifetime_revenue: 6800.00,
     last_payment_date: '2025-10-01',
     tags: ['attorney', 'speaker', 'tipac'],
+    custom_fields: {
+      license_number: 'GA-BAR-22418',
+      license_state: 'GA',
+      license_expires: '2026-09-30',
+      tipac_level: 'Silver',
+    },
   },
   {
     id: 'demo-rea-033',

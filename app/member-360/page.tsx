@@ -13,6 +13,7 @@ import ContactsPanel from '@/components/ContactsPanel';
 import EventsPanel from '@/components/EventsPanel';
 import EngagementBreakdownPanel from '@/components/EngagementBreakdownPanel';
 import GroupsPanel from '@/components/GroupsPanel';
+import CustomFieldsPanel from '@/components/CustomFieldsPanel';
 import {
   User, Building2, Mail, Phone, CalendarCheck, Clock, Star, Shield,
   TrendingUp, TrendingDown, DollarSign, AlertTriangle, Send,
@@ -508,6 +509,14 @@ export default function Member360() {
 
       {/* ── Group / Committee Memberships ────────────────────── */}
       <GroupsPanel orgId={org.id} orgName={org.org_name} />
+
+      {/* ── Custom fields ────────────────────────────────────── */}
+      <CustomFieldsPanel
+        org={org}
+        onSaved={(updated) => {
+          setOrgs((prev) => prev.map((o) => o.id === updated.id ? { ...o, ...updated } : o));
+        }}
+      />
 
       {/* ── Recommended Actions ──────────────────────────────── */}
       <Card title="Recommended Actions" subtitle="AI-generated next steps" accent="var(--accent)">
