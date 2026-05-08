@@ -1181,6 +1181,103 @@ export interface GenerateInvoicesResult {
   invoices: Invoice[];
 }
 
+export interface FinanceStats {
+  /** Total billed across all non-cancelled / non-refunded invoices */
+  billed: number;
+  /** Total collected (Paid invoices) */
+  collected: number;
+  /** Outstanding (not paid, not cancelled, not refunded) */
+  outstanding: number;
+  /** Past-due dollar amount */
+  pastDue: number;
+  /** AR aging in dollars: current (not yet due), 1-30 / 31-60 / 61-90 / 91+ days past due */
+  aging: { current: number; d1_30: number; d31_60: number; d61_90: number; d91_plus: number };
+  /** Last 12 months of cash collected (most recent month last). Months are YYYY-MM. */
+  monthlyCash: { month: string; amount: number }[];
+  /** Revenue collected per org_type (Paid invoices only) */
+  byOrgType: { org_type: string; amount: number }[];
+  /** Top 5 paying orgs by collected dollars */
+  topPayers: { org_id: string; org_name: string; amount: number }[];
+}
+
+const monthKey = (iso: string) => iso.slice(0, 7);
+
+function pastDueBucket(dueIso: string, today: string): keyof Omit<FinanceStats['aging'], 'current'> | 'current' {
+  if (dueIso >= today) return 'current';
+  const due = new Date(dueIso + 'T00:00:00Z').getTime();
+  const now = new Date(today + 'T00:00:00Z').getTime();
+  const days = Math.floor((now - due) / (1000 * 60 * 60 * 24));
+  if (days <= 30) return 'd1_30';
+  if (days <= 60) return 'd31_60';
+  if (days <= 90) return 'd61_90';
+  return 'd91_plus';
+}
+
+export async function getFinanceStats(): Promise<FinanceStats> {
+  // Pull all (active-status) invoices: Pending/Sent/Paid/Past Due
+  const { rows: invoices } = await listInvoices({ pageSize: 200, page: 1 });
+  const orgs = await getOrganizations();
+  const orgsById = new Map(orgs.map((o) => [o.id, o]));
+
+  const today = todayIso();
+
+  let billed = 0, collected = 0, outstanding = 0, pastDue = 0;
+  const aging: FinanceStats['aging'] = { current: 0, d1_30: 0, d31_60: 0, d61_90: 0, d91_plus: 0 };
+
+  // Last 12 months bucket scaffold
+  const months: { month: string; amount: number }[] = [];
+  const now = new Date();
+  for (let i = 11; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    months.push({ month: key, amount: 0 });
+  }
+  const monthIdx = new Map(months.map((m, i) => [m.month, i]));
+
+  const byTypeMap = new Map<string, number>();
+  const byOrgMap = new Map<string, number>();
+
+  for (const inv of invoices) {
+    const isCancelled = inv.status === 'Cancelled' || inv.status === 'Refunded';
+    if (isCancelled) continue;
+
+    billed += inv.amount;
+
+    if (inv.status === 'Paid') {
+      collected += inv.amount;
+      // Monthly cash collected — bucket by date_paid (fall back to date_issued)
+      const paidKey = inv.date_paid ? monthKey(inv.date_paid) : monthKey(inv.date_issued);
+      const idx = monthIdx.get(paidKey);
+      if (idx !== undefined) months[idx].amount += inv.amount;
+
+      const org = orgsById.get(inv.org_id);
+      if (org) {
+        byTypeMap.set(org.org_type, (byTypeMap.get(org.org_type) ?? 0) + inv.amount);
+        byOrgMap.set(org.id, (byOrgMap.get(org.id) ?? 0) + inv.amount);
+      }
+    } else {
+      outstanding += inv.amount;
+      const bucket = pastDueBucket(inv.date_due, today);
+      aging[bucket] += inv.amount;
+      if (bucket !== 'current') pastDue += inv.amount;
+    }
+  }
+
+  const byOrgType = [...byTypeMap.entries()]
+    .map(([org_type, amount]) => ({ org_type, amount }))
+    .sort((a, b) => b.amount - a.amount);
+
+  const topPayers = [...byOrgMap.entries()]
+    .map(([org_id, amount]) => {
+      const org = orgsById.get(org_id);
+      return { org_id, org_name: org?.org_name ?? org_id, amount };
+    })
+    .sort((a, b) => b.amount - a.amount)
+    .slice(0, 5);
+
+  return { billed, collected, outstanding, pastDue, aging, monthlyCash: months, byOrgType, topPayers };
+}
+
 /**
  * Generates Pending invoices for every active org with a renewal_date in
  * [from, to] that does NOT already have an invoice for that fiscal year.
