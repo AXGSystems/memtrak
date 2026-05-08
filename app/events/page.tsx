@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Card, { KpiCard } from '@/components/Card';
-import AnimatedCounter from '@/components/AnimatedCounter';
 import { SkeletonCard, SkeletonKPI } from '@/components/Skeleton';
+import RegistrationDrawer from '@/components/RegistrationDrawer';
 import {
-  Calendar, Users, DollarSign, Award, ChevronRight, Clock, CheckCircle2, XCircle, Ban,
+  Calendar, Users, DollarSign, Award, ChevronRight, Plus,
 } from 'lucide-react';
 import type { EventSummary, EventType } from '@/lib/member-data';
 
@@ -23,15 +24,20 @@ const TYPE_COLOR: Record<EventType, string> = {
 const todayIso = () => new Date().toISOString().slice(0, 10);
 
 export default function EventsPage() {
+  const router = useRouter();
   const [events, setEvents] = useState<EventSummary[] | null>(null);
   const [loading, setLoading] = useState(true);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const refresh = useCallback(() => {
+    return fetch('/api/memtrak/connect-events')
+      .then((r) => r.json())
+      .then((d: { events: EventSummary[] }) => setEvents(d.events ?? []));
+  }, []);
 
   useEffect(() => {
-    fetch('/api/memtrak/connect-events')
-      .then((r) => r.json())
-      .then((d: { events: EventSummary[] }) => setEvents(d.events ?? []))
-      .finally(() => setLoading(false));
-  }, []);
+    refresh().finally(() => setLoading(false));
+  }, [refresh]);
 
   const totals = useMemo(() => {
     if (!events) return null;
@@ -61,6 +67,13 @@ export default function EventsPage() {
             Synced from ALTA Connect · attendance feeds engagement scoring
           </p>
         </div>
+        <button
+          onClick={() => setDrawerOpen(true)}
+          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-semibold transition-all hover:scale-[1.02] no-print"
+          style={{ color: '#fff', background: 'var(--accent)' }}
+        >
+          <Plus className="w-3.5 h-3.5" /> New event
+        </button>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 stagger-children">
@@ -80,6 +93,17 @@ export default function EventsPage() {
         <Section title="Upcoming" subtitle="Future event dates" loading={loading} events={upcoming} emptyText="No upcoming events." />
         <Section title="Past" subtitle="Completed events with attendance" loading={loading} events={past} emptyText="No past events." />
       </div>
+
+      <RegistrationDrawer
+        isOpen={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        onSaved={async (row) => {
+          setDrawerOpen(false);
+          await refresh();
+          router.push(`/events/${encodeURIComponent(row.alta_connect_event_id)}`);
+        }}
+        mode="new-event"
+      />
     </div>
   );
 }

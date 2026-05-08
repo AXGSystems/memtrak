@@ -1,11 +1,13 @@
 'use client';
 
-import { useEffect, useState, use } from 'react';
+import { useCallback, useEffect, useState, use } from 'react';
 import Link from 'next/link';
 import Card, { KpiCard } from '@/components/Card';
 import { SkeletonCard, SkeletonKPI } from '@/components/Skeleton';
+import RegistrationDrawer from '@/components/RegistrationDrawer';
 import {
-  Calendar, Users, DollarSign, Award, ChevronLeft, CheckCircle2, XCircle, Clock, Ban, ExternalLink, Building2,
+  Users, DollarSign, Award, ChevronLeft, CheckCircle2, XCircle, Clock, Ban, ExternalLink, Building2,
+  UserPlus, Loader2, Trash2,
 } from 'lucide-react';
 import type { EventAttendance, EventSummary, RegistrationStatus } from '@/lib/member-data';
 
@@ -32,25 +34,82 @@ interface EventDetailPayload {
   roster: EventAttendance[];
 }
 
+interface OrgLite {
+  id: string;
+  org_name: string;
+}
+
 export default function EventDetailPage({ params }: PageProps) {
   const { id } = use(params);
   const [data, setData] = useState<EventDetailPayload | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [pendingId, setPendingId] = useState<string | null>(null);
+  const [orgNames, setOrgNames] = useState<Record<string, string>>({});
+
+  const refresh = useCallback(async () => {
+    const r = await fetch(`/api/memtrak/connect-events/${encodeURIComponent(id)}`);
+    if (!r.ok) {
+      const e = await r.json().catch(() => ({}));
+      setError(e.error ?? `Request failed (${r.status})`);
+      return;
+    }
+    setData(await r.json());
+  }, [id]);
 
   useEffect(() => {
-    fetch(`/api/memtrak/connect-events/${encodeURIComponent(id)}`)
-      .then(async (r) => {
-        if (!r.ok) {
-          const e = await r.json().catch(() => ({}));
-          setError(e.error ?? `Request failed (${r.status})`);
-          return;
-        }
-        setData(await r.json());
-      })
-      .catch((e) => setError(e instanceof Error ? e.message : 'Network error'))
-      .finally(() => setLoading(false));
-  }, [id]);
+    setLoading(true);
+    refresh().finally(() => setLoading(false));
+  }, [refresh]);
+
+  // Lookup org names once we know which org_ids appear in the roster
+  useEffect(() => {
+    if (!data?.roster.length) return;
+    const ids = Array.from(new Set(data.roster.map((r) => r.org_id))).filter((x) => !orgNames[x]);
+    if (ids.length === 0) return;
+    Promise.all(
+      ids.map((orgId) =>
+        fetch(`/api/memtrak/members/${encodeURIComponent(orgId)}`)
+          .then((r) => (r.ok ? r.json() : null))
+          .catch(() => null)
+          .then((o: OrgLite | null) => [orgId, o?.org_name ?? orgId] as const),
+      ),
+    ).then((pairs) => {
+      setOrgNames((prev) => {
+        const next = { ...prev };
+        for (const [k, v] of pairs) next[k] = v;
+        return next;
+      });
+    });
+  }, [data, orgNames]);
+
+  async function rowAction(row: EventAttendance, action: 'check_in' | 'mark_paid' | 'cancel') {
+    setPendingId(row.id);
+    try {
+      const res = await fetch(
+        `/api/memtrak/connect-events/${encodeURIComponent(id)}/registrations/${encodeURIComponent(row.id)}`,
+        { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action }) },
+      );
+      if (res.ok) await refresh();
+    } finally {
+      setPendingId(null);
+    }
+  }
+
+  async function rowDelete(row: EventAttendance) {
+    if (!confirm(`Remove ${orgNames[row.org_id] ?? row.org_id}'s registration?`)) return;
+    setPendingId(row.id);
+    try {
+      const res = await fetch(
+        `/api/memtrak/connect-events/${encodeURIComponent(id)}/registrations/${encodeURIComponent(row.id)}`,
+        { method: 'DELETE' },
+      );
+      if (res.ok) await refresh();
+    } finally {
+      setPendingId(null);
+    }
+  }
 
   if (loading) {
     return (
@@ -79,16 +138,25 @@ export default function EventDetailPage({ params }: PageProps) {
 
   return (
     <div className="space-y-6">
-      <div>
-        <Link href="/events" className="inline-flex items-center gap-1 text-xs no-print" style={{ color: 'var(--accent)' }}>
-          <ChevronLeft className="w-3 h-3" /> Back to events
-        </Link>
-        <h1 className="text-2xl font-extrabold tracking-tight mt-2" style={{ color: 'var(--heading)' }}>
-          {event.event_name}
-        </h1>
-        <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
-          {event.event_date} · {event.event_type} · ALTA Connect ID <code style={{ color: 'var(--heading)' }}>{event.alta_connect_event_id}</code>
-        </p>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <Link href="/events" className="inline-flex items-center gap-1 text-xs no-print" style={{ color: 'var(--accent)' }}>
+            <ChevronLeft className="w-3 h-3" /> Back to events
+          </Link>
+          <h1 className="text-2xl font-extrabold tracking-tight mt-2" style={{ color: 'var(--heading)' }}>
+            {event.event_name}
+          </h1>
+          <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
+            {event.event_date} · {event.event_type} · ALTA Connect ID <code style={{ color: 'var(--heading)' }}>{event.alta_connect_event_id}</code>
+          </p>
+        </div>
+        <button
+          onClick={() => setDrawerOpen(true)}
+          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-semibold transition-all hover:scale-[1.02] no-print"
+          style={{ color: '#fff', background: 'var(--accent)' }}
+        >
+          <UserPlus className="w-3.5 h-3.5" /> Register member
+        </button>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 stagger-children">
@@ -108,19 +176,34 @@ export default function EventDetailPage({ params }: PageProps) {
                 <th className="px-3 py-2.5 text-left font-semibold text-[10px] uppercase tracking-wider">Check-in</th>
                 <th className="px-3 py-2.5 text-right font-semibold text-[10px] uppercase tracking-wider">Fee</th>
                 <th className="px-3 py-2.5 text-right font-semibold text-[10px] uppercase tracking-wider">Paid</th>
-                <th className="px-3 py-2.5 text-right font-semibold text-[10px] uppercase tracking-wider no-print">Open</th>
+                <th className="px-3 py-2.5 text-right font-semibold text-[10px] uppercase tracking-wider no-print">Actions</th>
               </tr>
             </thead>
             <tbody>
+              {roster.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="px-3 py-6 text-center text-xs" style={{ color: 'var(--text-muted)' }}>
+                    No registrations yet — click <strong>Register member</strong> to add the first.
+                  </td>
+                </tr>
+              )}
               {roster.map((r) => {
                 const Icon = STATUS_ICON[r.registration_status];
                 const color = STATUS_COLOR[r.registration_status];
+                const orgName = orgNames[r.org_id] ?? r.org_id;
+                const busy = pendingId === r.id;
+                const canCheckIn = r.registration_status === 'Registered';
+                const canMarkPaid = r.registration_fee > 0 && !r.paid && r.registration_status !== 'Cancelled';
+                const canCancel = r.registration_status !== 'Cancelled';
                 return (
-                  <tr key={r.id} style={{ borderTop: '1px solid var(--card-border)' }}>
+                  <tr key={r.id} style={{ borderTop: '1px solid var(--card-border)', opacity: busy ? 0.6 : 1 }}>
                     <td className="px-3 py-2.5">
                       <div className="flex items-center gap-2">
-                        <Building2 className="w-3 h-3" style={{ color: 'var(--accent)' }} />
-                        <span className="font-mono text-[11px]" style={{ color: 'var(--heading)' }}>{r.org_id}</span>
+                        <Building2 className="w-3 h-3 flex-shrink-0" style={{ color: 'var(--accent)' }} />
+                        <div className="min-w-0">
+                          <div className="text-[11px] font-bold truncate" style={{ color: 'var(--heading)' }}>{orgName}</div>
+                          <div className="font-mono text-[10px]" style={{ color: 'var(--text-muted)' }}>{r.org_id}</div>
+                        </div>
                       </div>
                     </td>
                     <td className="px-3 py-2.5">
@@ -145,13 +228,51 @@ export default function EventDetailPage({ params }: PageProps) {
                       ) : <span style={{ color: 'var(--text-muted)' }}>—</span>}
                     </td>
                     <td className="px-3 py-2.5 text-right no-print">
-                      <Link
-                        href={`/member-360?id=${encodeURIComponent(r.org_id)}`}
-                        className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-semibold transition-all hover:scale-[1.05]"
-                        style={{ color: 'var(--accent)', background: 'color-mix(in srgb, var(--accent) 10%, transparent)' }}
-                      >
-                        Member <ExternalLink className="w-3 h-3" />
-                      </Link>
+                      <div className="inline-flex items-center gap-1">
+                        {busy && <Loader2 className="w-3.5 h-3.5 animate-spin" style={{ color: 'var(--text-muted)' }} />}
+                        {canCheckIn && (
+                          <ActionBtn
+                            label="Check in"
+                            color="#8CC63F"
+                            disabled={busy}
+                            onClick={() => rowAction(r, 'check_in')}
+                            icon={CheckCircle2}
+                          />
+                        )}
+                        {canMarkPaid && (
+                          <ActionBtn
+                            label="Mark paid"
+                            color="#F5C542"
+                            disabled={busy}
+                            onClick={() => rowAction(r, 'mark_paid')}
+                            icon={DollarSign}
+                          />
+                        )}
+                        {canCancel && (
+                          <ActionBtn
+                            label="Cancel"
+                            color="#888"
+                            disabled={busy}
+                            onClick={() => rowAction(r, 'cancel')}
+                            icon={Ban}
+                          />
+                        )}
+                        <ActionBtn
+                          label="Delete"
+                          color="#D94A4A"
+                          disabled={busy}
+                          onClick={() => rowDelete(r)}
+                          icon={Trash2}
+                        />
+                        <Link
+                          href={`/member-360?id=${encodeURIComponent(r.org_id)}`}
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-semibold transition-all hover:scale-[1.05]"
+                          style={{ color: 'var(--accent)', background: 'color-mix(in srgb, var(--accent) 10%, transparent)' }}
+                          title="Open Member360"
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                        </Link>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -160,6 +281,37 @@ export default function EventDetailPage({ params }: PageProps) {
           </table>
         </div>
       </Card>
+
+      <RegistrationDrawer
+        isOpen={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        onSaved={() => { setDrawerOpen(false); refresh(); }}
+        mode="add-to-event"
+        eventId={id}
+        eventMeta={{ event_name: event.event_name, event_date: event.event_date, event_type: event.event_type }}
+      />
     </div>
+  );
+}
+
+interface ActionBtnProps {
+  label: string;
+  color: string;
+  disabled?: boolean;
+  onClick: () => void;
+  icon: typeof CheckCircle2;
+}
+
+function ActionBtn({ label, color, disabled, onClick, icon: Icon }: ActionBtnProps) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      title={label}
+      className="inline-flex items-center justify-center w-7 h-7 rounded-md transition-all hover:scale-110 disabled:opacity-40 disabled:cursor-not-allowed"
+      style={{ color, background: `color-mix(in srgb, ${color} 12%, transparent)` }}
+    >
+      <Icon className="w-3.5 h-3.5" />
+    </button>
   );
 }

@@ -1631,6 +1631,28 @@ export async function updateAttendance(id: string, patch: Partial<EventAttendanc
   return data;
 }
 
+export async function getAttendance(id: string): Promise<EventAttendance | null> {
+  if (isSupabaseConfigured()) {
+    try {
+      const { data, error } = await supabase
+        .from('memtrak_event_attendance')
+        .select('*')
+        .eq('id', id)
+        .maybeSingle();
+      if (data && !error) return data;
+    } catch { /* fall through */ }
+  }
+  return demoEventAttendance.find((r) => r.id === id) ?? null;
+}
+
+export async function deleteAttendance(id: string): Promise<void> {
+  if (!isSupabaseConfigured()) {
+    throw new Error('Supabase not configured — cannot delete attendance');
+  }
+  const { error } = await supabase.from('memtrak_event_attendance').delete().eq('id', id);
+  if (error) throw new Error(error.message);
+}
+
 /**
  * Recomputes an organization's engagement score from current org data plus
  * attendance history. When `persist` is true and Supabase is configured the
