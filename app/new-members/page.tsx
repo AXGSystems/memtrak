@@ -1,8 +1,10 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import ClientChart from '@/components/ClientChart';
 import Card, { KpiCard } from '@/components/Card';
 import { Mail, Hash, BarChart3, Target } from 'lucide-react';
+import type { Organization } from '@/lib/member-data';
 
 const C = { navy: '#1B3A5C', blue: '#4A90D9', green: '#8CC63F', orange: '#E8923F' };
 
@@ -18,28 +20,74 @@ const onboardingSequence = [
 
 const avgOpen = Math.round(onboardingSequence.reduce((s, e) => s + e.openRate, 0) / onboardingSequence.length);
 
+interface YearStats {
+  total: number;
+  byQuarter: [number, number, number, number];
+  recent: Organization[];
+}
+
+const yearStart = (year: number) => `${year}-01-01`;
+
 export default function NewMembers() {
+  const year = new Date().getFullYear();
+  const [stats, setStats] = useState<YearStats>({ total: 566, byQuarter: [162, 148, 137, 119], recent: [] });
+
+  useEffect(() => {
+    fetch(`/api/memtrak/members?joined_after=${yearStart(year)}&pageSize=200&sort=renewal_date&order=desc`)
+      .then((r) => r.json())
+      .then((d: { rows: Organization[]; total: number }) => {
+        const rows = d.rows ?? [];
+        const byQuarter: [number, number, number, number] = [0, 0, 0, 0];
+        for (const o of rows) {
+          const m = Number((o.join_date ?? '').slice(5, 7));
+          if (m >= 1 && m <= 3) byQuarter[0]++;
+          else if (m >= 4 && m <= 6) byQuarter[1]++;
+          else if (m >= 7 && m <= 9) byQuarter[2]++;
+          else if (m >= 10 && m <= 12) byQuarter[3]++;
+        }
+        setStats({
+          total: typeof d.total === 'number' ? d.total : rows.length,
+          byQuarter,
+          recent: rows.slice(0, 5),
+        });
+      })
+      .catch(() => { /* keep fallback */ });
+  }, [year]);
+
   return (
     <div className="p-6">
       <h1 className="text-lg font-extrabold mb-2" style={{ color: 'var(--heading)' }}>New Member Onboarding</h1>
-      <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>Automated 7-email drip sequence for the 566 new members in 2026. Goal: first-year retention from 76% &rarr; 85%.</p>
+      <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>Automated 7-email drip sequence for the {stats.total} new members in {year}. Goal: first-year retention from 76% &rarr; 85%.</p>
 
       {/* KPIs */}
       <div className="grid grid-cols-4 gap-4 mb-6 stagger-children">
         <KpiCard
-          label="New Members 2026"
-          value="566"
+          label={`New Members ${year}`}
+          value={String(stats.total)}
           icon={Mail}
           color={C.navy}
           detail={
             <div className="space-y-3 text-xs" style={{ color: 'var(--text-muted)' }}>
-              <p>566 new members joined ALTA in 2026, representing organic growth and recruitment efforts.</p>
+              <p>{stats.total} new members joined ALTA in {year}, representing organic growth and recruitment efforts.</p>
               <div className="space-y-1.5">
-                <div className="flex justify-between"><span>Q1 (Jan–Mar)</span><span className="font-bold" style={{ color: 'var(--heading)' }}>162</span></div>
-                <div className="flex justify-between"><span>Q2 (Apr–Jun)</span><span className="font-bold" style={{ color: 'var(--heading)' }}>148</span></div>
-                <div className="flex justify-between"><span>Q3 (Jul–Sep)</span><span className="font-bold" style={{ color: 'var(--heading)' }}>137</span></div>
-                <div className="flex justify-between"><span>Q4 (Oct–Dec)</span><span className="font-bold" style={{ color: 'var(--heading)' }}>119</span></div>
+                <div className="flex justify-between"><span>Q1 (Jan–Mar)</span><span className="font-bold" style={{ color: 'var(--heading)' }}>{stats.byQuarter[0]}</span></div>
+                <div className="flex justify-between"><span>Q2 (Apr–Jun)</span><span className="font-bold" style={{ color: 'var(--heading)' }}>{stats.byQuarter[1]}</span></div>
+                <div className="flex justify-between"><span>Q3 (Jul–Sep)</span><span className="font-bold" style={{ color: 'var(--heading)' }}>{stats.byQuarter[2]}</span></div>
+                <div className="flex justify-between"><span>Q4 (Oct–Dec)</span><span className="font-bold" style={{ color: 'var(--heading)' }}>{stats.byQuarter[3]}</span></div>
               </div>
+              {stats.recent.length > 0 && (
+                <div className="pt-2 border-t" style={{ borderColor: 'var(--card-border)' }}>
+                  <div className="font-bold mb-1.5" style={{ color: 'var(--heading)' }}>Most recent</div>
+                  <div className="space-y-1">
+                    {stats.recent.map((o) => (
+                      <div key={o.id} className="flex justify-between text-[11px]">
+                        <span style={{ color: 'var(--heading)' }}>{o.org_name}</span>
+                        <span style={{ color: 'var(--text-muted)' }}>{o.join_date}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
               <p>First-year retention historically sits at 76%. This onboarding sequence targets 85% through sustained engagement.</p>
             </div>
           }

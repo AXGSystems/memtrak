@@ -691,6 +691,11 @@ export interface ListOrgsParams {
   health?: string;
   state?: string;
   status?: string;
+  /** Filter to orgs whose join_date is on or after this YYYY-MM-DD. */
+  joined_after?: string;
+  /** Filter to orgs whose renewal_date is between [start, end] inclusive (YYYY-MM-DD). */
+  renewal_from?: string;
+  renewal_to?: string;
   sort?: SortField;
   order?: 'asc' | 'desc';
   page?: number;
@@ -733,6 +738,9 @@ export async function listOrganizations(params: ListOrgsParams = {}): Promise<Li
       if (params.health) query = query.eq('health_tier', params.health);
       if (params.state) query = query.eq('state', params.state);
       if (params.status) query = query.eq('status', params.status);
+      if (params.joined_after) query = query.gte('join_date', params.joined_after);
+      if (params.renewal_from) query = query.gte('renewal_date', params.renewal_from);
+      if (params.renewal_to) query = query.lte('renewal_date', params.renewal_to);
       if (q) {
         const pattern = `%${q}%`;
         query = query.or(
@@ -759,6 +767,9 @@ export async function listOrganizations(params: ListOrgsParams = {}): Promise<Li
   if (params.health) rows = rows.filter((o) => o.health_tier === params.health);
   if (params.state) rows = rows.filter((o) => o.state === params.state);
   if (params.status) rows = rows.filter((o) => o.status === params.status);
+  if (params.joined_after) rows = rows.filter((o) => o.join_date >= params.joined_after!);
+  if (params.renewal_from) rows = rows.filter((o) => o.renewal_date >= params.renewal_from!);
+  if (params.renewal_to) rows = rows.filter((o) => o.renewal_date <= params.renewal_to!);
   if (q) {
     const lower = q.toLowerCase();
     rows = rows.filter(

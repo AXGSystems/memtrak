@@ -1,9 +1,12 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import ClientChart from '@/components/ClientChart';
 import Card, { KpiCard } from '@/components/Card';
 import { exportCSV } from '@/lib/export-utils';
-import { Download, Calendar, Users, DollarSign } from 'lucide-react';
+import { Download, Calendar, Users, DollarSign, Clock, ExternalLink } from 'lucide-react';
+import type { Organization } from '@/lib/member-data';
 
 const C = { navy: '#1B3A5C', blue: '#4A90D9', green: '#8CC63F', red: '#D94A4A', orange: '#E8923F' };
 
@@ -28,7 +31,29 @@ const timeline = [
 
 const expectedRevenue = segments.reduce((s, r) => s + Math.round(r.count * r.estRate / 100) * r.avgDues, 0);
 
+const isoOffset = (days: number) => {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return d.toISOString().slice(0, 10);
+};
+
 export default function Renewals() {
+  const [upcoming, setUpcoming] = useState<Organization[]>([]);
+  const [upcomingLoading, setUpcomingLoading] = useState(true);
+
+  useEffect(() => {
+    const from = isoOffset(0);
+    const to = isoOffset(90);
+    fetch(`/api/memtrak/members?renewal_from=${from}&renewal_to=${to}&pageSize=100&sort=renewal_date&order=asc`)
+      .then((r) => r.json())
+      .then((d: { rows: Organization[] }) => setUpcoming(d.rows ?? []))
+      .catch(() => setUpcoming([]))
+      .finally(() => setUpcomingLoading(false));
+  }, []);
+
+  const upcomingDues = upcoming.reduce((s, o) => s + (o.annual_dues ?? 0), 0);
+  const upcomingAtRisk = upcoming.filter((o) => (o.churn_risk ?? 0) >= 50).length;
+
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
@@ -102,6 +127,74 @@ export default function Renewals() {
           }
         />
       </div>
+
+      {/* Renewals Due — Next 90 Days (live) */}
+      <Card
+        title="Renewals Due — Next 90 Days"
+        className="mb-6"
+        detailTitle="Upcoming Renewals — Detail"
+        detailContent={
+          <div className="space-y-3 text-xs" style={{ color: 'var(--text-muted)' }}>
+            <p>{upcoming.length} member organizations have renewal dates in the next 90 days, representing <span className="font-bold" style={{ color: 'var(--heading)' }}>${upcomingDues.toLocaleString()}</span> in dues. {upcomingAtRisk > 0 && <span><strong style={{ color: '#D94A4A' }}>{upcomingAtRisk} are at-risk (churn ≥ 50)</strong> — prioritize for outreach.</span>}</p>
+            <div className="space-y-1.5">
+              {upcoming.slice(0, 25).map((o) => (
+                <div key={o.id} className="flex justify-between gap-3 p-2 rounded-md" style={{ background: 'var(--input-bg)' }}>
+                  <span style={{ color: 'var(--heading)' }}>{o.org_name}</span>
+                  <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{o.org_type} · churn {o.churn_risk}</span>
+                  <span className="font-semibold tabular-nums" style={{ color: 'var(--heading)' }}>{o.renewal_date}</span>
+                  <span className="font-semibold tabular-nums" style={{ color: '#8CC63F' }}>${o.annual_dues.toLocaleString()}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        }
+      >
+        <div className="grid grid-cols-3 gap-3 mb-4">
+          <div className="p-3 rounded-lg text-center" style={{ background: 'var(--input-bg)' }}>
+            <Clock className="w-4 h-4 mx-auto mb-1" style={{ color: '#4A90D9' }} />
+            <div className="text-xl font-extrabold tabular-nums" style={{ color: 'var(--heading)' }}>{upcomingLoading ? '…' : upcoming.length}</div>
+            <div className="text-[10px] uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Members due</div>
+          </div>
+          <div className="p-3 rounded-lg text-center" style={{ background: 'var(--input-bg)' }}>
+            <DollarSign className="w-4 h-4 mx-auto mb-1" style={{ color: '#8CC63F' }} />
+            <div className="text-xl font-extrabold tabular-nums" style={{ color: 'var(--heading)' }}>{upcomingLoading ? '…' : `$${(upcomingDues / 1000).toFixed(0)}K`}</div>
+            <div className="text-[10px] uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Dues at stake</div>
+          </div>
+          <div className="p-3 rounded-lg text-center" style={{ background: 'var(--input-bg)' }}>
+            <Users className="w-4 h-4 mx-auto mb-1" style={{ color: upcomingAtRisk > 0 ? '#D94A4A' : '#8CC63F' }} />
+            <div className="text-xl font-extrabold tabular-nums" style={{ color: upcomingAtRisk > 0 ? '#D94A4A' : 'var(--heading)' }}>{upcomingLoading ? '…' : upcomingAtRisk}</div>
+            <div className="text-[10px] uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>At-risk renewals</div>
+          </div>
+        </div>
+        {!upcomingLoading && upcoming.length > 0 && (
+          <div className="space-y-1.5">
+            {upcoming.slice(0, 5).map((o) => (
+              <Link
+                key={o.id}
+                href={`/member-360?id=${encodeURIComponent(o.id)}`}
+                className="flex items-center justify-between gap-3 p-2.5 rounded-md transition-all hover:translate-x-0.5"
+                style={{ background: 'var(--input-bg)' }}
+              >
+                <span className="text-xs font-bold flex-1 min-w-0 truncate" style={{ color: 'var(--heading)' }}>{o.org_name}</span>
+                <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{o.org_type}</span>
+                <span className="text-xs font-semibold tabular-nums" style={{ color: 'var(--text-muted)' }}>{o.renewal_date}</span>
+                <span className="text-xs font-bold tabular-nums" style={{ color: '#8CC63F' }}>${o.annual_dues.toLocaleString()}</span>
+                <ExternalLink className="w-3 h-3 flex-shrink-0" style={{ color: 'var(--accent)' }} />
+              </Link>
+            ))}
+            {upcoming.length > 5 && (
+              <div className="text-[10px] text-center pt-1" style={{ color: 'var(--text-muted)' }}>
+                + {upcoming.length - 5} more — open detail to see full list
+              </div>
+            )}
+          </div>
+        )}
+        {!upcomingLoading && upcoming.length === 0 && (
+          <div className="text-xs py-3 text-center" style={{ color: 'var(--text-muted)' }}>
+            No renewals coming due in the next 90 days.
+          </div>
+        )}
+      </Card>
 
       {/* Segment Table */}
       <Card
