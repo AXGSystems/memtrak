@@ -1032,10 +1032,33 @@ const demoInvoices: Invoice[] = [
   // Pending invoices for upcoming renewals
   { id: 'inv-101', org_id: 'demo-acu-005', invoice_number: 'INV-2026-101', amount: 61554, description: '2026 Annual Dues — ACU', date_issued: '2026-04-15', date_due: '2026-10-01', status: 'Sent', fiscal_year: 2026 },
   { id: 'inv-102', org_id: 'demo-acb-022', invoice_number: 'INV-2026-102', amount: 2450, description: '2026 Annual Dues — ACB', date_issued: '2026-04-15', date_due: '2026-10-01', status: 'Sent', fiscal_year: 2026 },
-  // Past due
+  // Past due (long stale)
   { id: 'inv-201', org_id: 'demo-lapsed-070', invoice_number: 'INV-2025-201', amount: 2450, description: '2025 Annual Dues — ACB', date_issued: '2025-09-01', date_due: '2025-10-01', status: 'Past Due', fiscal_year: 2025 },
   { id: 'inv-202', org_id: 'demo-lapsed-072', invoice_number: 'INV-2025-202', amount: 2450, description: '2025 Annual Dues — ACB', date_issued: '2025-09-01', date_due: '2025-10-01', status: 'Past Due', fiscal_year: 2025 },
+  // In active dunning windows (pre-due)
+  ...buildDunningDemoInvoices(),
 ];
+
+/**
+ * Build a handful of demo invoices whose `date_due` falls inside the active
+ * dunning windows (pre_30, pre_7, past_7, past_30) relative to today. This
+ * lets /finance/dunning show non-empty cohorts in demo mode without
+ * requiring Supabase. Computed at module load — re-evaluates per cold start.
+ */
+function buildDunningDemoInvoices(): Invoice[] {
+  const offset = (days: number) => {
+    const d = new Date();
+    d.setDate(d.getDate() + days);
+    return d.toISOString().slice(0, 10);
+  };
+  const fy = new Date().getFullYear();
+  return [
+    { id: 'inv-301', org_id: 'demo-acb-022', invoice_number: `INV-${fy}-301`, amount: 2450, description: `${fy} Annual Dues — ACB`, date_issued: offset(-21), date_due: offset(26), status: 'Sent', fiscal_year: fy },
+    { id: 'inv-302', org_id: 'demo-rea-033', invoice_number: `INV-${fy}-302`, amount: 850,  description: `${fy} Annual Dues — REA`, date_issued: offset(-23), date_due: offset(5),  status: 'Sent', fiscal_year: fy },
+    { id: 'inv-303', org_id: 'demo-aca-010', invoice_number: `INV-${fy}-303`, amount: 517,  description: `${fy} Annual Dues — ACA`, date_issued: offset(-32), date_due: offset(-3), status: 'Past Due', fiscal_year: fy },
+    { id: 'inv-304', org_id: 'demo-assoc-042', invoice_number: `INV-${fy}-304`, amount: 1200, description: `${fy} Annual Dues — Associate`, date_issued: offset(-44), date_due: offset(-15), status: 'Past Due', fiscal_year: fy },
+  ];
+}
 
 export interface ListInvoicesParams {
   org_id?: string;

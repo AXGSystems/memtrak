@@ -32,6 +32,7 @@ const sections = [
       { label: 'Invoices', href: '/invoices', icon: FileText },
       { label: 'Finance', href: '/finance', icon: DollarSign },
       { label: 'Fiscal Year', href: '/finance/fiscal-year', icon: Calendar },
+      { label: 'Dunning', href: '/finance/dunning', icon: Mail },
     ]
   },
   {
