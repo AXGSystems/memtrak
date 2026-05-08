@@ -1,12 +1,47 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Card from '@/components/Card';
 import SparkKpi from '@/components/SparkKpi';
 import ClientChart from '@/components/ClientChart';
 import ProgressRing from '@/components/ProgressRing';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import { demoDecayAlerts, demoChurnScores } from '@/lib/demo-data';
+import type { Organization } from '@/lib/member-data';
+
+type DecayAlert = typeof demoDecayAlerts[number];
+
+const trendFromDecay = (decay: number): DecayAlert['trend'] => {
+  if (decay >= 80) return 'Gone Dark';
+  if (decay >= 50) return 'Declining';
+  if (decay >= 30) return 'Slipping';
+  return 'Stable';
+};
+
+const lastOpenFromDecay = (decay: number): string => {
+  if (decay >= 80) return '90+ days ago';
+  if (decay >= 50) return `${Math.round(decay / 2)} days ago`;
+  if (decay >= 30) return `${Math.max(7, Math.round(decay / 4))} days ago`;
+  return '2 days ago';
+};
+
+function orgToAlert(org: Organization): DecayAlert {
+  const decay = Math.round(org.decay_score ?? 0);
+  const recent = Math.round(org.engagement_score ?? 50);
+  const historical = Math.min(100, recent + decay);
+  const slug = org.org_name.toLowerCase().replace(/[^a-z0-9]+/g, '');
+  return {
+    org: org.org_name,
+    type: org.org_type,
+    email: `info@${slug || 'member'}.com`,
+    decay,
+    trend: trendFromDecay(decay),
+    recent,
+    historical,
+    lastOpen: lastOpenFromDecay(decay),
+    revenue: org.annual_dues ?? 0,
+  };
+}
 import {
   Radio,
   AlertTriangle,
@@ -66,16 +101,33 @@ const alertActions: Record<string, string> = {
 
 export default function DecayRadar() {
   const [expandedAlert, setExpandedAlert] = useState<string | null>(null);
+  const [decayAlerts, setDecayAlerts] = useState<DecayAlert[]>(demoDecayAlerts);
+  const [totalMonitored, setTotalMonitored] = useState(4994);
+
+  useEffect(() => {
+    fetch('/api/memtrak/members?pageSize=200&sort=churn_risk&order=desc')
+      .then((r) => r.json())
+      .then((d: { rows: Organization[]; total: number }) => {
+        const ranked = (d.rows ?? [])
+          .filter((o) => (o.decay_score ?? 0) > 0)
+          .sort((a, b) => (b.decay_score ?? 0) - (a.decay_score ?? 0))
+          .slice(0, 5)
+          .map(orgToAlert);
+        if (ranked.length) setDecayAlerts(ranked);
+        if (typeof d.total === 'number' && d.total > 0) setTotalMonitored(d.total);
+      })
+      .catch(() => { /* keep demo fallback */ });
+  }, []);
 
   /* KPI calculations */
-  const monitored = 4994;
-  const activeAlerts = demoDecayAlerts.filter((d) => d.decay >= 50);
+  const monitored = totalMonitored;
+  const activeAlerts = decayAlerts.filter((d) => d.decay >= 50);
   const activeAlertCount = activeAlerts.length;
   const revenueAtRisk = activeAlerts.reduce((s, d) => s + d.revenue, 0);
-  const avgDecay = Math.round(
-    demoDecayAlerts.filter((d) => d.decay > 0).reduce((s, d) => s + d.decay, 0) /
-      demoDecayAlerts.filter((d) => d.decay > 0).length
-  );
+  const decayed = decayAlerts.filter((d) => d.decay > 0);
+  const avgDecay = decayed.length
+    ? Math.round(decayed.reduce((s, d) => s + d.decay, 0) / decayed.length)
+    : 0;
 
   return (
     <div className="p-6">
@@ -124,7 +176,7 @@ export default function DecayRadar() {
         <SparkKpi
           label="Active Alerts"
           value={activeAlertCount}
-          sub={`${demoDecayAlerts.length} total tracked`}
+          sub={`${decayAlerts.length} total tracked`}
           icon={AlertTriangle}
           color={C.red}
           size="lg"
@@ -213,12 +265,12 @@ export default function DecayRadar() {
             className="text-[9px] font-bold px-2 py-0.5 rounded-full"
             style={{ background: 'rgba(217,74,74,0.15)', color: C.red }}
           >
-            {demoDecayAlerts.length} members
+            {decayAlerts.length} members
           </span>
         </div>
 
         <div className="space-y-3">
-          {demoDecayAlerts.map((alert, i) => {
+          {decayAlerts.map((alert, i) => {
             const tc = trendConfig[alert.trend] || trendConfig.Stable;
             const isExpanded = expandedAlert === alert.org;
             const action = alertActions[alert.org] || 'Monitor engagement patterns.';
