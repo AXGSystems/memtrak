@@ -138,6 +138,7 @@ const sections = [
       { label: 'Event Tracker', href: '/event-tracker', icon: Calendar },
       { label: 'Email Templates', href: '/templates', icon: Mail },
       { label: 'Report Builder', href: '/report-builder', icon: FileText },
+      { label: 'Reports', href: '/reports', icon: BarChart3 },
       { label: 'Notifications', href: '/notifications-center', icon: Bell },
     ]
   },
