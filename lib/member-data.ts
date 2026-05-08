@@ -1412,6 +1412,58 @@ export async function updateAttendance(id: string, patch: Partial<EventAttendanc
   return data;
 }
 
+/**
+ * Recomputes an organization's engagement score from current org data plus
+ * attendance history. When `persist` is true and Supabase is configured the
+ * new score and health_tier are saved; otherwise the result is preview-only.
+ */
+export async function recomputeEngagement(
+  org_id: string,
+  options: { persist?: boolean } = {},
+): Promise<{
+  org_id: string;
+  previous_score: number;
+  previous_tier: string;
+  new_score: number;
+  new_tier: string;
+  breakdown: import('./engagement').EngagementBreakdown;
+  persisted: boolean;
+}> {
+  const { computeEngagementScore } = await import('./engagement');
+
+  const org = await getOrganization(org_id);
+  if (!org) throw new Error(`Organization ${org_id} not found`);
+
+  const attendance = await listAttendanceForOrg(org_id);
+  const breakdown = computeEngagementScore(org, attendance);
+
+  const previous_score = org.engagement_score ?? 0;
+  const previous_tier = org.health_tier ?? '';
+
+  let persisted = false;
+  if (options.persist && isSupabaseConfigured()) {
+    try {
+      await updateOrganization(org_id, {
+        engagement_score: breakdown.score,
+        health_tier: breakdown.tier,
+      });
+      persisted = true;
+    } catch {
+      // fall through — return breakdown without persisting
+    }
+  }
+
+  return {
+    org_id,
+    previous_score,
+    previous_tier,
+    new_score: breakdown.score,
+    new_tier: breakdown.tier,
+    breakdown,
+    persisted,
+  };
+}
+
 export interface FiscalYearReport {
   fiscal_year: number;
   /** All non-cancelled invoices issued in the year, summed */
