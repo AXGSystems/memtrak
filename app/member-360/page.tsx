@@ -163,6 +163,14 @@ export default function Member360() {
   useEffect(() => {
     getOrganizations().then(data => {
       setOrgs(data);
+      // Honor ?id=<org.id> deep-link from /members directory
+      if (typeof window !== 'undefined') {
+        const target = new URLSearchParams(window.location.search).get('id');
+        if (target) {
+          const idx = data.findIndex(o => o.id === target);
+          if (idx >= 0) setSelectedIdx(idx);
+        }
+      }
       setLoading(false);
     });
   }, []);

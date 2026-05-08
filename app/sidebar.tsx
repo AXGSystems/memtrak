@@ -23,6 +23,15 @@ const sections = [
     ]
   },
   {
+    label: 'Members', items: [
+      { label: 'Member Directory', href: '/members', icon: Users },
+      { label: 'Member360\u2122', href: '/member-360', icon: User },
+      { label: 'Member Health', href: '/member-health', icon: HeartPulse },
+      { label: 'Member Journey', href: '/journey', icon: GitBranch },
+      { label: 'New Members', href: '/new-members', icon: UserPlus },
+    ]
+  },
+  {
     label: 'MEMTrak Exclusive', items: [
       { label: 'DecayRadar\u2122', href: '/decay-radar', icon: Radio },
       { label: 'DisaffectionIndex\u2122', href: '/disaffection-index', icon: Shield },

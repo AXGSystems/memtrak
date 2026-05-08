@@ -671,3 +671,220 @@ export async function searchOrganizations(query: string): Promise<Organization[]
     )
     .sort((a, b) => b.annual_dues - a.annual_dues);
 }
+
+// ── Directory listing (paginated/filtered/sorted) ───────────
+
+export type SortField =
+  | 'org_name'
+  | 'org_type'
+  | 'state'
+  | 'annual_dues'
+  | 'engagement_score'
+  | 'churn_risk'
+  | 'health_tier'
+  | 'renewal_date'
+  | 'lifetime_revenue';
+
+export interface ListOrgsParams {
+  q?: string;
+  type?: string;
+  health?: string;
+  state?: string;
+  status?: string;
+  sort?: SortField;
+  order?: 'asc' | 'desc';
+  page?: number;
+  pageSize?: number;
+}
+
+export interface ListOrgsResult {
+  rows: Organization[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+const ALLOWED_SORTS: SortField[] = [
+  'org_name', 'org_type', 'state', 'annual_dues',
+  'engagement_score', 'churn_risk', 'health_tier',
+  'renewal_date', 'lifetime_revenue',
+];
+
+/**
+ * Paginated, filtered, sorted directory listing.
+ * Tries Supabase first, falls back to filtering demo data in-memory.
+ */
+export async function listOrganizations(params: ListOrgsParams = {}): Promise<ListOrgsResult> {
+  const page = Math.max(1, params.page ?? 1);
+  const pageSize = Math.min(200, Math.max(1, params.pageSize ?? 25));
+  const sort: SortField = ALLOWED_SORTS.includes(params.sort as SortField)
+    ? (params.sort as SortField)
+    : 'annual_dues';
+  const order: 'asc' | 'desc' = params.order === 'asc' ? 'asc' : 'desc';
+  const q = params.q?.trim() ?? '';
+
+  if (isSupabaseConfigured()) {
+    try {
+      let query = supabase
+        .from('memtrak_organizations')
+        .select('*', { count: 'exact' });
+
+      if (params.type) query = query.eq('org_type', params.type);
+      if (params.health) query = query.eq('health_tier', params.health);
+      if (params.state) query = query.eq('state', params.state);
+      if (params.status) query = query.eq('status', params.status);
+      if (q) {
+        const pattern = `%${q}%`;
+        query = query.or(
+          `org_name.ilike.${pattern},city.ilike.${pattern},state.ilike.${pattern},member_id.ilike.${pattern}`
+        );
+      }
+
+      const from = (page - 1) * pageSize;
+      const to = from + pageSize - 1;
+      const { data, error, count } = await query
+        .order(sort, { ascending: order === 'asc' })
+        .range(from, to);
+
+      if (data && !error) {
+        return { rows: data, total: count ?? data.length, page, pageSize };
+      }
+    } catch {
+      // fall through
+    }
+  }
+
+  let rows = [...demoOrganizations];
+  if (params.type) rows = rows.filter((o) => o.org_type === params.type);
+  if (params.health) rows = rows.filter((o) => o.health_tier === params.health);
+  if (params.state) rows = rows.filter((o) => o.state === params.state);
+  if (params.status) rows = rows.filter((o) => o.status === params.status);
+  if (q) {
+    const lower = q.toLowerCase();
+    rows = rows.filter(
+      (o) =>
+        o.org_name.toLowerCase().includes(lower) ||
+        o.city.toLowerCase().includes(lower) ||
+        o.state.toLowerCase().includes(lower) ||
+        o.member_id.toLowerCase().includes(lower) ||
+        (o.tags ?? []).some((t) => t.toLowerCase().includes(lower))
+    );
+  }
+
+  rows.sort((a, b) => {
+    const av = (a as unknown as Record<string, unknown>)[sort];
+    const bv = (b as unknown as Record<string, unknown>)[sort];
+    if (typeof av === 'number' && typeof bv === 'number') {
+      return order === 'asc' ? av - bv : bv - av;
+    }
+    const as = String(av ?? '');
+    const bs = String(bv ?? '');
+    return order === 'asc' ? as.localeCompare(bs) : bs.localeCompare(as);
+  });
+
+  const total = rows.length;
+  const from = (page - 1) * pageSize;
+  return { rows: rows.slice(from, from + pageSize), total, page, pageSize };
+}
+
+// ── Mutations (require Supabase) ─────────────────────────────
+
+export type OrganizationInput = Partial<Omit<Organization, 'id'>> & {
+  org_name: string;
+  org_type: Organization['org_type'];
+};
+
+/**
+ * Creates a new organization. Requires Supabase configuration.
+ */
+export async function createOrganization(input: OrganizationInput): Promise<Organization> {
+  if (!isSupabaseConfigured()) {
+    throw new Error('Supabase not configured — cannot create organization');
+  }
+  const { data, error } = await supabase
+    .from('memtrak_organizations')
+    .insert(input)
+    .select()
+    .single();
+  if (error || !data) throw new Error(error?.message ?? 'Insert failed');
+  return data;
+}
+
+/**
+ * Updates an organization by id. Requires Supabase configuration.
+ */
+export async function updateOrganization(id: string, patch: Partial<Organization>): Promise<Organization> {
+  if (!isSupabaseConfigured()) {
+    throw new Error('Supabase not configured — cannot update organization');
+  }
+  const { id: _ignore, ...rest } = patch;
+  void _ignore;
+  const { data, error } = await supabase
+    .from('memtrak_organizations')
+    .update(rest)
+    .eq('id', id)
+    .select()
+    .single();
+  if (error || !data) throw new Error(error?.message ?? 'Update failed');
+  return data;
+}
+
+/**
+ * Deletes an organization by id. Requires Supabase configuration.
+ */
+export async function deleteOrganization(id: string): Promise<void> {
+  if (!isSupabaseConfigured()) {
+    throw new Error('Supabase not configured — cannot delete organization');
+  }
+  const { error } = await supabase
+    .from('memtrak_organizations')
+    .delete()
+    .eq('id', id);
+  if (error) throw new Error(error.message);
+}
+
+export interface BulkCreateResult {
+  inserted: number;
+  failed: { index: number; error: string }[];
+}
+
+/**
+ * Bulk-creates organizations. Inserts in a single Supabase call so partial
+ * failure rolls back. Requires Supabase configuration.
+ */
+export async function bulkCreateOrganizations(rows: OrganizationInput[]): Promise<BulkCreateResult> {
+  if (!isSupabaseConfigured()) {
+    throw new Error('Supabase not configured — cannot import organizations');
+  }
+  if (!rows.length) return { inserted: 0, failed: [] };
+
+  const { data, error } = await supabase
+    .from('memtrak_organizations')
+    .insert(rows)
+    .select('id');
+
+  if (error) {
+    return { inserted: 0, failed: rows.map((_, index) => ({ index, error: error.message })) };
+  }
+  return { inserted: data?.length ?? 0, failed: [] };
+}
+
+/**
+ * Returns the distinct list of US states present in the dataset.
+ * Used to populate filter dropdowns.
+ */
+export async function getDistinctStates(): Promise<string[]> {
+  if (isSupabaseConfigured()) {
+    try {
+      const { data, error } = await supabase
+        .from('memtrak_organizations')
+        .select('state');
+      if (data && !error) {
+        return Array.from(new Set(data.map((r: { state: string }) => r.state).filter(Boolean))).sort();
+      }
+    } catch {
+      // fall through
+    }
+  }
+  return Array.from(new Set(demoOrganizations.map((o) => o.state))).sort();
+}
