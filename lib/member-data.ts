@@ -49,6 +49,40 @@ export interface Invoice {
   created_at?: string;
 }
 
+export type EventType = 'Conference' | 'Webinar' | 'Workshop' | 'Committee Meeting' | 'Board Meeting' | 'Social' | 'Training';
+export type RegistrationStatus = 'Registered' | 'Attended' | 'No Show' | 'Cancelled';
+
+export interface EventAttendance {
+  id: string;
+  alta_connect_event_id: string;
+  event_name: string;
+  event_date: string;
+  event_type: EventType;
+  contact_id?: string | null;
+  org_id: string;
+  registration_status: RegistrationStatus;
+  registration_date?: string;
+  check_in_time?: string | null;
+  registration_fee: number;
+  paid: boolean;
+  created_at?: string;
+}
+
+/** Aggregate view derived from attendance rows. */
+export interface EventSummary {
+  alta_connect_event_id: string;
+  event_name: string;
+  event_date: string;
+  event_type: EventType;
+  registered: number;
+  attended: number;
+  no_show: number;
+  cancelled: number;
+  attendance_rate: number;
+  revenue_paid: number;
+  revenue_outstanding: number;
+}
+
 export interface Contact {
   id: string;
   org_id: string;
@@ -1234,6 +1268,148 @@ function pastDueBucket(dueIso: string, today: string): keyof Omit<FinanceStats['
   if (days <= 60) return 'd31_60';
   if (days <= 90) return 'd61_90';
   return 'd91_plus';
+}
+
+// ── Events / Attendance ─────────────────────────────────────
+
+export type EventAttendanceInput = Partial<Omit<EventAttendance, 'id' | 'created_at'>> & {
+  alta_connect_event_id: string;
+  event_name: string;
+  event_date: string;
+  event_type: EventType;
+  org_id: string;
+};
+
+const demoEventAttendance: EventAttendance[] = [
+  // ALTA ONE 2026 (Annual conference, Oct 2026)
+  { id: 'att-001', alta_connect_event_id: 'evt-altaone-2026', event_name: 'ALTA ONE 2026', event_date: '2026-10-12', event_type: 'Conference', contact_id: 'c-004-1', org_id: 'demo-acu-004', registration_status: 'Registered', registration_fee: 1495, paid: true, registration_date: '2026-04-15' },
+  { id: 'att-002', alta_connect_event_id: 'evt-altaone-2026', event_name: 'ALTA ONE 2026', event_date: '2026-10-12', event_type: 'Conference', contact_id: 'c-001-1', org_id: 'demo-acu-001', registration_status: 'Registered', registration_fee: 1495, paid: true, registration_date: '2026-04-22' },
+  { id: 'att-003', alta_connect_event_id: 'evt-altaone-2026', event_name: 'ALTA ONE 2026', event_date: '2026-10-12', event_type: 'Conference', contact_id: 'c-020-1', org_id: 'demo-acb-020', registration_status: 'Registered', registration_fee: 1495, paid: false, registration_date: '2026-05-01' },
+
+  // Spring Compliance Webinar — past event
+  { id: 'att-101', alta_connect_event_id: 'evt-compwebinar-spring26', event_name: 'Spring Compliance Update', event_date: '2026-03-18', event_type: 'Webinar', contact_id: 'c-004-1', org_id: 'demo-acu-004', registration_status: 'Attended', registration_fee: 0, paid: true, check_in_time: '2026-03-18T14:02:00Z' },
+  { id: 'att-102', alta_connect_event_id: 'evt-compwebinar-spring26', event_name: 'Spring Compliance Update', event_date: '2026-03-18', event_type: 'Webinar', contact_id: 'c-020-1', org_id: 'demo-acb-020', registration_status: 'Attended', registration_fee: 0, paid: true, check_in_time: '2026-03-18T14:00:00Z' },
+  { id: 'att-103', alta_connect_event_id: 'evt-compwebinar-spring26', event_name: 'Spring Compliance Update', event_date: '2026-03-18', event_type: 'Webinar', org_id: 'demo-acu-001', registration_status: 'No Show', registration_fee: 0, paid: true },
+  { id: 'att-104', alta_connect_event_id: 'evt-compwebinar-spring26', event_name: 'Spring Compliance Update', event_date: '2026-03-18', event_type: 'Webinar', org_id: 'demo-rea-032', registration_status: 'Attended', registration_fee: 0, paid: true, check_in_time: '2026-03-18T14:08:00Z' },
+
+  // TIPAC Reception 2026 (Spring)
+  { id: 'att-201', alta_connect_event_id: 'evt-tipac-spring26', event_name: 'TIPAC Reception — Capitol Hill', event_date: '2026-04-22', event_type: 'Social', contact_id: 'c-004-1', org_id: 'demo-acu-004', registration_status: 'Attended', registration_fee: 250, paid: true, check_in_time: '2026-04-22T18:15:00Z' },
+  { id: 'att-202', alta_connect_event_id: 'evt-tipac-spring26', event_name: 'TIPAC Reception — Capitol Hill', event_date: '2026-04-22', event_type: 'Social', contact_id: 'c-020-1', org_id: 'demo-acb-020', registration_status: 'Attended', registration_fee: 250, paid: true, check_in_time: '2026-04-22T18:30:00Z' },
+
+  // Title Insurance 101 Workshop — past
+  { id: 'att-301', alta_connect_event_id: 'evt-title101-feb26', event_name: 'Title Insurance 101 Workshop', event_date: '2026-02-08', event_type: 'Workshop', org_id: 'demo-acb-022', registration_status: 'Attended', registration_fee: 195, paid: true, check_in_time: '2026-02-08T09:00:00Z' },
+  { id: 'att-302', alta_connect_event_id: 'evt-title101-feb26', event_name: 'Title Insurance 101 Workshop', event_date: '2026-02-08', event_type: 'Workshop', org_id: 'demo-aca-013', registration_status: 'Attended', registration_fee: 195, paid: true, check_in_time: '2026-02-08T09:05:00Z' },
+  { id: 'att-303', alta_connect_event_id: 'evt-title101-feb26', event_name: 'Title Insurance 101 Workshop', event_date: '2026-02-08', event_type: 'Workshop', org_id: 'demo-rea-033', registration_status: 'Cancelled', registration_fee: 195, paid: false },
+
+  // Board Meeting — Q2 2026
+  { id: 'att-401', alta_connect_event_id: 'evt-board-q226', event_name: 'Board Meeting — Q2 2026', event_date: '2026-04-30', event_type: 'Board Meeting', contact_id: 'c-004-1', org_id: 'demo-acu-004', registration_status: 'Attended', registration_fee: 0, paid: true, check_in_time: '2026-04-30T10:00:00Z' },
+  { id: 'att-402', alta_connect_event_id: 'evt-board-q226', event_name: 'Board Meeting — Q2 2026', event_date: '2026-04-30', event_type: 'Board Meeting', org_id: 'demo-acb-023', registration_status: 'Attended', registration_fee: 0, paid: true, check_in_time: '2026-04-30T10:02:00Z' },
+];
+
+function summarizeEvent(rows: EventAttendance[]): EventSummary | null {
+  if (!rows.length) return null;
+  const first = rows[0];
+  const summary: EventSummary = {
+    alta_connect_event_id: first.alta_connect_event_id,
+    event_name: first.event_name,
+    event_date: first.event_date,
+    event_type: first.event_type,
+    registered: 0, attended: 0, no_show: 0, cancelled: 0,
+    attendance_rate: 0,
+    revenue_paid: 0, revenue_outstanding: 0,
+  };
+  for (const r of rows) {
+    if (r.registration_status === 'Registered') summary.registered++;
+    else if (r.registration_status === 'Attended') summary.attended++;
+    else if (r.registration_status === 'No Show') summary.no_show++;
+    else summary.cancelled++;
+    if (r.registration_fee) {
+      if (r.paid) summary.revenue_paid += r.registration_fee;
+      else if (r.registration_status !== 'Cancelled') summary.revenue_outstanding += r.registration_fee;
+    }
+  }
+  const eligible = summary.attended + summary.no_show;
+  summary.attendance_rate = eligible > 0 ? Math.round((summary.attended / eligible) * 100) : 0;
+  return summary;
+}
+
+export async function listEvents(): Promise<EventSummary[]> {
+  let rows: EventAttendance[] = [];
+  if (isSupabaseConfigured()) {
+    try {
+      const { data, error } = await supabase.from('memtrak_event_attendance').select('*');
+      if (data && !error) rows = data;
+    } catch { /* fall through */ }
+  }
+  if (!rows.length) rows = demoEventAttendance;
+
+  const byEvent = new Map<string, EventAttendance[]>();
+  for (const r of rows) {
+    const list = byEvent.get(r.alta_connect_event_id) ?? [];
+    list.push(r);
+    byEvent.set(r.alta_connect_event_id, list);
+  }
+  const summaries: EventSummary[] = [];
+  for (const list of byEvent.values()) {
+    const s = summarizeEvent(list);
+    if (s) summaries.push(s);
+  }
+  summaries.sort((a, b) => b.event_date.localeCompare(a.event_date));
+  return summaries;
+}
+
+export async function getEvent(altaConnectEventId: string): Promise<{ event: EventSummary; roster: EventAttendance[] } | null> {
+  let rows: EventAttendance[] = [];
+  if (isSupabaseConfigured()) {
+    try {
+      const { data, error } = await supabase
+        .from('memtrak_event_attendance')
+        .select('*')
+        .eq('alta_connect_event_id', altaConnectEventId);
+      if (data && !error) rows = data;
+    } catch { /* fall through */ }
+  }
+  if (!rows.length) rows = demoEventAttendance.filter((r) => r.alta_connect_event_id === altaConnectEventId);
+  if (!rows.length) return null;
+  const event = summarizeEvent(rows);
+  if (!event) return null;
+  return { event, roster: rows };
+}
+
+export async function listAttendanceForOrg(org_id: string): Promise<EventAttendance[]> {
+  if (isSupabaseConfigured()) {
+    try {
+      const { data, error } = await supabase
+        .from('memtrak_event_attendance')
+        .select('*')
+        .eq('org_id', org_id)
+        .order('event_date', { ascending: false });
+      if (data && !error) return data;
+    } catch { /* fall through */ }
+  }
+  return demoEventAttendance
+    .filter((r) => r.org_id === org_id)
+    .sort((a, b) => b.event_date.localeCompare(a.event_date));
+}
+
+export async function recordAttendance(input: EventAttendanceInput): Promise<EventAttendance> {
+  if (!isSupabaseConfigured()) {
+    throw new Error('Supabase not configured — cannot record attendance');
+  }
+  const { data, error } = await supabase.from('memtrak_event_attendance').insert(input).select().single();
+  if (error || !data) throw new Error(error?.message ?? 'Insert failed');
+  return data;
+}
+
+export async function updateAttendance(id: string, patch: Partial<EventAttendance>): Promise<EventAttendance> {
+  if (!isSupabaseConfigured()) {
+    throw new Error('Supabase not configured — cannot update attendance');
+  }
+  const { id: _i, created_at: _c, ...rest } = patch;
+  void _i; void _c;
+  const { data, error } = await supabase.from('memtrak_event_attendance').update(rest).eq('id', id).select().single();
+  if (error || !data) throw new Error(error?.message ?? 'Update failed');
+  return data;
 }
 
 export interface FiscalYearReport {

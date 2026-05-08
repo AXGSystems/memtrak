@@ -10,6 +10,7 @@ import AnimatedCounter from '@/components/AnimatedCounter';
 import { SkeletonCard, SkeletonKPI } from '@/components/Skeleton';
 import { getOrganizations, type Organization } from '@/lib/member-data';
 import ContactsPanel from '@/components/ContactsPanel';
+import EventsPanel from '@/components/EventsPanel';
 import {
   User, Building2, Mail, Phone, CalendarCheck, Clock, Star, Shield,
   TrendingUp, TrendingDown, DollarSign, AlertTriangle, Send,
@@ -496,6 +497,9 @@ export default function Member360() {
 
       {/* ── Contacts ─────────────────────────────────────────── */}
       <ContactsPanel orgId={org.id} orgName={org.org_name} />
+
+      {/* ── Event Attendance (ALTA Connect) ──────────────────── */}
+      <EventsPanel orgId={org.id} orgName={org.org_name} />
 
       {/* ── Recommended Actions ──────────────────────────────── */}
       <Card title="Recommended Actions" subtitle="AI-generated next steps" accent="var(--accent)">
