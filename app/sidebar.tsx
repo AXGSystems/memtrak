@@ -157,6 +157,7 @@ const sections = [
       { label: 'Data Export', href: '/data-export', icon: Shield },
       { label: "What's New", href: '/whats-new', icon: Star },
       { label: 'Email Audit', href: '/audit', icon: ClipboardCheck },
+      { label: 'Audit Trail', href: '/audit-trail', icon: Activity },
       { label: 'Roadmap', href: '/roadmap', icon: Map },
       { label: 'Security', href: '/security', icon: Lock },
       { label: 'System Status', href: '/status', icon: Activity },

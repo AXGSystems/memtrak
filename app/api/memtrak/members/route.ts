@@ -4,6 +4,7 @@ import {
   createOrganization,
   type SortField,
 } from '@/lib/member-data';
+import { logEntityAudit } from '@/lib/audit';
 
 /**
  * MEMTrak Members API
@@ -54,6 +55,11 @@ export async function POST(request: NextRequest) {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const org = await createOrganization(body as any);
+    logEntityAudit({
+      entity: 'organization', entity_id: org.id, entity_label: org.org_name,
+      action: 'create', actor: 'staff',
+      summary: `Created ${org.org_name} (${org.org_type}, $${org.annual_dues.toLocaleString()} dues)`,
+    });
     return NextResponse.json({ success: true, org }, { status: 201 });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Create failed';

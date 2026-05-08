@@ -4,6 +4,7 @@ import {
   updateOrganization,
   deleteOrganization,
 } from '@/lib/member-data';
+import { logEntityAudit, diffRecords } from '@/lib/audit';
 
 /**
  * MEMTrak Members API — single organization
@@ -32,7 +33,14 @@ export async function PUT(request: NextRequest, ctx: Ctx) {
   }
 
   try {
+    const before = await getOrganization(id);
     const org = await updateOrganization(id, patch);
+    logEntityAudit({
+      entity: 'organization', entity_id: org.id, entity_label: org.org_name,
+      action: 'update', actor: 'staff',
+      summary: `Updated ${org.org_name}`,
+      diff: diffRecords(before as unknown as Record<string, unknown>, org as unknown as Record<string, unknown>),
+    });
     return NextResponse.json({ success: true, org });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Update failed';
@@ -44,7 +52,13 @@ export async function PUT(request: NextRequest, ctx: Ctx) {
 export async function DELETE(_req: NextRequest, ctx: Ctx) {
   const { id } = await ctx.params;
   try {
+    const before = await getOrganization(id);
     await deleteOrganization(id);
+    logEntityAudit({
+      entity: 'organization', entity_id: id, entity_label: before?.org_name,
+      action: 'delete', actor: 'staff',
+      summary: `Deleted ${before?.org_name ?? id}`,
+    });
     return new NextResponse(null, { status: 204 });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Delete failed';
