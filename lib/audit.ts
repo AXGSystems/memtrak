@@ -7,8 +7,8 @@
  * the persist path can be added without changing callers.
  */
 
-export type AuditAction = 'create' | 'update' | 'delete' | 'mark_paid' | 'recompute_engagement' | 'import';
-export type AuditEntity = 'organization' | 'contact' | 'invoice' | 'event_attendance' | 'group' | 'group_member';
+export type AuditAction = 'create' | 'update' | 'delete' | 'mark_paid' | 'recompute_engagement' | 'import' | 'revoke';
+export type AuditEntity = 'organization' | 'contact' | 'invoice' | 'event_attendance' | 'group' | 'group_member' | 'invite';
 
 export interface AuditEvent {
   id: string;

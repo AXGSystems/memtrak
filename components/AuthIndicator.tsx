@@ -1,11 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { LogOut, ShieldCheck, Eye, User as UserIcon } from 'lucide-react';
 
 type AuthRole = 'admin' | 'staff' | 'read-only';
-type Me = { enabled: boolean; role?: AuthRole | null };
+type Me = { enabled: boolean; email?: string | null; role?: AuthRole | null };
 
 const ROLE_ICON: Record<AuthRole, typeof ShieldCheck> = {
   admin: ShieldCheck,
@@ -20,7 +19,6 @@ const ROLE_COLOR: Record<AuthRole, string> = {
 };
 
 export default function AuthIndicator() {
-  const router = useRouter();
   const [me, setMe] = useState<Me | null>(null);
   const [loggingOut, setLoggingOut] = useState(false);
 
@@ -35,17 +33,30 @@ export default function AuthIndicator() {
   const Icon = ROLE_ICON[me.role];
   const color = ROLE_COLOR[me.role];
 
+  // NextAuth signOut: POST to /api/auth/signout with CSRF token, then go to /login.
+  // Using a plain form works for App Router without dragging next-auth/react into the client.
   const logout = async () => {
     setLoggingOut(true);
-    await fetch('/api/auth/logout', { method: 'POST' });
-    router.push('/login');
-    router.refresh();
+    try {
+      const csrfRes = await fetch('/api/auth/csrf').then((r) => r.json());
+      await fetch('/api/auth/signout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ csrfToken: csrfRes.csrfToken, callbackUrl: '/login' }).toString(),
+      });
+    } finally {
+      window.location.href = '/login';
+    }
   };
 
   return (
     <>
       <div className="hidden md:block w-px h-4" style={{ background: 'var(--card-border)' }} />
-      <div className="flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider" style={{ color, background: `color-mix(in srgb, ${color} 12%, transparent)` }}>
+      <div
+        className="hidden md:flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider"
+        style={{ color, background: `color-mix(in srgb, ${color} 12%, transparent)` }}
+        title={me.email ?? undefined}
+      >
         <Icon className="w-3 h-3" />
         {me.role}
       </div>
@@ -54,7 +65,7 @@ export default function AuthIndicator() {
         disabled={loggingOut}
         className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-[11px] font-semibold transition-all hover:opacity-80 disabled:opacity-50"
         style={{ color: 'var(--text-muted)', border: '1px solid var(--card-border)' }}
-        title="Sign out"
+        title={`Sign out ${me.email ?? ''}`}
       >
         <LogOut className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Sign out</span>
       </button>

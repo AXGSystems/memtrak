@@ -160,6 +160,7 @@ const sections = [
       { label: 'Audit Trail', href: '/audit-trail', icon: Activity },
       { label: 'Roadmap', href: '/roadmap', icon: Map },
       { label: 'Security', href: '/security', icon: Lock },
+      { label: 'Users & Invites', href: '/admin/users', icon: Shield },
       { label: 'System Status', href: '/status', icon: Activity },
     ]
   },
