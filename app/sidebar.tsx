@@ -158,6 +158,7 @@ const sections = [
       { label: "What's New", href: '/whats-new', icon: Star },
       { label: 'Email Audit', href: '/audit', icon: ClipboardCheck },
       { label: 'Audit Trail', href: '/audit-trail', icon: Activity },
+      { label: 'Documents', href: '/documents', icon: ClipboardCheck },
       { label: 'Roadmap', href: '/roadmap', icon: Map },
       { label: 'Security', href: '/security', icon: Lock },
       { label: 'Users & Invites', href: '/admin/users', icon: Shield },

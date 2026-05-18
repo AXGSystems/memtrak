@@ -1950,6 +1950,181 @@ export async function generateInvoices(from: string, to: string): Promise<Genera
   return { generated: data?.length ?? 0, skipped: orgs.length - candidates.length, invoices: data ?? [] };
 }
 
+// ── Documents ──────────────────────────────────────────────
+
+export type DocumentType =
+  | 'Bylaws'
+  | 'Policy'
+  | 'Meeting Minutes'
+  | 'Agenda'
+  | 'Financial Report'
+  | 'Contract'
+  | 'Presentation'
+  | 'Annual Report'
+  | 'Other';
+
+export const DOCUMENT_TYPES: DocumentType[] = [
+  'Bylaws', 'Policy', 'Meeting Minutes', 'Agenda', 'Financial Report',
+  'Contract', 'Presentation', 'Annual Report', 'Other',
+];
+
+export interface MemtrakDocument {
+  id: string;
+  name: string;
+  doc_type: DocumentType;
+  url: string;
+  description?: string | null;
+  /** Optional FK — when set, the document is attached to a group/committee. */
+  group_id?: string | null;
+  /** When the document took effect (bylaws revision date, meeting date, etc.). */
+  effective_date?: string | null;
+  uploaded_by?: string | null;
+  uploaded_at?: string;
+  tags?: string[];
+}
+
+export type DocumentInput = Partial<Omit<MemtrakDocument, 'id' | 'uploaded_at'>> & {
+  name: string;
+  doc_type: DocumentType;
+  url: string;
+};
+
+const demoDocuments: MemtrakDocument[] = [
+  {
+    id: 'doc-001', name: 'ALTA Bylaws (2024 revision)', doc_type: 'Bylaws',
+    url: 'https://www.alta.org/about/bylaws.pdf', effective_date: '2024-10-15',
+    description: 'Current bylaws as ratified at ALTA ONE 2024.',
+    uploaded_by: 'Caroline Ehrenfeld', uploaded_at: '2024-11-02T10:00:00Z',
+    tags: ['governance', 'board'],
+  },
+  {
+    id: 'doc-002', name: 'Conflict of Interest Policy', doc_type: 'Policy',
+    url: 'https://www.alta.org/governance/conflict-policy.pdf',
+    description: 'Annual disclosure required of all board and committee chairs.',
+    uploaded_by: 'Paul Martin', uploaded_at: '2025-01-15T14:30:00Z',
+    tags: ['policy', 'board', 'compliance'],
+  },
+  {
+    id: 'doc-003', name: 'Board Meeting — Q1 2026 Minutes', doc_type: 'Meeting Minutes',
+    url: 'https://docs.google.com/document/d/example-board-q1-2026',
+    group_id: 'grp-001', effective_date: '2026-02-12',
+    description: 'Approved at Q2 meeting.',
+    uploaded_by: 'Taylor Spolidoro', uploaded_at: '2026-02-20T09:00:00Z',
+    tags: ['board', 'minutes', 'fy2026'],
+  },
+  {
+    id: 'doc-004', name: 'TIPAC Steering — May Agenda', doc_type: 'Agenda',
+    url: 'https://docs.google.com/document/d/example-tipac-may',
+    group_id: 'grp-002', effective_date: '2026-05-22',
+    uploaded_by: 'Emily Mincey', uploaded_at: '2026-05-15T11:00:00Z',
+    tags: ['committee', 'gov-affairs'],
+  },
+  {
+    id: 'doc-005', name: 'FY2025 Audited Financials', doc_type: 'Financial Report',
+    url: 'https://www.alta.org/financials/fy2025-audit.pdf',
+    effective_date: '2025-12-31',
+    description: 'Independent audit by Crowe LLP.',
+    uploaded_by: 'Paul Martin', uploaded_at: '2026-03-01T08:00:00Z',
+    tags: ['finance', 'fy2025', 'board'],
+  },
+  {
+    id: 'doc-006', name: 'TIPAC Compliance Manual (2026)', doc_type: 'Policy',
+    url: 'https://www.alta.org/tipac/compliance-manual.pdf',
+    effective_date: '2026-01-01',
+    description: 'Federal election compliance requirements for TIPAC contributors.',
+    uploaded_by: 'Caroline Ehrenfeld', uploaded_at: '2026-01-08T16:00:00Z',
+    tags: ['tipac', 'compliance', 'policy'],
+  },
+];
+
+export interface ListDocumentsParams {
+  q?: string;
+  doc_type?: DocumentType;
+  group_id?: string;
+  tag?: string;
+}
+
+export async function listDocuments(params: ListDocumentsParams = {}): Promise<MemtrakDocument[]> {
+  let rows: MemtrakDocument[] = [];
+  if (isSupabaseConfigured()) {
+    try {
+      let query = supabase.from('memtrak_documents').select('*');
+      if (params.doc_type) query = query.eq('doc_type', params.doc_type);
+      if (params.group_id) query = query.eq('group_id', params.group_id);
+      const { data, error } = await query;
+      if (data && !error) rows = data;
+    } catch { /* fall through */ }
+  }
+  if (!rows.length) {
+    rows = demoDocuments.filter((d) => {
+      if (params.doc_type && d.doc_type !== params.doc_type) return false;
+      if (params.group_id && d.group_id !== params.group_id) return false;
+      return true;
+    });
+  }
+
+  if (params.tag) {
+    const t = params.tag.toLowerCase();
+    rows = rows.filter((d) => (d.tags ?? []).some((x) => x.toLowerCase() === t));
+  }
+  if (params.q) {
+    const q = params.q.toLowerCase();
+    rows = rows.filter((d) =>
+      d.name.toLowerCase().includes(q) ||
+      (d.description ?? '').toLowerCase().includes(q) ||
+      (d.tags ?? []).some((x) => x.toLowerCase().includes(q)),
+    );
+  }
+
+  return rows.sort((a, b) => {
+    const da = a.effective_date ?? a.uploaded_at ?? '';
+    const db = b.effective_date ?? b.uploaded_at ?? '';
+    return db.localeCompare(da);
+  });
+}
+
+export async function getDocument(id: string): Promise<MemtrakDocument | null> {
+  if (isSupabaseConfigured()) {
+    try {
+      const { data, error } = await supabase
+        .from('memtrak_documents').select('*').eq('id', id).maybeSingle();
+      if (data && !error) return data;
+    } catch { /* fall through */ }
+  }
+  return demoDocuments.find((d) => d.id === id) ?? null;
+}
+
+export async function createDocument(input: DocumentInput): Promise<MemtrakDocument> {
+  if (!isSupabaseConfigured()) {
+    throw new Error('Supabase not configured — cannot create document');
+  }
+  const payload = { ...input, uploaded_at: new Date().toISOString() };
+  const { data, error } = await supabase
+    .from('memtrak_documents').insert(payload).select().single();
+  if (error || !data) throw new Error(error?.message ?? 'Insert failed');
+  return data;
+}
+
+export async function updateDocument(id: string, patch: Partial<MemtrakDocument>): Promise<MemtrakDocument> {
+  if (!isSupabaseConfigured()) {
+    throw new Error('Supabase not configured — cannot update document');
+  }
+  const { id: _i, uploaded_at: _u, ...rest } = patch;
+  void _i; void _u;
+  const { data, error } = await supabase
+    .from('memtrak_documents').update(rest).eq('id', id).select().single();
+  if (error || !data) throw new Error(error?.message ?? 'Update failed');
+  return data;
+}
+
+export async function deleteDocument(id: string): Promise<void> {
+  if (!isSupabaseConfigured()) {
+    throw new Error('Supabase not configured — cannot delete document');
+  }
+  const { error } = await supabase.from('memtrak_documents').delete().eq('id', id);
+  if (error) throw new Error(error.message);
+}
+
 /**
  * Returns the distinct list of US states present in the dataset.
  * Used to populate filter dropdowns.

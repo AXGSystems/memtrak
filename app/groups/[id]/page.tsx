@@ -4,6 +4,7 @@ import { useEffect, useState, use } from 'react';
 import Link from 'next/link';
 import Card from '@/components/Card';
 import { SkeletonCard } from '@/components/Skeleton';
+import DocumentsPanel from '@/components/DocumentsPanel';
 import { ChevronLeft, Star, Mail, Building2, Calendar, ExternalLink } from 'lucide-react';
 import type { Group, GroupRole, Contact, Organization, GroupMember } from '@/lib/member-data';
 
@@ -164,6 +165,8 @@ export default function GroupDetailPage({ params }: PageProps) {
           </div>
         </Card>
       )}
+
+      <DocumentsPanel groupId={group.id} title="Documents" subtitle="Bylaws, minutes, agendas attached to this group" />
     </div>
   );
 }

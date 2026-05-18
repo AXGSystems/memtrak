@@ -8,7 +8,7 @@
  */
 
 export type AuditAction = 'create' | 'update' | 'delete' | 'mark_paid' | 'recompute_engagement' | 'import' | 'revoke';
-export type AuditEntity = 'organization' | 'contact' | 'invoice' | 'event_attendance' | 'group' | 'group_member' | 'invite';
+export type AuditEntity = 'organization' | 'contact' | 'invoice' | 'event_attendance' | 'group' | 'group_member' | 'invite' | 'document';
 
 export interface AuditEvent {
   id: string;
