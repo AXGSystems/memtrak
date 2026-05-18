@@ -2,6 +2,7 @@ import NextAuth from 'next-auth';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { authConfig, isAuthEnabled, AUTH_BYPASS_PREFIXES } from '@/lib/auth.config';
+import { extractBearer, hashApiKey, scopeAllows } from '@/lib/api-keys';
 
 /**
  * MEMTrak edge middleware:
@@ -38,6 +39,41 @@ if (typeof setInterval !== 'undefined') {
       if (now > entry.resetAt) rateLimits.delete(ip);
     }
   }, 300_000);
+}
+
+// ── API key cache (per-edge-instance, 60s) ──────────────────────────
+interface CachedKey { id: string; scopes: string[]; expiresAt: number }
+const apiKeyCache = new Map<string, CachedKey | null>(); // null = negative cache
+
+async function lookupApiKey(hash: string): Promise<CachedKey | null> {
+  const cached = apiKeyCache.get(hash);
+  if (cached !== undefined && cached !== null && cached.expiresAt > Date.now()) return cached;
+  if (cached === null) return null;
+
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return null;
+
+  try {
+    const res = await fetch(
+      `${url}/rest/v1/memtrak_api_keys?key_hash=eq.${encodeURIComponent(hash)}&revoked_at=is.null&select=id,scopes`,
+      { headers: { apikey: key, Authorization: `Bearer ${key}` } },
+    );
+    if (!res.ok) {
+      apiKeyCache.set(hash, null);
+      return null;
+    }
+    const rows = (await res.json()) as Array<{ id: string; scopes: string[] }>;
+    if (!rows.length) {
+      apiKeyCache.set(hash, null);
+      return null;
+    }
+    const entry: CachedKey = { id: rows[0].id, scopes: rows[0].scopes ?? [], expiresAt: Date.now() + 60_000 };
+    apiKeyCache.set(hash, entry);
+    return entry;
+  } catch {
+    return null;
+  }
 }
 
 // ── Security headers ─────────────────────────────────────────────────
@@ -78,7 +114,19 @@ export default auth(async function middleware(request) {
   // Auth gate. Only active when MEMTRAK_AUTH_ENABLED=true and AUTH_SECRET set.
   if (isAuthEnabled()) {
     const bypass = AUTH_BYPASS_PREFIXES.some((p) => pathname === p || pathname.startsWith(p));
-    if (!bypass && !request.auth) {
+
+    // Bearer-token auth: alt to session for /api/memtrak/* programmatic access.
+    let bearerOk = false;
+    if (!bypass && pathname.startsWith('/api/memtrak/')) {
+      const token = extractBearer(request.headers);
+      if (token) {
+        const hash = await hashApiKey(token);
+        const key = await lookupApiKey(hash);
+        if (key && scopeAllows(key.scopes, request.method, pathname)) bearerOk = true;
+      }
+    }
+
+    if (!bypass && !bearerOk && !request.auth) {
       if (pathname.startsWith('/api/')) {
         return new NextResponse(JSON.stringify({ error: 'Authentication required' }), {
           status: 401,

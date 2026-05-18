@@ -162,6 +162,7 @@ const sections = [
       { label: 'Roadmap', href: '/roadmap', icon: Map },
       { label: 'Security', href: '/security', icon: Lock },
       { label: 'Users & Invites', href: '/admin/users', icon: Shield },
+      { label: 'API Keys', href: '/admin/api-keys', icon: Lock },
       { label: 'System Status', href: '/status', icon: Activity },
     ]
   },
