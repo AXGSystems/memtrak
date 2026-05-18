@@ -5,8 +5,8 @@ import TopBar from "./topbar";
 import ClientShell from "./client-shell";
 
 export const metadata: Metadata = {
-  title: "MEMTrak — Email Intelligence Platform",
-  description: "Member Engagement & Membership Tracking — email tracking, analytics, and hygiene platform for membership organizations.",
+  title: "MEMTrak — Association Management & Email Intelligence",
+  description: "AMS plus email intelligence for membership organizations — members, dues, events, groups, documents, member portal, and 48 branded analytics tools.",
   icons: { icon: '/alta-shield.png' },
 };
 

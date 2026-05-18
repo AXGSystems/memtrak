@@ -163,6 +163,7 @@ const sections = [
       { label: 'Security', href: '/security', icon: Lock },
       { label: 'Users & Invites', href: '/admin/users', icon: Shield },
       { label: 'API Keys', href: '/admin/api-keys', icon: Lock },
+      { label: 'Launch Runbook', href: '/admin/launch-runbook', icon: ClipboardCheck },
       { label: 'System Status', href: '/status', icon: Activity },
     ]
   },
