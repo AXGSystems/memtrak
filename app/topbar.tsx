@@ -392,6 +392,9 @@ export default function TopBar() {
   const title = pageNames[pathname] || 'MEMTrak';
   const guide = guides[pathname];
 
+  // The portal and the login page render their own chrome.
+  if (pathname === '/portal' || pathname.startsWith('/portal/') || pathname === '/login') return null;
+
   const [currentTheme, setCurrentTheme] = useState('deep-blue');
 
   const switchTheme = (id: string) => {

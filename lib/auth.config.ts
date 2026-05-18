@@ -9,7 +9,12 @@ import type { NextAuthConfig } from 'next-auth';
  * `auth.ts` so they don't ship to the edge.
  */
 
-export type AuthRole = 'admin' | 'staff' | 'read-only';
+export type AuthRole = 'admin' | 'staff' | 'read-only' | 'member';
+
+/** True for any staff-side role. Members are excluded. */
+export function isStaffRole(role: AuthRole | null | undefined): boolean {
+  return role === 'admin' || role === 'staff' || role === 'read-only';
+}
 
 /** Paths that must remain reachable even when auth is enabled. */
 export const AUTH_BYPASS_PREFIXES = [
@@ -47,13 +52,24 @@ export const authConfig = {
         (p) => pathname === p || pathname.startsWith(p),
       );
       if (bypass) return true;
-      return Boolean(auth?.user);
+      if (!auth?.user) return false;
+
+      // Members can only see /portal/*. Staff can see everything else
+      // (including /portal/*, useful for impersonation / preview).
+      const role = (auth.user as { role?: AuthRole }).role;
+      const isPortalPath = pathname === '/portal' || pathname.startsWith('/portal/') ||
+                           pathname.startsWith('/api/portal/');
+      if (role === 'member' && !isPortalPath) return false;
+      return true;
     },
     jwt({ token, user, trigger, session }) {
-      // First sign-in: persist role + email onto the token.
+      // First sign-in: persist role + email + contact context onto the token.
       if (user) {
-        token.role = (user as { role?: AuthRole }).role ?? 'read-only';
+        const u = user as { role?: AuthRole; contact_id?: string; org_id?: string };
+        token.role = u.role ?? 'read-only';
         token.email = user.email ?? token.email;
+        if (u.contact_id) token.contact_id = u.contact_id;
+        if (u.org_id) token.org_id = u.org_id;
       }
       if (trigger === 'update' && session?.role) {
         token.role = session.role;
@@ -62,8 +78,10 @@ export const authConfig = {
     },
     session({ session, token }) {
       if (session.user) {
-        (session.user as { role?: AuthRole }).role =
-          (token.role as AuthRole | undefined) ?? 'read-only';
+        const u = session.user as { role?: AuthRole; contact_id?: string; org_id?: string };
+        u.role = (token.role as AuthRole | undefined) ?? 'read-only';
+        if (token.contact_id) u.contact_id = token.contact_id as string;
+        if (token.org_id) u.org_id = token.org_id as string;
       }
       return session;
     },
@@ -72,7 +90,7 @@ export const authConfig = {
   providers: [],
 } satisfies NextAuthConfig;
 
-const ROLE_RANK: Record<AuthRole, number> = { admin: 3, staff: 2, 'read-only': 1 };
+const ROLE_RANK: Record<AuthRole, number> = { admin: 3, staff: 2, 'read-only': 1, member: 0 };
 
 export function hasRole(role: AuthRole | null | undefined, required: AuthRole): boolean {
   if (!role) return false;

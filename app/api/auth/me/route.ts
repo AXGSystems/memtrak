@@ -13,10 +13,17 @@ export async function GET() {
     return NextResponse.json({ enabled: false });
   }
   const session = await auth();
-  const user = session?.user as { email?: string | null; role?: AuthRole } | undefined;
+  const user = session?.user as {
+    email?: string | null;
+    role?: AuthRole;
+    contact_id?: string;
+    org_id?: string;
+  } | undefined;
   return NextResponse.json({
     enabled: true,
     email: user?.email ?? null,
     role: user?.role ?? null,
+    contact_id: user?.contact_id ?? null,
+    org_id: user?.org_id ?? null,
   });
 }

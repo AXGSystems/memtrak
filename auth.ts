@@ -42,29 +42,40 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         return false;
       }
 
-      const { data: invite, error } = await admin
+      // 1. Staff invite (memtrak_invites). Highest priority.
+      const { data: invite } = await admin
         .from('memtrak_invites')
         .select('email, role, revoked_at')
         .eq('email', email)
         .maybeSingle();
 
-      if (error) {
-        console.error('signIn invite lookup failed', error);
-        return false;
+      if (invite && !invite.revoked_at) {
+        (user as { role?: AuthRole }).role = invite.role as AuthRole;
+        await admin
+          .from('memtrak_invites')
+          .update({ accepted_at: new Date().toISOString() })
+          .eq('email', email)
+          .is('accepted_at', null);
+        return true;
       }
-      if (!invite || invite.revoked_at) return false;
 
-      // Stamp the role onto the user object so the jwt callback can persist it
-      // onto the token. Cast guarded by the AuthRole union check.
-      (user as { role?: AuthRole }).role = invite.role as AuthRole;
+      // 2. Member portal — email belongs to a contact on an active org.
+      const { data: contact } = await admin
+        .from('memtrak_contacts')
+        .select('id, org_id, email')
+        .ilike('email', email)
+        .maybeSingle();
 
-      await admin
-        .from('memtrak_invites')
-        .update({ accepted_at: new Date().toISOString() })
-        .eq('email', email)
-        .is('accepted_at', null);
+      if (contact?.org_id) {
+        const u = user as { role?: AuthRole; contact_id?: string; org_id?: string };
+        u.role = 'member';
+        u.contact_id = contact.id;
+        u.org_id = contact.org_id;
+        return true;
+      }
 
-      return true;
+      // Not invited, not a known contact — reject.
+      return false;
     },
   },
 });

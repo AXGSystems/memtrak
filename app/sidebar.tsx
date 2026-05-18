@@ -173,6 +173,9 @@ export default function Sidebar() {
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // Hide the staff sidebar on /portal/* — the portal uses its own chrome.
+  if (pathname === '/portal' || pathname.startsWith('/portal/') || pathname === '/login') return null;
+
   // Auto-expand section containing the active page
   const activeSection = sections.find(s => s.items.some(i => i.href === pathname));
 
