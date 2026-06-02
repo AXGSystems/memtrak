@@ -95,11 +95,71 @@ function applySecurityHeaders(response: NextResponse, pathname: string) {
   }
 }
 
+// ── Global basic-auth gate (AXG Lockdown) ────────────────────────────
+// Hard gate in front of everything. Paths in BASIC_AUTH_BYPASS are reachable
+// without basic auth — required for email tracking pixels and bearer-token
+// API endpoints (which carry their own auth).
+const BASIC_AUTH_BYPASS_EXACT = new Set<string>([
+  '/api/memtrak/pixel',
+  '/api/memtrak/logo',
+]);
+
+function timingSafeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
+function checkBasicAuth(request: NextRequest): NextResponse | null {
+  const pathname = request.nextUrl.pathname;
+  if (BASIC_AUTH_BYPASS_EXACT.has(pathname)) return null;
+  // Bearer-token API access (programmatic) self-authenticates — skip basic auth.
+  if (pathname.startsWith('/api/memtrak/') && extractBearer(request.headers)) return null;
+
+  const expectedUser = process.env.BASIC_AUTH_USER;
+  const expectedPass = process.env.BASIC_AUTH_PASS;
+  if (!expectedUser || !expectedPass) {
+    return new NextResponse('Server misconfigured: auth env vars missing', {
+      status: 503,
+      headers: { 'Cache-Control': 'no-store' },
+    });
+  }
+  const header = request.headers.get('authorization');
+  if (header && header.startsWith('Basic ')) {
+    try {
+      const decoded = atob(header.slice(6));
+      const idx = decoded.indexOf(':');
+      if (idx > 0) {
+        const user = decoded.slice(0, idx);
+        const pass = decoded.slice(idx + 1);
+        if (timingSafeEqual(user, expectedUser) && timingSafeEqual(pass, expectedPass)) {
+          return null;
+        }
+      }
+    } catch {
+      /* fall through */
+    }
+  }
+  return new NextResponse('Authentication required', {
+    status: 401,
+    headers: {
+      'WWW-Authenticate': 'Basic realm="AXG Lockdown", charset="UTF-8"',
+      'Cache-Control': 'no-store',
+      'Content-Type': 'text/plain; charset=utf-8',
+    },
+  });
+}
+
 // ── The middleware itself ────────────────────────────────────────────
 // `auth()` wraps the handler so `req.auth` carries the session when enabled.
 export default auth(async function middleware(request) {
   const pathname = request.nextUrl.pathname;
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
+
+  // Global AXG basic-auth gate (front of everything else)
+  const basicAuthFail = checkBasicAuth(request as unknown as NextRequest);
+  if (basicAuthFail) return basicAuthFail;
 
   // Rate limit API routes
   if (pathname.startsWith('/api/')) {
