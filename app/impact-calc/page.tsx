@@ -126,14 +126,14 @@ export default function ImpactCalc() {
 
           <div className="grid grid-cols-3 gap-3">
             <div className="p-3 rounded-xl text-center" style={{ background: 'var(--background)' }}>
-              <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Current</div>
+              <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Current</div>
               <div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>{baseline.openRate}%</div>
             </div>
             <div className="p-3 rounded-xl text-center flex flex-col items-center justify-center" style={{ background: 'var(--background)' }}>
               <ArrowRight className="w-5 h-5" style={{ color: C.blue }} />
             </div>
             <div className="p-3 rounded-xl text-center" style={{ background: `color-mix(in srgb, ${C.blue} 10%, transparent)` }}>
-              <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Projected</div>
+              <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Projected</div>
               <div className="text-lg font-extrabold" style={{ color: C.blue }}>{openImpact.newRate.toFixed(1)}%</div>
             </div>
           </div>
@@ -142,14 +142,14 @@ export default function ImpactCalc() {
             <div className="flex items-center gap-2 p-3 rounded-lg" style={{ background: 'var(--background)' }}>
               <DollarSign className="w-4 h-4" style={{ color: C.green }} />
               <div>
-                <div className="text-[9px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Revenue Increase</div>
+                <div className="text-[11px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Revenue Increase</div>
                 <div className="text-sm font-extrabold" style={{ color: C.green }}>+${openImpact.revenueIncrease.toLocaleString()}/yr</div>
               </div>
             </div>
             <div className="flex items-center gap-2 p-3 rounded-lg" style={{ background: 'var(--background)' }}>
               <TrendingUp className="w-4 h-4" style={{ color: C.blue }} />
               <div>
-                <div className="text-[9px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Engagement Lift</div>
+                <div className="text-[11px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Engagement Lift</div>
                 <div className="text-sm font-extrabold" style={{ color: C.blue }}>+{openImpact.engagementLift.toFixed(1)} pts</div>
               </div>
             </div>
@@ -158,18 +158,18 @@ export default function ImpactCalc() {
           {/* Before/After bar */}
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-[9px] font-bold w-14" style={{ color: 'var(--text-muted)' }}>Current</span>
+              <span className="text-[11px] font-bold w-14" style={{ color: 'var(--text-muted)' }}>Current</span>
               <div className="flex-1 rounded-full overflow-hidden" style={{ height: 12, background: 'var(--card-border)' }}>
                 <div className="h-full rounded-full" style={{ width: `${(baseline.openRate / 60) * 100}%`, background: 'var(--text-muted)' }} />
               </div>
-              <span className="text-[9px] font-bold w-10 text-right" style={{ color: 'var(--text-muted)' }}>{baseline.openRate}%</span>
+              <span className="text-[11px] font-bold w-10 text-right" style={{ color: 'var(--text-muted)' }}>{baseline.openRate}%</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-[9px] font-bold w-14" style={{ color: C.blue }}>Projected</span>
+              <span className="text-[11px] font-bold w-14" style={{ color: C.blue }}>Projected</span>
               <div className="flex-1 rounded-full overflow-hidden" style={{ height: 12, background: 'var(--card-border)' }}>
                 <div className="h-full rounded-full" style={{ width: `${(openImpact.newRate / 60) * 100}%`, background: C.blue, boxShadow: `0 0 8px color-mix(in srgb, ${C.blue} 40%, transparent)` }} />
               </div>
-              <span className="text-[9px] font-bold w-10 text-right" style={{ color: C.blue }}>{openImpact.newRate.toFixed(1)}%</span>
+              <span className="text-[11px] font-bold w-10 text-right" style={{ color: C.blue }}>{openImpact.newRate.toFixed(1)}%</span>
             </div>
           </div>
         </div>
@@ -195,14 +195,14 @@ export default function ImpactCalc() {
 
           <div className="grid grid-cols-3 gap-3">
             <div className="p-3 rounded-xl text-center" style={{ background: 'var(--background)' }}>
-              <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Current Bounce</div>
+              <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Current Bounce</div>
               <div className="text-lg font-extrabold" style={{ color: C.orange }}>{baseline.bounceRate}%</div>
             </div>
             <div className="p-3 rounded-xl text-center flex flex-col items-center justify-center" style={{ background: 'var(--background)' }}>
               <ArrowRight className="w-5 h-5" style={{ color: C.teal }} />
             </div>
             <div className="p-3 rounded-xl text-center" style={{ background: `color-mix(in srgb, ${C.teal} 10%, transparent)` }}>
-              <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Target Bounce</div>
+              <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Target Bounce</div>
               <div className="text-lg font-extrabold" style={{ color: C.teal }}>{bounceTarget.toFixed(1)}%</div>
             </div>
           </div>
@@ -211,21 +211,21 @@ export default function ImpactCalc() {
             <div className="flex items-center gap-2 p-3 rounded-lg" style={{ background: 'var(--background)' }}>
               <Shield className="w-4 h-4" style={{ color: C.teal }} />
               <div>
-                <div className="text-[9px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Deliverability</div>
+                <div className="text-[11px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Deliverability</div>
                 <div className="text-sm font-extrabold" style={{ color: C.teal }}>{bounceImpact.newDeliverability.toFixed(1)}%</div>
               </div>
             </div>
             <div className="flex items-center gap-2 p-3 rounded-lg" style={{ background: 'var(--background)' }}>
               <Mail className="w-4 h-4" style={{ color: C.blue }} />
               <div>
-                <div className="text-[9px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>More Delivered</div>
+                <div className="text-[11px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>More Delivered</div>
                 <div className="text-sm font-extrabold" style={{ color: C.blue }}>+{bounceImpact.additionalDelivered.toLocaleString()}</div>
               </div>
             </div>
             <div className="flex items-center gap-2 p-3 rounded-lg" style={{ background: 'var(--background)' }}>
               <DollarSign className="w-4 h-4" style={{ color: C.green }} />
               <div>
-                <div className="text-[9px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Revenue</div>
+                <div className="text-[11px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Revenue</div>
                 <div className="text-sm font-extrabold" style={{ color: C.green }}>+${bounceImpact.revenueIncrease.toLocaleString()}/yr</div>
               </div>
             </div>
@@ -234,18 +234,18 @@ export default function ImpactCalc() {
           {/* Before/After bar */}
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-[9px] font-bold w-14" style={{ color: 'var(--text-muted)' }}>Current</span>
+              <span className="text-[11px] font-bold w-14" style={{ color: 'var(--text-muted)' }}>Current</span>
               <div className="flex-1 rounded-full overflow-hidden" style={{ height: 12, background: 'var(--card-border)' }}>
                 <div className="h-full rounded-full" style={{ width: `${(baseline.bounceRate / 6) * 100}%`, background: C.orange }} />
               </div>
-              <span className="text-[9px] font-bold w-10 text-right" style={{ color: C.orange }}>{baseline.bounceRate}%</span>
+              <span className="text-[11px] font-bold w-10 text-right" style={{ color: C.orange }}>{baseline.bounceRate}%</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-[9px] font-bold w-14" style={{ color: C.teal }}>Projected</span>
+              <span className="text-[11px] font-bold w-14" style={{ color: C.teal }}>Projected</span>
               <div className="flex-1 rounded-full overflow-hidden" style={{ height: 12, background: 'var(--card-border)' }}>
                 <div className="h-full rounded-full" style={{ width: `${(bounceTarget / 6) * 100}%`, background: C.teal, boxShadow: `0 0 8px color-mix(in srgb, ${C.teal} 40%, transparent)` }} />
               </div>
-              <span className="text-[9px] font-bold w-10 text-right" style={{ color: C.teal }}>{bounceTarget.toFixed(1)}%</span>
+              <span className="text-[11px] font-bold w-10 text-right" style={{ color: C.teal }}>{bounceTarget.toFixed(1)}%</span>
             </div>
           </div>
         </div>
@@ -271,14 +271,14 @@ export default function ImpactCalc() {
 
           <div className="grid grid-cols-3 gap-3">
             <div className="p-3 rounded-xl text-center" style={{ background: 'var(--background)' }}>
-              <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Current Members</div>
+              <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Current Members</div>
               <div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>{baseline.memberCount.toLocaleString()}</div>
             </div>
             <div className="p-3 rounded-xl text-center flex flex-col items-center justify-center" style={{ background: 'var(--background)' }}>
               <ArrowRight className="w-5 h-5" style={{ color: C.purple }} />
             </div>
             <div className="p-3 rounded-xl text-center" style={{ background: `color-mix(in srgb, ${C.purple} 10%, transparent)` }}>
-              <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Projected Total</div>
+              <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Projected Total</div>
               <div className="text-lg font-extrabold" style={{ color: C.purple }}>{(baseline.memberCount + newMembers).toLocaleString()}</div>
             </div>
           </div>
@@ -287,21 +287,21 @@ export default function ImpactCalc() {
             <div className="flex items-center gap-2 p-3 rounded-lg" style={{ background: 'var(--background)' }}>
               <DollarSign className="w-4 h-4" style={{ color: C.green }} />
               <div>
-                <div className="text-[9px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Projected Dues</div>
+                <div className="text-[11px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Projected Dues</div>
                 <div className="text-sm font-extrabold" style={{ color: C.green }}>${memberImpact.projectedDues.toLocaleString()}</div>
               </div>
             </div>
             <div className="flex items-center gap-2 p-3 rounded-lg" style={{ background: 'var(--background)' }}>
               <Users className="w-4 h-4" style={{ color: C.purple }} />
               <div>
-                <div className="text-[9px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Est. Retention</div>
+                <div className="text-[11px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Est. Retention</div>
                 <div className="text-sm font-extrabold" style={{ color: memberImpact.retentionRate >= 80 ? C.green : C.amber }}>{memberImpact.retentionRate}%</div>
               </div>
             </div>
             <div className="flex items-center gap-2 p-3 rounded-lg" style={{ background: 'var(--background)' }}>
               <Target className="w-4 h-4" style={{ color: C.blue }} />
               <div>
-                <div className="text-[9px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Retained Rev</div>
+                <div className="text-[11px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Retained Rev</div>
                 <div className="text-sm font-extrabold" style={{ color: C.blue }}>${memberImpact.retainedRevenue.toLocaleString()}</div>
               </div>
             </div>
@@ -310,18 +310,18 @@ export default function ImpactCalc() {
           {/* Before/After bar */}
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-[9px] font-bold w-14" style={{ color: 'var(--text-muted)' }}>Current</span>
+              <span className="text-[11px] font-bold w-14" style={{ color: 'var(--text-muted)' }}>Current</span>
               <div className="flex-1 rounded-full overflow-hidden" style={{ height: 12, background: 'var(--card-border)' }}>
                 <div className="h-full rounded-full" style={{ width: `${(baseline.memberCount / (baseline.memberCount + 500)) * 100}%`, background: 'var(--text-muted)' }} />
               </div>
-              <span className="text-[9px] font-bold w-14 text-right" style={{ color: 'var(--text-muted)' }}>{baseline.memberCount.toLocaleString()}</span>
+              <span className="text-[11px] font-bold w-14 text-right" style={{ color: 'var(--text-muted)' }}>{baseline.memberCount.toLocaleString()}</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-[9px] font-bold w-14" style={{ color: C.purple }}>Projected</span>
+              <span className="text-[11px] font-bold w-14" style={{ color: C.purple }}>Projected</span>
               <div className="flex-1 rounded-full overflow-hidden" style={{ height: 12, background: 'var(--card-border)' }}>
                 <div className="h-full rounded-full" style={{ width: `${((baseline.memberCount + newMembers) / (baseline.memberCount + 500)) * 100}%`, background: C.purple, boxShadow: `0 0 8px color-mix(in srgb, ${C.purple} 40%, transparent)` }} />
               </div>
-              <span className="text-[9px] font-bold w-14 text-right" style={{ color: C.purple }}>{(baseline.memberCount + newMembers).toLocaleString()}</span>
+              <span className="text-[11px] font-bold w-14 text-right" style={{ color: C.purple }}>{(baseline.memberCount + newMembers).toLocaleString()}</span>
             </div>
           </div>
         </div>
@@ -347,14 +347,14 @@ export default function ImpactCalc() {
 
           <div className="grid grid-cols-3 gap-3">
             <div className="p-3 rounded-xl text-center" style={{ background: 'var(--background)' }}>
-              <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Current Freq</div>
+              <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Current Freq</div>
               <div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>{baseline.sendFrequency}/mo</div>
             </div>
             <div className="p-3 rounded-xl text-center flex flex-col items-center justify-center" style={{ background: 'var(--background)' }}>
               <ArrowRight className="w-5 h-5" style={{ color: C.amber }} />
             </div>
             <div className="p-3 rounded-xl text-center" style={{ background: `color-mix(in srgb, ${C.amber} 10%, transparent)` }}>
-              <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>New Freq</div>
+              <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>New Freq</div>
               <div className="text-lg font-extrabold" style={{ color: C.amber }}>{baseline.sendFrequency + addSends}/mo</div>
             </div>
           </div>
@@ -363,7 +363,7 @@ export default function ImpactCalc() {
             <div className="flex items-center gap-2 p-3 rounded-lg" style={{ background: 'var(--background)' }}>
               <Activity className="w-4 h-4" style={{ color: freqImpact.engagementChange >= 0 ? C.green : C.red }} />
               <div>
-                <div className="text-[9px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Engagement</div>
+                <div className="text-[11px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Engagement</div>
                 <div className="text-sm font-extrabold" style={{ color: freqImpact.engagementChange >= 0 ? C.green : C.red }}>
                   {freqImpact.engagementChange >= 0 ? '+' : ''}{freqImpact.engagementChange.toFixed(1)} pts
                 </div>
@@ -372,14 +372,14 @@ export default function ImpactCalc() {
             <div className="flex items-center gap-2 p-3 rounded-lg" style={{ background: 'var(--background)' }}>
               <AlertTriangle className="w-4 h-4" style={{ color: freqImpact.fatigueColor }} />
               <div>
-                <div className="text-[9px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Fatigue Risk</div>
+                <div className="text-[11px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Fatigue Risk</div>
                 <div className="text-sm font-extrabold" style={{ color: freqImpact.fatigueColor }}>{freqImpact.fatigueRisk}</div>
               </div>
             </div>
             <div className="flex items-center gap-2 p-3 rounded-lg" style={{ background: 'var(--background)' }}>
               <TrendingDown className="w-4 h-4" style={{ color: freqImpact.unsubIncrease > 0.1 ? C.red : C.amber }} />
               <div>
-                <div className="text-[9px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Unsub Risk</div>
+                <div className="text-[11px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Unsub Risk</div>
                 <div className="text-sm font-extrabold" style={{ color: freqImpact.unsubIncrease > 0.1 ? C.red : C.amber }}>+{freqImpact.unsubIncrease.toFixed(2)}%</div>
               </div>
             </div>
@@ -409,21 +409,21 @@ export default function ImpactCalc() {
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
           <div className="text-center p-4 rounded-xl" style={{ background: `color-mix(in srgb, ${C.green} 8%, transparent)` }}>
-            <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Total Revenue Impact</div>
+            <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Total Revenue Impact</div>
             <AnimatedCounter value={totalRevenueImpact} prefix="+$" className="text-2xl" color={C.green} suffix="/yr" />
           </div>
           <div className="text-center p-4 rounded-xl" style={{ background: `color-mix(in srgb, ${C.blue} 8%, transparent)` }}>
-            <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Engagement Change</div>
+            <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Engagement Change</div>
             <div className="text-2xl font-extrabold" style={{ color: totalEngagementChange >= 0 ? C.blue : C.red }}>
               {totalEngagementChange >= 0 ? '+' : ''}{totalEngagementChange.toFixed(1)} pts
             </div>
           </div>
           <div className="text-center p-4 rounded-xl" style={{ background: `color-mix(in srgb, ${C.purple} 8%, transparent)` }}>
-            <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>New Members Added</div>
+            <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>New Members Added</div>
             <div className="text-2xl font-extrabold" style={{ color: C.purple }}>+{newMembers}</div>
           </div>
           <div className="text-center p-4 rounded-xl" style={{ background: `color-mix(in srgb, ${C.teal} 8%, transparent)` }}>
-            <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Deliverability</div>
+            <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Deliverability</div>
             <div className="text-2xl font-extrabold" style={{ color: C.teal }}>{bounceImpact.newDeliverability.toFixed(1)}%</div>
           </div>
         </div>

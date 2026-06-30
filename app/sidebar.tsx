@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -67,7 +67,6 @@ const sections = [
       { label: 'EngagePoints\u2122', href: '/engage-points', icon: Gamepad2 },
       { label: 'GhostWatch\u2122', href: '/ghost-watch', icon: Eye },
       { label: 'WhiteLabel\u2122', href: '/white-label', icon: Crown },
-      { label: 'Member360\u2122', href: '/member-360', icon: User },
       { label: 'GoalTracker\u2122', href: '/goal-tracker', icon: Crosshair },
       { label: 'ImpactCalc\u2122', href: '/impact-calc', icon: SlidersHorizontal },
       { label: 'TrendRadar\u2122', href: '/trend-radar', icon: TrendingDown },
@@ -175,6 +174,16 @@ export default function Sidebar() {
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // Escape closes the mobile nav overlay (WCAG 2.1.1 keyboard operable).
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileOpen(false);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [mobileOpen]);
+
   // Hide the staff sidebar on /portal/* — the portal uses its own chrome.
   if (pathname === '/portal' || pathname.startsWith('/portal/') || pathname === '/login') return null;
 
@@ -195,8 +204,14 @@ export default function Sidebar() {
     {/* Mobile hamburger toggle */}
     <button
       onClick={() => setMobileOpen(!mobileOpen)}
-      className="fixed top-3 left-3 z-[60] lg:hidden flex items-center justify-center w-10 h-10 rounded-xl border transition-all"
-      style={{ background: 'var(--card)', borderColor: 'var(--card-border)', color: 'var(--heading)' }}
+      className="fixed z-[60] lg:hidden flex items-center justify-center w-10 h-10 rounded-xl border transition-all"
+      style={{
+        top: 'max(0.75rem, env(safe-area-inset-top))',
+        left: 'max(0.75rem, env(safe-area-inset-left))',
+        background: 'var(--card)',
+        borderColor: 'var(--card-border)',
+        color: 'var(--heading)',
+      }}
       aria-label="Toggle navigation"
     >
       {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -204,7 +219,9 @@ export default function Sidebar() {
 
     {/* Mobile backdrop overlay */}
     {mobileOpen && (
-      <div
+      <button
+        type="button"
+        aria-label="Close navigation menu"
         className="fixed inset-0 bg-black/50 z-40 lg:hidden"
         onClick={() => setMobileOpen(false)}
       />
@@ -216,6 +233,9 @@ export default function Sidebar() {
       style={{ background: 'var(--sidebar-bg)', borderColor: 'var(--glass-border)' }}
     >
       {/* Brand */}
+      {/* PLACEHOLDER brand mark: CSS-gradient "M" monogram standing in for a real
+          MEMTrak logo asset (SVG wordmark + mark) pending design. Tracked in the
+          honesty CSV — do not treat as final brand identity. */}
       <div className="px-5 py-5 flex-shrink-0">
         <div className="flex items-center gap-3">
           <div
@@ -239,7 +259,7 @@ export default function Sidebar() {
       <div className="mx-5 h-px" style={{ background: 'var(--glass-bg)' }} />
 
       {/* Navigation */}
-      <nav className="flex-1 py-3 px-3 overflow-y-auto space-y-1">
+      <nav aria-label="Primary" className="flex-1 py-3 px-3 overflow-y-auto space-y-1">
         {sections.map(section => {
           const isOpen = isSectionOpen(section.label);
           const hasActive = section.items.some(i => i.href === pathname);
@@ -249,6 +269,7 @@ export default function Sidebar() {
               {/* Section header — clickable to collapse */}
               <button
                 onClick={() => toggleSection(section.label)}
+                aria-expanded={isOpen}
                 className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-[12px] uppercase tracking-[0.08em] font-extrabold"
                 style={{ color: 'var(--heading)' }}
               >
@@ -270,6 +291,7 @@ export default function Sidebar() {
                         key={item.href}
                         href={item.href}
                         onClick={() => setMobileOpen(false)}
+                        aria-current={active ? 'page' : undefined}
                         className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150 min-w-0 ${active ? '' : 'sidebar-link'}`}
                         style={active ? {
                           background: 'var(--sidebar-active)',
@@ -291,11 +313,11 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* Status footer */}
+      {/* Footer — product identity (no fabricated health state) */}
       <div className="px-5 py-3 flex-shrink-0" style={{ borderTop: '1px solid var(--glass-bg)' }}>
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: 'var(--accent)' }} />
-          <span className="text-[10px] font-medium" style={{ color: 'var(--sidebar-text)' }}>All systems operational</span>
+          <span className="w-2 h-2 rounded-full" style={{ background: 'var(--accent)', opacity: 0.7 }} />
+          <span className="text-[11px] font-medium" style={{ color: 'var(--sidebar-text)' }}>MEMTrak &middot; Email Intelligence</span>
         </div>
       </div>
     </aside>

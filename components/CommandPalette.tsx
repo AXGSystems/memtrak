@@ -119,7 +119,8 @@ export default function CommandPalette() {
     } catch {}
   }, []);
 
-  // Cmd+K listener
+  // Cmd+K listener + programmatic open via CustomEvent (so a clickable key cap
+  // / mobile button can open the palette where there is no Cmd key).
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -127,8 +128,13 @@ export default function CommandPalette() {
         setOpen(prev => !prev);
       }
     };
+    const toggle = () => setOpen(prev => !prev);
     document.addEventListener('keydown', handler);
-    return () => document.removeEventListener('keydown', handler);
+    document.addEventListener('memtrak:command-palette', toggle);
+    return () => {
+      document.removeEventListener('keydown', handler);
+      document.removeEventListener('memtrak:command-palette', toggle);
+    };
   }, []);
 
   // Focus input when opened
@@ -292,7 +298,7 @@ export default function CommandPalette() {
           {/* Recent */}
           {recentItems.length > 0 && (
             <div className="mb-1">
-              <div className="px-4 py-1.5 text-[9px] uppercase tracking-widest font-bold" style={{ color: 'var(--text-muted)' }}>Recent</div>
+              <div className="px-4 py-1.5 text-[11px] uppercase tracking-widest font-bold" style={{ color: 'var(--text-muted)' }}>Recent</div>
               {recentItems.map((item, i) => {
                 const globalIndex = results.indexOf(item);
                 return <ResultRow key={`recent-${item.href}`} item={item} active={globalIndex === activeIndex} index={globalIndex} onClick={() => navigate(item.href, item.label)} />;
@@ -303,7 +309,7 @@ export default function CommandPalette() {
           {/* Actions */}
           {actionItems.length > 0 && (
             <div className="mb-1">
-              <div className="px-4 py-1.5 text-[9px] uppercase tracking-widest font-bold" style={{ color: 'var(--text-muted)' }}>Actions</div>
+              <div className="px-4 py-1.5 text-[11px] uppercase tracking-widest font-bold" style={{ color: 'var(--text-muted)' }}>Actions</div>
               {actionItems.map(item => {
                 const globalIndex = results.indexOf(item);
                 return <ResultRow key={`action-${item.label}`} item={item} active={globalIndex === activeIndex} index={globalIndex} onClick={() => navigate(item.href, item.label)} />;
@@ -314,7 +320,7 @@ export default function CommandPalette() {
           {/* Pages */}
           {pageItems.length > 0 && (
             <div className="mb-1">
-              <div className="px-4 py-1.5 text-[9px] uppercase tracking-widest font-bold" style={{ color: 'var(--text-muted)' }}>Pages</div>
+              <div className="px-4 py-1.5 text-[11px] uppercase tracking-widest font-bold" style={{ color: 'var(--text-muted)' }}>Pages</div>
               {pageItems.map(item => {
                 const globalIndex = results.indexOf(item);
                 return <ResultRow key={`page-${item.href}`} item={item} active={globalIndex === activeIndex} index={globalIndex} onClick={() => navigate(item.href, item.label)} />;
@@ -327,22 +333,22 @@ export default function CommandPalette() {
         <div className="flex items-center justify-between px-5 py-2.5 border-t" style={{ borderColor: 'var(--card-border)', background: 'color-mix(in srgb, var(--card) 80%, var(--background))' }}>
           <div className="flex items-center gap-4 text-[10px]" style={{ color: 'var(--text-muted)' }}>
             <span className="flex items-center gap-1">
-              <kbd className="inline-flex items-center justify-center w-4 h-4 rounded border text-[8px] font-bold" style={{ borderColor: 'var(--card-border)', background: 'var(--input-bg)' }}>
+              <kbd className="inline-flex items-center justify-center w-4 h-4 rounded border text-[11px] font-bold" style={{ borderColor: 'var(--card-border)', background: 'var(--input-bg)' }}>
                 <ChevronUp className="w-2.5 h-2.5" />
               </kbd>
-              <kbd className="inline-flex items-center justify-center w-4 h-4 rounded border text-[8px] font-bold" style={{ borderColor: 'var(--card-border)', background: 'var(--input-bg)' }}>
+              <kbd className="inline-flex items-center justify-center w-4 h-4 rounded border text-[11px] font-bold" style={{ borderColor: 'var(--card-border)', background: 'var(--input-bg)' }}>
                 <ChevronDown className="w-2.5 h-2.5" />
               </kbd>
               Navigate
             </span>
             <span className="flex items-center gap-1">
-              <kbd className="inline-flex items-center justify-center px-1.5 h-4 rounded border text-[8px] font-bold" style={{ borderColor: 'var(--card-border)', background: 'var(--input-bg)' }}>
+              <kbd className="inline-flex items-center justify-center px-1.5 h-4 rounded border text-[11px] font-bold" style={{ borderColor: 'var(--card-border)', background: 'var(--input-bg)' }}>
                 <CornerDownLeft className="w-2.5 h-2.5" />
               </kbd>
               Open
             </span>
           </div>
-          <div className="text-[9px] font-semibold" style={{ color: 'var(--text-muted)' }}>
+          <div className="text-[11px] font-semibold" style={{ color: 'var(--text-muted)' }}>
             {PAGES.length} pages available
           </div>
         </div>
@@ -399,11 +405,11 @@ function ResultRow({ item, active, index, onClick }: {
       <div className="flex-1 text-left min-w-0">
         <div className="text-[12px] font-semibold truncate" style={{ color: active ? 'var(--heading)' : 'var(--heading)' }}>{item.label}</div>
         {item.section && (
-          <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{item.section}</div>
+          <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{item.section}</div>
         )}
       </div>
       {item.type === 'action' && (
-        <span className="text-[8px] px-1.5 py-0.5 rounded font-bold flex-shrink-0" style={{ background: 'color-mix(in srgb, var(--accent) 12%, transparent)', color: 'var(--accent)' }}>
+        <span className="text-[11px] px-1.5 py-0.5 rounded font-bold flex-shrink-0" style={{ background: 'color-mix(in srgb, var(--accent) 12%, transparent)', color: 'var(--accent)' }}>
           ACTION
         </span>
       )}

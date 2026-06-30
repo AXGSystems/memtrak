@@ -316,12 +316,12 @@ export default function ActivityTimelinePage() {
                   <div className="flex-1 min-w-0 pt-0.5">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span
-                        className="text-[9px] px-1.5 py-0.5 rounded-md font-bold"
+                        className="text-[11px] px-1.5 py-0.5 rounded-md font-bold"
                         style={{ background: `color-mix(in srgb, ${meta.color} 15%, transparent)`, color: meta.color }}
                       >
                         {meta.label}
                       </span>
-                      <span className="text-[9px] font-semibold" style={{ color: 'var(--text-muted)' }}>
+                      <span className="text-[11px] font-semibold" style={{ color: 'var(--text-muted)' }}>
                         {timeAgo(event.timestamp)}
                       </span>
                     </div>
@@ -330,21 +330,21 @@ export default function ActivityTimelinePage() {
                     </p>
                     <div className="flex items-center gap-3 mt-1 flex-wrap">
                       {event.member && (
-                        <span className="text-[9px] font-bold" style={{ color: C.blue }}>
+                        <span className="text-[11px] font-bold" style={{ color: C.blue }}>
                           {event.member}
                         </span>
                       )}
                       {event.campaign && (
-                        <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
+                        <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
                           Campaign: {event.campaign}
                         </span>
                       )}
                       {event.staff && (
-                        <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
+                        <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
                           Staff: {event.staff}
                         </span>
                       )}
-                      <span className="text-[8px]" style={{ color: 'var(--text-muted)', opacity: 0.7 }}>
+                      <span className="text-[11px]" style={{ color: 'var(--text-muted)', opacity: 0.7 }}>
                         {formatTimestamp(event.timestamp)}
                       </span>
                     </div>

@@ -324,7 +324,7 @@ export default function Renewals() {
                 <div className="text-xs font-semibold" style={{ color: 'var(--heading)' }}>{t.action}</div>
                 <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Target: {t.target}</div>
               </div>
-              <span className="text-[9px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 font-semibold">{t.status}</span>
+              <span className="text-[11px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 font-semibold">{t.status}</span>
             </div>
           ))}
         </div>

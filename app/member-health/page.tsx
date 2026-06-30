@@ -4,6 +4,7 @@ import { useState } from 'react';
 import ClientChart from '@/components/ClientChart';
 import ProgressRing from '@/components/ProgressRing';
 import { Search, Users, DollarSign, TrendingUp, TrendingDown, Mail, Calendar, Shield } from 'lucide-react';
+import SampleDataBadge from '@/components/SampleDataBadge';
 
 const C = { green: '#8CC63F', blue: '#4A90D9', red: '#D94A4A', orange: '#E8923F', navy: '#002D5C' };
 
@@ -33,7 +34,8 @@ export default function MemberHealth() {
   return (
     <div className="p-6">
       <h1 className="text-lg font-extrabold mb-1" style={{ color: 'var(--heading)' }}>Member Health Dashboard</h1>
-      <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>Single-pane view of every member&apos;s health — engagement, revenue, compliance, risk. What HubSpot calls &quot;Customer Health Score&quot; for $890/mo.</p>
+      <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>Single-pane view of every member&apos;s health — engagement, revenue, compliance, risk.</p>
+      <SampleDataBadge message="The member rows below are an illustrative sample. The members directory and Member 360 modules are backed by the live MEMTRAK data layer; this consolidated health view will be wired to that same source." />
 
       {/* Overview */}
       <div className="grid grid-cols-4 gap-3 mb-6 stagger-children">
@@ -66,7 +68,7 @@ export default function MemberHealth() {
         {filtered.map(m => {
           const TrendIcon = trendIcons[m.trend] || TrendingUp;
           return (
-            <div key={m.name} onClick={() => setSelected(selected?.name === m.name ? null : m)} className="rounded-xl border p-4 transition-all hover:translate-y-[-1px] cursor-pointer" style={{ background: selected?.name === m.name ? 'color-mix(in srgb, var(--accent) 8%, var(--card))' : 'var(--card)', borderColor: selected?.name === m.name ? 'var(--accent)' : 'var(--card-border)' }}>
+            <div key={m.name} role="button" tabIndex={0} aria-pressed={selected?.name === m.name} onClick={() => setSelected(selected?.name === m.name ? null : m)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelected(selected?.name === m.name ? null : m); } }} className="rounded-xl border p-4 transition-all hover:translate-y-[-1px] cursor-pointer" style={{ background: selected?.name === m.name ? 'color-mix(in srgb, var(--accent) 8%, var(--card))' : 'var(--card)', borderColor: selected?.name === m.name ? 'var(--accent)' : 'var(--card-border)' }}>
               <div className="flex items-center gap-4">
                 {/* Score ring */}
                 <ProgressRing value={m.score} max={100} size={48} color={m.score >= 70 ? C.green : m.score >= 40 ? C.orange : C.red} />
@@ -75,8 +77,8 @@ export default function MemberHealth() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{m.name}</span>
-                    <span className="text-[9px] px-1.5 py-0.5 rounded" style={{ background: 'var(--background)', color: 'var(--text-muted)' }}>{m.type} · {m.state}</span>
-                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-bold ${riskColors[m.risk]}`}>{m.risk}</span>
+                    <span className="text-[11px] px-1.5 py-0.5 rounded" style={{ background: 'var(--background)', color: 'var(--text-muted)' }}>{m.type} · {m.state}</span>
+                    <span className={`text-[11px] px-1.5 py-0.5 rounded-full font-bold ${riskColors[m.risk]}`}>{m.risk}</span>
                   </div>
                   <div className="flex items-center gap-4 mt-1 text-[10px]" style={{ color: 'var(--text-muted)' }}>
                     <span><Mail className="w-3 h-3 inline mr-0.5" />{m.emails}% opens</span>
@@ -91,7 +93,7 @@ export default function MemberHealth() {
                   <div className="text-sm font-extrabold" style={{ color: 'var(--accent)' }}>${m.dues.toLocaleString()}</div>
                   <div className="flex items-center gap-1 justify-end">
                     <TrendIcon className="w-3 h-3" style={{ color: m.trend === 'rising' || m.trend === 'stable' ? C.green : C.red }} />
-                    <span className="text-[9px]" style={{ color: m.trend === 'rising' || m.trend === 'stable' ? C.green : C.red }}>{m.trend}</span>
+                    <span className="text-[11px]" style={{ color: m.trend === 'rising' || m.trend === 'stable' ? C.green : C.red }}>{m.trend}</span>
                   </div>
                 </div>
               </div>
@@ -100,19 +102,19 @@ export default function MemberHealth() {
               {selected?.name === m.name && (
                 <div className="mt-4 pt-4 border-t grid grid-cols-2 lg:grid-cols-4 gap-3" style={{ borderColor: 'var(--card-border)' }}>
                   <div className="p-3 rounded-lg" style={{ background: 'var(--background)' }}>
-                    <div className="text-[9px] uppercase" style={{ color: 'var(--text-muted)' }}>5yr LTV</div>
+                    <div className="text-[11px] uppercase" style={{ color: 'var(--text-muted)' }}>5yr LTV</div>
                     <div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>${m.ltv.toLocaleString()}</div>
                   </div>
                   <div className="p-3 rounded-lg" style={{ background: 'var(--background)' }}>
-                    <div className="text-[9px] uppercase" style={{ color: 'var(--text-muted)' }}>Click Rate</div>
+                    <div className="text-[11px] uppercase" style={{ color: 'var(--text-muted)' }}>Click Rate</div>
                     <div className="text-lg font-extrabold" style={{ color: m.clicks >= 30 ? C.green : C.orange }}>{m.clicks}%</div>
                   </div>
                   <div className="p-3 rounded-lg" style={{ background: 'var(--background)' }}>
-                    <div className="text-[9px] uppercase" style={{ color: 'var(--text-muted)' }}>Last Contact</div>
+                    <div className="text-[11px] uppercase" style={{ color: 'var(--text-muted)' }}>Last Contact</div>
                     <div className="text-sm font-bold" style={{ color: 'var(--heading)' }}>{m.lastContact}</div>
                   </div>
                   <div className="p-3 rounded-lg" style={{ background: 'var(--background)' }}>
-                    <div className="text-[9px] uppercase" style={{ color: 'var(--text-muted)' }}>Renewal</div>
+                    <div className="text-[11px] uppercase" style={{ color: 'var(--text-muted)' }}>Renewal</div>
                     <div className="text-sm font-bold" style={{ color: 'var(--heading)' }}>{m.renewal}</div>
                   </div>
                 </div>

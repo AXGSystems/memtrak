@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Card from '@/components/Card';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import SparkKpi from '@/components/SparkKpi';
 import ClientChart from '@/components/ClientChart';
 import { MiniBar } from '@/components/SparkKpi';
@@ -81,6 +82,7 @@ export default function FatigueShield() {
 
   return (
     <div className="p-6">
+      <SampleDataBadge className="max-w-3xl" message="The send-frequency and fatigue-risk figures below are illustrative sample values until per-member send cadence is computed from the live MEMTRAK send log." />
       {/* ── 1. Branded Header ─────────────────────────────────── */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
@@ -182,11 +184,11 @@ export default function FatigueShield() {
               <div className="grid grid-cols-2 gap-2 mt-2">
                 <div className="p-2 rounded-lg text-center" style={{ background: 'var(--input-bg)' }}>
                   <div className="text-lg font-extrabold" style={{ color: C.green }}>0.08%</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Unsub rate (shielded)</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Unsub rate (shielded)</div>
                 </div>
                 <div className="p-2 rounded-lg text-center" style={{ background: 'var(--input-bg)' }}>
                   <div className="text-lg font-extrabold" style={{ color: C.red }}>1.2%</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Unsub rate (unshielded)</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Unsub rate (unshielded)</div>
                 </div>
               </div>
             </div>
@@ -202,7 +204,7 @@ export default function FatigueShield() {
             Member Fatigue Monitor
           </h2>
           <span
-            className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+            className="text-[11px] font-bold px-2 py-0.5 rounded-full"
             style={{ background: 'rgba(20,184,166,0.15)', color: C.teal }}
           >
             {fatigueMembers.length} tracked
@@ -215,7 +217,7 @@ export default function FatigueShield() {
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--card-border)' }}>
                   {['Member', 'Org', 'Type', 'Emails/Wk', 'Threshold', 'Fatigue', 'Risk', 'Channels'].map(h => (
-                    <th key={h} className="px-4 py-3 text-left text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>{h}</th>
+                    <th key={h} className="px-4 py-3 text-left text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -234,7 +236,7 @@ export default function FatigueShield() {
                       <td className="px-4 py-3 font-semibold" style={{ color: 'var(--heading)' }}>{m.name}</td>
                       <td className="px-4 py-3" style={{ color: 'var(--text-muted)' }}>{m.org}</td>
                       <td className="px-4 py-3">
-                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}>{m.type}</span>
+                        <span className="text-[11px] font-bold px-1.5 py-0.5 rounded" style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}>{m.type}</span>
                       </td>
                       <td className="px-4 py-3 font-extrabold" style={{ color: m.emailsThisWeek > m.threshold ? C.red : 'var(--heading)' }}>{m.emailsThisWeek}</td>
                       <td className="px-4 py-3" style={{ color: 'var(--text-muted)' }}>{m.threshold}</td>
@@ -245,13 +247,13 @@ export default function FatigueShield() {
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <span className="text-[9px] font-bold px-2 py-0.5 rounded-full" style={{ background: rc.bg, color: rc.color }}>{m.risk}</span>
+                        <span className="text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: rc.bg, color: rc.color }}>{m.risk}</span>
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1">
-                          <span className="text-[8px] px-1 py-0.5 rounded" style={{ background: 'rgba(74,144,217,0.15)', color: C.blue }}>{m.channels.memtrak}</span>
-                          <span className="text-[8px] px-1 py-0.5 rounded" style={{ background: 'rgba(140,198,63,0.15)', color: C.green }}>{m.channels.higherLogic}</span>
-                          <span className="text-[8px] px-1 py-0.5 rounded" style={{ background: 'rgba(168,85,247,0.15)', color: C.purple }}>{m.channels.outlook}</span>
+                          <span className="text-[11px] px-1 py-0.5 rounded" style={{ background: 'rgba(74,144,217,0.15)', color: C.blue }}>{m.channels.memtrak}</span>
+                          <span className="text-[11px] px-1 py-0.5 rounded" style={{ background: 'rgba(140,198,63,0.15)', color: C.green }}>{m.channels.higherLogic}</span>
+                          <span className="text-[11px] px-1 py-0.5 rounded" style={{ background: 'rgba(168,85,247,0.15)', color: C.purple }}>{m.channels.outlook}</span>
                         </div>
                       </td>
                     </tr>
@@ -261,9 +263,9 @@ export default function FatigueShield() {
             </table>
           </div>
           <div className="flex items-center gap-4 px-4 py-3" style={{ borderTop: '1px solid var(--card-border)' }}>
-            <span className="flex items-center gap-1 text-[8px]" style={{ color: C.blue }}><span className="w-2 h-2 rounded" style={{ background: 'rgba(74,144,217,0.3)' }} /> MEMTrak</span>
-            <span className="flex items-center gap-1 text-[8px]" style={{ color: C.green }}><span className="w-2 h-2 rounded" style={{ background: 'rgba(140,198,63,0.3)' }} /> Higher Logic</span>
-            <span className="flex items-center gap-1 text-[8px]" style={{ color: C.purple }}><span className="w-2 h-2 rounded" style={{ background: 'rgba(168,85,247,0.3)' }} /> Outlook</span>
+            <span className="flex items-center gap-1 text-[11px]" style={{ color: C.blue }}><span className="w-2 h-2 rounded" style={{ background: 'rgba(74,144,217,0.3)' }} /> MEMTrak</span>
+            <span className="flex items-center gap-1 text-[11px]" style={{ color: C.green }}><span className="w-2 h-2 rounded" style={{ background: 'rgba(140,198,63,0.3)' }} /> Higher Logic</span>
+            <span className="flex items-center gap-1 text-[11px]" style={{ color: C.purple }}><span className="w-2 h-2 rounded" style={{ background: 'rgba(168,85,247,0.3)' }} /> Outlook</span>
           </div>
         </Card>
       </div>
@@ -360,12 +362,12 @@ export default function FatigueShield() {
                 <div className="flex items-start justify-between mb-2">
                   <div>
                     <div className="text-[11px] font-bold" style={{ color: 'var(--heading)' }}>{rec.member}</div>
-                    <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{rec.org}</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{rec.org}</div>
                   </div>
                   <BellOff className="w-3.5 h-3.5 flex-shrink-0" style={{ color: C.orange }} />
                 </div>
                 <div className="flex items-center gap-1.5 mb-2">
-                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ background: 'rgba(217,74,74,0.12)', color: C.red }}>SUPPRESS</span>
+                  <span className="text-[11px] font-bold px-1.5 py-0.5 rounded" style={{ background: 'rgba(217,74,74,0.12)', color: C.red }}>SUPPRESS</span>
                   <span className="text-[10px] font-semibold" style={{ color: 'var(--heading)' }}>{rec.suppress}</span>
                 </div>
                 <p className="text-[10px] mb-1.5" style={{ color: 'var(--text-muted)' }}>{rec.reason}</p>
@@ -530,20 +532,20 @@ export default function FatigueShield() {
               <div className="grid grid-cols-3 gap-3">
                 <div className="text-center p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
                   <div className="text-xl font-extrabold" style={{ color: selectedMember.emailsThisWeek > selectedMember.threshold ? C.red : 'var(--heading)' }}>{selectedMember.emailsThisWeek}</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Emails This Week</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Emails This Week</div>
                 </div>
                 <div className="text-center p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
                   <div className="text-xl font-extrabold" style={{ color: 'var(--heading)' }}>{selectedMember.threshold}</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Threshold</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Threshold</div>
                 </div>
                 <div className="text-center p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
                   <div className="text-xl font-extrabold" style={{ color: riskConfig[selectedMember.risk].color }}>{selectedMember.fatiguePct}%</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Fatigue Score</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Fatigue Score</div>
                 </div>
               </div>
 
               <div>
-                <div className="text-[9px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>Channel Breakdown</div>
+                <div className="text-[11px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>Channel Breakdown</div>
                 <div className="space-y-2">
                   {[
                     { label: 'MEMTrak', count: selectedMember.channels.memtrak, color: C.blue },

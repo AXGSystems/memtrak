@@ -41,7 +41,7 @@ export default function Scanner() {
               </div>
               <div>
                 <span className="text-sm font-bold" style={{ color: 'var(--heading)' }}>{r.org}</span>
-                <span className={`ml-2 text-[9px] px-1.5 py-0.5 rounded-full font-semibold ${r.status === 'Updated' ? 'bg-green-500/20 text-green-400' : r.status === 'Auto-Flagged' ? 'bg-blue-500/20 text-blue-400' : 'bg-amber-500/20 text-amber-400'}`}>{r.status}</span>
+                <span className={`ml-2 text-[11px] px-1.5 py-0.5 rounded-full font-semibold ${r.status === 'Updated' ? 'bg-green-500/20 text-green-400' : r.status === 'Auto-Flagged' ? 'bg-blue-500/20 text-blue-400' : 'bg-amber-500/20 text-amber-400'}`}>{r.status}</span>
               </div>
             </div>
             <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{r.date}</span>
@@ -49,19 +49,19 @@ export default function Scanner() {
 
           <div className="grid grid-cols-2 gap-3 mb-3">
             <div>
-              <div className="text-[9px] font-bold uppercase mb-0.5" style={{ color: 'var(--text-muted)' }}>Full Address</div>
+              <div className="text-[11px] font-bold uppercase mb-0.5" style={{ color: 'var(--text-muted)' }}>Full Address</div>
               <div className="text-xs" style={{ color: 'var(--heading)' }}>{r.address}</div>
             </div>
             <div>
-              <div className="text-[9px] font-bold uppercase mb-0.5" style={{ color: 'var(--text-muted)' }}>Reason</div>
+              <div className="text-[11px] font-bold uppercase mb-0.5" style={{ color: 'var(--text-muted)' }}>Reason</div>
               <div className="text-xs" style={{ color: 'var(--heading)' }}>{r.reason}</div>
             </div>
             <div>
-              <div className="text-[9px] font-bold uppercase mb-0.5" style={{ color: 'var(--text-muted)' }}>Match ID</div>
+              <div className="text-[11px] font-bold uppercase mb-0.5" style={{ color: 'var(--text-muted)' }}>Match ID</div>
               <div className="text-xs" style={{ color: 'var(--heading)' }}>{r.match || 'No match found'}</div>
             </div>
             <div>
-              <div className="text-[9px] font-bold uppercase mb-0.5" style={{ color: 'var(--text-muted)' }}>Confidence</div>
+              <div className="text-[11px] font-bold uppercase mb-0.5" style={{ color: 'var(--text-muted)' }}>Confidence</div>
               <div className="flex items-center gap-2">
                 <div className="flex-1 h-2 rounded-full" style={{ background: 'var(--input-bg)' }}>
                   <div
@@ -170,8 +170,8 @@ export default function Scanner() {
               <div className="flex-1">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{r.org}</span>
-                  <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-semibold ${r.status === 'Updated' ? 'bg-green-500/20 text-green-400' : r.status === 'Auto-Flagged' ? 'bg-blue-500/20 text-blue-400' : 'bg-amber-500/20 text-amber-400'}`}>{r.status}</span>
-                  {r.confidence > 0 && <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{r.confidence}% match</span>}
+                  <span className={`text-[11px] px-1.5 py-0.5 rounded-full font-semibold ${r.status === 'Updated' ? 'bg-green-500/20 text-green-400' : r.status === 'Auto-Flagged' ? 'bg-blue-500/20 text-blue-400' : 'bg-amber-500/20 text-amber-400'}`}>{r.status}</span>
+                  {r.confidence > 0 && <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{r.confidence}% match</span>}
                 </div>
                 <div className="text-[10px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{r.address}</div>
                 <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{r.reason} · {r.date}{r.match ? ` · ${r.match}` : ''}</div>

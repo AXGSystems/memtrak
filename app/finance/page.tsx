@@ -192,7 +192,7 @@ export default function FinancePage() {
                     <span className="w-5 text-center text-[10px] font-bold" style={{ color: i === 0 ? '#F5C542' : 'var(--text-muted)' }}>#{i + 1}</span>
                     <Building2 className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'var(--accent)' }} />
                     <span className="flex-1 text-xs font-bold truncate" style={{ color: 'var(--heading)' }}>{p.org_name}</span>
-                    <span className="text-xs font-extrabold tabular-nums" style={{ color: '#8CC63F' }}>${p.amount.toLocaleString()}</span>
+                    <span className="text-xs font-extrabold tabular-nums" style={{ color: 'var(--accent)' }}>${p.amount.toLocaleString()}</span>
                     <ExternalLink className="w-3 h-3 flex-shrink-0" style={{ color: 'var(--accent)' }} />
                   </Link>
                 ))}

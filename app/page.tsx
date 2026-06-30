@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { useDialogA11y } from '@/lib/useDialogA11y';
 import SparkKpi, { MiniBar, StatusPill } from '@/components/SparkKpi';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import PageGuide, { type GuideContent } from '@/components/PageGuide';
 import Card from '@/components/Card';
 import ClientChart from '@/components/ClientChart';
@@ -126,6 +128,10 @@ export default function DailyBriefing() {
   const [heroVisible, setHeroVisible] = useState(false);
   const [countdownDetail, setCountdownDetail] = useState<string | null>(null);
   const [healthDetail, setHealthDetail] = useState<string | null>(null);
+  const healthDialogRef = useRef<HTMLDivElement>(null);
+  const countdownDialogRef = useRef<HTMLDivElement>(null);
+  useDialogA11y(!!healthDetail, () => setHealthDetail(null), healthDialogRef);
+  useDialogA11y(!!countdownDetail, () => setCountdownDetail(null), countdownDialogRef);
   const [loginStreak, setLoginStreak] = useState(1);
 
   /* Greeting + time-dependent values — client-side only to avoid hydration mismatch */
@@ -166,6 +172,11 @@ export default function DailyBriefing() {
 
   return (
     <div className="space-y-6 pb-24">
+
+      {/* Honesty disclosure: this dashboard's campaign/revenue/health figures are
+          illustrative sample data, not live tracked events. Surfaced in the first
+          viewport so the label is never buried in a source comment. */}
+      <SampleDataBadge message="The campaign, revenue, engagement, and member-health figures on this dashboard are illustrative sample values — not live tracked events. They demonstrate the analysis MEMTrak shows once the event and member feeds are connected." />
 
       {/* Data freshness indicator */}
       <div className="h-0.5 rounded-full overflow-hidden" style={{ background: 'var(--card-border)' }}>
@@ -208,9 +219,9 @@ export default function DailyBriefing() {
           </div>
           <div className="flex items-center gap-2 no-print flex-shrink-0">
             <PageGuide pageId="dashboard" guide={dashGuide} />
-            <button onClick={() => exportCSV(['Metric', 'Value'], [['Sent', totals.totalSent], ['Open Rate', openRate + '%'], ['Click Rate', clickRate + '%'], ['Revenue', '$' + totals.totalRevenue]], 'MEMTrak_Brief')} className="flex items-center gap-1 px-2 py-1 rounded-lg text-[9px] font-semibold border transition-all hover:scale-105" style={{ color: 'var(--accent)', borderColor: 'var(--card-border)', background: 'color-mix(in srgb, var(--accent) 6%, transparent)' }}><Download className="w-3 h-3" /> CSV</button>
-            <button onClick={() => memtrakPrint('daily')} className="flex items-center gap-1 px-2 py-1 rounded-lg text-[9px] font-semibold border transition-all hover:scale-105" style={{ color: 'var(--accent)', borderColor: 'var(--card-border)', background: 'color-mix(in srgb, var(--accent) 6%, transparent)' }}><Printer className="w-3 h-3" /> Print</button>
-            {lastUpdated && <span className="text-[9px] font-medium ml-2" style={{ color: 'var(--text-muted)' }}>Updated {lastUpdated}</span>}
+            <button onClick={() => exportCSV(['Metric', 'Value'], [['Sent', totals.totalSent], ['Open Rate', openRate + '%'], ['Click Rate', clickRate + '%'], ['Revenue', '$' + totals.totalRevenue]], 'MEMTrak_Brief')} className="flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-semibold border transition-all hover:scale-105" style={{ color: 'var(--accent)', borderColor: 'var(--card-border)', background: 'color-mix(in srgb, var(--accent) 6%, transparent)' }}><Download className="w-3 h-3" /> CSV</button>
+            <button onClick={() => memtrakPrint('Daily Briefing')} className="flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-semibold border transition-all hover:scale-105" style={{ color: 'var(--accent)', borderColor: 'var(--card-border)', background: 'color-mix(in srgb, var(--accent) 6%, transparent)' }}><Printer className="w-3 h-3" /> Print</button>
+            {lastUpdated && <span className="text-[11px] font-medium ml-2" style={{ color: 'var(--text-muted)' }}>Updated {lastUpdated}</span>}
           </div>
         </div>
 
@@ -239,7 +250,7 @@ export default function DailyBriefing() {
               <div key={item.label} className="text-center p-2.5 rounded-xl cursor-pointer transition-all hover:translate-y-[-2px]" style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
                 <Icon className="w-3.5 h-3.5 mx-auto mb-1.5" style={{ color: item.color }} />
                 <div className="text-sm font-extrabold" style={{ color: item.color }}>{item.value}</div>
-                <div className="text-[9px] font-semibold" style={{ color: 'var(--text-muted)' }}>{item.label}</div>
+                <div className="text-[11px] font-semibold" style={{ color: 'var(--text-muted)' }}>{item.label}</div>
               </div>
             );
           })}
@@ -262,7 +273,7 @@ export default function DailyBriefing() {
           { label: 'Engagement', value: 72, target: '75+' },
           { label: 'Reputation', value: 87, target: '85+' },
         ].map(h => (
-          <div key={h.label} onClick={() => setHealthDetail(h.label)} className="rounded-xl border p-3 cursor-pointer transition-all duration-300 hover:translate-y-[-2px] flex items-center gap-3" style={{
+          <button key={h.label} type="button" onClick={() => setHealthDetail(h.label)} aria-label={`${h.label} health, ${h.value} percent. View details.`} className="text-left w-full rounded-xl border p-3 cursor-pointer transition-all duration-300 hover:translate-y-[-2px] flex items-center gap-3" style={{
             background: 'linear-gradient(135deg, var(--glass-bg) 0%, transparent 100%)',
             borderColor: 'var(--glass-border)',
             backdropFilter: 'blur(16px) saturate(1.2)',
@@ -272,9 +283,9 @@ export default function DailyBriefing() {
             <div>
               <div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{h.label}</div>
               <div className="text-lg font-extrabold leading-none" style={{ color: meterColor(h.value) }}>{h.value}%</div>
-              <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Target: {h.target}</div>
+              <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Target: {h.target}</div>
             </div>
-          </div>
+          </button>
         ))}
       </section>
       ) : (
@@ -290,11 +301,11 @@ export default function DailyBriefing() {
 
       {healthDetail && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={() => setHealthDetail(null)}>
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-          <div className="relative w-full max-w-[95vw] sm:max-w-md max-h-[80vh] overflow-y-auto rounded-2xl border" style={{ background: 'var(--card)', borderColor: 'var(--card-border)', boxShadow: '0 25px 60px rgba(0,0,0,0.4)', animation: 'scaleIn 0.2s ease-out' }} onClick={e => e.stopPropagation()}>
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" aria-hidden="true" />
+          <div ref={healthDialogRef} tabIndex={-1} role="dialog" aria-modal="true" aria-label={`${healthDetail} Health details`} className="relative w-full max-w-[95vw] sm:max-w-md max-h-[80vh] overflow-y-auto rounded-2xl border" style={{ background: 'var(--card)', borderColor: 'var(--card-border)', boxShadow: '0 25px 60px rgba(0,0,0,0.4)', animation: 'scaleIn 0.2s ease-out' }} onClick={e => e.stopPropagation()}>
             <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b backdrop-blur-md" style={{ background: 'color-mix(in srgb, var(--card) 90%, transparent)', borderColor: 'var(--card-border)' }}>
               <h3 className="text-sm font-bold" style={{ color: 'var(--heading)' }}>{healthDetail} Health — Details</h3>
-              <button onClick={() => setHealthDetail(null)} className="p-1.5 rounded-lg hover:bg-white/5" style={{ color: 'var(--text-muted)' }}><X className="w-4 h-4" /></button>
+              <button onClick={() => setHealthDetail(null)} aria-label="Close details" className="p-1.5 rounded-lg hover:bg-white/5" style={{ color: 'var(--text-muted)' }}><X className="w-4 h-4" aria-hidden="true" /></button>
             </div>
             <div className="p-6 space-y-4">
               {healthDetail === 'Delivery' && (
@@ -366,7 +377,7 @@ export default function DailyBriefing() {
               <Send className="w-4 h-4" style={{ color: C.blue }} />
               <span className="text-sm font-extrabold tracking-tight" style={{ color: 'var(--heading)' }}>Next Campaign</span>
             </div>
-            <span className="text-[9px] px-2.5 py-1 rounded-full font-bold" style={{ background: 'rgba(74,144,217,0.15)', color: C.blue }}>SCHEDULED</span>
+            <span className="text-[11px] px-2.5 py-1 rounded-full font-bold" style={{ background: 'rgba(74,144,217,0.15)', color: C.blue }}>SCHEDULED</span>
           </div>
           <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full blur-3xl opacity-0 group-hover:opacity-15 transition-opacity duration-500 pointer-events-none" style={{ background: C.blue }} />
           <div className="p-5">
@@ -382,7 +393,7 @@ export default function DailyBriefing() {
                 { label: 'A/B Test', value: '2 variants', color: C.green },
               ].map(s => (
                 <div key={s.label} className="text-center p-2.5 rounded-lg" style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)' }}>
-                  <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>{s.label}</div>
+                  <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>{s.label}</div>
                   <div className="text-sm font-extrabold" style={{ color: s.color }}>{s.value}</div>
                 </div>
               ))}
@@ -409,7 +420,7 @@ export default function DailyBriefing() {
               <Users className="w-4 h-4" style={{ color: C.orange }} />
               <span className="text-sm font-extrabold tracking-tight" style={{ color: 'var(--heading)' }}>Renewal Season</span>
             </div>
-            <span className="text-[9px] px-2.5 py-1 rounded-full font-bold" style={{ background: 'rgba(232,146,63,0.15)', color: C.orange }}>PLANNING</span>
+            <span className="text-[11px] px-2.5 py-1 rounded-full font-bold" style={{ background: 'rgba(232,146,63,0.15)', color: C.orange }}>PLANNING</span>
           </div>
           <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full blur-3xl opacity-0 group-hover:opacity-15 transition-opacity duration-500 pointer-events-none" style={{ background: C.orange }} />
           <div className="p-5">
@@ -425,7 +436,7 @@ export default function DailyBriefing() {
                 { label: 'Sequence', value: '6 emails', color: 'var(--heading)' },
               ].map(s => (
                 <div key={s.label} className="text-center p-2.5 rounded-lg" style={{ background: 'var(--glass-bg)', border: '1px solid var(--glass-border)' }}>
-                  <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>{s.label}</div>
+                  <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>{s.label}</div>
                   <div className="text-sm font-extrabold" style={{ color: s.color }}>{s.value}</div>
                 </div>
               ))}
@@ -532,8 +543,13 @@ export default function DailyBriefing() {
       {/* Countdown Detail Modal */}
       {countdownDetail && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={() => setCountdownDetail(null)}>
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" aria-hidden="true" />
           <div
+            ref={countdownDialogRef}
+            tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Campaign timeline details"
             className="relative w-full max-w-[95vw] sm:max-w-lg max-h-[80vh] overflow-y-auto rounded-2xl border"
             style={{ background: 'var(--card)', borderColor: 'var(--card-border)', boxShadow: '0 25px 60px rgba(0,0,0,0.4)', animation: 'scaleIn 0.2s ease-out' }}
             onClick={e => e.stopPropagation()}
@@ -562,7 +578,7 @@ export default function DailyBriefing() {
                       { label: 'Est. List Size', value: '2,400' },
                     ].map(item => (
                       <div key={item.label} className="p-3 rounded-lg" style={{ background: 'var(--background)' }}>
-                        <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>{item.label}</div>
+                        <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>{item.label}</div>
                         <div className="text-sm font-bold mt-1" style={{ color: 'var(--heading)' }}>{item.value}</div>
                       </div>
                     ))}
@@ -571,7 +587,7 @@ export default function DailyBriefing() {
                     <div className="text-[10px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>Preparation Checklist</div>
                     {['List segmentation finalized', 'Creative assets approved', 'A/B subject lines configured', 'Suppression list updated', 'Send-time optimization set'].map((step, i) => (
                       <div key={step} className="flex items-center gap-2 py-1.5">
-                        <div className="w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold" style={{ background: i < 3 ? '#8CC63F' : 'var(--card-border)', color: i < 3 ? '#fff' : 'var(--text-muted)' }}>
+                        <div className="w-4 h-4 rounded-full flex items-center justify-center text-[11px] font-bold" style={{ background: i < 3 ? '#8CC63F' : 'var(--card-border)', color: i < 3 ? '#fff' : 'var(--text-muted)' }}>
                           {i < 3 ? '\u2713' : String(i + 1)}
                         </div>
                         <span className="text-xs" style={{ color: i < 3 ? 'var(--heading)' : 'var(--text-muted)', textDecoration: i < 3 ? 'line-through' : 'none', opacity: i < 3 ? 0.6 : 1 }}>{step}</span>
@@ -593,7 +609,7 @@ export default function DailyBriefing() {
                       { label: 'At-Risk Members', value: '12', color: '#E8923F' },
                     ].map(item => (
                       <div key={item.label} className="p-3 rounded-lg" style={{ background: 'var(--background)' }}>
-                        <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>{item.label}</div>
+                        <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>{item.label}</div>
                         <div className="text-lg font-extrabold mt-1" style={{ color: item.color }}>{item.value}</div>
                       </div>
                     ))}
@@ -792,19 +808,19 @@ export default function DailyBriefing() {
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Bounce analysis and list hygiene status. Target: under 2%.</p>
               <div className="grid grid-cols-2 gap-3">
                 <div className="p-3 rounded-lg" style={{ background: 'var(--background)' }}>
-                  <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Total Bounced</div>
+                  <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Total Bounced</div>
                   <div className="text-lg font-extrabold mt-1" style={{ color: C.red }}>{totals.totalBounced.toLocaleString()}</div>
                 </div>
                 <div className="p-3 rounded-lg" style={{ background: 'var(--background)' }}>
-                  <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Stale Addresses</div>
+                  <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Stale Addresses</div>
                   <div className="text-lg font-extrabold mt-1" style={{ color: C.orange }}>{demoHygiene.stale.count.toLocaleString()}</div>
                 </div>
                 <div className="p-3 rounded-lg" style={{ background: 'var(--background)' }}>
-                  <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Current Delivery</div>
+                  <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Current Delivery</div>
                   <div className="text-lg font-extrabold mt-1" style={{ color: C.green }}>{demoHygiene.currentDelivery}%</div>
                 </div>
                 <div className="p-3 rounded-lg" style={{ background: 'var(--background)' }}>
-                  <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>After Cleanup</div>
+                  <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>After Cleanup</div>
                   <div className="text-lg font-extrabold mt-1" style={{ color: C.green }}>{demoHygiene.projectedDelivery}%</div>
                 </div>
               </div>
@@ -900,7 +916,7 @@ export default function DailyBriefing() {
                   <div key={w.name} className="p-3 rounded-lg" style={{ background: 'var(--background)' }}>
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{w.name}</span>
-                      <span className="text-[9px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(140,198,63,0.12)', color: '#8CC63F' }}>{w.status}</span>
+                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(140,198,63,0.12)', color: '#8CC63F' }}>{w.status}</span>
                     </div>
                     <div className="flex items-center gap-4 text-[10px]" style={{ color: 'var(--text-muted)' }}>
                       <span>Trigger: {w.triggers}</span>
@@ -925,22 +941,25 @@ export default function DailyBriefing() {
         <div className="flex-1 h-px" style={{ background: 'color-mix(in srgb, var(--accent) 15%, var(--card-border))' }} />
         <span className="text-[10px] font-semibold flex items-center gap-1.5" style={{ color: 'var(--text-muted)' }}>
           <span className="relative flex h-2 w-2"><span className="absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: '#8CC63F', animation: 'livePulse 2s ease-in-out infinite' }} /><span className="relative inline-flex rounded-full h-2 w-2" style={{ background: '#8CC63F' }} /></span>
-          Real-time
+          Sample feed
         </span>
       </div>
 
       <section className="rounded-2xl border overflow-hidden" style={{ background: 'var(--card)', borderColor: 'var(--card-border)' }}>
         <div className="px-5 py-4 overflow-x-auto">
           <div className="flex gap-3" style={{ minWidth: 'max-content' }}>
+            {/* Illustrative event types only — NOT real records. The feed is */}
+            {/* labeled "Sample feed" above; details are generic placeholders */}
+            {/* so no member names, addresses, or dollar figures are fabricated. */}
             {[
-              { time: '2 min ago', event: 'Email Opened', detail: 'First American Title — Renewal Reminder', icon: 'eye', color: '#8CC63F' },
-              { time: '5 min ago', event: 'Link Clicked', detail: 'Stewart Info — "Renew Now" CTA', icon: 'click', color: '#4A90D9' },
-              { time: '8 min ago', event: 'Campaign Sent', detail: 'PFL Compliance Notice — 1,029 recipients', icon: 'send', color: '#a855f7' },
-              { time: '12 min ago', event: 'Bounce Detected', detail: 'invalid@oldtitleco.com — hard bounce', icon: 'alert', color: '#D94A4A' },
-              { time: '15 min ago', event: 'New Subscriber', detail: 'Jane Mitchell — Chicago Title Insurance', icon: 'user', color: '#8CC63F' },
-              { time: '18 min ago', event: 'Email Opened', detail: 'Fidelity National — ALTA ONE Invite', icon: 'eye', color: '#8CC63F' },
-              { time: '22 min ago', event: 'Decay Alert', detail: 'Old Republic — engagement dropped 62%', icon: 'alert', color: '#E8923F' },
-              { time: '25 min ago', event: 'Revenue Event', detail: 'Membership Renewal — $12,400 attributed', icon: 'dollar', color: '#8CC63F' },
+              { time: '—', event: 'Email Opened', detail: 'Sample — renewal reminder opened', icon: 'eye', color: '#8CC63F' },
+              { time: '—', event: 'Link Clicked', detail: 'Sample — "Renew Now" CTA clicked', icon: 'click', color: '#4A90D9' },
+              { time: '—', event: 'Campaign Sent', detail: 'Sample — compliance notice delivered', icon: 'send', color: '#a855f7' },
+              { time: '—', event: 'Bounce Detected', detail: 'Sample — hard bounce recorded', icon: 'alert', color: '#D94A4A' },
+              { time: '—', event: 'New Subscriber', detail: 'Sample — new member subscribed', icon: 'user', color: '#8CC63F' },
+              { time: '—', event: 'Email Opened', detail: 'Sample — event invite opened', icon: 'eye', color: '#8CC63F' },
+              { time: '—', event: 'Decay Alert', detail: 'Sample — engagement decay flagged', icon: 'alert', color: '#E8923F' },
+              { time: '—', event: 'Revenue Event', detail: 'Sample — renewal revenue attributed', icon: 'dollar', color: '#8CC63F' },
             ].map((item, i) => (
               <div
                 key={i}
@@ -955,7 +974,7 @@ export default function DailyBriefing() {
               >
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[10px] font-bold" style={{ color: item.color }}>{item.event}</span>
-                  <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{item.time}</span>
+                  <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{item.time}</span>
                 </div>
                 <p className="text-[11px] font-medium leading-snug" style={{ color: 'var(--heading)' }}>{item.detail}</p>
               </div>
@@ -1047,21 +1066,21 @@ export default function DailyBriefing() {
         {/* mini-stats strip below chart */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 mt-4 pt-4" style={{ borderTop: '1px solid var(--card-border)' }}>
           <div className="text-center">
-            <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Avg Open Rate</div>
+            <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Avg Open Rate</div>
             <div className="text-lg font-extrabold mt-0.5" style={{ color: 'var(--heading)' }}>{avgOpenRate}%</div>
           </div>
           <div className="text-center">
-            <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Best Month</div>
+            <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Best Month</div>
             <div className="text-lg font-extrabold mt-0.5" style={{ color: C.green }}>{bestMonth.month}</div>
-            <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{((bestMonth.opened / bestMonth.delivered) * 100).toFixed(1)}% open rate</div>
+            <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{((bestMonth.opened / bestMonth.delivered) * 100).toFixed(1)}% open rate</div>
           </div>
           <div className="text-center">
-            <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Worst Month</div>
+            <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Worst Month</div>
             <div className="text-lg font-extrabold mt-0.5" style={{ color: C.orange }}>{worstMonth.month}</div>
-            <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{((worstMonth.opened / worstMonth.delivered) * 100).toFixed(1)}% open rate</div>
+            <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{((worstMonth.opened / worstMonth.delivered) * 100).toFixed(1)}% open rate</div>
           </div>
           <div className="text-center">
-            <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Total Revenue</div>
+            <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Total Revenue</div>
             <div className="text-lg font-extrabold mt-0.5" style={{ color: C.green }}>${(totalMonthlyRevenue / 1000).toFixed(0)}K</div>
           </div>
         </div>
@@ -1100,14 +1119,14 @@ export default function DailyBriefing() {
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{step.label}</span>
                       {i > 0 && dropoff > 0 && (
-                        <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: dropoff > 10 ? 'rgba(217,74,74,0.12)' : 'rgba(140,198,63,0.12)', color: dropoff > 10 ? C.red : C.green }}>
+                        <span className="text-[11px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: dropoff > 10 ? 'rgba(217,74,74,0.12)' : 'rgba(140,198,63,0.12)', color: dropoff > 10 ? C.red : C.green }}>
                           -{dropoff}% drop
                         </span>
                       )}
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-bold tabular-nums" style={{ color: 'var(--heading)' }}>{step.value.toLocaleString()}</span>
-                      <span className="text-[9px] font-semibold tabular-nums" style={{ color: 'var(--text-muted)' }}>{pct}%</span>
+                      <span className="text-[11px] font-semibold tabular-nums" style={{ color: 'var(--text-muted)' }}>{pct}%</span>
                     </div>
                   </div>
                   <div className="w-full rounded-full overflow-hidden" style={{ height: 8, background: 'var(--card-border)' }}>
@@ -1167,7 +1186,7 @@ export default function DailyBriefing() {
             {Object.entries(sourceCounts).map(([source, count]) => (
               <div key={source} className="text-center">
                 <div className="text-sm font-extrabold" style={{ color: 'var(--heading)' }}>{count.toLocaleString()}</div>
-                <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{source}</div>
+                <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{source}</div>
               </div>
             ))}
           </div>
@@ -1250,7 +1269,7 @@ export default function DailyBriefing() {
                 }}
               >
                 <span
-                  className="flex items-center gap-1.5 text-[9px] px-2.5 py-1 rounded-full font-bold flex-shrink-0 mt-0.5"
+                  className="flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full font-bold flex-shrink-0 mt-0.5"
                   style={{
                     background: `color-mix(in srgb, ${item.color} 20%, transparent)`,
                     color: item.color,
@@ -1264,12 +1283,12 @@ export default function DailyBriefing() {
                   <span className="text-xs font-semibold" style={{ color: 'var(--heading)' }}>{item.text}</span>
                   <div className="text-[10px] mt-0.5 font-medium" style={{ color: item.pulse ? item.color : 'var(--text-muted)' }}>{item.revenue}</div>
                 </div>
-                <div className="flex items-center gap-1 text-[10px] font-bold flex-shrink-0 mt-0.5 cursor-pointer" style={{ color: 'var(--accent)' }} onClick={(e) => { e.stopPropagation(); router.push(item.href); }}>
-                  {item.action} <ArrowRight className="w-3 h-3" />
-                </div>
+                <button type="button" className="flex items-center gap-1 text-[10px] font-bold flex-shrink-0 mt-0.5 cursor-pointer" style={{ color: 'var(--accent)', background: 'transparent', border: 'none', padding: 0 }} onClick={(e) => { e.stopPropagation(); router.push(item.href); }}>
+                  {item.action} <ArrowRight className="w-3 h-3" aria-hidden="true" />
+                </button>
                 <button
                   onClick={(e) => { e.stopPropagation(); router.push('/reminders'); }}
-                  className="text-[9px] px-2 py-1 rounded-lg font-bold transition-all hover:scale-[1.03]"
+                  className="text-[11px] px-2 py-1 rounded-lg font-bold transition-all hover:scale-[1.03]"
                   style={{ background: 'color-mix(in srgb, var(--accent) 10%, transparent)', color: 'var(--accent)', border: '1px solid color-mix(in srgb, var(--accent) 20%, transparent)' }}
                   title="Create a reminder for this action"
                 >
@@ -1329,12 +1348,12 @@ export default function DailyBriefing() {
                     {c.org} <span className="font-normal" style={{ color: 'var(--text-muted)' }}>({c.type})</span>
                   </div>
                   <div className="text-[10px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{c.factors[0]}</div>
-                  <div className="text-[9px] mt-1 flex items-center gap-1 font-semibold" style={{ color: C.green }}>
+                  <div className="text-[11px] mt-1 flex items-center gap-1 font-semibold" style={{ color: C.green }}>
                     <ChevronRight className="w-3 h-3" /> {c.action}
                   </div>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>At Risk</div>
+                  <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>At Risk</div>
                   <div className="text-sm font-extrabold" style={{ color: C.red }}>${c.revenue.toLocaleString()}</div>
                 </div>
               </div>
@@ -1380,7 +1399,7 @@ export default function DailyBriefing() {
                     <span className="text-xs font-bold tabular-nums" style={{ color: 'var(--heading)' }}>{tier.count.toLocaleString()}</span>
                   </div>
                   <MiniBar value={tier.pct} max={100} color={tier.color} height={5} />
-                  <div className="text-[9px] mt-1" style={{ color: 'var(--text-muted)' }}>
+                  <div className="text-[11px] mt-1" style={{ color: 'var(--text-muted)' }}>
                     ${(tier.revenue / 1000).toFixed(0)}K annual revenue &middot; {tier.pct}% of members
                   </div>
                 </div>
@@ -1419,21 +1438,21 @@ export default function DailyBriefing() {
               {/* Glassmorphic header */}
               <div className="px-4 py-2.5" style={{ background: `linear-gradient(135deg, ${strengthBg} 0%, transparent 100%)`, borderBottom: '1px solid var(--glass-border)' }}>
                 <div className="text-[11px] font-extrabold truncate" style={{ color: 'var(--heading)' }}>{r.staff}</div>
-                <span className="text-[9px] font-bold" style={{ color: replyColor }}>{r.strength}</span>
+                <span className="text-[11px] font-bold" style={{ color: replyColor }}>{r.strength}</span>
               </div>
               <div className="p-4 text-center space-y-3">
                 <div>
                   <div className="text-2xl font-extrabold" style={{ color: replyColor }}>{r.replyRate}%</div>
-                  <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Reply Rate</div>
+                  <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Reply Rate</div>
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-center">
                   <div>
                     <div className="text-sm font-extrabold" style={{ color: 'var(--heading)' }}>{r.outreach}</div>
-                    <div className="text-[8px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Outreach</div>
+                    <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Outreach</div>
                   </div>
                   <div>
                     <div className="text-sm font-extrabold" style={{ color: 'var(--heading)' }}>{r.responseTime}</div>
-                    <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Avg Response</div>
+                    <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Avg Response</div>
                   </div>
                 </div>
                 <MiniBar value={r.replyRate} max={100} color={replyColor} height={4} />
@@ -1519,7 +1538,7 @@ export default function DailyBriefing() {
                 >
                   <Icon className="w-4 h-4" style={{ color: card.color }} />
                 </div>
-                <span className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>
+                <span className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>
                   {card.label}
                 </span>
               </div>
@@ -1577,7 +1596,7 @@ export default function DailyBriefing() {
                 {['Campaign', 'Source', 'Status', 'Sent', 'Open Rate', 'Clicks', 'Revenue'].map(h => (
                   <th
                     key={h}
-                    className="text-left px-5 py-3 text-[9px] uppercase tracking-wider font-bold"
+                    className="text-left px-5 py-3 text-[11px] uppercase tracking-wider font-bold"
                     style={{ color: 'var(--text-muted)' }}
                   >
                     {h}
@@ -1597,11 +1616,11 @@ export default function DailyBriefing() {
                   >
                     <td className="px-5 py-3" style={{ color: 'var(--heading)' }}>
                       <div className="font-bold truncate max-w-[240px]">{c.name}</div>
-                      <div className="text-[9px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{c.sentDate || 'Not scheduled'}</div>
+                      <div className="text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{c.sentDate || 'Not scheduled'}</div>
                     </td>
                     <td className="px-5 py-3">
                       <span
-                        className="inline-flex items-center text-[9px] font-bold px-2 py-0.5 rounded-full"
+                        className="inline-flex items-center text-[11px] font-bold px-2 py-0.5 rounded-full"
                         style={{
                           background: c.source === 'MEMTrak' ? 'rgba(140,198,63,0.12)' : c.source === 'Higher Logic' ? 'rgba(74,144,217,0.12)' : 'rgba(232,146,63,0.12)',
                           color: c.source === 'MEMTrak' ? C.green : c.source === 'Higher Logic' ? C.blue : C.orange,
@@ -1723,7 +1742,7 @@ export default function DailyBriefing() {
                     e.currentTarget.style.boxShadow = 'none';
                   }}
                   onClick={() => {
-                    if (btn.label === 'Print Report') memtrakPrint('daily');
+                    if (btn.label === 'Print Report') memtrakPrint('Daily Briefing');
                     else if (btn.href) router.push(btn.href);
                   }}
                 >

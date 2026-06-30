@@ -84,13 +84,13 @@ export default function PortalProfile() {
           </Field>
 
           {error && (
-            <div className="flex items-start gap-2 p-3 rounded-md" style={{ background: 'color-mix(in srgb, #D94A4A 14%, transparent)', color: '#D94A4A' }}>
-              <AlertCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" /> <span>{error}</span>
+            <div role="alert" className="flex items-start gap-2 p-3 rounded-md" style={{ background: 'color-mix(in srgb, #D94A4A 14%, transparent)', color: '#D94A4A' }}>
+              <AlertCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" aria-hidden="true" /> <span>{error}</span>
             </div>
           )}
           {success && (
-            <div className="flex items-start gap-2 p-3 rounded-md" style={{ background: 'color-mix(in srgb, #8CC63F 14%, transparent)', color: '#8CC63F' }}>
-              <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" /> <span>Saved.</span>
+            <div role="status" aria-live="polite" className="flex items-start gap-2 p-3 rounded-md" style={{ background: 'color-mix(in srgb, #8CC63F 14%, transparent)', color: '#8CC63F' }}>
+              <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" aria-hidden="true" /> <span>Saved.</span>
             </div>
           )}
 

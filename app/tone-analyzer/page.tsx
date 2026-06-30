@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import SparkKpi from '@/components/SparkKpi';
 import Card from '@/components/Card';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import ClientChart from '@/components/ClientChart';
 
 /* ── Palette ── */
@@ -147,7 +148,7 @@ function ScoreDetailModal({ line, onClose }: { line: typeof historicalLines[0]; 
         </div>
         <div className="p-6 space-y-4">
           <div className="p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
-            <p className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Subject Line</p>
+            <p className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Subject Line</p>
             <p className="text-sm font-semibold" style={{ color: 'var(--heading)' }}>{line.subject}</p>
           </div>
           <div className="flex items-center gap-4 mb-2">
@@ -196,6 +197,7 @@ export default function ToneAnalyzer() {
   return (
     <div className="p-6 space-y-6">
 
+      <SampleDataBadge message="The tone scores and predicted-performance figures shown for analyzed subject lines are illustrative sample values produced for demonstration, not a live scoring model." />
       {/* ── 1. Branded Header ── */}
       <div className="flex items-center gap-4">
         <div
@@ -365,7 +367,7 @@ export default function ToneAnalyzer() {
           {/* Word balance */}
           {hasInput && (
             <div className="p-4 rounded-xl border" style={{ background: 'var(--input-bg)', borderColor: 'var(--card-border)' }}>
-              <p className="text-[9px] uppercase tracking-wider font-bold mb-3" style={{ color: 'var(--text-muted)' }}>Word Balance Analysis</p>
+              <p className="text-[11px] uppercase tracking-wider font-bold mb-3" style={{ color: 'var(--text-muted)' }}>Word Balance Analysis</p>
               <div className="grid grid-cols-4 gap-3">
                 {[
                   { label: 'Common', count: analysis.wordBalance.common, color: C.gray, desc: 'Standard vocabulary' },
@@ -376,7 +378,7 @@ export default function ToneAnalyzer() {
                   <div key={w.label} className="text-center p-2 rounded-lg" style={{ background: `color-mix(in srgb, ${w.color} 8%, transparent)` }}>
                     <div className="text-lg font-extrabold" style={{ color: w.color }}>{w.count}</div>
                     <div className="text-[10px] font-bold" style={{ color: w.color }}>{w.label}</div>
-                    <div className="text-[8px]" style={{ color: 'var(--text-muted)' }}>{w.desc}</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{w.desc}</div>
                   </div>
                 ))}
               </div>
@@ -443,8 +445,8 @@ export default function ToneAnalyzer() {
                 <div className="grid grid-cols-3 gap-2">
                   {Object.entries(line.breakdown).map(([key, val]) => (
                     <div key={key} className="flex items-center gap-1.5">
-                      <span className="text-[9px] capitalize" style={{ color: 'var(--text-muted)' }}>{key}:</span>
-                      <span className="text-[9px] font-bold" style={{ color: val >= 70 ? C.green : val >= 40 ? C.amber : C.red }}>{val}</span>
+                      <span className="text-[11px] capitalize" style={{ color: 'var(--text-muted)' }}>{key}:</span>
+                      <span className="text-[11px] font-bold" style={{ color: val >= 70 ? C.green : val >= 40 ? C.amber : C.red }}>{val}</span>
                     </div>
                   ))}
                 </div>
@@ -458,7 +460,7 @@ export default function ToneAnalyzer() {
             <thead>
               <tr style={{ borderBottom: '1px solid var(--card-border)' }}>
                 {['Subject Line', 'Score', 'Open Rate', 'Tone', 'Campaign'].map(h => (
-                  <th key={h} className="text-[9px] uppercase tracking-wider font-bold pb-3 pr-4" style={{ color: 'var(--text-muted)' }}>{h}</th>
+                  <th key={h} className="text-[11px] uppercase tracking-wider font-bold pb-3 pr-4" style={{ color: 'var(--text-muted)' }}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -479,7 +481,7 @@ export default function ToneAnalyzer() {
                   <td className="py-2.5 pr-4 text-xs" style={{ color: 'var(--text-muted)' }}>{line.openRate}%</td>
                   <td className="py-2.5 pr-4">
                     <span
-                      className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+                      className="text-[11px] font-bold px-2 py-0.5 rounded-full"
                       style={{
                         background: `color-mix(in srgb, ${line.tone.includes('Emotional') || line.tone.includes('Scarcity') ? C.purple : line.tone.includes('Urgency') ? C.amber : line.tone.includes('Spam') ? C.red : C.blue} 12%, transparent)`,
                         color: line.tone.includes('Emotional') || line.tone.includes('Scarcity') ? C.purple : line.tone.includes('Urgency') ? C.amber : line.tone.includes('Spam') ? C.red : C.blue,

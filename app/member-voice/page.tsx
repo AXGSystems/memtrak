@@ -381,8 +381,8 @@ export default function MemberVoice() {
             <div className="rounded-lg p-3 mt-2" style={{ background: 'rgba(140,198,63,0.06)' }}>
               <div className="text-center">
                 <div className="text-2xl font-extrabold" style={{ color: C.green }}>{currentNps}</div>
-                <div className="text-[9px] font-bold" style={{ color: C.green }}>Excellent</div>
-                <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Industry avg: 45</div>
+                <div className="text-[11px] font-bold" style={{ color: C.green }}>Excellent</div>
+                <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Industry avg: 45</div>
               </div>
             </div>
           </div>
@@ -431,7 +431,7 @@ export default function MemberVoice() {
                       {theme.score}/10
                     </span>
                     <span
-                      className="text-[9px] font-bold px-1.5 py-0.5 rounded"
+                      className="text-[11px] font-bold px-1.5 py-0.5 rounded"
                       style={{ background: 'rgba(140,198,63,0.12)', color: C.green }}
                     >
                       {theme.count} mentions
@@ -440,7 +440,7 @@ export default function MemberVoice() {
                 </div>
                 <div className="flex items-center gap-1.5">
                   <TrendingUp className="w-3 h-3" style={{ color: C.green }} />
-                  <span className="text-[9px]" style={{ color: C.green }}>+{theme.trend} this quarter</span>
+                  <span className="text-[11px]" style={{ color: C.green }}>+{theme.trend} this quarter</span>
                 </div>
                 <p className="text-[10px] italic mt-1.5 leading-relaxed" style={{ color: 'var(--text-muted)' }}>
                   {theme.quote}
@@ -490,7 +490,7 @@ export default function MemberVoice() {
                       {theme.score}/10
                     </span>
                     <span
-                      className="text-[9px] font-bold px-1.5 py-0.5 rounded"
+                      className="text-[11px] font-bold px-1.5 py-0.5 rounded"
                       style={{ background: 'rgba(217,74,74,0.12)', color: C.red }}
                     >
                       {theme.count} mentions
@@ -499,7 +499,7 @@ export default function MemberVoice() {
                 </div>
                 <div className="flex items-center gap-1.5">
                   <TrendingDown className="w-3 h-3" style={{ color: C.red }} />
-                  <span className="text-[9px]" style={{ color: C.red }}>{theme.trend} this quarter</span>
+                  <span className="text-[11px]" style={{ color: C.red }}>{theme.trend} this quarter</span>
                 </div>
                 <p className="text-[10px] italic mt-1.5 leading-relaxed" style={{ color: 'var(--text-muted)' }}>
                   {theme.quote}
@@ -602,7 +602,7 @@ export default function MemberVoice() {
             Member Testimonials
           </h2>
           <span
-            className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+            className="text-[11px] font-bold px-2 py-0.5 rounded-full"
             style={{ background: 'rgba(74,144,217,0.15)', color: C.blue }}
           >
             {testimonials.length} featured
@@ -644,10 +644,10 @@ export default function MemberVoice() {
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="text-[10px] font-bold" style={{ color: 'var(--heading)' }}>{t.name}</div>
-                    <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{t.title}</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{t.title}</div>
                   </div>
                   <span
-                    className="text-[8px] font-bold px-1.5 py-0.5 rounded capitalize"
+                    className="text-[11px] font-bold px-1.5 py-0.5 rounded capitalize"
                     style={{
                       background: isConstructive ? 'rgba(232,146,63,0.12)' : 'rgba(140,198,63,0.12)',
                       color: accentColor,
@@ -709,7 +709,7 @@ export default function MemberVoice() {
               <div className="rounded-lg p-4" style={{ background: 'var(--input-bg)' }}>
                 <div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{selectedTestimonial.name}</div>
                 <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{selectedTestimonial.title}</div>
-                <div className="text-[9px] mt-1" style={{ color: 'var(--text-muted)' }}>Membership type: {selectedTestimonial.type}</div>
+                <div className="text-[11px] mt-1" style={{ color: 'var(--text-muted)' }}>Membership type: {selectedTestimonial.type}</div>
               </div>
             </div>
           </div>
@@ -743,13 +743,13 @@ export default function MemberVoice() {
                       {item.title}
                     </span>
                     <span
-                      className="text-[8px] font-bold px-1.5 py-0.5 rounded-full"
+                      className="text-[11px] font-bold px-1.5 py-0.5 rounded-full"
                       style={{ background: `${item.color}15`, color: item.color }}
                     >
                       {item.priority}
                     </span>
                     <span
-                      className="text-[8px] font-bold px-1.5 py-0.5 rounded-full"
+                      className="text-[11px] font-bold px-1.5 py-0.5 rounded-full"
                       style={{ background: 'rgba(232,146,63,0.12)', color: C.orange }}
                     >
                       {item.status}

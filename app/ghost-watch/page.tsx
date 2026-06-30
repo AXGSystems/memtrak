@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Card from '@/components/Card';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import SparkKpi from '@/components/SparkKpi';
 import ClientChart from '@/components/ClientChart';
 import { MiniBar } from '@/components/SparkKpi';
@@ -117,6 +118,7 @@ export default function GhostWatch() {
 
   return (
     <div className="p-6">
+      <SampleDataBadge className="max-w-3xl" message="The ghosted-member list and dark-engagement figures below are illustrative sample values. The members directory already stores decay_score and last activity; this watchlist will be wired to that live data." />
       {/* ── 1. Branded Header ─────────────────────────────────── */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
@@ -167,11 +169,11 @@ export default function GhostWatch() {
               <div className="grid grid-cols-2 gap-2">
                 <div className="text-center p-2 rounded-lg" style={{ background: 'var(--input-bg)' }}>
                   <div className="text-lg font-extrabold" style={{ color: C.ghost }}>6</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Ghost (60-120d)</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Ghost (60-120d)</div>
                 </div>
                 <div className="text-center p-2 rounded-lg" style={{ background: 'var(--input-bg)' }}>
                   <div className="text-lg font-extrabold" style={{ color: C.red }}>2</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Deep Ghost (120d+)</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Deep Ghost (120d+)</div>
                 </div>
               </div>
             </div>
@@ -241,19 +243,19 @@ export default function GhostWatch() {
               Ghost Members
             </h2>
             <span
-              className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+              className="text-[11px] font-bold px-2 py-0.5 rounded-full"
               style={{ background: 'rgba(99,102,241,0.15)', color: C.ghost }}
             >
               {totalGhosts} members
             </span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Sort:</span>
+            <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Sort:</span>
             {(['revenue', 'days'] as const).map((s) => (
               <button
                 key={s}
                 onClick={() => setSortBy(s)}
-                className="text-[9px] font-bold px-2 py-1 rounded-lg transition-all"
+                className="text-[11px] font-bold px-2 py-1 rounded-lg transition-all"
                 style={{
                   background: sortBy === s ? C.ghost + '20' : 'transparent',
                   color: sortBy === s ? C.ghost : 'var(--text-muted)',
@@ -304,13 +306,13 @@ export default function GhostWatch() {
                           {m.name}
                         </span>
                         <span
-                          className="text-[9px] font-bold px-1.5 py-0.5 rounded"
+                          className="text-[11px] font-bold px-1.5 py-0.5 rounded"
                           style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}
                         >
                           {m.type}
                         </span>
                         <span
-                          className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+                          className="text-[11px] font-bold px-2 py-0.5 rounded-full"
                           style={{ background: sc.bg, color: sc.color }}
                         >
                           {m.status}
@@ -335,7 +337,7 @@ export default function GhostWatch() {
                       <div className="text-lg font-extrabold" style={{ color: C.red }}>
                         ${m.revenue.toLocaleString()}
                       </div>
-                      <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
+                      <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
                         annual dues at risk
                       </div>
                       <ChevronRight
@@ -354,7 +356,7 @@ export default function GhostWatch() {
                   <div className="px-4 pb-4 pt-0 border-t" style={{ borderColor: 'var(--card-border)' }}>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
                       <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
-                        <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>
+                        <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>
                           Member Profile
                         </div>
                         <div className="space-y-1 text-[10px]" style={{ color: 'var(--text-muted)' }}>
@@ -378,7 +380,7 @@ export default function GhostWatch() {
                       </div>
 
                       <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
-                        <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>
+                        <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>
                           Ghost Analysis
                         </div>
                         <div className="space-y-1 text-[10px]" style={{ color: 'var(--text-muted)' }}>
@@ -402,7 +404,7 @@ export default function GhostWatch() {
                       </div>
 
                       <div className="rounded-lg p-3" style={{ background: 'rgba(140,198,63,0.06)' }}>
-                        <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: C.green }}>
+                        <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: C.green }}>
                           Recovery Action
                         </div>
                         <p className="text-[10px] leading-relaxed" style={{ color: 'var(--heading)' }}>
@@ -443,7 +445,7 @@ export default function GhostWatch() {
               ].map((s) => (
                 <div key={s.label} className="text-center p-2 rounded-lg" style={{ background: 'var(--input-bg)' }}>
                   <div className="text-lg font-extrabold" style={{ color: s.color }}>{s.value}</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{s.label}</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{s.label}</div>
                 </div>
               ))}
             </div>
@@ -531,7 +533,7 @@ export default function GhostWatch() {
                     <span className="text-sm font-extrabold" style={{ color: s.color }}>{s.successRate}</span>
                   </div>
                   <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{s.desc}</p>
-                  <div className="text-[9px] mt-1 font-bold" style={{ color: s.color }}>Best for: {s.best}</div>
+                  <div className="text-[11px] mt-1 font-bold" style={{ color: s.color }}>Best for: {s.best}</div>
                 </div>
               ))}
             </div>
@@ -580,7 +582,7 @@ export default function GhostWatch() {
                   { feature: 'Best For', ghost: 'Silent departures', decay: 'Gradual disengagement' },
                 ].map((row) => (
                   <div key={row.feature} className="rounded-lg p-2" style={{ background: 'var(--input-bg)' }}>
-                    <div className="text-[9px] font-bold uppercase mb-1" style={{ color: 'var(--text-muted)' }}>{row.feature}</div>
+                    <div className="text-[11px] font-bold uppercase mb-1" style={{ color: 'var(--text-muted)' }}>{row.feature}</div>
                     <div className="grid grid-cols-2 gap-2 text-[10px]">
                       <div>
                         <span className="font-bold" style={{ color: C.ghost }}>GhostWatch:</span>{' '}
@@ -644,7 +646,7 @@ export default function GhostWatch() {
               <div className="text-[10px] font-bold" style={{ color: 'var(--heading)' }}>
                 Together they form a complete retention pipeline
               </div>
-              <div className="text-[9px] mt-0.5" style={{ color: 'var(--text-muted)' }}>
+              <div className="text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>
                 DecayRadar catches them slipping &rarr; GhostWatch catches them gone
               </div>
             </div>

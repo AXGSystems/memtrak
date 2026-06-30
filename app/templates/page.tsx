@@ -51,16 +51,16 @@ export default function Templates() {
             <div className="text-[10px] font-mono p-2 rounded-lg mb-2" style={{ background: 'var(--background)', color: 'var(--heading)' }}>Subject: {t.subject}</div>
             {preview?.id === t.id && (
               <div className="mt-3 p-3 rounded-lg border" style={{ borderColor: 'var(--card-border)', background: 'var(--background)' }}>
-                <div className="text-[9px] uppercase font-bold mb-2" style={{ color: 'var(--text-muted)' }}>Template Sections</div>
+                <div className="text-[11px] uppercase font-bold mb-2" style={{ color: 'var(--text-muted)' }}>Template Sections</div>
                 <div className="space-y-1">
                   {t.sections.map((s, i) => (
                     <div key={i} className="flex items-center gap-2 text-[10px] p-1.5 rounded" style={{ background: 'var(--card)' }}>
-                      <span className="w-4 h-4 rounded flex items-center justify-center text-[8px] font-bold" style={{ background: 'color-mix(in srgb, var(--accent) 15%, transparent)', color: 'var(--accent)' }}>{i + 1}</span>
+                      <span className="w-4 h-4 rounded flex items-center justify-center text-[11px] font-bold" style={{ background: 'color-mix(in srgb, var(--accent) 15%, transparent)', color: 'var(--accent)' }}>{i + 1}</span>
                       <span style={{ color: 'var(--heading)' }}>{s}</span>
                     </div>
                   ))}
                 </div>
-                <div className="mt-2 p-2 rounded text-[9px]" style={{ background: 'color-mix(in srgb, var(--accent) 6%, transparent)', color: 'var(--accent)' }}>
+                <div className="mt-2 p-2 rounded text-[11px]" style={{ background: 'color-mix(in srgb, var(--accent) 6%, transparent)', color: 'var(--accent)' }}>
                   <Mail className="w-3 h-3 inline mr-1" />MEMTrak auto-injects: logo tracker (open tracking), click wrapping on all links, CAN-SPAM unsubscribe footer
                 </div>
               </div>

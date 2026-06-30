@@ -328,3 +328,153 @@ export const REPORT_PRESETS: ReportPreset[] = [
 export function getReport(slug: string): ReportPreset | null {
   return REPORT_PRESETS.find((p) => p.slug === slug) ?? null;
 }
+
+// ── Output: CSV + branded print HTML (live-data) ────────────────
+//
+// These build report output from a fully-computed ReportResult, which is
+// derived from live ReportInputs (fetched from /api/memtrak/*). No demo data
+// is involved anywhere in this path — every figure traces back to a real query.
+
+/**
+ * Escape a value for safe interpolation into the printed/exported HTML report.
+ * Live report values (org names, factors, actions, etc.) come straight from API
+ * rows; without escaping, a member/org name containing markup would render as
+ * HTML in a printed or emailed report. Applied to every interpolated cell/KPI/
+ * header/title before it is written into the report document.
+ */
+function escapeHtml(v: string | number): string {
+  return String(v)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function csvCell(v: string | number): string {
+  let s = String(v);
+  // Prevent CSV formula injection (matches lib/export-utils.ts guard).
+  if (/^[=+\-@|\t]/.test(s)) s = "'" + s;
+  return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+}
+
+/** Serialize a computed ReportResult to CSV text. */
+export function reportToCSV(result: ReportResult): string {
+  const lines = [
+    result.columns.map(csvCell).join(','),
+    ...result.rows.map((row) => row.map((c) => csvCell(c.value)).join(',')),
+  ];
+  return lines.join('\n');
+}
+
+/** Provenance metadata stamped onto every printed report for audit-grade output. */
+export interface ReportProvenance {
+  /** Where the underlying rows came from, e.g. "/api/memtrak/members". */
+  sources: string[];
+  /** Total record count behind the report, for the citation line. */
+  recordCount?: number;
+}
+
+function reportId(slug: string): string {
+  const d = new Date();
+  const stamp = d.toISOString().slice(0, 10).replace(/-/g, '');
+  const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
+  return `MT-${slug.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8)}-${stamp}-${rand}`;
+}
+
+/**
+ * Render a computed ReportResult to a self-contained, branded HTML document
+ * string (MEMTrak navy/gold, inline hex colors — portable into email/Word).
+ * Reuses the same visual language as lib/print.ts but is driven entirely by
+ * live data plus real provenance metadata.
+ */
+export function memtrakReportHTML(
+  preset: ReportPreset,
+  result: ReportResult,
+  prov: ReportProvenance,
+  /** Optional PNG data-URI of the on-screen chart, embedded above the table so
+   *  the printed report matches what the user sees. Captured from the live
+   *  <canvas> at print time (see app/reports/[slug]/page.tsx). */
+  chartImage?: string,
+): string {
+  const now = new Date();
+  const asOf = now.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
+  const id = reportId(preset.slug);
+
+  const header = `
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;border-bottom:3px solid #C6A75E;padding-bottom:14px;margin-bottom:8px;">
+      <div>
+        <div style="font-size:24px;font-weight:800;color:#002D5C;letter-spacing:-0.5px;">MEMTrak</div>
+        <div style="font-size:13px;color:#002D5C;font-weight:600;margin-top:2px;">${escapeHtml(preset.title)}</div>
+        <div style="font-size:10px;color:#7a8898;margin-top:2px;">${escapeHtml(preset.subtitle)}</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:11px;color:#5a6d82;font-weight:600;">American Land Title Association</div>
+        <div style="font-size:9px;color:#9a9690;">by AXG Systems</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:14px;font-size:9px;color:#7a8898;margin-bottom:24px;">
+      <span><strong style="color:#5a6d82;">Report ID:</strong> ${id}</span>
+      <span><strong style="color:#5a6d82;">Data as-of:</strong> ${asOf}</span>
+      <span><strong style="color:#5a6d82;">Category:</strong> ${escapeHtml(preset.category)}</span>
+    </div>`;
+
+  const kpis = (result.kpis && result.kpis.length)
+    ? `<div style="display:grid;grid-template-columns:repeat(${Math.min(result.kpis.length, 4)},1fr);gap:12px;margin-bottom:20px;">${result.kpis.map((k) => `
+        <div style="background:#f4f6f8;border:1px solid #d1d9e2;border-radius:10px;padding:14px;">
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:#7a8898;font-weight:700;">${escapeHtml(k.label)}</div>
+          <div style="font-size:22px;font-weight:800;color:${k.color ?? '#002D5C'};margin:4px 0;">${escapeHtml(k.value)}</div>
+          ${k.sub ? `<div style="font-size:10px;color:#5a6d82;line-height:1.4;">${escapeHtml(k.sub)}</div>` : ''}
+        </div>`).join('')}</div>`
+    : '';
+
+  // Embed the chart image (data-URI) so the printed/exported report carries the
+  // same visualization the user sees on screen. Only rendered when a chart was
+  // captured AND the report actually has a chart to show.
+  const hasChart = !!(result.chart && result.chart.kind !== 'none' && result.chart.points.length);
+  const chartBlock = (chartImage && hasChart)
+    ? `<div style="margin:8px 0 20px;border:1px solid #d1d9e2;border-radius:10px;padding:14px 14px 8px;background:white;">
+        <div style="font-size:11px;font-weight:700;color:#002D5C;margin-bottom:8px;">${escapeHtml(result.chart!.title)}</div>
+        <img src="${chartImage}" alt="${escapeHtml(result.chart!.title)}" style="display:block;width:100%;max-width:100%;height:auto;" />
+      </div>`
+    : '';
+
+  const table = `<table style="width:100%;border-collapse:collapse;margin:12px 0;font-size:11px;">
+    <thead><tr>${result.columns.map((h, i) => `<th style="background:#002D5C;color:white;padding:8px 12px;text-align:${i === 0 ? 'left' : 'right'};font-size:9px;text-transform:uppercase;letter-spacing:0.05em;">${escapeHtml(h)}</th>`).join('')}</tr></thead>
+    <tbody>${result.rows.length === 0
+      ? `<tr><td colspan="${result.columns.length}" style="padding:14px;text-align:center;color:#7a8898;">No data for this period.</td></tr>`
+      : result.rows.map((row, i) => `<tr style="background:${i % 2 ? '#f8f9fb' : 'white'}">${row.map((c) => `<td style="padding:7px 12px;border-bottom:1px solid #e8eaee;text-align:${c.numeric ? 'right' : 'left'};font-weight:${c.bold ? 700 : 400};color:${c.bold ? '#002D5C' : '#2c3e50'};">${escapeHtml(c.value)}</td>`).join('')}</tr>`).join('')}
+    </tbody>
+  </table>`;
+
+  const note = result.note
+    ? `<div style="background:#f0f7e6;border:1px solid #8CC63F;border-radius:8px;padding:14px;margin:16px 0;font-size:11px;color:#2d4a1a;line-height:1.6;"><strong style="color:#4a7a1a;">Note:</strong> ${result.note}</div>`
+    : '';
+
+  const sourceLine = prov.sources.length
+    ? `Source${prov.sources.length > 1 ? 's' : ''}: ${prov.sources.join(', ')}${typeof prov.recordCount === 'number' ? ` — n=${prov.recordCount.toLocaleString()}` : ''}`
+    : '';
+
+  const footer = `<div style="margin-top:40px;padding-top:14px;border-top:1px solid #d1d9e2;text-align:center;font-size:9px;color:#9a9690;line-height:1.6;">
+    MEMTrak — Email Intelligence Platform for the American Land Title Association<br>
+    ${sourceLine ? sourceLine + '<br>' : ''}
+    Report ${id} · Generated ${asOf} · Built by AXG Systems<br>
+    <em>Confidential — For Internal ALTA Staff Use Only</em>
+  </div>`;
+
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${preset.title} — MEMTrak</title>
+    <style>body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#1B3A5C;background:white;padding:40px 48px;max-width:920px;margin:0 auto;font-size:12px;line-height:1.5;}
+    @media print{body{padding:0;}@page{margin:0.5in;size:letter;}thead{display:table-header-group;}tr{break-inside:avoid;}img{break-inside:avoid;}}</style></head>
+    <body>${header}${kpis}${chartBlock}${table}${note}${footer}</body></html>`;
+}
+
+/** Open a branded, provenance-stamped print window for a computed report.
+ *  Pass chartImage (a PNG data-URI captured from the on-screen chart) to embed
+ *  the visualization in the printed/exported output. */
+export function printReport(preset: ReportPreset, result: ReportResult, prov: ReportProvenance, chartImage?: string): void {
+  const w = window.open('', '_blank');
+  if (!w) return;
+  w.document.write(memtrakReportHTML(preset, result, prov, chartImage));
+  w.document.close();
+  setTimeout(() => { w.print(); }, 600);
+}

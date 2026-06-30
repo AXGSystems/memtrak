@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { logEvent } from '@/lib/memtrak';
+import { isValidEmail, isValidCampaignId, sanitize } from '@/lib/security';
 
 /**
  * MEMTrak Click Tracker
@@ -27,20 +28,23 @@ function isSafeUrl(url: string): boolean {
 }
 
 export async function GET(request: NextRequest) {
-  const cid = request.nextUrl.searchParams.get('cid') || 'unknown';
-  const rid = request.nextUrl.searchParams.get('rid') || 'unknown';
+  const cid = sanitize(request.nextUrl.searchParams.get('cid'), 100);
+  const rid = sanitize(request.nextUrl.searchParams.get('rid'), 254);
   const url = request.nextUrl.searchParams.get('url') || '';
 
-  // Log the click event
-  await logEvent({
-    type: 'click',
-    campaignId: cid,
-    recipientEmail: rid,
-    metadata: {
-      destinationUrl: url,
-      userAgent: request.headers.get('user-agent') || 'unknown',
-    },
-  });
+  // Record the click only when both identifiers are well-formed — forged or
+  // malformed beacons are redirected but never logged (no analytics poisoning).
+  if (isValidCampaignId(cid) && isValidEmail(rid)) {
+    await logEvent({
+      type: 'click',
+      campaignId: cid,
+      recipientEmail: rid,
+      metadata: {
+        destinationUrl: url && isSafeUrl(url) ? url : 'unsafe-or-missing',
+        userAgent: request.headers.get('user-agent') || 'unknown',
+      },
+    });
+  }
 
   // Validate and redirect
   if (url && isSafeUrl(url)) {

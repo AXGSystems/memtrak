@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
-import { isAuthEnabled, type AuthRole } from '@/lib/auth.config';
+import { isAuthEnabled, isPreviewOpen, type AuthRole } from '@/lib/auth.config';
 
 /**
  * GET /api/admin/runbook-status
@@ -23,12 +23,19 @@ function flag(key: string, hint?: string): EnvFlag {
 }
 
 export async function GET() {
+  // Fail closed. This endpoint enumerates which sensitive env vars are set
+  // (service-role key, AUTH_SECRET, Graph secret) — useful recon for an
+  // attacker — so it must require admin. When the session gate is off it is
+  // reachable ONLY in an explicit non-production preview; production never
+  // disables auth, so it is always admin-gated there.
   if (isAuthEnabled()) {
     const session = await auth();
     const user = session?.user as { role?: AuthRole } | undefined;
     if (user?.role !== 'admin') {
       return NextResponse.json({ error: 'Admin only' }, { status: 403 });
     }
+  } else if (!isPreviewOpen()) {
+    return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
   }
 
   return NextResponse.json({

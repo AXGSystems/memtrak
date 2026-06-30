@@ -162,21 +162,20 @@ const guides: Record<string, GuideContent> = {
     tips: [
       'Members scoring 50-69 are the intervention sweet spot — not yet gone, but trending down.',
       'An ACU underwriter at score 58 is worth more attention than 100 ACA agents at score 30.',
-      'Compare this view with ActiveCampaign pricing: they charge $186/mo for the same scoring.',
+      'Sort by LTV to prioritize high-value retention; sort by score to surface who is trending down.',
     ],
   },
   '/workflows': {
     title: 'Automated Workflows',
-    purpose: 'Event-triggered email sequences that run themselves. When a member\'s engagement drops, when an address bounces, when a renewal is approaching — workflows handle the first response automatically and escalate to staff when needed.',
+    purpose: 'Workflow definitions — the triggers and step sequences MEMTrak ships for membership retention (engagement decay, hard-bounce cleanup, new-member check-in, renewal countdown). These are designed blueprints; live enrollment and automatic execution require the email send engine and a scheduled evaluator.',
     steps: [
-      { label: 'Review active workflows', detail: 'Each workflow card shows the trigger condition, step-by-step actions, and conversion metrics. Click to expand the full timeline.' },
-      { label: 'Check conversion rates', detail: 'The conversion rate shows what percentage of enrolled members re-engaged. Benchmark: 15%+ for decay re-engagement is good.' },
-      { label: 'Monitor revenue protected', detail: 'Each workflow shows the dollar value of memberships it helped retain.' },
+      { label: 'Review the definitions', detail: 'Each card shows the trigger condition and the step-by-step sequence. Click to expand the full timeline.' },
+      { label: 'Read each step', detail: 'Steps are marked Automated or Manual and tagged by channel (Email, Phone, Alert, System).' },
+      { label: 'Understand the status', detail: 'Workflows are marked "Definition" until the send engine and evaluator are connected — at which point live enrollment and outcome data will populate from the MEMTrak event log.' },
     ],
     tips: [
-      'The engagement decay workflow saved $78K in the first quarter alone.',
-      'Manual steps (phone calls) are critical — automated emails get 15% conversion, but personal calls push it to 66%.',
-      'HubSpot charges $890/mo for this. ActiveCampaign charges $186/mo. MEMTrak includes it free.',
+      'Manual steps (phone calls) are deliberate escalation points — automation handles the routine touchpoints, staff handle the high-value ones.',
+      'These definitions are ready to wire to the send engine once Microsoft Graph and a scheduled evaluator are configured.',
     ],
   },
   '/journey': {
@@ -396,6 +395,15 @@ export default function TopBar() {
   if (pathname === '/portal' || pathname.startsWith('/portal/') || pathname === '/login') return null;
 
   const [currentTheme, setCurrentTheme] = useState('deep-blue');
+  // Default true so SSR renders ⌘K (matching prior static markup); corrected
+  // after mount for non-Mac users to avoid a hydration mismatch.
+  const [isMac, setIsMac] = useState(true);
+
+  useEffect(() => {
+    if (typeof navigator !== 'undefined') {
+      setIsMac(/Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent));
+    }
+  }, []);
 
   const switchTheme = (id: string) => {
     document.documentElement.setAttribute('data-theme', id);
@@ -403,12 +411,12 @@ export default function TopBar() {
     setCurrentTheme(id);
   };
 
+  // The anti-FOUC script in layout.tsx has already applied the saved theme to
+  // <html> before paint; here we only sync React state to match (after mount,
+  // to keep server/client markup identical and avoid a hydration mismatch).
   useEffect(() => {
-    const saved = localStorage.getItem('memtrak-theme');
-    if (saved) {
-      document.documentElement.setAttribute('data-theme', saved);
-      setCurrentTheme(saved);
-    }
+    const saved = document.documentElement.getAttribute('data-theme');
+    if (saved) setCurrentTheme(saved);
   }, []);
 
   return (
@@ -417,13 +425,16 @@ export default function TopBar() {
         <div className="text-[10px] font-medium" style={{ color: 'var(--text-muted)' }}>
           {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
         </div>
-        <kbd
+        <button
+          type="button"
+          aria-label="Open command palette"
+          onClick={() => document.dispatchEvent(new CustomEvent('memtrak:command-palette'))}
           className="text-[10px] font-bold px-1.5 py-0.5 rounded border cursor-pointer transition-all hover:opacity-80"
           style={{ color: 'var(--text-muted)', borderColor: 'var(--card-border)', background: 'var(--input-bg)' }}
           title="Quick navigation"
         >
-          &#8984;K
-        </kbd>
+          {isMac ? '⌘K' : 'Ctrl K'}
+        </button>
         {guide && (
           <>
             <div className="w-px h-4" style={{ background: 'var(--card-border)' }} />
@@ -438,27 +449,35 @@ export default function TopBar() {
               key={t.id}
               onClick={() => switchTheme(t.id)}
               title={t.label}
-              className="transition-all duration-200"
-              style={{
-                width: 20,
-                height: 20,
-                borderRadius: '50%',
-                background: t.color,
-                border: `2px solid ${currentTheme === t.id ? t.ring : 'rgba(128,128,128,0.2)'}`,
-                boxShadow: currentTheme === t.id ? `0 0 8px ${t.ring}50` : 'none',
-                transform: currentTheme === t.id ? 'scale(1.15)' : 'scale(1)',
-                opacity: currentTheme === t.id ? 1 : 0.5,
-              }}
-            />
+              aria-label={`Switch to ${t.label} theme`}
+              aria-pressed={currentTheme === t.id}
+              className="transition-all duration-200 inline-flex items-center justify-center"
+              style={{ width: 40, height: 40, background: 'transparent', border: 'none', padding: 0 }}
+            >
+              <span
+                style={{
+                  display: 'block',
+                  width: 22,
+                  height: 22,
+                  borderRadius: '50%',
+                  background: t.color,
+                  border: `2px solid ${currentTheme === t.id ? t.ring : 'rgba(128,128,128,0.2)'}`,
+                  boxShadow: currentTheme === t.id ? `0 0 8px ${t.ring}50` : 'none',
+                  transform: currentTheme === t.id ? 'scale(1.15)' : 'scale(1)',
+                  opacity: currentTheme === t.id ? 1 : 0.5,
+                }}
+              />
+            </button>
           ))}
         </div>
         <div className="hidden md:block w-px h-4" style={{ background: 'var(--card-border)' }} />
         <button
           onClick={() => memtrakPrint(title)}
+          aria-label={`Print ${title}`}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all hover:opacity-80"
           style={{ color: 'var(--accent)', border: '1px solid var(--card-border)' }}
         >
-          <Printer className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Print {title}</span>
+          <Printer className="w-3.5 h-3.5" aria-hidden="true" /> <span className="hidden sm:inline">Print {title}</span>
         </button>
         <AuthIndicator />
       </div>

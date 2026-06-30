@@ -356,7 +356,7 @@ export default function AudienceBuilder() {
                         {f.label}
                       </span>
                       <span
-                        className="text-[9px] font-bold px-1.5 py-0.5 rounded-full"
+                        className="text-[11px] font-bold px-1.5 py-0.5 rounded-full"
                         style={{ background: 'rgba(74,144,217,0.15)', color: C.blue }}
                       >
                         {filterMatchCounts[f.id] ?? syntheticMembers.length} matches
@@ -415,7 +415,7 @@ export default function AudienceBuilder() {
                   {(f.type === 'joinYear' || f.type === 'duesRange' || f.type === 'engagementScore' || f.type === 'lastOpen') && (
                     <div className="flex items-center gap-3">
                       <div className="flex-1">
-                        <label className="text-[9px] font-bold uppercase" style={{ color: 'var(--text-muted)' }}>Min</label>
+                        <label className="text-[11px] font-bold uppercase" style={{ color: 'var(--text-muted)' }}>Min</label>
                         <input
                           type="number"
                           value={f.min ?? ''}
@@ -426,7 +426,7 @@ export default function AudienceBuilder() {
                       </div>
                       <span className="text-[10px] font-bold mt-4" style={{ color: 'var(--text-muted)' }}>to</span>
                       <div className="flex-1">
-                        <label className="text-[9px] font-bold uppercase" style={{ color: 'var(--text-muted)' }}>Max</label>
+                        <label className="text-[11px] font-bold uppercase" style={{ color: 'var(--text-muted)' }}>Max</label>
                         <input
                           type="number"
                           value={f.max ?? ''}
@@ -524,7 +524,7 @@ export default function AudienceBuilder() {
                       <td className="py-2 px-2 font-bold" style={{ color: 'var(--heading)' }}>{m.name}</td>
                       <td className="py-2 px-2" style={{ color: 'var(--text-muted)' }}>{m.org}</td>
                       <td className="py-2 px-2">
-                        <span className="px-1.5 py-0.5 rounded text-[9px] font-bold" style={{ background: 'var(--input-bg)', color: 'var(--heading)' }}>
+                        <span className="px-1.5 py-0.5 rounded text-[11px] font-bold" style={{ background: 'var(--input-bg)', color: 'var(--heading)' }}>
                           {m.type}
                         </span>
                       </td>
@@ -586,7 +586,7 @@ export default function AudienceBuilder() {
                   <div className="flex items-center justify-between">
                     <div>
                       <div className="text-[11px] font-bold" style={{ color: 'var(--heading)' }}>{seg.name}</div>
-                      <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{seg.size.toLocaleString()} members</div>
+                      <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{seg.size.toLocaleString()} members</div>
                     </div>
                     <div className="flex items-center gap-1.5">
                       {selectedSegments.includes(seg.id) && (
@@ -608,7 +608,7 @@ export default function AudienceBuilder() {
                   </div>
                 </div>
               ))}
-              <p className="text-[9px] mt-2" style={{ color: 'var(--text-muted)' }}>
+              <p className="text-[11px] mt-2" style={{ color: 'var(--text-muted)' }}>
                 Click to select for overlap view. Double-click to load filters.
               </p>
             </div>

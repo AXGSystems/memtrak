@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Card from '@/components/Card';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import SparkKpi from '@/components/SparkKpi';
 import ClientChart from '@/components/ClientChart';
 import { MiniBar } from '@/components/SparkKpi';
@@ -102,6 +103,7 @@ export default function EngagePoints() {
 
   return (
     <div className="p-6">
+      <SampleDataBadge className="max-w-3xl" message="The engagement-point totals and leaderboard below are illustrative sample values. The members directory already stores an engagement_score; this gamified view will be wired to that live data." />
       {/* ── 1. Branded Header ─────────────────────────────────── */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
@@ -237,7 +239,7 @@ export default function EngagePoints() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-[11px] font-bold" style={{ color: 'var(--heading)' }}>{r.action}</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{r.description}</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{r.description}</div>
                 </div>
                 <div className="text-sm font-extrabold flex-shrink-0" style={{ color: r.color }}>
                   +{r.points}
@@ -269,7 +271,7 @@ export default function EngagePoints() {
                       <span className="ml-1" style={{ color: 'var(--text-muted)' }}>({m.org})</span>
                     </div>
                     <span className="font-bold" style={{ color: tierColors[m.tier] }}>{m.points.toLocaleString()} pts</span>
-                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ background: tierColors[m.tier] + '20', color: tierColors[m.tier] }}>
+                    <span className="text-[11px] font-bold px-1.5 py-0.5 rounded" style={{ background: tierColors[m.tier] + '20', color: tierColors[m.tier] }}>
                       {m.tier}
                     </span>
                   </div>
@@ -298,7 +300,7 @@ export default function EngagePoints() {
                     <div className="text-[11px] font-bold truncate" style={{ color: 'var(--heading)' }}>
                       {m.name}
                     </div>
-                    <div className="text-[9px] truncate" style={{ color: 'var(--text-muted)' }}>
+                    <div className="text-[11px] truncate" style={{ color: 'var(--text-muted)' }}>
                       {m.org}
                       <span className="ml-1 font-bold" style={{ color: tierColors[m.tier] }}>{m.type}</span>
                     </div>
@@ -317,11 +319,11 @@ export default function EngagePoints() {
                     <div className="flex items-center gap-1.5 mt-0.5">
                       <div className="flex items-center gap-0.5">
                         <Flame className="w-2.5 h-2.5" style={{ color: C.orange }} />
-                        <span className="text-[8px]" style={{ color: 'var(--text-muted)' }}>{m.streak}w</span>
+                        <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{m.streak}w</span>
                       </div>
                       <div className="flex items-center gap-0.5">
                         <Award className="w-2.5 h-2.5" style={{ color: C.purple }} />
-                        <span className="text-[8px]" style={{ color: 'var(--text-muted)' }}>{m.badges}</span>
+                        <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{m.badges}</span>
                       </div>
                     </div>
                   </div>
@@ -377,8 +379,8 @@ export default function EngagePoints() {
                 <b.icon className="w-5 h-5" style={{ color: b.color }} />
               </div>
               <div className="text-[10px] font-bold" style={{ color: 'var(--heading)' }}>{b.name}</div>
-              <div className="text-[9px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{b.description}</div>
-              <div className="text-[9px] font-bold mt-1.5" style={{ color: b.color }}>
+              <div className="text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{b.description}</div>
+              <div className="text-[11px] font-bold mt-1.5" style={{ color: b.color }}>
                 {b.earned.toLocaleString()} earned
               </div>
             </div>
@@ -402,11 +404,11 @@ export default function EngagePoints() {
               <div className="grid grid-cols-2 gap-2">
                 <div className="text-center p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
                   <div className="text-lg font-extrabold" style={{ color: C.green }}>97%</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Renewal rate (10+ weeks)</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Renewal rate (10+ weeks)</div>
                 </div>
                 <div className="text-center p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
                   <div className="text-lg font-extrabold" style={{ color: C.orange }}>72%</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Renewal rate (0 streak)</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Renewal rate (0 streak)</div>
                 </div>
               </div>
             </div>
@@ -478,7 +480,7 @@ export default function EngagePoints() {
                     <div className="flex items-center gap-2">
                       <t.icon className="w-4 h-4" style={{ color: t.color }} />
                       <span className="text-xs font-bold" style={{ color: t.color }}>{t.name}</span>
-                      <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{t.range}</span>
+                      <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{t.range}</span>
                     </div>
                     <span className="text-[10px] font-bold" style={{ color: 'var(--heading)' }}>{t.members.toLocaleString()} members</span>
                   </div>
@@ -516,14 +518,14 @@ export default function EngagePoints() {
                     <div className="text-xs font-extrabold" style={{ color: 'var(--heading)' }}>
                       {t.members.toLocaleString()}
                     </div>
-                    <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>members</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>members</div>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-1.5 mt-2">
                   {t.benefits.map((b) => (
                     <span
                       key={b}
-                      className="text-[8px] font-semibold px-2 py-0.5 rounded-full"
+                      className="text-[11px] font-semibold px-2 py-0.5 rounded-full"
                       style={{ background: t.color + '15', color: t.color }}
                     >
                       {b}

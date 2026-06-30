@@ -1,6 +1,7 @@
 'use client';
 
 import ClientChart from '@/components/ClientChart';
+import SampleDataBadge from '@/components/SampleDataBadge';
 
 const C = { green: '#8CC63F', blue: '#4A90D9', red: '#D94A4A', navy: '#002D5C' };
 
@@ -22,7 +23,8 @@ export default function Forecast() {
   return (
     <div className="p-6">
       <h1 className="text-lg font-extrabold mb-1" style={{ color: 'var(--heading)' }}>Revenue Forecasting</h1>
-      <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>Predict next-quarter revenue based on email engagement trends, renewal pacing, and member behavior. What HubSpot&apos;s Breeze Intelligence does for $890/mo.</p>
+      <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>Predict next-quarter revenue based on email engagement trends, renewal pacing, and member behavior.</p>
+      <SampleDataBadge message="The forecast and scenario figures below are illustrative sample values. A revenue model driven by the live invoices and renewal-pacing data is planned but not yet wired into this view." />
 
       {/* Quarterly Forecast */}
       <div className="rounded-xl border p-5 mb-6" style={{ background: 'var(--card)', borderColor: 'var(--card-border)' }}>

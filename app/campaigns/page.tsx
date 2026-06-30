@@ -1,6 +1,7 @@
 'use client';
 
 import Card from '@/components/Card';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import ClientChart from '@/components/ClientChart';
 import { demoCampaigns, getCampaignTotals } from '@/lib/demo-data';
@@ -15,8 +16,9 @@ const totals = getCampaignTotals();
 export default function Campaigns() {
   return (
     <div className="p-6">
+      <SampleDataBadge />
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>Campaigns ({demoCampaigns.length})</h1>
+        <h1 className="text-2xl font-extrabold tracking-tight" style={{ color: 'var(--heading)' }}>Campaigns ({demoCampaigns.length})</h1>
         <div className="flex gap-2">
           <button onClick={() => memtrakPrint('Campaigns')} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold border no-print transition-all duration-300 hover:translate-y-[-2px]" style={{ color: 'var(--text-muted)', borderColor: 'var(--card-border)' }}><Printer className="w-3 h-3" /> Print</button>
           <button onClick={() => exportCSV(['Campaign', 'Type', 'Status', 'Source', 'Date', 'Sent', 'Delivered', 'Opened', 'Clicked', 'Bounced', 'Revenue'], demoCampaigns.map(c => [c.name, c.type, c.status, c.source, c.sentDate, c.listSize, c.delivered, c.uniqueOpened, c.clicked, c.bounced, c.revenue]), 'MEMTrak_Campaigns')} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#8CC63F] hover:bg-[#6fa030] transition-all duration-300 hover:translate-y-[-2px]" style={{ color: 'var(--heading)' }}><Download className="w-3 h-3" /> CSV</button>
@@ -53,7 +55,7 @@ export default function Campaigns() {
               <div key={c.id} className="rounded-lg border p-4" style={{ background: 'var(--input-bg)', borderColor: 'var(--card-border)', animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-bold" style={{ color: 'var(--heading)' }}>{c.name}</span>
-                  <span className={`px-2 py-0.5 rounded-full text-[9px] font-semibold ${c.status === 'Sent' ? 'bg-green-500/20 text-green-400' : c.status === 'Scheduled' ? 'bg-blue-500/20 text-blue-400' : ''}`} style={c.status !== 'Sent' && c.status !== 'Scheduled' ? { color: 'var(--text-muted)', background: 'var(--input-bg)' } : undefined}>{c.status}</span>
+                  <span className={`px-2 py-0.5 rounded-full text-[11px] font-semibold ${c.status === 'Sent' ? 'bg-green-500/20 text-green-400' : c.status === 'Scheduled' ? 'bg-blue-500/20 text-blue-400' : ''}`} style={c.status !== 'Sent' && c.status !== 'Scheduled' ? { color: 'var(--text-muted)', background: 'var(--input-bg)' } : undefined}>{c.status}</span>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
                   <div>
@@ -116,8 +118,8 @@ export default function Campaigns() {
               {demoCampaigns.map((c, i) => (
                 <tr key={c.id} className="border-b transition-all duration-300 hover:bg-[rgba(255,255,255,0.03)]" style={{ borderColor: 'var(--card-border)', color: 'var(--text-muted)', animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
                   <td className="py-2.5 font-semibold" style={{ color: 'var(--heading)' }}>{c.name}</td>
-                  <td className="py-2.5 text-center"><span className={`px-2 py-0.5 rounded text-[9px] font-semibold ${c.source === 'MEMTrak' ? 'bg-green-500/20 text-green-400' : c.source === 'Higher Logic' ? 'bg-blue-500/20 text-blue-400' : ''}`} style={c.source !== 'MEMTrak' && c.source !== 'Higher Logic' ? { background: 'var(--input-bg)', color: 'var(--text-muted)' } : undefined}>{c.source}</span></td>
-                  <td className="py-2.5 text-center"><span className={`px-2 py-0.5 rounded-full text-[9px] font-semibold ${c.status === 'Sent' ? 'bg-green-500/20 text-green-400' : c.status === 'Scheduled' ? 'bg-blue-500/20 text-blue-400' : ''}`} style={c.status !== 'Sent' && c.status !== 'Scheduled' ? { background: 'var(--input-bg)', color: 'var(--text-muted)' } : undefined}>{c.status}</span></td>
+                  <td className="py-2.5 text-center"><span className={`px-2 py-0.5 rounded text-[11px] font-semibold ${c.source === 'MEMTrak' ? 'bg-green-500/20 text-green-400' : c.source === 'Higher Logic' ? 'bg-blue-500/20 text-blue-400' : ''}`} style={c.source !== 'MEMTrak' && c.source !== 'Higher Logic' ? { background: 'var(--input-bg)', color: 'var(--text-muted)' } : undefined}>{c.source}</span></td>
+                  <td className="py-2.5 text-center"><span className={`px-2 py-0.5 rounded-full text-[11px] font-semibold ${c.status === 'Sent' ? 'bg-green-500/20 text-green-400' : c.status === 'Scheduled' ? 'bg-blue-500/20 text-blue-400' : ''}`} style={c.status !== 'Sent' && c.status !== 'Scheduled' ? { background: 'var(--input-bg)', color: 'var(--text-muted)' } : undefined}>{c.status}</span></td>
                   <td className="py-2.5 text-right">{c.listSize.toLocaleString()}</td>
                   <td className="py-2.5 text-right">{c.delivered > 0 ? <span className={`font-bold ${(c.uniqueOpened / c.delivered * 100) >= 40 ? 'text-green-400' : 'text-amber-400'}`}>{(c.uniqueOpened / c.delivered * 100).toFixed(1)}%</span> : '—'}</td>
                   <td className="py-2.5 text-right">{c.delivered > 0 ? (c.clicked / c.delivered * 100).toFixed(1) + '%' : '—'}</td>

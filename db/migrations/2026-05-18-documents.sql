@@ -29,10 +29,17 @@ create index if not exists memtrak_documents_tags_gin        on public.memtrak_d
 
 alter table public.memtrak_documents enable row level security;
 
--- Anonymous reads are fine (no PII). Writes are service-role only.
+-- ISO 27001 A.5.12 (Classification) + A.8.3 (Information Access Restriction):
+-- this library holds Contracts, Financial Reports, Bylaws and Meeting Minutes,
+-- and the `url` column points at the SharePoint/Drive location of those
+-- confidential governance files. Exposing the row to the browser anon key
+-- leaks the existence and storage location of confidential documents, so the
+-- previous blanket `for select to anon using (true)` is REVOKED. All reads now
+-- flow through server-only routes (lib/member-data.ts -> service-role client),
+-- which bypass RLS. The anon role gets NO access; default-deny stands.
 drop policy if exists memtrak_documents_anon_read on public.memtrak_documents;
-create policy memtrak_documents_anon_read on public.memtrak_documents
-  for select to anon using (true);
+revoke all on public.memtrak_documents from anon;
+revoke all on public.memtrak_documents from authenticated;
 
 drop policy if exists memtrak_documents_service_all on public.memtrak_documents;
 create policy memtrak_documents_service_all on public.memtrak_documents

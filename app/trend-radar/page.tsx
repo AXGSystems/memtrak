@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Card from '@/components/Card';
 import SparkKpi from '@/components/SparkKpi';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import ClientChart from '@/components/ClientChart';
 import PulsingMeter from '@/components/PulsingMeter';
 import AnimatedCounter from '@/components/AnimatedCounter';
@@ -181,6 +182,7 @@ export default function TrendRadar() {
 
   return (
     <div className="p-6 space-y-6">
+      <SampleDataBadge message="The emerging-trend signals and momentum figures below are illustrative sample values until trend detection is computed from the live MEMTRAK engagement and event feeds." />
       {/* ── Page Header ──────────────────────────────────────── */}
       <div>
         <div className="flex items-center gap-2 mb-1">
@@ -274,7 +276,7 @@ export default function TrendRadar() {
                   <h3 className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{t.title}</h3>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
-                  <span className="text-[8px] uppercase font-bold px-2 py-0.5 rounded-full" style={{ background: confStyle.bg, color: confStyle.color }}>
+                  <span className="text-[11px] uppercase font-bold px-2 py-0.5 rounded-full" style={{ background: confStyle.bg, color: confStyle.color }}>
                     {t.confidence}
                   </span>
                 </div>
@@ -291,7 +293,7 @@ export default function TrendRadar() {
               {/* Metric + impact */}
               <div className="flex items-center gap-3 mb-3">
                 <div className="px-2 py-1 rounded-lg" style={{ background: 'var(--background)' }}>
-                  <span className="text-[9px] font-bold" style={{ color: 'var(--text-muted)' }}>{t.metric}: </span>
+                  <span className="text-[11px] font-bold" style={{ color: 'var(--text-muted)' }}>{t.metric}: </span>
                   <span className="text-xs font-extrabold" style={{ color: t.color }}>{t.metricValue}</span>
                 </div>
                 <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{t.impact}</span>
@@ -347,11 +349,11 @@ export default function TrendRadar() {
 
               {/* Confidence + Direction badges */}
               <div className="flex items-center gap-2">
-                <span className="text-[9px] uppercase font-bold px-2 py-0.5 rounded-full"
+                <span className="text-[11px] uppercase font-bold px-2 py-0.5 rounded-full"
                   style={{ background: confidenceConfig[detailTrend.confidence].bg, color: confidenceConfig[detailTrend.confidence].color }}>
                   {detailTrend.confidence} Confidence
                 </span>
-                <span className="text-[9px] uppercase font-bold px-2 py-0.5 rounded-full"
+                <span className="text-[11px] uppercase font-bold px-2 py-0.5 rounded-full"
                   style={{ background: `color-mix(in srgb, ${detailTrend.color} 15%, transparent)`, color: detailTrend.color }}>
                   {detailTrend.direction === 'up' ? 'Trending Up' : detailTrend.direction === 'down' ? 'Trending Down' : 'Neutral'}
                 </span>
@@ -359,13 +361,13 @@ export default function TrendRadar() {
 
               {/* Key metric */}
               <div className="p-4 rounded-xl text-center" style={{ background: 'var(--background)' }}>
-                <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>{detailTrend.metric}</div>
+                <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>{detailTrend.metric}</div>
                 <div className="text-3xl font-extrabold" style={{ color: detailTrend.color }}>{detailTrend.metricValue}</div>
               </div>
 
               {/* Sparkline */}
               <div className="p-3 rounded-xl" style={{ background: 'var(--background)' }}>
-                <div className="text-[9px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>6-Month Trend</div>
+                <div className="text-[11px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>6-Month Trend</div>
                 <div className="flex justify-center">
                   <MiniSparkline data={detailTrend.sparkData} color={detailTrend.color} width={200} height={60} />
                 </div>
@@ -373,13 +375,13 @@ export default function TrendRadar() {
 
               {/* Detailed insight */}
               <div>
-                <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Analysis</div>
+                <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Analysis</div>
                 <p className="text-xs leading-relaxed" style={{ color: 'var(--heading)' }}>{detailTrend.detailInsight}</p>
               </div>
 
               {/* Impact */}
               <div className="p-3 rounded-lg" style={{ background: `color-mix(in srgb, ${detailTrend.color} 8%, transparent)`, borderLeft: `3px solid ${detailTrend.color}` }}>
-                <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Impact</div>
+                <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Impact</div>
                 <p className="text-xs font-semibold" style={{ color: 'var(--heading)' }}>{detailTrend.impact}</p>
               </div>
 
@@ -387,7 +389,7 @@ export default function TrendRadar() {
               <div className="p-3 rounded-lg" style={{ background: 'var(--background)' }}>
                 <div className="flex items-center gap-1 mb-1">
                   <Lightbulb className="w-3 h-3" style={{ color: 'var(--accent)' }} />
-                  <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Recommended Action</div>
+                  <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Recommended Action</div>
                 </div>
                 <p className="text-xs font-semibold" style={{ color: 'var(--heading)' }}>{detailTrend.recommendation}</p>
               </div>

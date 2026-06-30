@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { MousePointerClick } from 'lucide-react';
+import SampleDataBadge from '@/components/SampleDataBadge';
 
 // Email click heatmap — shows WHERE in the email people click
 const emailSections = [
@@ -23,17 +24,36 @@ const campaigns = [
 ];
 
 export default function Heatmap() {
-  const [selected] = useState(0);
+  const [selected, setSelected] = useState(0);
 
   return (
     <div className="p-6">
       <h1 className="text-lg font-extrabold mb-1" style={{ color: 'var(--heading)' }}>Email Click Heatmap</h1>
-      <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>See exactly WHERE recipients click in your emails — what Insider One and Mailchimp Premium charge for. Optimize CTA placement based on real click data.</p>
+      <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>See exactly WHERE recipients click in your emails — what Insider One and Mailchimp Premium charge for. Optimize CTA placement based on per-section click data.</p>
+      <SampleDataBadge message="Per-section click positions are not yet captured by the MEMTRAK click endpoint (which records the click, not its location in the email). The distributions below are illustrative sample values until section-level tracking is wired." />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Visual Heatmap */}
         <div className="rounded-xl border p-5" style={{ background: 'var(--card)', borderColor: 'var(--card-border)' }}>
-          <h3 className="text-xs font-bold mb-4" style={{ color: 'var(--heading)' }}>Click Distribution — {campaigns[selected].name}</h3>
+          <h3 className="text-xs font-bold mb-3" style={{ color: 'var(--heading)' }}>Click Distribution — {campaigns[selected].name}</h3>
+          <div className="flex flex-wrap gap-1.5 mb-4">
+            {campaigns.map((c, i) => (
+              <button
+                key={c.name}
+                type="button"
+                onClick={() => setSelected(i)}
+                aria-pressed={selected === i}
+                className="text-[10px] font-semibold px-2.5 py-1 rounded-full transition-colors"
+                style={{
+                  background: selected === i ? 'var(--accent)' : 'var(--background)',
+                  color: selected === i ? '#0b0f14' : 'var(--text-muted)',
+                  border: `1px solid ${selected === i ? 'var(--accent)' : 'var(--card-border)'}`,
+                }}
+              >
+                {c.name} · {c.totalClicks}
+              </button>
+            ))}
+          </div>
           <div className="space-y-1">
             {emailSections.map(s => {
               const intensity = s.pct / 50; // normalize to 0-1
@@ -49,7 +69,7 @@ export default function Heatmap() {
                   </div>
                   <div className="w-32 flex-shrink-0">
                     <div className="text-[10px] font-semibold" style={{ color: 'var(--heading)' }}>{s.section}</div>
-                    <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{s.clicks} clicks</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{s.clicks} clicks</div>
                   </div>
                 </div>
               );

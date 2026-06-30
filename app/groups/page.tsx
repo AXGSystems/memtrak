@@ -85,13 +85,13 @@ export default function GroupsPage() {
                       <div className="flex items-center gap-2 flex-wrap">
                         <h3 className="text-sm font-bold" style={{ color: 'var(--heading)' }}>{g.name}</h3>
                         <span
-                          className="text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded"
+                          className="text-[11px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded"
                           style={{ color, background: `color-mix(in srgb, ${color} 14%, transparent)` }}
                         >
                           {g.group_type}
                         </span>
                         {!g.is_active && (
-                          <span className="text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded inline-flex items-center gap-1" style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}>
+                          <span className="text-[11px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded inline-flex items-center gap-1" style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}>
                             <Pause className="w-2.5 h-2.5" /> Inactive
                           </span>
                         )}

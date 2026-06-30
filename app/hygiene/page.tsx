@@ -1,6 +1,7 @@
 'use client';
 
 import ClientChart from '@/components/ClientChart';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import Card from '@/components/Card';
 import ProgressRing from '@/components/ProgressRing';
 import AnimatedCounter from '@/components/AnimatedCounter';
@@ -12,6 +13,7 @@ const h = demoHygiene;
 export default function Hygiene() {
   return (
     <div className="p-6">
+      <SampleDataBadge />
       <h1 className="text-lg font-extrabold mb-6" style={{ color: 'var(--heading)' }}>Address Hygiene</h1>
 
       {/* Health Rings — bigger, better spacing */}
@@ -90,7 +92,7 @@ export default function Hygiene() {
                 <div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{r.action}</div>
                 <div className="text-[10px] text-green-400 mt-0.5">{r.impact}</div>
               </div>
-              <span className={`text-[9px] px-2.5 py-1 rounded-full font-bold flex-shrink-0 ml-3 ${r.color}`}>{r.when}</span>
+              <span className={`text-[11px] px-2.5 py-1 rounded-full font-bold flex-shrink-0 ml-3 ${r.color}`}>{r.when}</span>
             </div>
           ))}
         </div>

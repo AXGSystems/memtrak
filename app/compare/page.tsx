@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import ClientChart from '@/components/ClientChart';
 import { demoCampaigns } from '@/lib/demo-data';
 
@@ -16,6 +17,7 @@ export default function Compare() {
 
   return (
     <div className="p-6">
+      <SampleDataBadge />
       <h1 className="text-lg font-extrabold mb-1" style={{ color: 'var(--heading)' }}>Campaign Comparison</h1>
       <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>Compare any two campaigns side-by-side — see what worked and what didn&apos;t.</p>
 
@@ -54,7 +56,7 @@ export default function Compare() {
                     { label: 'Unsubscribed', value: String(camp.unsubscribed) },
                   ].map(m => (
                     <div key={m.label} className="p-2 rounded-lg" style={{ background: 'var(--background)' }}>
-                      <div className="text-[9px] uppercase" style={{ color: 'var(--text-muted)' }}>{m.label}</div>
+                      <div className="text-[11px] uppercase" style={{ color: 'var(--text-muted)' }}>{m.label}</div>
                       <div className="text-sm font-extrabold" style={{ color: 'var(--heading)' }}>{m.value}</div>
                     </div>
                   ))}

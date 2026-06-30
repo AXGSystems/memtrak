@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useDialogA11y } from '@/lib/useDialogA11y';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import Card from '@/components/Card';
 import SparkKpi from '@/components/SparkKpi';
 import { demoCampaigns } from '@/lib/demo-data';
@@ -102,6 +104,10 @@ const preventedEvents = [
 export default function CollisionGuardPage() {
   const [selectedCollision, setSelectedCollision] = useState<Collision | null>(null);
   const [selectedSend, setSelectedSend] = useState<ScheduledSend | null>(null);
+  const collisionRef = useRef<HTMLDivElement>(null);
+  const sendRef = useRef<HTMLDivElement>(null);
+  useDialogA11y(!!selectedCollision, () => setSelectedCollision(null), collisionRef);
+  useDialogA11y(!!selectedSend, () => setSelectedSend(null), sendRef);
 
   const totalScheduled = scheduledSends.length;
   const totalCollisions = collisions.length;
@@ -110,6 +116,7 @@ export default function CollisionGuardPage() {
 
   return (
     <div className="p-6 space-y-6">
+      <SampleDataBadge />
 
       {/* ── 1. Branded Header ── */}
       <div className="flex items-center gap-4">
@@ -251,7 +258,7 @@ export default function CollisionGuardPage() {
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{day}</span>
                     {dayCollision && (
-                      <span className="text-[8px] px-2 py-0.5 rounded-full font-bold" style={{
+                      <span className="text-[11px] px-2 py-0.5 rounded-full font-bold" style={{
                         background: dayCollision.severity === 'critical' ? 'rgba(217,74,74,0.15)' : 'rgba(232,146,63,0.15)',
                         color: dayCollision.severity === 'critical' ? C.red : C.orange,
                       }}>
@@ -266,7 +273,7 @@ export default function CollisionGuardPage() {
                       <div key={s.id} className="rounded-lg p-3 mb-2 flex items-center gap-3" style={{ background: 'var(--background)', borderLeft: `3px solid ${s.color}` }}>
                         <div className="flex-1 min-w-0">
                           <div className="text-[11px] font-bold" style={{ color: 'var(--heading)' }}>{s.name}</div>
-                          <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{s.time} via {s.source} | {s.audience} ({s.audienceSize.toLocaleString()})</div>
+                          <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{s.time} via {s.source} | {s.audience} ({s.audienceSize.toLocaleString()})</div>
                         </div>
                       </div>
                     ))
@@ -302,7 +309,7 @@ export default function CollisionGuardPage() {
                     {dayCollision && (
                       <div className="flex items-center justify-center gap-1 mt-0.5">
                         <AlertTriangle className="w-2.5 h-2.5" style={{ color: dayCollision.severity === 'critical' ? C.red : C.orange }} />
-                        <span className="text-[8px] font-bold" style={{ color: dayCollision.severity === 'critical' ? C.red : C.orange }}>
+                        <span className="text-[11px] font-bold" style={{ color: dayCollision.severity === 'critical' ? C.red : C.orange }}>
                           {dayCollision.severity === 'critical' ? 'COLLISION' : 'OVERLAP'}
                         </span>
                       </div>
@@ -320,16 +327,16 @@ export default function CollisionGuardPage() {
                       }}
                       onClick={() => setSelectedSend(s)}
                     >
-                      <div className="text-[9px] font-bold leading-tight" style={{ color: 'var(--heading)' }}>{s.name}</div>
-                      <div className="text-[8px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{s.time}</div>
-                      <div className="text-[8px]" style={{ color: 'var(--text-muted)' }}>{s.source}</div>
-                      <div className="text-[8px] font-bold mt-0.5" style={{ color: s.color }}>{s.audienceSize.toLocaleString()}</div>
+                      <div className="text-[11px] font-bold leading-tight" style={{ color: 'var(--heading)' }}>{s.name}</div>
+                      <div className="text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{s.time}</div>
+                      <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{s.source}</div>
+                      <div className="text-[11px] font-bold mt-0.5" style={{ color: s.color }}>{s.audienceSize.toLocaleString()}</div>
                     </div>
                   ))}
 
                   {daySends.length === 0 && (
                     <div className="rounded-lg p-3 text-center" style={{ background: 'var(--background)', border: '1px dashed var(--card-border)' }}>
-                      <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>No sends</span>
+                      <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>No sends</span>
                     </div>
                   )}
                 </div>
@@ -367,12 +374,12 @@ export default function CollisionGuardPage() {
                 <div className="text-[10px] font-semibold mb-1" style={{ color: 'var(--heading)' }}>
                   {c.sends.join(' + ')}
                 </div>
-                <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
+                <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
                   {c.overlapCount.toLocaleString()} overlapping members: {c.overlapAudience}
                 </div>
                 <div className="flex items-center gap-1 mt-2">
                   <ChevronRight className="w-3 h-3" style={{ color: 'var(--accent)' }} />
-                  <span className="text-[9px] font-bold" style={{ color: 'var(--accent)' }}>View recommendation</span>
+                  <span className="text-[11px] font-bold" style={{ color: 'var(--accent)' }}>View recommendation</span>
                 </div>
               </div>
             ))}
@@ -413,11 +420,11 @@ export default function CollisionGuardPage() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="text-[10px] font-bold" style={{ color: 'var(--heading)' }}>{e.original}</div>
-                  <div className="text-[9px]" style={{ color: C.green }}>{e.action}</div>
+                  <div className="text-[11px]" style={{ color: C.green }}>{e.action}</div>
                 </div>
                 <div className="text-right flex-shrink-0">
                   <div className="text-[10px] font-bold" style={{ color: 'var(--heading)' }}>{e.members}</div>
-                  <div className="text-[8px]" style={{ color: 'var(--text-muted)' }}>{e.date}</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{e.date}</div>
                 </div>
               </div>
             ))}
@@ -428,8 +435,13 @@ export default function CollisionGuardPage() {
       {/* ── Collision Detail Modal ── */}
       {selectedCollision && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={() => setSelectedCollision(null)}>
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" aria-hidden="true" />
           <div
+            ref={collisionRef}
+            tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Collision detail"
             className="relative w-full max-w-lg max-h-[80vh] overflow-y-auto rounded-2xl border"
             style={{ background: 'var(--card)', borderColor: 'var(--card-border)', boxShadow: '0 25px 60px rgba(0,0,0,0.4)' }}
             onClick={e => e.stopPropagation()}
@@ -448,14 +460,14 @@ export default function CollisionGuardPage() {
             <div className="p-6 space-y-4">
               {/* Conflicting sends */}
               <div>
-                <div className="text-[9px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>Conflicting Sends</div>
+                <div className="text-[11px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>Conflicting Sends</div>
                 {selectedCollision.sends.map((name, i) => {
                   const send = scheduledSends.find(s => s.name === name);
                   return (
                     <div key={i} className="rounded-lg p-3 mb-2" style={{ background: 'var(--background)', borderLeft: `3px solid ${send?.color || C.blue}` }}>
                       <div className="text-[11px] font-bold" style={{ color: 'var(--heading)' }}>{name}</div>
                       {send && (
-                        <div className="text-[9px] mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                        <div className="text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>
                           {send.time} via {send.source} | {send.audience} ({send.audienceSize.toLocaleString()})
                         </div>
                       )}
@@ -489,8 +501,13 @@ export default function CollisionGuardPage() {
       {/* ── Send Detail Modal ── */}
       {selectedSend && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={() => setSelectedSend(null)}>
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" aria-hidden="true" />
           <div
+            ref={sendRef}
+            tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Scheduled send detail"
             className="relative w-full max-w-md max-h-[80vh] overflow-y-auto rounded-2xl border"
             style={{ background: 'var(--card)', borderColor: 'var(--card-border)', boxShadow: '0 25px 60px rgba(0,0,0,0.4)' }}
             onClick={e => e.stopPropagation()}
@@ -513,13 +530,13 @@ export default function CollisionGuardPage() {
                   { label: 'Audience Size', val: selectedSend.audienceSize.toLocaleString() },
                 ].map(d => (
                   <div key={d.label} className="rounded-lg p-3" style={{ background: 'var(--background)' }}>
-                    <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>{d.label}</div>
+                    <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>{d.label}</div>
                     <div className="text-sm font-extrabold mt-0.5" style={{ color: 'var(--heading)' }}>{d.val}</div>
                   </div>
                 ))}
               </div>
               <div className="rounded-lg p-3" style={{ background: 'var(--background)' }}>
-                <div className="text-[9px] uppercase tracking-wider font-bold mb-0.5" style={{ color: 'var(--text-muted)' }}>Target Audience</div>
+                <div className="text-[11px] uppercase tracking-wider font-bold mb-0.5" style={{ color: 'var(--text-muted)' }}>Target Audience</div>
                 <div className="text-xs font-bold" style={{ color: selectedSend.color }}>{selectedSend.audience}</div>
               </div>
               {collisions.find(c => c.sends.includes(selectedSend.name)) && (

@@ -44,7 +44,7 @@ function DigitBox({
 }) {
   const pad = String(value).padStart(2, '0');
   const numSize = size === 'sm' ? 'text-lg' : size === 'lg' ? 'text-3xl' : 'text-2xl';
-  const unitSize = size === 'sm' ? 'text-[7px]' : size === 'lg' ? 'text-[10px]' : 'text-[8px]';
+  const unitSize = size === 'sm' ? 'text-[11px]' : size === 'lg' ? 'text-[10px]' : 'text-[11px]';
   const boxPad = size === 'sm' ? 'px-2 py-1.5' : size === 'lg' ? 'px-4 py-3' : 'px-3 py-2';
 
   return (
@@ -110,7 +110,7 @@ export default function CountdownClock({
   const elapsed = Date.now() - startMs;
   const progress = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
 
-  const labelSize = size === 'sm' ? 'text-[9px]' : size === 'lg' ? 'text-xs' : 'text-[10px]';
+  const labelSize = size === 'sm' ? 'text-[11px]' : size === 'lg' ? 'text-xs' : 'text-[10px]';
   const sepSize = size === 'sm' ? 'text-sm' : size === 'lg' ? 'text-xl' : 'text-base';
   const barHeight = size === 'sm' ? 4 : size === 'lg' ? 6 : 5;
 
@@ -181,10 +181,10 @@ export default function CountdownClock({
           />
         </div>
         <div className="flex justify-between mt-1">
-          <span className="text-[8px] font-semibold" style={{ color: 'var(--text-muted)' }}>
+          <span className="text-[11px] font-semibold" style={{ color: 'var(--text-muted)' }}>
             {Math.round(progress)}% elapsed
           </span>
-          <span className="text-[8px] font-semibold" style={{ color: 'var(--text-muted)' }}>
+          <span className="text-[11px] font-semibold" style={{ color: 'var(--text-muted)' }}>
             {Math.round(100 - progress)}% remaining
           </span>
         </div>

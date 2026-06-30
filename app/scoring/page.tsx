@@ -12,7 +12,7 @@ import { Download, Users, DollarSign, AlertTriangle } from 'lucide-react';
 
 const C = { navy: '#002D5C', blue: '#4A90D9', green: '#8CC63F', red: '#D94A4A', orange: '#E8923F', purple: '#a855f7' };
 
-// Engagement scoring model — what ActiveCampaign charges $186/mo for
+// Engagement scoring model — composite per-member score from logged events
 const scoringModel = [
   { factor: 'Email Opens (last 90d)', weight: 25, description: 'How often they open emails from ALTA' },
   { factor: 'Email Clicks (last 90d)', weight: 20, description: 'Did they click through to content or registration?' },
@@ -107,7 +107,7 @@ export default function Scoring() {
     return (
       <div className="p-6">
         <h1 className="text-lg font-extrabold mb-1" style={{ color: 'var(--heading)' }}>Engagement Scoring & Member Lifetime Value</h1>
-        <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>Per-member composite scoring + predicted lifetime revenue — what ActiveCampaign and Klaviyo charge $300+/mo for. MEMTrak does it for free.</p>
+        <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>Per-member composite scoring + projected lifetime revenue.</p>
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-6">
           <SkeletonKPI /><SkeletonKPI /><SkeletonKPI /><SkeletonKPI /><SkeletonKPI />
         </div>
@@ -122,7 +122,7 @@ export default function Scoring() {
   return (
     <div className="p-6">
       <h1 className="text-lg font-extrabold mb-1" style={{ color: 'var(--heading)' }}>Engagement Scoring & Member Lifetime Value</h1>
-      <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>Per-member composite scoring + predicted lifetime revenue — what ActiveCampaign and Klaviyo charge $300+/mo for. MEMTrak does it for free.</p>
+      <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>Per-member composite scoring + projected lifetime revenue.</p>
 
       {/* Score Distribution KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-6 stagger-children">
@@ -218,7 +218,7 @@ export default function Scoring() {
                   <div className="h-2 rounded-full" style={{ background: 'var(--card-border)' }}>
                     <div className="h-2 rounded-full" style={{ width: `${f.weight}%`, background: 'var(--accent)' }} />
                   </div>
-                  <div className="text-[9px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{f.description}</div>
+                  <div className="text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{f.description}</div>
                 </div>
               </div>
             ))}
@@ -336,8 +336,8 @@ export default function Scoring() {
                   <td className="py-2.5 text-right" style={{ color: m.emails >= 70 ? C.green : m.emails >= 40 ? C.orange : C.red }}>{m.emails}%</td>
                   <td className="py-2.5 text-right" style={{ color: 'var(--heading)' }}>{m.clicks}%</td>
                   <td className="py-2.5 text-right" style={{ color: 'var(--heading)' }}>{m.events}</td>
-                  <td className="py-2.5 text-center"><span className={`text-[9px] px-2 py-0.5 rounded-full font-semibold ${m.dues === 'Early' ? 'bg-green-500/20 text-green-400' : m.dues === 'On-time' ? 'bg-blue-500/20 text-blue-400' : m.dues === 'Late' ? 'bg-amber-500/20 text-amber-400' : 'bg-red-500/20 text-red-400'}`}>{m.dues}</span></td>
-                  <td className="py-2.5 text-center"><span className={`text-[9px] px-2 py-0.5 rounded-full font-semibold ${m.trend === 'rising' ? 'bg-green-500/20 text-green-400' : m.trend === 'stable' ? 'bg-blue-500/20 text-blue-400' : m.trend === 'declining' ? 'bg-amber-500/20 text-amber-400' : 'bg-red-500/20 text-red-400'}`}>{m.trend}</span></td>
+                  <td className="py-2.5 text-center"><span className={`text-[11px] px-2 py-0.5 rounded-full font-semibold ${m.dues === 'Early' ? 'bg-green-500/20 text-green-400' : m.dues === 'On-time' ? 'bg-blue-500/20 text-blue-400' : m.dues === 'Late' ? 'bg-amber-500/20 text-amber-400' : 'bg-red-500/20 text-red-400'}`}>{m.dues}</span></td>
+                  <td className="py-2.5 text-center"><span className={`text-[11px] px-2 py-0.5 rounded-full font-semibold ${m.trend === 'rising' ? 'bg-green-500/20 text-green-400' : m.trend === 'stable' ? 'bg-blue-500/20 text-blue-400' : m.trend === 'declining' ? 'bg-amber-500/20 text-amber-400' : 'bg-red-500/20 text-red-400'}`}>{m.trend}</span></td>
                   <td className={`py-2.5 text-center font-bold ${riskColors[m.risk]}`}>{m.risk}</td>
                 </tr>
               ))}

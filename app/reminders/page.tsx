@@ -397,11 +397,11 @@ export default function RemindersPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{r.org}</span>
-                      <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold" style={{ background: 'rgba(217,74,74,0.15)', color: C.red }}>
+                      <span className="text-[11px] px-1.5 py-0.5 rounded-full font-bold" style={{ background: 'rgba(217,74,74,0.15)', color: C.red }}>
                         OVERDUE
                       </span>
                       <span
-                        className="text-[9px] px-1.5 py-0.5 rounded-full font-bold"
+                        className="text-[11px] px-1.5 py-0.5 rounded-full font-bold"
                         style={{ background: `color-mix(in srgb, ${priorityColor[r.priority]} 15%, transparent)`, color: priorityColor[r.priority] }}
                       >
                         {r.priority}
@@ -473,13 +473,13 @@ export default function RemindersPage() {
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{r.org}</span>
                       <span
-                        className="text-[9px] px-1.5 py-0.5 rounded-full font-bold"
+                        className="text-[11px] px-1.5 py-0.5 rounded-full font-bold"
                         style={{ background: `color-mix(in srgb, ${priorityColor[r.priority]} 15%, transparent)`, color: priorityColor[r.priority] }}
                       >
                         {r.priority}
                       </span>
                       {isToday && (
-                        <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold" style={{ background: 'rgba(232,146,63,0.15)', color: C.orange }}>
+                        <span className="text-[11px] px-1.5 py-0.5 rounded-full font-bold" style={{ background: 'rgba(232,146,63,0.15)', color: C.orange }}>
                           TODAY
                         </span>
                       )}
@@ -537,7 +537,7 @@ export default function RemindersPage() {
               const isToday = i === 1; // Tue Apr 14
               return (
                 <div key={day} className="flex flex-col items-center gap-1.5">
-                  <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: isToday ? C.orange : 'var(--text-muted)' }}>
+                  <span className="text-[11px] font-bold uppercase tracking-wider" style={{ color: isToday ? C.orange : 'var(--text-muted)' }}>
                     {day}
                   </span>
                   <div
@@ -554,7 +554,7 @@ export default function RemindersPage() {
                   >
                     {count}
                   </div>
-                  <span className="text-[8px]" style={{ color: 'var(--text-muted)' }}>
+                  <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
                     Apr {13 + i}
                   </span>
                 </div>
@@ -612,7 +612,7 @@ export default function RemindersPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-bold line-through" style={{ color: 'var(--heading)' }}>{r.org}</span>
-                      <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold" style={{ background: 'rgba(140,198,63,0.15)', color: C.green }}>
+                      <span className="text-[11px] px-1.5 py-0.5 rounded-full font-bold" style={{ background: 'rgba(140,198,63,0.15)', color: C.green }}>
                         Done
                       </span>
                     </div>

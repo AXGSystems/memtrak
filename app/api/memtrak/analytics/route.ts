@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getEvents, getStats } from '@/lib/memtrak';
 
+import { requireReadOnly } from '@/lib/route-auth';
 /**
  * MEMTrak Analytics Engine
  *
@@ -20,7 +21,11 @@ import { getEvents, getStats } from '@/lib/memtrak';
  * GET ?action=journey&rid=EMAIL — full member journey timeline
  */
 
-// Simulated analytics (in production, computed from real event history)
+// Sample analytics (in production, computed from real event history).
+// Every response below carries a machine-readable `provenance: 'sample'`
+// flag so any API consumer (or future dashboard) can tell these illustrative
+// figures apart from live, event-derived data and label them accordingly.
+const PROVENANCE = 'sample' as const;
 const engagementDecay = [
   { email: 'jsmith@firstam.com', org: 'First American Title', type: 'ACU', recentOpenRate: 20, historicalOpenRate: 80, decayScore: 75, lastOpen: '2026-03-15', trend: 'declining' as const, revenueAtRisk: 61554 },
   { email: 'rchen@ctic.com', org: 'Chicago Title', type: 'ACU', recentOpenRate: 40, historicalOpenRate: 90, decayScore: 56, lastOpen: '2026-04-01', trend: 'declining' as const, revenueAtRisk: 61554 },
@@ -44,12 +49,14 @@ const sendTimeOptimization = [
   { segment: 'Board Members', bestDay: 'Monday', bestTime: '8:00-9:00 AM ET', avgOpenRate: 90, sampleSize: 42 },
 ];
 
+// Staff identified by ROLE only — never attach fabricated reply-rate/
+// response-time scores to a real, named employee.
 const relationships = [
-  { staffMember: 'Taylor Spolidoro', totalOutreach: 342, replyRate: 34, avgResponseTime: '2.1 days', topOrgs: ['First American', 'Old Republic', 'Stewart Title'], strength: 'Strong' as const },
-  { staffMember: 'Paul Martin', totalOutreach: 218, replyRate: 42, avgResponseTime: '1.4 days', topOrgs: ['Chicago Title', 'Liberty Title', 'WFG National'], strength: 'Strong' as const },
-  { staffMember: 'Chris Morton', totalOutreach: 48, replyRate: 88, avgResponseTime: '0.5 days', topOrgs: ['All ACU Underwriters', 'Board Members'], strength: 'Exceptional' as const },
-  { staffMember: 'Emily Mincey', totalOutreach: 156, replyRate: 28, avgResponseTime: '3.2 days', topOrgs: ['Regional event attendees', 'ALTA ONE registrants'], strength: 'Moderate' as const },
-  { staffMember: 'Caroline Ehrenfeld', totalOutreach: 189, replyRate: 31, avgResponseTime: '2.8 days', topOrgs: ['TIPAC contributors', 'Advocacy Summit attendees'], strength: 'Moderate' as const },
+  { staffMember: 'Membership Engagement Lead', totalOutreach: 342, replyRate: 34, avgResponseTime: '2.1 days', topOrgs: ['First American', 'Old Republic', 'Stewart Title'], strength: 'Strong' as const },
+  { staffMember: 'Government Affairs Lead', totalOutreach: 218, replyRate: 42, avgResponseTime: '1.4 days', topOrgs: ['Chicago Title', 'Liberty Title', 'WFG National'], strength: 'Strong' as const },
+  { staffMember: 'CEO', totalOutreach: 48, replyRate: 88, avgResponseTime: '0.5 days', topOrgs: ['All ACU Underwriters', 'Board Members'], strength: 'Exceptional' as const },
+  { staffMember: 'Events Coordinator', totalOutreach: 156, replyRate: 28, avgResponseTime: '3.2 days', topOrgs: ['Regional event attendees', 'ALTA ONE registrants'], strength: 'Moderate' as const },
+  { staffMember: 'Advocacy Manager', totalOutreach: 189, replyRate: 31, avgResponseTime: '2.8 days', topOrgs: ['TIPAC contributors', 'Advocacy Summit attendees'], strength: 'Moderate' as const },
 ];
 
 const revenueAttribution = [
@@ -60,11 +67,15 @@ const revenueAttribution = [
 ];
 
 export async function GET(request: NextRequest) {
+  const gate = await requireReadOnly();
+  if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
   const action = request.nextUrl.searchParams.get('action') || 'summary';
 
   switch (action) {
     case 'decay':
       return NextResponse.json({
+        provenance: PROVENANCE,
         alerts: engagementDecay.filter(e => e.decayScore > 30).sort((a, b) => b.decayScore - a.decayScore),
         totalAtRisk: engagementDecay.filter(e => e.decayScore > 50).length,
         totalRevenueAtRisk: engagementDecay.filter(e => e.decayScore > 50).reduce((s, e) => s + e.revenueAtRisk, 0),
@@ -72,19 +83,21 @@ export async function GET(request: NextRequest) {
 
     case 'churn':
       return NextResponse.json({
+        provenance: PROVENANCE,
         scores: churnScores.sort((a, b) => b.score - a.score),
         highRisk: churnScores.filter(s => s.score >= 70).length,
         totalRevenueAtRisk: churnScores.filter(s => s.score >= 50).reduce((s, c) => s + c.revenueAtRisk, 0),
       });
 
     case 'timing':
-      return NextResponse.json({ segments: sendTimeOptimization });
+      return NextResponse.json({ provenance: PROVENANCE, segments: sendTimeOptimization });
 
     case 'relationships':
-      return NextResponse.json({ staffPerformance: relationships });
+      return NextResponse.json({ provenance: PROVENANCE, staffPerformance: relationships });
 
     case 'revenue':
       return NextResponse.json({
+        provenance: PROVENANCE,
         campaigns: revenueAttribution,
         totalRevenue: revenueAttribution.reduce((s, c) => s + c.revenueGenerated, 0),
         totalConversions: revenueAttribution.reduce((s, c) => s + c.conversions, 0),
@@ -95,12 +108,15 @@ export async function GET(request: NextRequest) {
       if (!rid) return NextResponse.json({ error: 'rid parameter required' }, { status: 400 });
       const events = await getEvents({ limit: 50 });
       const memberEvents = events.filter(e => e.recipientEmail === rid);
-      return NextResponse.json({ email: rid, events: memberEvents, totalTouchpoints: memberEvents.length });
+      // journey events come from the real event store; flag accordingly.
+      return NextResponse.json({ provenance: 'live', email: rid, events: memberEvents, totalTouchpoints: memberEvents.length });
     }
 
     default:
       return NextResponse.json({
         ...(await getStats()),
+        // summary roll-ups below derive from sample decay/churn/revenue arrays.
+        provenance: PROVENANCE,
         decayAlerts: engagementDecay.filter(e => e.decayScore > 50).length,
         churnHighRisk: churnScores.filter(s => s.score >= 70).length,
         revenueAttributed: revenueAttribution.reduce((s, c) => s + c.revenueGenerated, 0),

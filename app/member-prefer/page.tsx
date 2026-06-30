@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Card from '@/components/Card';
 import SparkKpi from '@/components/SparkKpi';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import ClientChart from '@/components/ClientChart';
 import {
   Settings2, TrendingDown, MailCheck, Clock, Hash,
@@ -102,6 +103,7 @@ export default function MemberPreferPage() {
           </p>
         </div>
       </div>
+      <SampleDataBadge message="The preference-center adoption and topic-opt-in figures below are illustrative sample values until a member-facing preference center and its tracking are wired into MEMTRAK." />
       <p className="text-[11px] leading-relaxed max-w-2xl" style={{ color: 'var(--text-muted)' }}>
         Self-service preference center analytics. When members control <strong style={{ color: 'var(--heading)' }}>what</strong>, <strong style={{ color: 'var(--heading)' }}>when</strong>, and <strong style={{ color: 'var(--heading)' }}>how</strong> they hear from you, unsubscribe rates drop and engagement climbs.
       </p>
@@ -280,7 +282,7 @@ export default function MemberPreferPage() {
           <div className="space-y-3 mt-1">
             {/* Mini preference center mockup */}
             <div className="rounded-lg p-3" style={{ background: 'var(--background)', border: '1px solid var(--card-border)' }}>
-              <div className="text-[9px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>Content Topics</div>
+              <div className="text-[11px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>Content Topics</div>
               <div className="space-y-1.5">
                 {contentTypes.map(ct => (
                   <div key={ct.label} className="flex items-center gap-2">
@@ -291,7 +293,7 @@ export default function MemberPreferPage() {
                         background: ct.checked ? C.teal : 'transparent',
                       }}
                     >
-                      {ct.checked && <span className="text-[8px]" style={{ color: '#fff' }}>&#10003;</span>}
+                      {ct.checked && <span className="text-[11px]" style={{ color: '#fff' }}>&#10003;</span>}
                     </div>
                     <span className="text-[10px]" style={{ color: ct.checked ? 'var(--heading)' : 'var(--text-muted)' }}>{ct.label}</span>
                   </div>
@@ -300,12 +302,12 @@ export default function MemberPreferPage() {
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div className="rounded-lg p-2.5" style={{ background: 'var(--background)', border: '1px solid var(--card-border)' }}>
-                <div className="text-[9px] uppercase tracking-wider font-bold mb-1.5" style={{ color: 'var(--text-muted)' }}>Frequency</div>
+                <div className="text-[11px] uppercase tracking-wider font-bold mb-1.5" style={{ color: 'var(--text-muted)' }}>Frequency</div>
                 <div className="flex flex-wrap gap-1">
                   {['Weekly', 'Bi-Weekly', 'Monthly', 'Quarterly'].map(f => (
                     <span
                       key={f}
-                      className="text-[8px] px-2 py-1 rounded-full font-bold"
+                      className="text-[11px] px-2 py-1 rounded-full font-bold"
                       style={{
                         background: f === 'Bi-Weekly' ? C.teal : 'var(--input-bg)',
                         color: f === 'Bi-Weekly' ? '#fff' : 'var(--text-muted)',
@@ -317,12 +319,12 @@ export default function MemberPreferPage() {
                 </div>
               </div>
               <div className="rounded-lg p-2.5" style={{ background: 'var(--background)', border: '1px solid var(--card-border)' }}>
-                <div className="text-[9px] uppercase tracking-wider font-bold mb-1.5" style={{ color: 'var(--text-muted)' }}>Format</div>
+                <div className="text-[11px] uppercase tracking-wider font-bold mb-1.5" style={{ color: 'var(--text-muted)' }}>Format</div>
                 <div className="flex flex-wrap gap-1">
                   {['HTML', 'Plain Text', 'Mobile'].map(f => (
                     <span
                       key={f}
-                      className="text-[8px] px-2 py-1 rounded-full font-bold"
+                      className="text-[11px] px-2 py-1 rounded-full font-bold"
                       style={{
                         background: f === 'HTML' ? C.blue : 'var(--input-bg)',
                         color: f === 'HTML' ? '#fff' : 'var(--text-muted)',
@@ -402,7 +404,7 @@ export default function MemberPreferPage() {
             {frequencyPrefs.map((f, i) => (
               <div key={f.label} className="rounded-lg p-2 text-center" style={{ background: 'var(--background)' }}>
                 <div className="text-sm font-extrabold" style={{ color: [C.teal, C.blue, C.purple, C.amber][i] }}>{f.pct}%</div>
-                <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{f.label}</div>
+                <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{f.label}</div>
               </div>
             ))}
           </div>
@@ -422,12 +424,12 @@ export default function MemberPreferPage() {
                 <div className="rounded-lg p-3" style={{ background: 'var(--background)' }}>
                   <div className="text-[10px] font-bold" style={{ color: 'var(--text-muted)' }}>No Preferences</div>
                   <div className="text-lg font-extrabold" style={{ color: C.red }}>3.4%</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Current unsub rate</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Current unsub rate</div>
                 </div>
                 <div className="rounded-lg p-3" style={{ background: 'var(--background)' }}>
                   <div className="text-[10px] font-bold" style={{ color: 'var(--text-muted)' }}>With Preferences</div>
                   <div className="text-lg font-extrabold" style={{ color: C.green }}>1.8%</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Current unsub rate</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Current unsub rate</div>
                 </div>
               </div>
             </div>
@@ -532,7 +534,7 @@ export default function MemberPreferPage() {
                   <div className="text-[11px] font-bold" style={{ color: 'var(--heading)' }}>{u.member}</div>
                   <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{u.action}</div>
                 </div>
-                <span className="text-[9px] flex-shrink-0" style={{ color: 'var(--text-muted)' }}>{u.time}</span>
+                <span className="text-[11px] flex-shrink-0" style={{ color: 'var(--text-muted)' }}>{u.time}</span>
               </div>
             ))}
           </div>

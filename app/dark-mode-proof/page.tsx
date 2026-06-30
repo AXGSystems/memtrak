@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useDialogA11y } from '@/lib/useDialogA11y';
 import Card from '@/components/Card';
 import SparkKpi from '@/components/SparkKpi';
 import {
@@ -64,7 +65,7 @@ function StatusBadge({ status }: { status: RenderStatus }) {
   const Icon = status === 'Full Support' ? CheckCircle : status === 'Partial' ? AlertTriangle : XCircle;
   return (
     <span
-      className="inline-flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-full"
+      className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full"
       style={{ background: `${color}20`, color }}
     >
       <Icon className="w-2.5 h-2.5" /> {status}
@@ -77,6 +78,8 @@ function StatusBadge({ status }: { status: RenderStatus }) {
    ══════════════════════════════════════════════════════════ */
 export default function DarkModeProofPage() {
   const [selectedClient, setSelectedClient] = useState<EmailClient | null>(null);
+  const clientRef = useRef<HTMLDivElement>(null);
+  useDialogA11y(!!selectedClient, () => setSelectedClient(null), clientRef);
 
   const fullSupport = emailClients.filter(c => c.darkStatus === 'Full Support').length;
   const partial = emailClients.filter(c => c.darkStatus === 'Partial').length;
@@ -92,7 +95,7 @@ export default function DarkModeProofPage() {
         </div>
         <div>
           <h1 className="text-lg font-extrabold tracking-tight" style={{ color: 'var(--heading)' }}>
-            DarkModeProof<span className="align-super text-[9px] font-black" style={{ color: 'var(--accent)' }}>&trade;</span>
+            DarkModeProof<span className="align-super text-[11px] font-black" style={{ color: 'var(--accent)' }}>&trade;</span>
           </h1>
           <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
             See what they see, <strong style={{ color: 'var(--heading)' }}>before you send.</strong>
@@ -156,7 +159,7 @@ export default function DarkModeProofPage() {
                     <div key={i} className="flex-1 rounded-t" style={{ height: `${(v / 35) * 100}%`, background: C.purple, opacity: 0.4 + (i / 10) }} />
                   ))}
                 </div>
-                <div className="flex justify-between text-[8px] mt-1" style={{ color: 'var(--text-muted)' }}>
+                <div className="flex justify-between text-[11px] mt-1" style={{ color: 'var(--text-muted)' }}>
                   <span>Oct</span><span>Apr</span>
                 </div>
               </div>
@@ -270,7 +273,7 @@ export default function DarkModeProofPage() {
               {/* Email header */}
               <div className="px-4 py-3 text-center" style={{ background: '#002D5C' }}>
                 <div className="text-[13px] font-extrabold tracking-wide" style={{ color: '#FFFFFF' }}>ALTA</div>
-                <div className="text-[8px] tracking-widest uppercase" style={{ color: 'rgba(255,255,255,0.7)' }}>American Land Title Association</div>
+                <div className="text-[11px] tracking-widest uppercase" style={{ color: 'rgba(255,255,255,0.7)' }}>American Land Title Association</div>
               </div>
               {/* Hero */}
               <div className="px-4 py-5 text-center" style={{ background: '#FFFFFF' }}>
@@ -294,7 +297,7 @@ export default function DarkModeProofPage() {
               </div>
               {/* Footer */}
               <div className="px-4 py-2 text-center" style={{ background: '#F4F4F4' }}>
-                <div className="text-[8px]" style={{ color: '#999999' }}>ALTA | 1800 M Street NW | Washington, DC 20036</div>
+                <div className="text-[11px]" style={{ color: '#999999' }}>ALTA | 1800 M Street NW | Washington, DC 20036</div>
               </div>
             </div>
           </div>
@@ -309,7 +312,7 @@ export default function DarkModeProofPage() {
               {/* Email header */}
               <div className="px-4 py-3 text-center" style={{ background: '#0a1628' }}>
                 <div className="text-[13px] font-extrabold tracking-wide" style={{ color: '#e2e8f0' }}>ALTA</div>
-                <div className="text-[8px] tracking-widest uppercase" style={{ color: 'rgba(226,232,240,0.6)' }}>American Land Title Association</div>
+                <div className="text-[11px] tracking-widest uppercase" style={{ color: 'rgba(226,232,240,0.6)' }}>American Land Title Association</div>
               </div>
               {/* Hero */}
               <div className="px-4 py-5 text-center" style={{ background: '#111827' }}>
@@ -333,7 +336,7 @@ export default function DarkModeProofPage() {
               </div>
               {/* Footer */}
               <div className="px-4 py-2 text-center" style={{ background: '#0f172a' }}>
-                <div className="text-[8px]" style={{ color: '#64748b' }}>ALTA | 1800 M Street NW | Washington, DC 20036</div>
+                <div className="text-[11px]" style={{ color: '#64748b' }}>ALTA | 1800 M Street NW | Washington, DC 20036</div>
               </div>
             </div>
           </div>
@@ -356,7 +359,7 @@ export default function DarkModeProofPage() {
                     </div>
                     <div>
                       <div className="text-[12px] font-bold" style={{ color: 'var(--heading)' }}>{client.name}</div>
-                      <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{client.marketShare}% of ALTA opens</div>
+                      <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{client.marketShare}% of ALTA opens</div>
                     </div>
                   </div>
                   <StatusBadge status={client.darkStatus} />
@@ -433,7 +436,7 @@ export default function DarkModeProofPage() {
                 </div>
               </div>
             ))}
-            <div className="flex items-center gap-4 text-[9px] mt-2" style={{ color: 'var(--text-muted)' }}>
+            <div className="flex items-center gap-4 text-[11px] mt-2" style={{ color: 'var(--text-muted)' }}>
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ background: C.amber }} /> Light Mode</span>
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ background: C.purple }} /> Dark Mode</span>
             </div>
@@ -499,8 +502,13 @@ export default function DarkModeProofPage() {
       {/* ── Client Detail Modal ───────────────────────────── */}
       {selectedClient && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={() => setSelectedClient(null)}>
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" aria-hidden="true" />
           <div
+            ref={clientRef}
+            tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Email client rendering detail"
             className="relative w-full max-w-lg max-h-[80vh] overflow-y-auto rounded-2xl border"
             style={{ background: 'var(--card)', borderColor: 'var(--card-border)', boxShadow: '0 25px 60px rgba(0,0,0,0.4)' }}
             onClick={e => e.stopPropagation()}
@@ -522,11 +530,11 @@ export default function DarkModeProofPage() {
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
-                  <div className="text-[9px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Light Mode</div>
+                  <div className="text-[11px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Light Mode</div>
                   <StatusBadge status={selectedClient.lightStatus} />
                 </div>
                 <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
-                  <div className="text-[9px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Dark Mode</div>
+                  <div className="text-[11px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Dark Mode</div>
                   <StatusBadge status={selectedClient.darkStatus} />
                 </div>
               </div>

@@ -74,7 +74,7 @@ export default function CustomFieldsPanel({ org, onSaved }: CustomFieldsPanelPro
               const color = GROUP_COLOR[group as keyof typeof GROUP_COLOR] ?? GROUP_COLOR.General;
               return (
                 <div key={group}>
-                  <div className="text-[9px] font-bold uppercase tracking-wider mb-1.5" style={{ color }}>{group}</div>
+                  <div className="text-[11px] font-bold uppercase tracking-wider mb-1.5" style={{ color }}>{group}</div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {groupDefs.map((def) => {
                       const v = org.custom_fields?.[def.key];

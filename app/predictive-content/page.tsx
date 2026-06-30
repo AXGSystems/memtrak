@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Card from '@/components/Card';
 import SparkKpi from '@/components/SparkKpi';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import ClientChart from '@/components/ClientChart';
 import {
   Layers, Users, Target, TrendingUp, Zap, Sparkles,
@@ -124,13 +125,14 @@ export default function PredictiveContentPage() {
         </div>
         <div>
           <h1 className="text-lg font-extrabold tracking-tight" style={{ color: 'var(--heading)' }}>
-            PredictiveContent<span className="align-super text-[9px] font-black" style={{ color: 'var(--accent)' }}>&trade;</span>
+            PredictiveContent<span className="align-super text-[11px] font-black" style={{ color: 'var(--accent)' }}>&trade;</span>
           </h1>
           <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
             One email, <strong style={{ color: 'var(--heading)' }}>personalized for everyone.</strong>
           </p>
         </div>
       </div>
+      <SampleDataBadge message="The variant performance and conversion figures below are illustrative sample values demonstrating how dynamic-content results would be reported once send-time personalization and outcome tracking are wired." />
       <p className="text-[11px] leading-relaxed max-w-2xl" style={{ color: 'var(--text-muted)' }}>
         PredictiveContent uses member data to dynamically assemble email content at send time.
         <strong style={{ color: 'var(--heading)' }}> One template renders differently for every member type</strong> &mdash;
@@ -321,9 +323,9 @@ export default function PredictiveContentPage() {
               <div className="px-3 py-2 flex items-center justify-between" style={{ background: `${persona.color}15` }}>
                 <div className="flex items-center gap-1.5">
                   <persona.icon className="w-3 h-3" style={{ color: persona.color }} />
-                  <span className="text-[9px] font-bold" style={{ color: persona.color }}>{persona.name}</span>
+                  <span className="text-[11px] font-bold" style={{ color: persona.color }}>{persona.name}</span>
                 </div>
-                <span className="text-[8px] font-bold px-1.5 py-0.5 rounded" style={{ background: `${persona.color}20`, color: persona.color }}>
+                <span className="text-[11px] font-bold px-1.5 py-0.5 rounded" style={{ background: `${persona.color}20`, color: persona.color }}>
                   {persona.type}
                 </span>
               </div>
@@ -343,10 +345,10 @@ export default function PredictiveContentPage() {
                     borderColor: 'var(--card-border)',
                   }}
                 >
-                  <div className="text-[8px] uppercase font-bold mb-1" style={{ color: persona.color }}>{block.section}</div>
+                  <div className="text-[11px] uppercase font-bold mb-1" style={{ color: persona.color }}>{block.section}</div>
                   <div className="text-[10px] font-semibold mb-1.5" style={{ color: 'var(--heading)' }}>{block.content}</div>
                   <div
-                    className="inline-block px-3 py-1 rounded text-[8px] font-bold"
+                    className="inline-block px-3 py-1 rounded text-[11px] font-bold"
                     style={{ background: persona.color, color: '#FFFFFF' }}
                   >
                     {block.cta}
@@ -355,7 +357,7 @@ export default function PredictiveContentPage() {
               ))}
 
               {/* Stats footer */}
-              <div className="px-3 py-2 flex justify-between text-[9px]" style={{ background: 'var(--input-bg)' }}>
+              <div className="px-3 py-2 flex justify-between text-[11px]" style={{ background: 'var(--input-bg)' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Open: <strong style={{ color: C.green }}>{persona.openRate}%</strong></span>
                 <span style={{ color: 'var(--text-muted)' }}>Click: <strong style={{ color: C.blue }}>{persona.clickRate}%</strong></span>
               </div>
@@ -403,11 +405,11 @@ export default function PredictiveContentPage() {
                   <div className="text-[10px] font-semibold truncate" style={{ color: 'var(--heading)' }}>
                     {rule.condition}
                   </div>
-                  <div className="text-[9px] truncate" style={{ color: 'var(--text-muted)' }}>
+                  <div className="text-[11px] truncate" style={{ color: 'var(--text-muted)' }}>
                     <ArrowRight className="w-2 h-2 inline" style={{ color: rule.color }} /> {rule.action}
                   </div>
                 </div>
-                <span className="text-[8px] font-bold px-1.5 py-0.5 rounded flex-shrink-0" style={{ background: `${rule.color}20`, color: rule.color }}>
+                <span className="text-[11px] font-bold px-1.5 py-0.5 rounded flex-shrink-0" style={{ background: `${rule.color}20`, color: rule.color }}>
                   P{rule.priority}
                 </span>
               </div>
@@ -471,7 +473,7 @@ export default function PredictiveContentPage() {
                     <p.icon className="w-3 h-3" style={{ color: p.color }} />
                     {p.name}
                   </span>
-                  <span className="text-[9px] font-bold" style={{ color: p.color }}>{p.type}</span>
+                  <span className="text-[11px] font-bold" style={{ color: p.color }}>{p.type}</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-[10px]">
                   <div>
@@ -504,12 +506,12 @@ export default function PredictiveContentPage() {
               { step: 6, label: 'Send', desc: 'Personalized email delivered to inbox', icon: Zap, color: C.amber },
             ].map(item => (
               <div key={item.step} className="flex items-start gap-3 px-3 py-2 rounded-lg" style={{ background: 'var(--input-bg)' }}>
-                <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-black flex-shrink-0" style={{ background: `${item.color}20`, color: item.color }}>
+                <div className="w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-black flex-shrink-0" style={{ background: `${item.color}20`, color: item.color }}>
                   {item.step}
                 </div>
                 <div className="min-w-0">
                   <div className="text-[10px] font-bold" style={{ color: 'var(--heading)' }}>{item.label}</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{item.desc}</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{item.desc}</div>
                 </div>
               </div>
             ))}
@@ -532,7 +534,7 @@ export default function PredictiveContentPage() {
                     <ArrowRight className="w-3 h-3 inline mx-1" style={{ color: 'var(--text-muted)' }} />
                     <span className="font-bold" style={{ color: C.green }}>{item.after}</span>
                   </div>
-                  <span className="text-[9px] font-bold px-2 py-0.5 rounded-full ml-auto" style={{ background: `${item.color}20`, color: item.color }}>
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full ml-auto" style={{ background: `${item.color}20`, color: item.color }}>
                     {item.lift}
                   </span>
                 </div>

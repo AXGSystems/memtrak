@@ -42,7 +42,7 @@ export default function Status() {
             <div key={d.day} className="flex-1 h-8 rounded-sm" style={{ background: d.status === 'up' ? '#8CC63F' : '#E8923F', minWidth: 3 }} title={`Day ${d.day}: ${d.status}`} />
           ))}
         </div>
-        <div className="flex justify-between text-[9px] mt-1" style={{ color: 'var(--text-muted)' }}><span>30 days ago</span><span>Today</span></div>
+        <div className="flex justify-between text-[11px] mt-1" style={{ color: 'var(--text-muted)' }}><span>30 days ago</span><span>Today</span></div>
       </div>
 
       {/* Service list */}

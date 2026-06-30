@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import Card from '@/components/Card';
 import SparkKpi from '@/components/SparkKpi';
 import ClientChart from '@/components/ClientChart';
@@ -199,6 +200,7 @@ export default function BoardBrief() {
 
   return (
     <div className="p-6">
+      <SampleDataBadge />
       {/* ── 1. Branded Header ─────────────────────────────────── */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
@@ -434,7 +436,7 @@ export default function BoardBrief() {
                   </div>
                   <div className="text-right">
                     <span className="text-sm font-extrabold" style={{ color: r.color }}>${r.revenue.toLocaleString()}</span>
-                    <span className="text-[9px] ml-2" style={{ color: 'var(--text-muted)' }}>{((r.revenue / totalRevenue) * 100).toFixed(1)}%</span>
+                    <span className="text-[11px] ml-2" style={{ color: 'var(--text-muted)' }}>{((r.revenue / totalRevenue) * 100).toFixed(1)}%</span>
                   </div>
                 </div>
               ))}
@@ -480,7 +482,7 @@ export default function BoardBrief() {
                 <div key={c.tool} className="flex items-center justify-between p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
                   <div>
                     <span className="text-[11px] font-bold" style={{ color: 'var(--heading)' }}>{c.tool}</span>
-                    <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{c.note}</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{c.note}</div>
                   </div>
                   <span className="text-sm font-extrabold" style={{ color: c.annual === 0 ? C.green : 'var(--heading)' }}>
                     {c.annual === 0 ? '$0' : `$${c.annual.toLocaleString()}/yr`}
@@ -619,15 +621,15 @@ export default function BoardBrief() {
             </div>
             <div className="space-y-3 mb-4">
               <div className="p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
-                <div className="text-[9px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>To</div>
+                <div className="text-[11px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>To</div>
                 <div className="text-[11px]" style={{ color: 'var(--heading)' }}>board@alta.org</div>
               </div>
               <div className="p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
-                <div className="text-[9px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Subject</div>
+                <div className="text-[11px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Subject</div>
                 <div className="text-[11px]" style={{ color: 'var(--heading)' }}>MEMTrak Board Performance Brief — {date}</div>
               </div>
               <div className="p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
-                <div className="text-[9px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Content</div>
+                <div className="text-[11px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Content</div>
                 <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Full HTML board brief with KPIs, revenue, and member health data</div>
               </div>
             </div>

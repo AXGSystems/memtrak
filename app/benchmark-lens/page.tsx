@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Card from '@/components/Card';
 import SparkKpi from '@/components/SparkKpi';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import ClientChart from '@/components/ClientChart';
 import {
   Target, TrendingUp, TrendingDown, Minus, Award,
@@ -143,13 +144,14 @@ export default function BenchmarkLensPage() {
         </div>
         <div>
           <h1 className="text-lg font-extrabold tracking-tight" style={{ color: 'var(--heading)' }}>
-            BenchmarkLens<span className="align-super text-[9px] font-black" style={{ color: 'var(--accent)' }}>&trade;</span>
+            BenchmarkLens<span className="align-super text-[11px] font-black" style={{ color: 'var(--accent)' }}>&trade;</span>
           </h1>
           <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
             Know if you&apos;re winning <strong style={{ color: 'var(--heading)' }}>without asking.</strong>
           </p>
         </div>
       </div>
+      <SampleDataBadge message="The published industry benchmark figures are real (Higher Logic 2026), but the ALTA-side comparison values shown against them are illustrative sample values until this view is wired to MEMTRAK's own send statistics." />
       <p className="text-[11px] leading-relaxed max-w-2xl" style={{ color: 'var(--text-muted)' }}>
         BenchmarkLens compares ALTA&apos;s email performance against{' '}
         <strong style={{ color: 'var(--heading)' }}>Higher Logic&apos;s 2026 association industry benchmarks</strong> (33.54% open rate, 2.68% click rate).
@@ -206,11 +208,11 @@ export default function BenchmarkLensPage() {
               </p>
               <div className="grid grid-cols-2 gap-3">
                 <div className="rounded-lg p-3 text-center" style={{ background: 'var(--input-bg)' }}>
-                  <div className="text-[9px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>ALTA</div>
+                  <div className="text-[11px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>ALTA</div>
                   <div className="text-xl font-extrabold" style={{ color: C.green }}>{biggestGapMetric.unit === '$' ? '$' : ''}{biggestGapMetric.altaValue}{biggestGapMetric.unit === '%' ? '%' : ''}</div>
                 </div>
                 <div className="rounded-lg p-3 text-center" style={{ background: 'var(--input-bg)' }}>
-                  <div className="text-[9px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Industry</div>
+                  <div className="text-[11px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Industry</div>
                   <div className="text-xl font-extrabold" style={{ color: 'var(--text-muted)' }}>{biggestGapMetric.unit === '$' ? '$' : ''}{biggestGapMetric.industryAvg}{biggestGapMetric.unit === '%' ? '%' : ''}</div>
                 </div>
               </div>
@@ -255,10 +257,10 @@ export default function BenchmarkLensPage() {
               </p>
               <div className="w-full rounded-full overflow-hidden" style={{ height: 12, background: 'var(--card-border)' }}>
                 <div className="h-full rounded-full flex items-center justify-end pr-2" style={{ width: '85%', background: `linear-gradient(90deg, ${C.blue}, ${C.green})` }}>
-                  <span className="text-[8px] font-bold" style={{ color: '#FFFFFF' }}>ALTA</span>
+                  <span className="text-[11px] font-bold" style={{ color: '#FFFFFF' }}>ALTA</span>
                 </div>
               </div>
-              <div className="flex justify-between text-[8px]" style={{ color: 'var(--text-muted)' }}>
+              <div className="flex justify-between text-[11px]" style={{ color: 'var(--text-muted)' }}>
                 <span>Bottom</span>
                 <span>Top 15%</span>
               </div>
@@ -367,27 +369,27 @@ export default function BenchmarkLensPage() {
                       <metric.icon className="w-4 h-4" style={{ color: metric.color }} />
                       <div>
                         <div className="text-[11px] font-bold" style={{ color: 'var(--heading)' }}>{metric.name}</div>
-                        <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{metric.desc}</div>
+                        <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{metric.desc}</div>
                       </div>
                     </div>
                     <div className="text-right flex-shrink-0 ml-3">
                       <div className="flex items-center gap-2">
                         <div>
-                          <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>ALTA</div>
+                          <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>ALTA</div>
                           <div className="text-sm font-extrabold" style={{ color: C.green }}>
                             {metric.unit === '$' ? '$' : ''}{metric.altaValue}{metric.unit === '%' ? '%' : ''}
                           </div>
                         </div>
                         <div className="text-[10px] px-1" style={{ color: 'var(--text-muted)' }}>vs</div>
                         <div>
-                          <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Avg</div>
+                          <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Avg</div>
                           <div className="text-sm font-bold" style={{ color: 'var(--text-muted)' }}>
                             {metric.unit === '$' ? '$' : ''}{metric.industryAvg}{metric.unit === '%' ? '%' : ''}
                           </div>
                         </div>
                       </div>
                       <span
-                        className="inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded-full mt-1"
+                        className="inline-flex items-center gap-0.5 text-[11px] font-bold px-1.5 py-0.5 rounded-full mt-1"
                         style={{ background: above ? 'rgba(140,198,63,0.15)' : 'rgba(217,74,74,0.15)', color: above ? C.green : C.red }}
                       >
                         {above ? <ArrowUp className="w-2.5 h-2.5" /> : <ArrowDown className="w-2.5 h-2.5" />}
@@ -612,13 +614,13 @@ export default function BenchmarkLensPage() {
               {/* Big comparison */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="rounded-xl p-4 text-center" style={{ background: 'rgba(140,198,63,0.08)' }}>
-                  <div className="text-[9px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>ALTA</div>
+                  <div className="text-[11px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>ALTA</div>
                   <div className="text-3xl font-extrabold" style={{ color: C.green }}>
                     {selectedMetric.unit === '$' ? '$' : ''}{selectedMetric.altaValue}{selectedMetric.unit === '%' ? '%' : ''}
                   </div>
                 </div>
                 <div className="rounded-xl p-4 text-center" style={{ background: 'var(--input-bg)' }}>
-                  <div className="text-[9px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Industry Avg</div>
+                  <div className="text-[11px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Industry Avg</div>
                   <div className="text-3xl font-extrabold" style={{ color: 'var(--text-muted)' }}>
                     {selectedMetric.unit === '$' ? '$' : ''}{selectedMetric.industryAvg}{selectedMetric.unit === '%' ? '%' : ''}
                   </div>

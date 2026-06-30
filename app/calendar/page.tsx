@@ -1,6 +1,7 @@
 'use client';
 
 import { demoCampaigns } from '@/lib/demo-data';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import { Calendar, Send, Clock, CheckCircle } from 'lucide-react';
 
 const months = ['Apr 2026', 'May 2026', 'Jun 2026'];
@@ -11,6 +12,7 @@ export default function SendCalendar() {
 
   return (
     <div className="p-6">
+      <SampleDataBadge />
       <h1 className="text-lg font-extrabold mb-1" style={{ color: 'var(--heading)' }}>Send Calendar</h1>
       <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>Shared email send calendar — prevents over-mailing members. See all scheduled, sent, and draft campaigns in one view.</p>
 
@@ -39,7 +41,7 @@ export default function SendCalendar() {
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
                         <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{c.sentDate}</span>
-                        <span className="text-[9px] px-2 py-0.5 rounded-full font-semibold" style={{ background: `color-mix(in srgb, ${statusColors[c.status]} 15%, transparent)`, color: statusColors[c.status] }}>{c.status}</span>
+                        <span className="text-[11px] px-2 py-0.5 rounded-full font-semibold" style={{ background: `color-mix(in srgb, ${statusColors[c.status]} 15%, transparent)`, color: statusColors[c.status] }}>{c.status}</span>
                       </div>
                     </div>
                   ))}

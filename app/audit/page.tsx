@@ -79,7 +79,7 @@ export default function Audit() {
                   <div className="flex-1">
                     <div className="text-xs font-semibold" style={{ color: 'var(--heading)' }}>{q.q}</div>
                     <div className="flex items-center gap-2 mt-2">
-                      <span className={`text-[9px] px-1.5 py-0.5 rounded font-semibold ${q.impact === 'Critical' ? 'bg-red-500/20 text-red-400' : q.impact === 'High' ? 'bg-amber-500/20 text-amber-400' : 'bg-blue-500/20 text-blue-400'}`}>{q.impact}</span>
+                      <span className={`text-[11px] px-1.5 py-0.5 rounded font-semibold ${q.impact === 'Critical' ? 'bg-red-500/20 text-red-400' : q.impact === 'High' ? 'bg-amber-500/20 text-amber-400' : 'bg-blue-500/20 text-blue-400'}`}>{q.impact}</span>
                       {(['yes', 'partial', 'no', 'unknown'] as Answer[]).map(a => (
                         <button key={a} onClick={() => setAnswers(p => ({ ...p, [q.id]: a }))} className={`px-2.5 py-1 rounded text-[10px] font-semibold border transition-all ${answers[q.id] === a ? a === 'yes' ? 'bg-green-500 text-white border-green-500' : a === 'no' ? 'bg-red-500 text-white border-red-500' : a === 'partial' ? 'bg-amber-500 text-white border-amber-500' : 'bg-blue-500 text-white border-blue-500' : ''}`} style={answers[q.id] !== a ? { borderColor: 'var(--card-border)', color: 'var(--text-muted)' } : undefined}>
                           {a === 'yes' ? 'Yes' : a === 'no' ? 'No' : a === 'partial' ? 'Partial' : "Don't Know"}

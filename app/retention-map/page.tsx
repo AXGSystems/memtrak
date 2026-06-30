@@ -286,7 +286,7 @@ export default function RetentionMap() {
                           {t.trend >= 0
                             ? <TrendingUp className="w-3 h-3" style={{ color: C.green }} />
                             : <TrendingDown className="w-3 h-3" style={{ color: C.red }} />}
-                          <span className="text-[9px] font-bold" style={{ color: t.trend >= 0 ? C.green : C.red }}>
+                          <span className="text-[11px] font-bold" style={{ color: t.trend >= 0 ? C.green : C.red }}>
                             {t.trend > 0 ? '+' : ''}{t.trend}%
                           </span>
                         </div>
@@ -372,7 +372,7 @@ export default function RetentionMap() {
                   <tr key={m.org} className="border-t" style={{ borderColor: 'var(--card-border)' }}>
                     <td className="py-2.5 font-bold" style={{ color: 'var(--heading)' }}>{m.org}</td>
                     <td className="py-2.5">
-                      <span className="px-1.5 py-0.5 rounded text-[9px] font-bold" style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}>
+                      <span className="px-1.5 py-0.5 rounded text-[11px] font-bold" style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}>
                         {m.type}
                       </span>
                     </td>
@@ -431,7 +431,7 @@ export default function RetentionMap() {
                     <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{rec.title}</span>
                   </div>
                   <span
-                    className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+                    className="text-[11px] font-bold px-2 py-0.5 rounded-full"
                     style={{ background: `color-mix(in srgb, ${rec.color} 15%, transparent)`, color: rec.color }}
                   >
                     {rec.impact}

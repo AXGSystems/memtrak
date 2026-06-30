@@ -1,11 +1,10 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import { Brain, Sparkles, Send, Database, Wifi, Clock, Bot, User, Zap, MessageSquare, BarChart3, Users, Shield, Target, FileText, Coffee } from 'lucide-react';
 import Card from '@/components/Card';
 import Typewriter from '@/components/Typewriter';
-import { demoCampaigns, demoChurnScores, demoDecayAlerts, demoRelationships, demoMonthly, getCampaignTotals, demoSendTimes } from '@/lib/demo-data';
-
 /* ── types ─────────────────────────────────────────────────── */
 interface ChatMessage {
   id: string;
@@ -15,82 +14,32 @@ interface ChatMessage {
   animate?: boolean; // only AI messages that should typewrite
 }
 
-/* ── pre-computed AI responses keyed by suggested question ── */
-const aiResponses: Record<string, string> = {
-  'Which members are most likely to churn this quarter?': (() => {
-    const lines = demoChurnScores.map((c, i) =>
-      `${i + 1}. ${c.org} (${c.type}) — Churn Score: ${c.score}%\n   Revenue at risk: $${c.revenue.toLocaleString()}\n   Key factors: ${c.factors.join('; ')}\n   Recommended action: ${c.action}`
-    );
-    return `Based on my analysis of engagement data, email behavior, event attendance, and payment history, here are the members most likely to churn this quarter:\n\n${lines.join('\n\n')}\n\nTotal revenue at risk: $${demoChurnScores.reduce((s, c) => s + c.revenue, 0).toLocaleString()}\n\nI'd recommend prioritizing First American Title immediately — that's a $61K account showing significant engagement decline. A CEO-level check-in would be appropriate given the account size.`;
-  })(),
-
-  'What was our best performing campaign this month?': (() => {
-    const sent = demoCampaigns.filter(c => c.status === 'Sent' && c.sentDate >= '2026-04-01');
-    const best = sent.reduce((a, b) => (b.uniqueOpened / b.delivered) > (a.uniqueOpened / a.delivered) ? b : a, sent[0]);
-    const openRate = ((best.uniqueOpened / best.delivered) * 100).toFixed(1);
-    const clickRate = ((best.clicked / best.delivered) * 100).toFixed(1);
-    return `The best performing campaign this month is "${best.name}":\n\n• Sent: ${best.sentDate}\n• List size: ${best.listSize.toLocaleString()}\n• Delivered: ${best.delivered.toLocaleString()}\n• Unique opens: ${best.uniqueOpened.toLocaleString()} (${openRate}% open rate)\n• Clicks: ${best.clicked.toLocaleString()} (${clickRate}% CTR)\n• Revenue attributed: $${best.revenue.toLocaleString()}\n• Bounces: ${best.bounced} | Unsubs: ${best.unsubscribed}\n\nThis campaign significantly outperformed the industry average open rate of 21.3% for association emails. The subject line and send time (Tuesday 9 AM) were key drivers. I'd recommend using a similar approach for the upcoming May compliance wave.`;
-  })(),
-
-  "Show me First American Title's engagement history": (() => {
-    const member = demoDecayAlerts.find(d => d.org === 'First American Title')!;
-    const churn = demoChurnScores.find(c => c.org === 'First American Title')!;
-    return `Here's the full engagement profile for First American Title:\n\n• Member type: ${member.type} (Underwriter)\n• Annual revenue: $${member.revenue.toLocaleString()}\n• Primary contact: ${member.email}\n\nEngagement Trajectory:\n• Historical open rate: ${member.historical}%\n• Recent open rate: ${member.recent}% (${member.decay}% decay)\n• Last email opened: ${member.lastOpen}\n• Trend: ${member.trend}\n\nChurn Risk Assessment:\n• Churn score: ${churn.score}%\n• Risk factors: ${churn.factors.join('; ')}\n• Recommended action: ${churn.action}\n\nEvent Attendance:\n• ALTA ONE 2025: Attended (2 sessions)\n• ALTA ONE 2026: NOT registered (early bird deadline approaching)\n• Webinars: Attended 2 of 6 in Q1 (down from 5 of 6 in Q1 2025)\n\nThis is a high-value account showing clear disengagement signals. The fact that they're still attending webinars is a positive sign — they haven't fully checked out. I'd recommend a personal outreach from Chris Morton given the account value.`;
-  })(),
-
-  'How does our open rate compare to industry benchmarks?': (() => {
-    const totals = getCampaignTotals();
-    const ourRate = ((totals.totalOpened / totals.totalDelivered) * 100).toFixed(1);
-    return `Here's how ALTA's email performance compares to industry benchmarks:\n\nALTA Performance (April 2026):\n• Open rate: ${ourRate}% (unique opens across ${totals.campaignCount} campaigns)\n• Click rate: ${((totals.totalClicked / totals.totalDelivered) * 100).toFixed(1)}%\n• Bounce rate: ${((totals.totalBounced / totals.totalDelivered) * 100).toFixed(1)}%\n\nIndustry Benchmarks (Associations & Nonprofits):\n• Average open rate: 21.3%\n• Average click rate: 2.7%\n• Average bounce rate: 0.9%\n\nVerdict:\n• Open rate: ALTA is significantly ABOVE benchmark — strong subject lines and sender reputation\n• Click rate: ALTA is well above the 2.7% industry average — content is resonating\n• Bounce rate: Slightly elevated — the hygiene cleanup should improve this\n\nYour best-performing segments are Board Members (90% open rate) and New Members under 1 year (65%). Your ACU Underwriters segment at 52% is particularly impressive for that audience size.`;
-  })(),
-
-  'Which staff member should contact Heritage Abstract?': (() => {
-    const member = demoDecayAlerts.find(d => d.org === 'Heritage Abstract LLC')!;
-    return `For Heritage Abstract LLC, here's my analysis:\n\nMember Status:\n• Type: ${member.type}\n• Engagement: ${member.trend} — ${member.decay}% decay score\n• Last email opened: ${member.lastOpen}\n• Revenue: $${member.revenue.toLocaleString()}\n\nStaff Recommendation:\nBased on relationship mapping and response patterns, I recommend:\n\n1. Paul Martin (Primary recommendation)\n   • ${demoRelationships[1].outreach} total outreach touches\n   • ${demoRelationships[1].replyRate}% reply rate\n   • Has prior relationship with Heritage through PFL compliance work\n\n2. Chris Morton (Escalation if needed)\n   • ${demoRelationships[0].replyRate}% reply rate — highest in the organization\n   • CEO-level outreach carries weight for retention saves\n   • Reserve for second attempt if Paul's outreach gets no response\n\nSuggested approach: A direct phone call, not email — this member has gone completely dark on email. Reference their PFL compliance status as a natural conversation starter. The $517 revenue is modest, but losing any ACB member signals broader risk.`;
-  })(),
-
-  "What's the revenue impact of our bounce rate?": (() => {
-    const totals = getCampaignTotals();
-    const bounceRate = ((totals.totalBounced / totals.totalSent) * 100).toFixed(1);
-    const revenuePerDelivered = totals.totalRevenue / totals.totalDelivered;
-    const lostRevenue = Math.round(totals.totalBounced * revenuePerDelivered);
-    return `Here's the revenue impact analysis of our bounce rate:\n\nCurrent Bounce Metrics:\n• Total bounces (April): ${totals.totalBounced.toLocaleString()}\n• Bounce rate: ${bounceRate}%\n• Industry benchmark: 0.9%\n\nRevenue Impact Model:\n• Revenue per delivered email: $${revenuePerDelivered.toFixed(2)}\n• Estimated lost revenue from bounces: $${lostRevenue.toLocaleString()}\n• Annual projected loss at current rate: $${(lostRevenue * 12).toLocaleString()}\n\nBreakdown by Campaign Type:\n• Renewal emails bouncing = direct lost dues revenue\n• Event emails bouncing = lost registration revenue\n• Compliance emails bouncing = regulatory risk (cannot prove delivery)\n\nRecommendation:\nOur bounce rate of ${bounceRate}% is above the 0.9% industry benchmark. Running the address hygiene cleanup could reduce bounces by ~60%, recovering approximately $${Math.round(lostRevenue * 0.6).toLocaleString()} per month. The compliance risk alone justifies the cleanup — we need proof of delivery for PFL notices.`;
-  })(),
-
-  "Summarize this week's email performance": (() => {
-    const apr = demoMonthly[3];
-    const mar = demoMonthly[2];
-    const weekCampaigns = demoCampaigns.filter(c => c.sentDate >= '2026-04-07' && c.sentDate <= '2026-04-14' && c.status === 'Sent');
-    return `Here's your weekly email performance summary (April 7-14, 2026):\n\nCampaigns Sent This Week: ${weekCampaigns.length}\n${weekCampaigns.map(c => `• ${c.name} — ${c.uniqueOpened.toLocaleString()} opens, ${c.clicked} clicks`).join('\n')}\n\nApril Month-to-Date:\n• Total sent: ${apr.sent.toLocaleString()}\n• Delivered: ${apr.delivered.toLocaleString()} (${((apr.delivered / apr.sent) * 100).toFixed(1)}% delivery rate)\n• Opened: ${apr.opened.toLocaleString()} (${((apr.opened / apr.delivered) * 100).toFixed(1)}% open rate)\n• Clicked: ${apr.clicked.toLocaleString()} (${((apr.clicked / apr.delivered) * 100).toFixed(1)}% CTR)\n• Bounced: ${apr.bounced}\n\nTrend vs. March:\n• Open rate: ${((apr.opened / apr.delivered) * 100).toFixed(1)}% vs ${((mar.opened / mar.delivered) * 100).toFixed(1)}% (${((apr.opened / apr.delivered) * 100) > ((mar.opened / mar.delivered) * 100) ? 'improving' : 'slight decline'})\n• Volume is lower (${apr.sent.toLocaleString()} vs ${mar.sent.toLocaleString()}) — expected since April is only half over\n\nHighlight: The ALTA ONE Early Bird campaign drove 780 clicks and $162K in attributed revenue. That's your revenue star this week.`;
-  })(),
-
-  'What should I focus on today?': (() => {
-    const criticalChurn = demoChurnScores.filter(c => c.score >= 60);
-    const scheduled = demoCampaigns.filter(c => c.status === 'Scheduled');
-    return `Good morning! Here's your priority briefing for today:\n\nURGENT (do first):\n1. Heritage Abstract has gone completely dark (92% churn score). Call Paul Martin to coordinate outreach — this needs a phone call, not email.\n2. First American Title ($61K account) engagement is declining fast. Flag for Chris Morton's CEO check-in this week.\n\nTODAY'S CAMPAIGNS:\n• ${scheduled.length} campaign${scheduled.length !== 1 ? 's' : ''} scheduled: ${scheduled.map(c => c.name).join(', ')}\n• Review the PFL Compliance May Wave 1 targeting — 1,029 recipients in IL. Verify list is clean before send.\n\nQUICK WINS:\n• Reply to the 3 pending ALTA ONE sponsor confirmations (draft in Templates)\n• The ACU Retention Check-in sent yesterday has a 90% open rate — great time to follow up with non-openers\n\nDATA HYGIENE:\n• 680 bounced addresses need cleanup — run the hygiene scan before the May compliance wave\n• 220 invalid addresses should be suppressed immediately\n\nINSIGHT OF THE DAY:\nBoard members have a 90% open rate when emailed Monday 8-9 AM. If you have any board communications queued, schedule them for Monday morning.\n\nWant me to dive deeper into any of these items?`;
-  })(),
-};
-
-/* ── suggested question chips ──────────────────────────────── */
+/* ── suggested question chips ──────────────────────────────────
+   These are answered live by Claude grounded in the real MEMTrak event log
+   (opens/clicks/sends/bounces/suppression). They deliberately stick to
+   questions the live aggregate event data can actually answer — member-level
+   queries (e.g. a specific org's history) are deferred until the AMS sources
+   listed under "Data Sources" are connected, so we never advertise a query the
+   live data can't honestly resolve. */
 const suggestedQuestions = [
-  { text: 'Which members are most likely to churn this quarter?', icon: Users },
-  { text: 'What was our best performing campaign this month?', icon: BarChart3 },
-  { text: "Show me First American Title's engagement history", icon: Target },
-  { text: 'How does our open rate compare to industry benchmarks?', icon: BarChart3 },
-  { text: 'Which staff member should contact Heritage Abstract?', icon: Users },
-  { text: "What's the revenue impact of our bounce rate?", icon: Shield },
-  { text: "Summarize this week's email performance", icon: FileText },
-  { text: 'What should I focus on today?', icon: Coffee },
+  { text: 'How many events have been tracked, and what is the breakdown by type?', icon: BarChart3 },
+  { text: 'Which campaign has the highest open rate in the event log?', icon: Target },
+  { text: 'What was our email activity over the last 30 days?', icon: FileText },
+  { text: 'How many unique recipients have we tracked?', icon: Users },
+  { text: 'How many addresses are currently suppressed?', icon: Shield },
+  { text: 'Summarize overall deliverability from the tracked events.', icon: MessageSquare },
 ];
 
 /* ── data sources ──────────────────────────────────────────── */
+/* Honest grounding: the assistant answers over the live MEMTrak event log.
+   Other sources are listed as planned integrations, not as connected. */
 const dataSources = [
-  { name: 're:Members (Azure SQL)', status: 'connected' as const, detail: 'Connected — 4,994 member records', icon: Database },
-  { name: 'Thaddeus (Event System)', status: 'connected' as const, detail: 'Connected — 2,840 event registrations', icon: Database },
-  { name: 'Higher Logic', status: 'connected' as const, detail: 'Connected — 8 campaigns synced', icon: Wifi },
-  { name: 'MEMTrak Events', status: 'connected' as const, detail: 'Active — 12,808 events tracked', icon: Zap },
-  { name: 'Microsoft Graph', status: 'pending' as const, detail: 'Pending — awaiting admin consent', icon: Clock },
-  { name: 'GA4 Analytics', status: 'pending' as const, detail: 'Pending — awaiting configuration', icon: Clock },
+  { name: 'MEMTrak Events', status: 'connected' as const, detail: 'Live event log — grounds AI answers', icon: Zap },
+  { name: 're:Members (Azure SQL)', status: 'pending' as const, detail: 'Planned — AMS member records', icon: Database },
+  { name: 'Thaddeus (Event System)', status: 'pending' as const, detail: 'Planned — event registrations', icon: Database },
+  { name: 'Higher Logic', status: 'pending' as const, detail: 'Planned — campaign sync', icon: Wifi },
+  { name: 'Microsoft Graph', status: 'pending' as const, detail: 'Configure GRAPH_* to enable sending', icon: Clock },
+  { name: 'GA4 Analytics', status: 'pending' as const, detail: 'Planned — site attribution', icon: Clock },
 ];
 
 const statusColors: Record<string, string> = {
@@ -114,7 +63,7 @@ const capabilities = [
 const welcomeMessage: ChatMessage = {
   id: 'welcome',
   role: 'ai',
-  text: "Good morning! I'm MEMTrak AI, your membership intelligence assistant. I have access to all member data from re:Members, email analytics from MEMTrak and Higher Logic, event attendance from Thaddeus, and engagement scoring across all platforms. What would you like to know?",
+  text: "Hi — I'm MEMTrak AI, your membership engagement assistant, powered by Claude. I answer questions grounded in your live MEMTrak email-tracking data (opens, clicks, sends, suppression). Ask me about campaign performance, engagement, or deliverability. (Set ANTHROPIC_API_KEY to enable live answers.)",
   timestamp: new Date(),
   animate: false,
 };
@@ -151,6 +100,10 @@ export default function MemtrakAI() {
   const [input, setInput] = useState('');
   const [isThinking, setIsThinking] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  // Tracks whether a real, Claude-backed answer has actually been received this
+  // session. Stays false until the AI route returns configured !== false, so
+  // the Session Stats panel never asserts a live model when none ran.
+  const [aiLive, setAiLive] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -162,7 +115,7 @@ export default function MemtrakAI() {
     scrollToBottom();
   }, [messages, isThinking]);
 
-  const handleSend = (text?: string) => {
+  const handleSend = async (text?: string) => {
     const question = (text || input).trim();
     if (!question || isThinking) return;
 
@@ -173,26 +126,52 @@ export default function MemtrakAI() {
       text: question,
       timestamp: new Date(),
     };
+    // Snapshot prior conversation for context before appending the new turn.
+    const priorHistory = messages
+      .filter(m => m.id !== 'welcome')
+      .map(m => ({ role: (m.role === 'ai' ? 'assistant' : 'user') as 'assistant' | 'user', content: m.text }));
+
     setMessages(prev => [...prev, userMsg]);
     setInput('');
     setIsThinking(true);
 
-    // Look up response or generate generic
-    const response = aiResponses[question] ||
-      `I searched across re:Members, Thaddeus, Higher Logic, and MEMTrak event data for "${question}". This is a great question — in a production environment, I'd query the live databases and return real-time results. For now, try one of the suggested questions below to see a full analysis.\n\nConnected data sources:\n• 4,994 member records (re:Members)\n• 2,840 event registrations (Thaddeus)\n• 8 campaigns synced (Higher Logic)\n• 12,808 tracked events (MEMTrak)`;
-
-    // Simulate thinking delay
-    setTimeout(() => {
-      setIsThinking(false);
+    const pushAi = (text: string) => {
       const aiMsg: ChatMessage = {
         id: `ai-${Date.now()}`,
         role: 'ai',
-        text: response,
+        text,
         timestamp: new Date(),
         animate: true,
       };
       setMessages(prev => [...prev, aiMsg]);
-    }, 2000);
+    };
+
+    try {
+      const res = await fetch('/api/memtrak/ai', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ mode: 'chat', question, history: priorHistory }),
+      });
+      const data = await res.json();
+
+      if (data.configured === false) {
+        // Honest fallback: AI is not configured in this environment. We never
+        // fabricate an answer here — no canned/example prose is served. The only
+        // way to get an answer is to configure a real Claude key.
+        pushAi(
+          'AI is not configured in this environment. Set the ANTHROPIC_API_KEY environment variable to enable live, Claude-backed answers grounded in your real MEMTrak event data. No example or simulated answers are shown — every response comes from the live model and your real event log.'
+        );
+      } else if (data.answer) {
+        setAiLive(true);
+        pushAi(data.answer);
+      } else {
+        pushAi(`I couldn't complete that request${data.error ? `: ${data.error}` : '.'}`);
+      }
+    } catch {
+      pushAi('Network error reaching the AI service. Please try again.');
+    } finally {
+      setIsThinking(false);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -208,6 +187,7 @@ export default function MemtrakAI() {
 
   return (
     <div className="p-6 h-[calc(100vh-56px)] flex flex-col">
+      <SampleDataBadge />
       {/* Header */}
       <div className="flex items-start justify-between mb-5 flex-shrink-0">
         <div>
@@ -229,7 +209,7 @@ export default function MemtrakAI() {
             </div>
           </div>
           <p className="text-[10px] mt-1.5 ml-[46px]" style={{ color: 'var(--text-muted)', opacity: 0.7 }}>
-            Powered by Claude — Connected to re:Members, Thaddeus, Higher Logic, and MEMTrak event data
+            Powered by Claude — answers grounded in your live MEMTrak event data
           </p>
         </div>
         <button
@@ -296,7 +276,7 @@ export default function MemtrakAI() {
                       </p>
                     )}
                     <div
-                      className="text-[9px] mt-2 text-right"
+                      className="text-[11px] mt-2 text-right"
                       style={{ color: 'var(--text-muted)', opacity: 0.6 }}
                     >
                       {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -415,7 +395,7 @@ export default function MemtrakAI() {
                       <div className="text-[11px] font-semibold" style={{ color: 'var(--heading)' }}>
                         {ds.name}
                       </div>
-                      <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
+                      <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
                         {ds.detail}
                       </div>
                     </div>
@@ -446,18 +426,22 @@ export default function MemtrakAI() {
                   <span className="font-bold" style={{ color: 'var(--heading)' }}>{messages.length}</span>
                 </div>
                 <div className="flex justify-between text-[10px]">
-                  <span style={{ color: 'var(--text-muted)' }}>Data sources queried</span>
+                  <span style={{ color: 'var(--text-muted)' }}>Live data grounding</span>
                   <span className="font-bold" style={{ color: 'var(--heading)' }}>
-                    {Math.min(4, messages.filter(m => m.role === 'ai').length)}
+                    {aiLive ? 'MEMTrak events' : 'Inactive'}
                   </span>
                 </div>
                 <div className="flex justify-between text-[10px]">
                   <span style={{ color: 'var(--text-muted)' }}>Model</span>
-                  <span className="font-bold" style={{ color: 'var(--accent)' }}>Claude Sonnet</span>
+                  <span className="font-bold" style={{ color: aiLive ? 'var(--accent)' : 'var(--text-muted)' }}>
+                    {aiLive ? 'Claude Opus 4.8' : 'Not connected'}
+                  </span>
                 </div>
                 <div className="flex justify-between text-[10px]">
-                  <span style={{ color: 'var(--text-muted)' }}>Context window</span>
-                  <span className="font-bold" style={{ color: 'var(--heading)' }}>Full session</span>
+                  <span style={{ color: 'var(--text-muted)' }}>Context</span>
+                  <span className="font-bold" style={{ color: 'var(--heading)' }}>
+                    {aiLive ? 'Conversation + live event stats' : '—'}
+                  </span>
                 </div>
               </div>
             </Card>

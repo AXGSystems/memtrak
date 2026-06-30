@@ -147,17 +147,17 @@ export default function GoalTracker() {
             <div className="text-center p-3 rounded-xl" style={{ background: `color-mix(in srgb, ${C.green} 10%, transparent)` }}>
               <CheckCircle2 className="w-5 h-5 mx-auto mb-1" style={{ color: C.green }} />
               <div className="text-xl font-extrabold" style={{ color: C.green }}>{onTrack}</div>
-              <div className="text-[9px] font-bold" style={{ color: 'var(--text-muted)' }}>On Track</div>
+              <div className="text-[11px] font-bold" style={{ color: 'var(--text-muted)' }}>On Track</div>
             </div>
             <div className="text-center p-3 rounded-xl" style={{ background: `color-mix(in srgb, ${C.amber} 10%, transparent)` }}>
               <AlertTriangle className="w-5 h-5 mx-auto mb-1" style={{ color: C.amber }} />
               <div className="text-xl font-extrabold" style={{ color: C.amber }}>{atRisk}</div>
-              <div className="text-[9px] font-bold" style={{ color: 'var(--text-muted)' }}>At Risk</div>
+              <div className="text-[11px] font-bold" style={{ color: 'var(--text-muted)' }}>At Risk</div>
             </div>
             <div className="text-center p-3 rounded-xl" style={{ background: `color-mix(in srgb, ${C.red} 10%, transparent)` }}>
               <TrendingDown className="w-5 h-5 mx-auto mb-1" style={{ color: C.red }} />
               <div className="text-xl font-extrabold" style={{ color: C.red }}>{behind}</div>
-              <div className="text-[9px] font-bold" style={{ color: 'var(--text-muted)' }}>Behind</div>
+              <div className="text-[11px] font-bold" style={{ color: 'var(--text-muted)' }}>Behind</div>
             </div>
           </div>
         </Card>
@@ -211,7 +211,7 @@ export default function GoalTracker() {
                   <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{g.label}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[8px] uppercase font-bold px-2 py-0.5 rounded-full" style={{ background: `color-mix(in srgb, ${status.color} 15%, transparent)`, color: status.color }}>
+                  <span className="text-[11px] uppercase font-bold px-2 py-0.5 rounded-full" style={{ background: `color-mix(in srgb, ${status.color} 15%, transparent)`, color: status.color }}>
                     {status.label}
                   </span>
                   <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
@@ -252,7 +252,7 @@ export default function GoalTracker() {
                   }}
                 />
               </div>
-              <div className="flex justify-between text-[9px]" style={{ color: 'var(--text-muted)' }}>
+              <div className="flex justify-between text-[11px]" style={{ color: 'var(--text-muted)' }}>
                 <span>0%</span>
                 <span>{pct.toFixed(1)}% of goal</span>
                 <span>100%</span>
@@ -341,7 +341,7 @@ export default function GoalTracker() {
                   </div>
                   <div className="text-right">
                     <div className="text-2xl font-extrabold" style={{ color: status.color }}>{pct.toFixed(1)}%</div>
-                    <span className="text-[9px] font-bold px-2 py-0.5 rounded-full" style={{ background: `color-mix(in srgb, ${status.color} 15%, transparent)`, color: status.color }}>
+                    <span className="text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: `color-mix(in srgb, ${status.color} 15%, transparent)`, color: status.color }}>
                       {status.label}
                     </span>
                   </div>
@@ -358,7 +358,7 @@ export default function GoalTracker() {
                   <div className="grid grid-cols-4 gap-2">
                     {['Jan', 'Feb', 'Mar', 'Apr'].map((mo, i) => (
                       <div key={mo} className="text-center p-2 rounded-lg" style={{ background: 'var(--background)' }}>
-                        <div className="text-[9px] font-bold" style={{ color: 'var(--text-muted)' }}>{mo}</div>
+                        <div className="text-[11px] font-bold" style={{ color: 'var(--text-muted)' }}>{mo}</div>
                         <div className="text-sm font-extrabold" style={{ color: g.monthlyProgress[i] >= 90 ? C.green : g.monthlyProgress[i] >= 70 ? C.amber : C.red }}>
                           {g.monthlyProgress[i]}%
                         </div>

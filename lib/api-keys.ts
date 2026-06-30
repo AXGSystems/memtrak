@@ -68,13 +68,15 @@ export function extractBearer(headers: Headers): string | null {
 
 /**
  * Returns true when the scope list permits the (method, path) combo.
- * Empty scope list = full /api/memtrak/* access. Scope strings look like:
+ * An EMPTY scope list grants NO access (deny) — keys must be created with
+ * explicit scopes. Scope strings look like:
  *   "GET:/api/memtrak/members"        → exact verb + path prefix
  *   "*:/api/memtrak/invoices"         → any method on that prefix
  *   "GET:/api/memtrak"                → all GETs under /api/memtrak
+ *   "*:/api/memtrak"                  → full access (must be explicit)
  */
 export function scopeAllows(scopes: string[], method: string, pathname: string): boolean {
-  if (!scopes.length) return true;
+  if (!scopes.length) return false; // deny by default — no scopes, no access
   const upper = method.toUpperCase();
   for (const s of scopes) {
     const [verb, prefix] = s.split(':');

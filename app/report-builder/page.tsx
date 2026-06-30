@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import Card from '@/components/Card';
 import SparkKpi from '@/components/SparkKpi';
 import {
@@ -93,7 +94,7 @@ function SectionPreview({ id }: { id: SectionId }) {
               { l: 'Revenue', v: `$${(totals.totalRevenue / 1000).toFixed(0)}K`, c: C.gold },
             ].map(m => (
               <div key={m.l} className="rounded-lg border p-3 text-center" style={{ borderColor: 'var(--card-border)', background: 'color-mix(in srgb, var(--card) 50%, var(--background))' }}>
-                <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>{m.l}</div>
+                <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>{m.l}</div>
                 <div className="text-lg font-extrabold mt-1" style={{ color: m.c }}>{m.v}</div>
               </div>
             ))}
@@ -113,15 +114,15 @@ function SectionPreview({ id }: { id: SectionId }) {
                 </div>
                 <div className="flex gap-4 text-right flex-shrink-0 ml-4">
                   <div>
-                    <div className="text-[9px] uppercase" style={{ color: 'var(--text-muted)' }}>Opens</div>
+                    <div className="text-[11px] uppercase" style={{ color: 'var(--text-muted)' }}>Opens</div>
                     <div className="text-xs font-bold" style={{ color: C.green }}>{((c.uniqueOpened / c.delivered) * 100).toFixed(1)}%</div>
                   </div>
                   <div>
-                    <div className="text-[9px] uppercase" style={{ color: 'var(--text-muted)' }}>Clicks</div>
+                    <div className="text-[11px] uppercase" style={{ color: 'var(--text-muted)' }}>Clicks</div>
                     <div className="text-xs font-bold" style={{ color: C.blue }}>{((c.clicked / c.delivered) * 100).toFixed(1)}%</div>
                   </div>
                   <div>
-                    <div className="text-[9px] uppercase" style={{ color: 'var(--text-muted)' }}>Revenue</div>
+                    <div className="text-[11px] uppercase" style={{ color: 'var(--text-muted)' }}>Revenue</div>
                     <div className="text-xs font-bold" style={{ color: C.gold }}>${c.revenue.toLocaleString()}</div>
                   </div>
                 </div>
@@ -140,7 +141,7 @@ function SectionPreview({ id }: { id: SectionId }) {
             { l: 'Bounce Rate', v: `${bounceRate}%`, bench: '2.1%', delta: (parseFloat(bounceRate) - 2.1).toFixed(1) + '%', c: C.red },
           ].map(m => (
             <div key={m.l} className="rounded-lg border p-3" style={{ borderColor: 'var(--card-border)', background: 'color-mix(in srgb, var(--card) 50%, var(--background))' }}>
-              <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>{m.l}</div>
+              <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>{m.l}</div>
               <div className="text-xl font-extrabold mt-1" style={{ color: m.c }}>{m.v}</div>
               <div className="text-[10px] mt-1" style={{ color: 'var(--text-muted)' }}>
                 Industry: {m.bench} <span style={{ color: C.green }}>({m.delta})</span>
@@ -152,9 +153,9 @@ function SectionPreview({ id }: { id: SectionId }) {
             <div className="flex gap-2">
               {demoMonthly.map(m => (
                 <div key={m.month} className="flex-1 rounded-lg border p-2 text-center" style={{ borderColor: 'var(--card-border)' }}>
-                  <div className="text-[9px] font-bold" style={{ color: 'var(--text-muted)' }}>{m.month}</div>
+                  <div className="text-[11px] font-bold" style={{ color: 'var(--text-muted)' }}>{m.month}</div>
                   <div className="text-xs font-bold mt-0.5" style={{ color: 'var(--heading)' }}>{m.sent.toLocaleString()}</div>
-                  <div className="text-[9px]" style={{ color: C.green }}>{((m.opened / m.delivered) * 100).toFixed(0)}% open</div>
+                  <div className="text-[11px]" style={{ color: C.green }}>{((m.opened / m.delivered) * 100).toFixed(0)}% open</div>
                 </div>
               ))}
             </div>
@@ -202,8 +203,8 @@ function SectionPreview({ id }: { id: SectionId }) {
           {tiers.map(t => (
             <div key={t.label} className="rounded-lg border p-3 text-center" style={{ borderColor: 'var(--card-border)', borderTopWidth: 3, borderTopColor: t.color }}>
               <div className="text-lg font-extrabold" style={{ color: t.color }}>{t.count}</div>
-              <div className="text-[9px] font-bold mt-0.5" style={{ color: 'var(--text-muted)' }}>{t.label}</div>
-              <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{((t.count / total) * 100).toFixed(1)}%</div>
+              <div className="text-[11px] font-bold mt-0.5" style={{ color: 'var(--text-muted)' }}>{t.label}</div>
+              <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{((t.count / total) * 100).toFixed(1)}%</div>
             </div>
           ))}
         </div>
@@ -220,7 +221,7 @@ function SectionPreview({ id }: { id: SectionId }) {
             { l: 'Total Bounced', v: totals.totalBounced.toLocaleString(), c: C.orange },
           ].map(m => (
             <div key={m.l} className="rounded-lg border p-3" style={{ borderColor: 'var(--card-border)', background: 'color-mix(in srgb, var(--card) 50%, var(--background))' }}>
-              <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>{m.l}</div>
+              <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>{m.l}</div>
               <div className="text-lg font-extrabold mt-1" style={{ color: m.c }}>{m.v}</div>
             </div>
           ))}
@@ -238,7 +239,7 @@ function SectionPreview({ id }: { id: SectionId }) {
               </div>
               <div className="flex items-center gap-2">
                 <div className="text-xs font-bold" style={{ color: s.replyRate >= 40 ? C.green : s.replyRate >= 30 ? C.blue : C.orange }}>{s.replyRate}% reply</div>
-                <span className="text-[9px] px-2 py-0.5 rounded-full font-bold" style={{
+                <span className="text-[11px] px-2 py-0.5 rounded-full font-bold" style={{
                   background: s.strength === 'Exceptional' ? `${C.green}22` : s.strength === 'Strong' ? `${C.blue}22` : `${C.orange}22`,
                   color: s.strength === 'Exceptional' ? C.green : s.strength === 'Strong' ? C.blue : C.orange,
                 }}>{s.strength}</span>
@@ -253,15 +254,15 @@ function SectionPreview({ id }: { id: SectionId }) {
         <div>
           <div className="grid grid-cols-3 gap-3 mb-3">
             <div className="rounded-lg border p-3" style={{ borderColor: 'var(--card-border)', background: 'color-mix(in srgb, var(--card) 50%, var(--background))' }}>
-              <div className="text-[9px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Total Addresses</div>
+              <div className="text-[11px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Total Addresses</div>
               <div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>{demoHygiene.total.toLocaleString()}</div>
             </div>
             <div className="rounded-lg border p-3" style={{ borderColor: 'var(--card-border)', background: 'color-mix(in srgb, var(--card) 50%, var(--background))' }}>
-              <div className="text-[9px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Healthy</div>
+              <div className="text-[11px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Healthy</div>
               <div className="text-lg font-extrabold" style={{ color: C.green }}>{demoHygiene.healthy.pct}%</div>
             </div>
             <div className="rounded-lg border p-3" style={{ borderColor: 'var(--card-border)', background: 'color-mix(in srgb, var(--card) 50%, var(--background))' }}>
-              <div className="text-[9px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Projected Delivery</div>
+              <div className="text-[11px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Projected Delivery</div>
               <div className="text-lg font-extrabold" style={{ color: C.blue }}>{demoHygiene.projectedDelivery}%</div>
             </div>
           </div>
@@ -293,7 +294,7 @@ function SectionPreview({ id }: { id: SectionId }) {
               <div className="flex items-center justify-between">
                 <div>
                   <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{c.org}</span>
-                  <span className="text-[9px] ml-2 px-1.5 py-0.5 rounded font-bold" style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}>{c.type}</span>
+                  <span className="text-[11px] ml-2 px-1.5 py-0.5 rounded font-bold" style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}>{c.type}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-bold" style={{ color: c.score >= 70 ? C.red : c.score >= 50 ? C.orange : C.green }}>{c.score}%</span>
@@ -326,7 +327,7 @@ function SectionPreview({ id }: { id: SectionId }) {
                     <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>vs</span>
                     <span className="text-xs font-bold" style={{ color: 'var(--text-muted)' }}>{b.industry}{b.unit}</span>
                   </div>
-                  <span className="text-[9px] px-2 py-0.5 rounded-full font-bold" style={{
+                  <span className="text-[11px] px-2 py-0.5 rounded-full font-bold" style={{
                     background: better ? `${C.green}22` : `${C.red}22`,
                     color: better ? C.green : C.red,
                   }}>{better ? 'Above' : 'Below'}</span>
@@ -388,6 +389,7 @@ export default function ReportBuilder() {
 
   return (
     <div className="p-6 space-y-6" style={{ animation: 'fadeIn 0.4s ease-out' }}>
+      <SampleDataBadge />
       {/* SparkKPIs */}
       <div className="grid grid-cols-4 gap-4 stagger-children">
         <SparkKpi
@@ -562,7 +564,7 @@ export default function ReportBuilder() {
                 <div key={i} className="flex items-center justify-between py-2 border-b" style={{ borderColor: 'var(--card-border)' }}>
                   <div className="min-w-0">
                     <div className="text-[11px] font-semibold truncate" style={{ color: 'var(--heading)' }}>{r.title}</div>
-                    <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{r.date} | {r.sections} sections | {r.template}</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{r.date} | {r.sections} sections | {r.template}</div>
                   </div>
                   <button onClick={() => { setTitle(r.title); setShowHistory(false); }} className="flex-shrink-0 ml-2 p-1 rounded" style={{ color: 'var(--accent)' }} title="Load this report">
                     <Eye className="w-3 h-3" />
@@ -587,7 +589,7 @@ export default function ReportBuilder() {
                       <span className="text-[10px] font-medium" style={{ color: 'var(--text-muted)' }}>
                         {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
                       </span>
-                      <span className="text-[9px] px-2 py-0.5 rounded-full font-bold" style={{ background: 'color-mix(in srgb, var(--accent) 15%, transparent)', color: 'var(--accent)' }}>
+                      <span className="text-[11px] px-2 py-0.5 rounded-full font-bold" style={{ background: 'color-mix(in srgb, var(--accent) 15%, transparent)', color: 'var(--accent)' }}>
                         {DATE_PRESETS.find(p => p.id === dateRange)?.label} Range
                       </span>
                     </div>
@@ -638,10 +640,10 @@ export default function ReportBuilder() {
               {/* Report Footer */}
               {orderedSelected.length > 0 && (
                 <div className="border-t pt-4 flex items-center justify-between" style={{ borderColor: 'var(--card-border)' }}>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
                     Generated by MEMTrak Report Builder | {new Date().toLocaleDateString()} | Confidential
                   </div>
-                  <div className="text-[9px] font-bold" style={{ color: 'var(--accent)' }}>
+                  <div className="text-[11px] font-bold" style={{ color: 'var(--accent)' }}>
                     Page 1 of 1
                   </div>
                 </div>

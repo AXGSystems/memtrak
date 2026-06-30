@@ -8,6 +8,10 @@ import {
 import SparkKpi from '@/components/SparkKpi';
 import Card from '@/components/Card';
 import ClientChart from '@/components/ClientChart';
+import SampleDataBadge from '@/components/SampleDataBadge';
+import { DELIVERABILITY, isDeliverabilityFeedLive } from '@/lib/constants';
+
+const FEED_LIVE = isDeliverabilityFeedLive();
 
 /* ── Palette ── */
 const C = {
@@ -27,9 +31,9 @@ const authProtocols = [
     statusLabel: 'Configured',
     color: C.green,
     icon: CheckCircle2,
-    record: 'v=spf1 include:alta.org ~all',
+    record: DELIVERABILITY.spfRecord,
     recommendation: 'No action needed. SPF is correctly configured and passing validation.',
-    detail: 'SPF (Sender Policy Framework) specifies which mail servers are authorized to send email on behalf of alta.org. Your current record authorizes all alta.org infrastructure with a soft fail (~all) for unauthorized senders.',
+    detail: 'SPF (Sender Policy Framework) specifies which mail servers are authorized to send email on behalf of alta.org. Your current record authorizes ALTA\'s Microsoft 365 sending path (spf.protection.outlook.com) — the same infrastructure MEMTrak uses for Graph sends — with a hard fail (-all) for any unauthorized sender.',
   },
   {
     name: 'DKIM',
@@ -88,6 +92,38 @@ const bimiSteps = [
   { label: 'SVG logo file', status: 'pending' as const, detail: 'A Tiny PS SVG logo must be submitted. Must be square, under 32KB, and meet SVG Tiny 1.2 spec.' },
 ];
 
+/* ── Gmail / Yahoo 2024 bulk-sender requirements ──
+   The Feb-2024 mandate that actually gates inbox placement for any org sending
+   5,000+ messages/day to Gmail or Yahoo. Source: Google "Email sender
+   guidelines" + Yahoo "Sender Best Practices Requirements". */
+const bulkSenderReqs = [
+  {
+    label: 'SPF and DKIM authentication',
+    status: 'done' as const,
+    detail: 'Both SPF and DKIM must be configured for the sending domain. ALTA has both in place (SPF via spf.protection.outlook.com, DKIM 2048-bit).',
+  },
+  {
+    label: 'DMARC policy published',
+    status: 'warn' as const,
+    detail: 'A DMARC record is required (p=none satisfies the minimum). ALTA publishes DMARC at p=none today — upgrading to p=quarantine is recommended but not required by the mandate.',
+  },
+  {
+    label: 'One-click unsubscribe (RFC 8058)',
+    status: 'done' as const,
+    detail: 'Marketing/bulk mail must include List-Unsubscribe and List-Unsubscribe-Post: List-Unsubscribe=One-Click headers, honored within 2 days. MEMTrak adds both headers to every send and processes the provider one-click POST immediately.',
+  },
+  {
+    label: 'Spam complaint rate kept under 0.3%',
+    status: 'done' as const,
+    detail: `Google requires senders to stay under a 0.3% spam-complaint rate (and ideally under 0.1%). ALTA is at ${DELIVERABILITY.spamComplaintRate}%. MEMTrak's proactive guard blocks any send projected to approach the limit.`,
+  },
+  {
+    label: 'Aligned From: domain (no spoofing)',
+    status: 'done' as const,
+    detail: 'The visible From: domain must align with the authenticated (SPF/DKIM) domain. ALTA sends as @alta.org through its authenticated M365 path.',
+  },
+];
+
 /* ── Alert rules ── */
 const alertRules = [
   { icon: ShieldAlert, label: 'Block send if complaint rate would exceed 0.25%', severity: 'critical', detail: 'Proactive guard that halts any campaign predicted to push the domain complaint rate above 0.25% — safely below Google\'s 0.3% threshold. This prevents reputation damage before it happens.' },
@@ -133,15 +169,15 @@ function AuthDetailModal({ proto, onClose }: { proto: typeof authProtocols[0]; o
             </span>
           </div>
           <div>
-            <p className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Record Value</p>
+            <p className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Record Value</p>
             <code className="text-xs px-3 py-2 rounded-lg block font-mono" style={{ background: 'var(--input-bg)', color: 'var(--heading)' }}>{proto.record}</code>
           </div>
           <div>
-            <p className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>About</p>
+            <p className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>About</p>
             <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>{proto.detail}</p>
           </div>
           <div>
-            <p className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Recommendation</p>
+            <p className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Recommendation</p>
             <p className="text-xs leading-relaxed" style={{ color: 'var(--heading)' }}>{proto.recommendation}</p>
           </div>
         </div>
@@ -157,6 +193,10 @@ export default function InboxGuard() {
 
   return (
     <div className="p-6 space-y-6">
+
+      {!FEED_LIVE && (
+        <SampleDataBadge className="!mb-0" message="The domain health score, reputation trend, complaint rate, and per-provider inbox-placement figures shown here are illustrative sample values, not yet connected to a live reputation feed (Google Postmaster Tools / Microsoft SNDS) or a live DNS lookup of the SPF/DKIM/DMARC records. They demonstrate the analysis InboxGuard will show once those feeds are wired. The Gmail/Yahoo bulk-sender rules and the 0.3% complaint hard limit are documented industry requirements, not ALTA-specific measurements." />
+      )}
 
       {/* ── 1. Branded Header ── */}
       <div className="flex items-center gap-4">
@@ -207,11 +247,11 @@ export default function InboxGuard() {
                   <div key={f.factor} className="flex items-center justify-between p-2.5 rounded-lg" style={{ background: 'var(--input-bg)' }}>
                     <div>
                       <span className="text-[11px] font-bold" style={{ color: 'var(--heading)' }}>{f.factor}</span>
-                      <span className="text-[9px] ml-2" style={{ color: 'var(--text-muted)' }}>({f.weight})</span>
+                      <span className="text-[11px] ml-2" style={{ color: 'var(--text-muted)' }}>({f.weight})</span>
                     </div>
                     <div className="text-right">
                       <span className="text-[11px] font-bold" style={{ color: C.green }}>{f.score}</span>
-                      <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{f.note}</div>
+                      <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{f.note}</div>
                     </div>
                   </div>
                 ))}
@@ -224,8 +264,8 @@ export default function InboxGuard() {
         />
         <SparkKpi
           label="Complaint Rate"
-          value="0.08%"
-          sub="Google threshold: 0.3% | Recommended: under 0.1%"
+          value={`${DELIVERABILITY.spamComplaintRate}%`}
+          sub={`Google threshold: ${DELIVERABILITY.googleComplaintHardLimit}% | Recommended: under ${DELIVERABILITY.recommendedComplaintCeiling}%`}
           icon={AlertTriangle}
           color={C.green}
           size="lg"
@@ -248,7 +288,7 @@ export default function InboxGuard() {
                   <div className="absolute top-0 h-full w-px" style={{ left: '33%', background: C.amber }} />
                   <div className="absolute top-0 h-full w-px" style={{ left: '100%', background: C.red }} />
                 </div>
-                <div className="flex justify-between text-[8px] mt-1" style={{ color: 'var(--text-muted)' }}>
+                <div className="flex justify-between text-[11px] mt-1" style={{ color: 'var(--text-muted)' }}>
                   <span>0%</span>
                   <span style={{ color: C.amber }}>0.1% recommended</span>
                   <span style={{ color: C.red }}>0.3% Google limit</span>
@@ -295,7 +335,7 @@ export default function InboxGuard() {
           detail={
             <div className="space-y-3">
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-                BIMI (Brand Indicators for Message Identification) displays your ALTA logo next to every email in recipient inboxes. Studies show BIMI increases open rates by up to 38% and brand recall by 120%.
+                BIMI (Brand Indicators for Message Identification) displays your ALTA logo next to every email in recipient inboxes. Vendors report it can improve brand recognition and trust; the actual lift varies by audience and is not a guaranteed figure.
               </p>
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
                 Before BIMI can be enabled, DMARC must be upgraded from p=none to at least p=quarantine. Then a Verified Mark Certificate (VMC) and SVG logo file are required.
@@ -312,7 +352,7 @@ export default function InboxGuard() {
       {/* ── 3. Authentication Status Dashboard ── */}
       <Card
         title="Authentication Status Dashboard"
-        subtitle="SPF / DKIM / DMARC / BIMI for alta.org"
+        subtitle={FEED_LIVE ? 'SPF / DKIM / DMARC / BIMI for alta.org' : 'SPF / DKIM / DMARC / BIMI for alta.org — expected configuration, not yet verified against live DNS'}
         detailTitle="Email Authentication Explained"
         detailContent={
           <div className="space-y-3">
@@ -351,7 +391,7 @@ export default function InboxGuard() {
                   <div>
                     <span className="text-xs font-bold block" style={{ color: 'var(--heading)' }}>{proto.name}</span>
                     <span
-                      className="text-[9px] px-2 py-0.5 rounded-full font-bold inline-block mt-0.5"
+                      className="text-[11px] px-2 py-0.5 rounded-full font-bold inline-block mt-0.5"
                       style={{
                         background: `color-mix(in srgb, ${proto.color} 15%, transparent)`,
                         color: proto.color,
@@ -369,7 +409,7 @@ export default function InboxGuard() {
                 <p className="text-[10px] leading-relaxed" style={{ color: proto.color }}>
                   {proto.recommendation.split('.')[0]}.
                 </p>
-                <div className="text-[8px] mt-2 font-semibold" style={{ color: 'var(--accent)' }}>Click for details</div>
+                <div className="text-[11px] mt-2 font-semibold" style={{ color: 'var(--accent)' }}>Click for details</div>
               </div>
             );
           })}
@@ -378,6 +418,56 @@ export default function InboxGuard() {
 
       {/* Auth detail modal */}
       {selectedAuth && <AuthDetailModal proto={selectedAuth} onClose={() => setSelectedAuth(null)} />}
+
+      {/* ── 3b. Gmail / Yahoo 2024 Bulk-Sender Compliance ── */}
+      <Card
+        title="Gmail & Yahoo Bulk-Sender Compliance"
+        subtitle="The Feb-2024 mandate that gates inbox placement for high-volume senders"
+        detailTitle="2024 Bulk-Sender Requirements"
+        detailContent={
+          <div className="space-y-3">
+            <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+              In February 2024 Google and Yahoo began enforcing new rules for anyone sending more than ~5,000 messages per day to their users. Failing these rules sends mail to spam or rejects it outright — this is the single most consequential deliverability change in years.
+            </p>
+            <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+              The three pillars are: (1) authenticate with SPF, DKIM, and DMARC; (2) make unsubscribing one-click and honor it within two days (RFC 8058); and (3) keep the spam-complaint rate under 0.3%. MEMTrak implements one-click unsubscribe headers on every send and processes the provider one-click POST immediately.
+            </p>
+          </div>
+        }
+      >
+        <div className="space-y-3">
+          {bulkSenderReqs.map((req, i) => (
+            <div key={i} className="flex items-start gap-3 p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
+              <div className="mt-0.5 flex-shrink-0">
+                {req.status === 'done' && <CheckCircle2 className="w-4 h-4" style={{ color: C.green }} />}
+                {req.status === 'warn' && <AlertTriangle className="w-4 h-4" style={{ color: C.amber }} />}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-bold" style={{ color: 'var(--heading)' }}>{req.label}</span>
+                  <span
+                    className="text-[11px] px-1.5 py-0.5 rounded-full font-bold flex-shrink-0"
+                    style={{
+                      background: `color-mix(in srgb, ${req.status === 'done' ? C.green : C.amber} 15%, transparent)`,
+                      color: req.status === 'done' ? C.green : C.amber,
+                    }}
+                  >
+                    {req.status === 'done' ? 'Met' : 'Recommended'}
+                  </span>
+                </div>
+                <p className="text-[10px] mt-1 leading-relaxed" style={{ color: 'var(--text-muted)' }}>{req.detail}</p>
+              </div>
+            </div>
+          ))}
+          <div className="flex items-center gap-2 p-3 rounded-lg mt-1" style={{ background: 'color-mix(in srgb, var(--accent) 8%, transparent)', borderLeft: `3px solid ${C.green}` }}>
+            <ShieldCheck className="w-4 h-4 flex-shrink-0" style={{ color: C.green }} />
+            <p className="text-[10px] leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+              <span className="font-bold" style={{ color: 'var(--heading)' }}>ALTA meets the mandatory Gmail/Yahoo requirements.</span>{' '}
+              The one DMARC upgrade is recommended for stronger protection, not required for delivery.
+            </p>
+          </div>
+        </div>
+      </Card>
 
       {/* ── 4 & 6. Charts Row ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -611,12 +701,12 @@ export default function InboxGuard() {
               </p>
               <div className="grid grid-cols-2 gap-3">
                 <div className="p-3 rounded-lg text-center" style={{ background: 'var(--input-bg)' }}>
-                  <div className="text-lg font-extrabold" style={{ color: C.green }}>+38%</div>
-                  <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Open Rate Increase</div>
+                  <CheckCircle2 className="w-5 h-5 mx-auto mb-1" style={{ color: C.green }} />
+                  <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Logo shown in supporting inboxes</div>
                 </div>
                 <div className="p-3 rounded-lg text-center" style={{ background: 'var(--input-bg)' }}>
-                  <div className="text-lg font-extrabold" style={{ color: C.blue }}>+120%</div>
-                  <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Brand Recall</div>
+                  <ShieldCheck className="w-5 h-5 mx-auto mb-1" style={{ color: C.blue }} />
+                  <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Stronger sender authenticity signal</div>
                 </div>
               </div>
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -639,7 +729,7 @@ export default function InboxGuard() {
                       {i + 1}. {step.label}
                     </span>
                     <span
-                      className="text-[8px] px-1.5 py-0.5 rounded-full font-bold flex-shrink-0"
+                      className="text-[11px] px-1.5 py-0.5 rounded-full font-bold flex-shrink-0"
                       style={{
                         background: `color-mix(in srgb, ${step.status === 'done' ? C.green : step.status === 'warn' ? C.amber : C.gray} 15%, transparent)`,
                         color: step.status === 'done' ? C.green : step.status === 'warn' ? C.amber : C.gray,
@@ -655,7 +745,7 @@ export default function InboxGuard() {
             <div className="flex items-center gap-2 p-3 rounded-lg mt-2" style={{ background: 'color-mix(in srgb, var(--accent) 8%, transparent)', borderLeft: `3px solid ${C.blue}` }}>
               <TrendingUp className="w-4 h-4 flex-shrink-0" style={{ color: C.blue }} />
               <p className="text-[10px] leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-                <span className="font-bold" style={{ color: 'var(--heading)' }}>BIMI increases opens 38% and brand recall 120%.</span>{' '}
+                <span className="font-bold" style={{ color: 'var(--heading)' }}>BIMI puts the ALTA logo on every authenticated message.</span>{' '}
                 Completing these steps will display the ALTA logo in Gmail, Yahoo, Apple Mail, and Fastmail inboxes.
               </p>
             </div>
@@ -703,7 +793,7 @@ export default function InboxGuard() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <span
-                        className="text-[8px] px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider"
+                        className="text-[11px] px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider"
                         style={{
                           background: `color-mix(in srgb, ${ruleColor} 15%, transparent)`,
                           color: ruleColor,
@@ -716,7 +806,7 @@ export default function InboxGuard() {
                     <p className="text-[11px] font-bold leading-relaxed" style={{ color: 'var(--heading)' }}>
                       {rule.label}
                     </p>
-                    <div className="text-[8px] mt-1.5 font-semibold" style={{ color: 'var(--accent)' }}>Click for details</div>
+                    <div className="text-[11px] mt-1.5 font-semibold" style={{ color: 'var(--accent)' }}>Click for details</div>
                   </div>
                 </div>
               );

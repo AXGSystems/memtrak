@@ -210,7 +210,7 @@ export default function LinkSentryPage() {
                 {Object.entries(statusCounts).map(([status, count]) => (
                   <div key={status} className="rounded-lg p-2 text-center" style={{ background: `color-mix(in srgb, ${statusColor(status)} 10%, transparent)` }}>
                     <div className="text-sm font-extrabold" style={{ color: statusColor(status) }}>{count}</div>
-                    <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{status}</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{status}</div>
                   </div>
                 ))}
               </div>
@@ -235,7 +235,7 @@ export default function LinkSentryPage() {
               {trackedLinks.filter(l => l.status === 'Broken').map(l => (
                 <div key={l.id} className="rounded-lg p-3" style={{ background: 'rgba(217,74,74,0.08)', border: '1px solid rgba(217,74,74,0.15)' }}>
                   <div className="text-[10px] font-bold" style={{ color: C.red }}>{l.campaign}</div>
-                  <div className="text-[9px] font-mono mt-0.5" style={{ color: 'var(--text-muted)' }}>{l.url}</div>
+                  <div className="text-[11px] font-mono mt-0.5" style={{ color: 'var(--text-muted)' }}>{l.url}</div>
                 </div>
               ))}
             </div>
@@ -263,7 +263,7 @@ export default function LinkSentryPage() {
                   border: `1px solid ${issue.severity === 'error' ? 'rgba(217,74,74,0.15)' : 'rgba(232,146,63,0.15)'}`,
                 }}>
                   <div className="text-[10px] font-bold" style={{ color: issue.severity === 'error' ? C.red : C.orange }}>{issue.campaign}: {issue.issue}</div>
-                  <div className="text-[9px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{issue.detail}</div>
+                  <div className="text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{issue.detail}</div>
                 </div>
               ))}
             </div>
@@ -312,7 +312,7 @@ export default function LinkSentryPage() {
               {Object.entries(statusCounts).map(([status, count]) => (
                 <div key={status} className="rounded-lg p-3 text-center" style={{ background: `color-mix(in srgb, ${statusColor(status)} 10%, transparent)` }}>
                   <div className="text-lg font-extrabold" style={{ color: statusColor(status) }}>{count}</div>
-                  <div className="text-[9px] font-bold" style={{ color: 'var(--text-muted)' }}>{status}</div>
+                  <div className="text-[11px] font-bold" style={{ color: 'var(--text-muted)' }}>{status}</div>
                 </div>
               ))}
             </div>
@@ -325,7 +325,7 @@ export default function LinkSentryPage() {
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className="text-[9px] px-3 py-1 rounded-full font-bold transition-all"
+              className="text-[11px] px-3 py-1 rounded-full font-bold transition-all"
               style={{
                 background: filter === f ? 'var(--accent)' : 'var(--input-bg)',
                 color: filter === f ? '#fff' : 'var(--text-muted)',
@@ -361,7 +361,7 @@ export default function LinkSentryPage() {
                   >
                     <td className="py-2.5 pr-3">
                       <span
-                        className="inline-flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-full"
+                        className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full"
                         style={{
                           background: `color-mix(in srgb, ${statusColor(l.status)} 15%, transparent)`,
                           color: statusColor(l.status),
@@ -453,16 +453,16 @@ export default function LinkSentryPage() {
                     {issue.issue}
                   </span>
                 </div>
-                <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{issue.campaign}</div>
+                <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{issue.campaign}</div>
               </div>
             ))}
 
             {/* Standards summary */}
             <div className="rounded-lg p-3" style={{ background: 'var(--background)', border: '1px solid var(--card-border)' }}>
-              <div className="text-[9px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>UTM Sources in Use</div>
+              <div className="text-[11px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>UTM Sources in Use</div>
               <div className="flex flex-wrap gap-1.5">
                 {['memtrak', 'higher-logic', 'outlook'].map(src => (
-                  <span key={src} className="text-[9px] font-mono font-bold px-2 py-0.5 rounded" style={{ background: 'var(--input-bg)', color: 'var(--heading)' }}>
+                  <span key={src} className="text-[11px] font-mono font-bold px-2 py-0.5 rounded" style={{ background: 'var(--input-bg)', color: 'var(--heading)' }}>
                     {src}
                   </span>
                 ))}
@@ -507,7 +507,7 @@ export default function LinkSentryPage() {
             {Object.entries(statusCounts).map(([status, count]) => (
               <div key={status} className="rounded-lg p-2 text-center" style={{ background: `color-mix(in srgb, ${statusColor(status)} 8%, transparent)` }}>
                 <div className="text-sm font-extrabold" style={{ color: statusColor(status) }}>{count}</div>
-                <div className="text-[8px] font-bold" style={{ color: 'var(--text-muted)' }}>{status}</div>
+                <div className="text-[11px] font-bold" style={{ color: 'var(--text-muted)' }}>{status}</div>
               </div>
             ))}
           </div>
@@ -535,15 +535,15 @@ export default function LinkSentryPage() {
                   <div className="flex items-center gap-2 mb-1">
                     <StatusIcon className="w-3.5 h-3.5" style={{ color: statusColor(l.status) }} />
                     <span className="text-[10px] font-bold" style={{ color: statusColor(l.status) }}>{l.status}</span>
-                    <span className="text-[9px] ml-auto" style={{ color: 'var(--text-muted)' }}>Checked {l.lastChecked}</span>
+                    <span className="text-[11px] ml-auto" style={{ color: 'var(--text-muted)' }}>Checked {l.lastChecked}</span>
                   </div>
                   <div className="text-[10px] font-mono font-semibold" style={{ color: 'var(--heading)' }}>{l.url}</div>
-                  <div className="text-[9px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{l.campaign}</div>
+                  <div className="text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{l.campaign}</div>
                   {l.status === 'Slow' && (
-                    <div className="text-[9px] mt-1 font-bold" style={{ color: C.orange }}>Load time: {l.loadTime}ms (target: &lt;500ms)</div>
+                    <div className="text-[11px] mt-1 font-bold" style={{ color: C.orange }}>Load time: {l.loadTime}ms (target: &lt;500ms)</div>
                   )}
                   {l.status === 'Redirect' && (
-                    <div className="text-[9px] mt-1 font-bold" style={{ color: C.amber }}>Redirect detected. Load time: {l.loadTime}ms</div>
+                    <div className="text-[11px] mt-1 font-bold" style={{ color: C.amber }}>Redirect detected. Load time: {l.loadTime}ms</div>
                   )}
                 </div>
               );
@@ -618,7 +618,7 @@ export default function LinkSentryPage() {
 
               {/* URL */}
               <div>
-                <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Full URL</div>
+                <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Full URL</div>
                 <code className="text-[10px] px-3 py-2 rounded-lg block font-mono break-all" style={{ background: 'var(--input-bg)', color: 'var(--heading)' }}>
                   {selectedLink.url}
                 </code>
@@ -628,23 +628,23 @@ export default function LinkSentryPage() {
               <div className="grid grid-cols-3 gap-3">
                 <div className="rounded-lg p-3 text-center" style={{ background: 'var(--background)' }}>
                   <div className="text-lg font-extrabold" style={{ color: C.blue }}>{selectedLink.clicks}</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Total Clicks</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Total Clicks</div>
                 </div>
                 <div className="rounded-lg p-3 text-center" style={{ background: 'var(--background)' }}>
                   <div className="text-lg font-extrabold" style={{ color: C.green }}>{selectedLink.uniqueClicks}</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Unique Clicks</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Unique Clicks</div>
                 </div>
                 <div className="rounded-lg p-3 text-center" style={{ background: 'var(--background)' }}>
                   <div className="text-lg font-extrabold" style={{ color: loadTimeColor(selectedLink.loadTime) }}>
                     {selectedLink.loadTime === 0 ? 'N/A' : `${selectedLink.loadTime}ms`}
                   </div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Load Time</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Load Time</div>
                 </div>
               </div>
 
               {/* UTM Parameters */}
               <div>
-                <div className="text-[9px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>UTM Parameters</div>
+                <div className="text-[11px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>UTM Parameters</div>
                 <div className="rounded-lg p-3 space-y-1.5" style={{ background: 'var(--background)' }}>
                   {[
                     { label: 'utm_source', val: selectedLink.utmSource },
@@ -660,7 +660,7 @@ export default function LinkSentryPage() {
                 </div>
               </div>
 
-              <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
+              <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
                 Campaign: {selectedLink.campaign} | Last checked: {selectedLink.lastChecked}
               </div>
             </div>

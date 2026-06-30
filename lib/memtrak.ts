@@ -14,7 +14,7 @@ import { supabase, isSupabaseConfigured } from './supabase';
 export interface MemTrakEvent {
   id: string;
   timestamp: string;
-  type: 'open' | 'click' | 'send' | 'bounce' | 'reply';
+  type: 'open' | 'click' | 'send' | 'bounce' | 'reply' | 'unsubscribe';
   campaignId: string;
   recipientEmail: string;
   recipientName?: string;
@@ -22,8 +22,25 @@ export interface MemTrakEvent {
 }
 
 // ===== IN-MEMORY FALLBACK =====
+// NOTE: This fallback is for LOCAL DEVELOPMENT ONLY. On serverless platforms
+// (e.g. Vercel) these module-level stores do not persist between invocations,
+// so tracked opens/clicks/sends would be lost. Configure Supabase
+// (NEXT_PUBLIC_SUPABASE_URL + NEXT_PUBLIC_SUPABASE_ANON_KEY) for durable
+// tracking in any deployed environment — see supabase-schema.sql.
 const memoryEvents: MemTrakEvent[] = [];
 const memorySuppression = new Set<string>();
+
+// Warn once at runtime when events are being logged without durable storage.
+let _warnedNoDurableStore = false;
+function warnIfNotDurable(): void {
+  if (_warnedNoDurableStore || isSupabaseConfigured()) return;
+  _warnedNoDurableStore = true;
+  if (process.env.NODE_ENV === 'production') {
+    console.warn(
+      '[MEMTrak] Supabase is not configured — event tracking is using an in-memory store that does NOT persist across serverless invocations. Opens/clicks/sends will be lost. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY for durable tracking (see supabase-schema.sql).'
+    );
+  }
+}
 
 // ===== EVENT LOGGING =====
 
@@ -43,6 +60,7 @@ export async function logEvent(event: Omit<MemTrakEvent, 'id' | 'timestamp'>): P
       metadata: entry.metadata,
     });
   } else {
+    warnIfNotDurable();
     memoryEvents.push(entry);
     if (memoryEvents.length > 10000) memoryEvents.splice(0, memoryEvents.length - 10000);
   }
@@ -101,6 +119,7 @@ export async function getStats() {
       sends: events.filter(e => e.type === 'send').length,
       bounces: events.filter(e => e.type === 'bounce').length,
       replies: events.filter(e => e.type === 'reply').length,
+      unsubscribes: events.filter(e => e.type === 'unsubscribe').length,
     },
     campaigns: campaigns.map(cid => {
       const campEvents = events.filter(e => e.campaignId === cid);

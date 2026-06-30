@@ -29,7 +29,7 @@ function OutcomeBadge({ outcome }: { outcome: string }) {
   if (cls === '__muted__' || !cls) {
     return (
       <span
-        className="text-[9px] px-1.5 py-0.5 rounded-full font-semibold"
+        className="text-[11px] px-1.5 py-0.5 rounded-full font-semibold"
         style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}
       >
         {outcome}
@@ -37,7 +37,7 @@ function OutcomeBadge({ outcome }: { outcome: string }) {
     );
   }
   return (
-    <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-semibold ${cls}`}>{outcome}</span>
+    <span className={`text-[11px] px-1.5 py-0.5 rounded-full font-semibold ${cls}`}>{outcome}</span>
   );
 }
 

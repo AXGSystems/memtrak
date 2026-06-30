@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useMemo, useState, use } from 'react';
+import { useEffect, useMemo, useRef, useState, use } from 'react';
 import Link from 'next/link';
 import Card from '@/components/Card';
 import ClientChart from '@/components/ClientChart';
 import { SkeletonCard } from '@/components/Skeleton';
 import { ChevronLeft, Printer, Download, AlertCircle } from 'lucide-react';
-import { getReport, type ReportInputs, type ReportResult } from '@/lib/reports';
+import { getReport, reportToCSV, printReport, type ReportInputs, type ReportResult } from '@/lib/reports';
 import type {
   Organization, Invoice, EventSummary, EventAttendance, Group, GroupMember,
 } from '@/lib/member-data';
@@ -24,6 +24,7 @@ export default function ReportDetailPage({ params }: PageProps) {
   const [inputs, setInputs] = useState<ReportInputs | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const chartWrapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!preset) return;
@@ -70,23 +71,41 @@ export default function ReportDetailPage({ params }: PageProps) {
     );
   }
 
-  const exportCsv = () => {
-    if (!result) return;
-    const escape = (v: string | number) => {
-      const s = String(v).replace(/"/g, '""');
-      return /[",\n]/.test(s) ? `"${s}"` : s;
+  // Provenance: which live endpoints fed this report, and how many records.
+  const provenance = useMemo(() => {
+    const sourceMap: Record<string, { sources: string[]; count: number }> = {
+      'member-health-by-type': { sources: ['/api/memtrak/members'], count: inputs?.organizations.length ?? 0 },
+      'top-revenue-payers': { sources: ['/api/memtrak/invoices', '/api/memtrak/members'], count: inputs?.invoices.length ?? 0 },
+      'engagement-distribution': { sources: ['/api/memtrak/members'], count: inputs?.organizations.length ?? 0 },
+      'lapsing-renewals': { sources: ['/api/memtrak/members'], count: inputs?.organizations.length ?? 0 },
+      'event-performance': { sources: ['/api/memtrak/connect-events'], count: inputs?.events.length ?? 0 },
+      'geographic-concentration': { sources: ['/api/memtrak/members'], count: inputs?.organizations.length ?? 0 },
     };
-    const lines = [
-      result.columns.map(escape).join(','),
-      ...result.rows.map((row) => row.map((c) => escape(c.value)).join(',')),
-    ];
-    const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+    const entry = sourceMap[preset?.slug ?? ''] ?? { sources: ['/api/memtrak'], count: 0 };
+    return { sources: entry.sources, recordCount: entry.count };
+  }, [preset, inputs]);
+
+  const exportCsv = () => {
+    if (!result || !preset) return;
+    const blob = new Blob([reportToCSV(result)], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = `${preset.slug}-${todayIso()}.csv`;
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const printBranded = () => {
+    if (!result || !preset) return;
+    // Capture the on-screen chart canvas (if any) so the printed/exported report
+    // carries the same visualization the user sees, not just the table.
+    let chartImage: string | undefined;
+    const canvas = chartWrapRef.current?.querySelector('canvas');
+    if (canvas instanceof HTMLCanvasElement) {
+      try { chartImage = canvas.toDataURL('image/png'); } catch { chartImage = undefined; }
+    }
+    printReport(preset, result, provenance, chartImage);
   };
 
   return (
@@ -104,7 +123,7 @@ export default function ReportDetailPage({ params }: PageProps) {
             <button onClick={exportCsv} disabled={!result} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all hover:scale-[1.03] disabled:opacity-50" style={{ color: 'var(--accent)', background: 'color-mix(in srgb, var(--accent) 10%, transparent)' }}>
               <Download className="w-3.5 h-3.5" /> Export CSV
             </button>
-            <button onClick={() => window.print()} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all hover:scale-[1.03]" style={{ color: 'var(--accent)', background: 'color-mix(in srgb, var(--accent) 10%, transparent)' }}>
+            <button onClick={printBranded} disabled={!result} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all hover:scale-[1.03] disabled:opacity-50" style={{ color: 'var(--accent)', background: 'color-mix(in srgb, var(--accent) 10%, transparent)' }}>
               <Printer className="w-3.5 h-3.5" /> Print
             </button>
           </div>
@@ -136,6 +155,7 @@ export default function ReportDetailPage({ params }: PageProps) {
           )}
 
           {result.chart && result.chart.kind !== 'none' && result.chart.points.length > 0 && (
+            <div ref={chartWrapRef}>
             <Card glass title={result.chart.title}>
               {result.chart.kind === 'bar' && (
                 <ClientChart
@@ -203,6 +223,7 @@ export default function ReportDetailPage({ params }: PageProps) {
                 />
               )}
             </Card>
+            </div>
           )}
 
           <Card glass title="Detail" subtitle={`${result.rows.length} rows`} noPad>

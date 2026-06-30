@@ -370,7 +370,7 @@ export default function MeetingPrepPage() {
                   </div>
                   <div>
                     <div className="font-bold text-xs" style={{ color: 'var(--heading)' }}>{org}</div>
-                    <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{BRIEFINGS[org].type}</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{BRIEFINGS[org].type}</div>
                   </div>
                   <ChevronRight className="w-3.5 h-3.5 ml-auto" style={{ color: 'var(--text-muted)' }} />
                 </button>
@@ -471,7 +471,7 @@ export default function MeetingPrepPage() {
                   <div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{briefing.staffRelationship.name}</div>
                   <div className="flex items-center gap-2 mt-1">
                     <span
-                      className="text-[9px] px-1.5 py-0.5 rounded-full font-bold"
+                      className="text-[11px] px-1.5 py-0.5 rounded-full font-bold"
                       style={{
                         background: briefing.staffRelationship.strength === 'Strong' ? 'rgba(140,198,63,0.15)' : briefing.staffRelationship.strength === 'Weak' ? 'rgba(217,74,74,0.15)' : 'rgba(232,146,63,0.15)',
                         color: briefing.staffRelationship.strength === 'Strong' ? C.green : briefing.staffRelationship.strength === 'Weak' ? C.red : C.orange,
@@ -479,7 +479,7 @@ export default function MeetingPrepPage() {
                     >
                       {briefing.staffRelationship.strength}
                     </span>
-                    <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Last: {briefing.staffRelationship.lastContact}</span>
+                    <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Last: {briefing.staffRelationship.lastContact}</span>
                   </div>
                 </div>
               </div>
@@ -502,7 +502,7 @@ export default function MeetingPrepPage() {
                     style={{ background: 'var(--input-bg)', border: '1px solid var(--card-border)' }}
                   >
                     <div className="text-xl font-extrabold" style={{ color: stat.color }}>{stat.value}</div>
-                    <div className="text-[9px] font-bold uppercase tracking-wider mt-0.5" style={{ color: 'var(--text-muted)' }}>{stat.label}</div>
+                    <div className="text-[11px] font-bold uppercase tracking-wider mt-0.5" style={{ color: 'var(--text-muted)' }}>{stat.label}</div>
                   </div>
                 ))}
               </div>
@@ -612,11 +612,11 @@ export default function MeetingPrepPage() {
                           <div className="flex items-center gap-2">
                             <span className="text-[10px] font-bold" style={{ color: 'var(--heading)' }}>{comm.subject}</span>
                           </div>
-                          <div className="text-[9px] mt-0.5" style={{ color: outcomeColor }}>{comm.outcome}</div>
+                          <div className="text-[11px] mt-0.5" style={{ color: outcomeColor }}>{comm.outcome}</div>
                           <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-[8px]" style={{ color: 'var(--text-muted)' }}>{comm.date}</span>
-                            <span className="text-[8px]" style={{ color: 'var(--text-muted)' }}>{comm.channel}</span>
-                            {comm.staff !== 'System' && <span className="text-[8px]" style={{ color: 'var(--text-muted)' }}>{comm.staff}</span>}
+                            <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{comm.date}</span>
+                            <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{comm.channel}</span>
+                            {comm.staff !== 'System' && <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{comm.staff}</span>}
                           </div>
                         </div>
                       </div>

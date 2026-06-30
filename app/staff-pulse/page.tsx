@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import Card from '@/components/Card';
 import SparkKpi from '@/components/SparkKpi';
 import ClientChart from '@/components/ClientChart';
@@ -129,6 +130,7 @@ export default function StaffPulse() {
 
   return (
     <div className="p-6">
+      <SampleDataBadge />
 
       {/* ── 1. Branded Header ──────────────────────────────────────── */}
       <div className="mb-8">
@@ -311,7 +313,7 @@ export default function StaffPulse() {
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-sm font-bold" style={{ color: 'var(--heading)' }}>{s.name}</span>
                     <span
-                      className="text-[9px] px-2 py-0.5 rounded-full font-bold"
+                      className="text-[11px] px-2 py-0.5 rounded-full font-bold"
                       style={{ background: strengthBg[s.strength], color: strengthColors[s.strength] }}
                     >
                       {s.strength}
@@ -324,19 +326,19 @@ export default function StaffPulse() {
                 <div className="flex items-center gap-6 flex-wrap">
                   <div className="text-center">
                     <div className="text-xs font-extrabold" style={{ color: 'var(--heading)' }}><AnimatedCounter value={s.outreach} /></div>
-                    <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Outreach</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Outreach</div>
                   </div>
                   <div className="text-center">
                     <div className="text-xs font-extrabold" style={{ color: strengthColors[s.strength] }}><AnimatedCounter value={s.replyRate} suffix="%" /></div>
-                    <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Reply Rate</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Reply Rate</div>
                   </div>
                   <div className="text-center">
                     <div className="text-xs font-extrabold" style={{ color: 'var(--heading)' }}>{s.responseTime}</div>
-                    <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Avg Response</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Avg Response</div>
                   </div>
                   <div className="text-center min-w-[100px]">
                     <div className="text-[10px] font-bold" style={{ color: C.blue }}>{s.bestSegment}</div>
-                    <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Best Segment</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Best Segment</div>
                   </div>
                 </div>
               </div>
@@ -367,7 +369,7 @@ export default function StaffPulse() {
                       <div className="text-[10px] font-bold mb-2" style={{ color: 'var(--heading)' }}>Performance Notes</div>
                       <p className="text-[10px] leading-relaxed" style={{ color: 'var(--text-muted)' }}>{s.segmentNote}</p>
                       <div className="mt-3 p-2 rounded-lg" style={{ background: 'rgba(74,144,217,0.08)', border: '1px solid rgba(74,144,217,0.15)' }}>
-                        <div className="text-[9px] font-bold" style={{ color: C.blue }}>Routing Recommendation</div>
+                        <div className="text-[11px] font-bold" style={{ color: C.blue }}>Routing Recommendation</div>
                         <p className="text-[10px] mt-0.5" style={{ color: 'var(--text-muted)' }}>
                           Best suited for {s.bestSegment} outreach based on {s.replyRate}% reply rate in this segment.
                         </p>
@@ -431,13 +433,13 @@ export default function StaffPulse() {
               ))}
               {/* Best router row */}
               <tr>
-                <td className="py-2 px-3 font-bold text-[9px] uppercase tracking-wider" style={{ color: C.blue }}>
+                <td className="py-2 px-3 font-bold text-[11px] uppercase tracking-wider" style={{ color: C.blue }}>
                   Best Router &rarr;
                 </td>
                 {memberTypes.map(mt => {
                   const best = staffProfiles.reduce((b, s) => (s.affinities[mt] > b.affinities[mt] ? s : b), staffProfiles[0]);
                   return (
-                    <td key={mt} className="text-center py-2 px-2 rounded-lg font-bold text-[9px]" style={{ background: 'rgba(74,144,217,0.12)', color: C.blue }}>
+                    <td key={mt} className="text-center py-2 px-2 rounded-lg font-bold text-[11px]" style={{ background: 'rgba(74,144,217,0.12)', color: C.blue }}>
                       {best.name.split(' ')[0]}
                     </td>
                   );
@@ -447,7 +449,7 @@ export default function StaffPulse() {
           </table>
         </div>
         <div className="flex items-center gap-4 mt-4 pt-3" style={{ borderTop: '1px solid var(--card-border)' }}>
-          <span className="text-[9px] font-bold" style={{ color: 'var(--text-muted)' }}>Legend:</span>
+          <span className="text-[11px] font-bold" style={{ color: 'var(--text-muted)' }}>Legend:</span>
           {[
             { label: '70%+', color: C.green, bg: 'rgba(140,198,63,0.20)' },
             { label: '40-69%', color: C.blue, bg: 'rgba(74,144,217,0.15)' },
@@ -456,7 +458,7 @@ export default function StaffPulse() {
           ].map(l => (
             <div key={l.label} className="flex items-center gap-1.5">
               <div className="w-3 h-3 rounded" style={{ background: l.bg, border: `1px solid ${l.color}` }} />
-              <span className="text-[9px]" style={{ color: l.color }}>{l.label}</span>
+              <span className="text-[11px]" style={{ color: l.color }}>{l.label}</span>
             </div>
           ))}
         </div>

@@ -17,6 +17,15 @@ function easeOutExpo(t: number): number {
   return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
 }
 
+/** True when the user has asked the OS to minimise non-essential motion. */
+function prefersReducedMotion(): boolean {
+  return (
+    typeof window !== 'undefined' &&
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
+}
+
 export default function AnimatedCounter({
   value,
   prefix = '',
@@ -32,6 +41,15 @@ export default function AnimatedCounter({
   const rafRef = useRef<number>(0);
   const startTimeRef = useRef<number>(0);
 
+  const formatValue = useCallback(
+    (n: number) =>
+      n.toLocaleString('en-US', {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals,
+      }),
+    [decimals],
+  );
+
   const animate = useCallback(
     (timestamp: number) => {
       if (!startTimeRef.current) startTimeRef.current = timestamp;
@@ -40,26 +58,27 @@ export default function AnimatedCounter({
       const eased = easeOutExpo(progress);
       const current = eased * value;
 
-      setDisplay(
-        current.toLocaleString('en-US', {
-          minimumFractionDigits: decimals,
-          maximumFractionDigits: decimals,
-        }),
-      );
+      setDisplay(formatValue(current));
 
       if (progress < 1 && typeof requestAnimationFrame !== 'undefined') {
         rafRef.current = requestAnimationFrame(animate);
       }
     },
-    [value, duration, decimals],
+    [value, duration, formatValue],
   );
 
   const startAnimation = useCallback(() => {
     if (hasAnimated) return;
     setHasAnimated(true);
+    // Reduced-motion users get the final value immediately — no rAF loop,
+    // sparing the main thread during hydration (lower INP/TBT).
+    if (prefersReducedMotion()) {
+      setDisplay(formatValue(value));
+      return;
+    }
     startTimeRef.current = 0;
     if (typeof requestAnimationFrame !== 'undefined') rafRef.current = requestAnimationFrame(animate);
-  }, [hasAnimated, animate]);
+  }, [hasAnimated, animate, value, formatValue]);
 
   // IntersectionObserver: trigger animation when scrolled into view
   useEffect(() => {
@@ -88,12 +107,16 @@ export default function AnimatedCounter({
   // Re-animate when value changes (after initial animation)
   useEffect(() => {
     if (!hasAnimated) return;
+    if (prefersReducedMotion()) {
+      setDisplay(formatValue(value));
+      return;
+    }
     startTimeRef.current = 0;
     if (typeof requestAnimationFrame !== 'undefined') rafRef.current = requestAnimationFrame(animate);
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [value, hasAnimated, animate]);
+  }, [value, hasAnimated, animate, formatValue]);
 
   return (
     <span

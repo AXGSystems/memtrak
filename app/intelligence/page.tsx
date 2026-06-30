@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import ClientChart from '@/components/ClientChart';
 import Card from '@/components/Card';
 import AnimatedCounter from '@/components/AnimatedCounter';
@@ -95,7 +96,8 @@ export default function Intelligence() {
 
   return (
     <div className="p-6">
-      <h1 className="text-lg font-extrabold mb-2" style={{ color: 'var(--heading)' }}>Intelligence</h1>
+      <SampleDataBadge />
+      <h1 className="text-2xl font-extrabold tracking-tight mb-2" style={{ color: 'var(--heading)' }}>Intelligence</h1>
       <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>AI-powered engagement analytics, churn prediction, and relationship mapping.</p>
 
       {/* Hero Metrics */}
@@ -166,7 +168,7 @@ export default function Intelligence() {
               <div key={r.staff} className="flex items-center gap-3 p-3 rounded-lg transition-all duration-300 hover:translate-y-[-2px]" style={{ background: 'var(--input-bg)', animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
                 <div className={`text-lg font-extrabold w-12 text-center ${r.strength === 'Exceptional' ? 'text-green-400' : r.strength === 'Strong' ? 'text-blue-400' : 'text-amber-400'}`}>{r.replyRate}%</div>
                 <div className="flex-1"><div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{r.staff}</div><div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{r.outreach} touches · {r.responseTime} avg</div></div>
-                <span className={`text-[9px] px-2 py-0.5 rounded-full font-semibold ${r.strength === 'Exceptional' ? 'bg-green-500/20 text-green-400' : r.strength === 'Strong' ? 'bg-blue-500/20 text-blue-400' : 'bg-amber-500/20 text-amber-400'}`}>{r.strength}</span>
+                <span className={`text-[11px] px-2 py-0.5 rounded-full font-semibold ${r.strength === 'Exceptional' ? 'bg-green-500/20 text-green-400' : r.strength === 'Strong' ? 'bg-blue-500/20 text-blue-400' : 'bg-amber-500/20 text-amber-400'}`}>{r.strength}</span>
               </div>
             ))}
           </div>

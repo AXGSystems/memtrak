@@ -315,7 +315,7 @@ export default function PerformancePulse() {
           </div>
           <div className="text-center">
             <ProgressRing value={overallScore} max={100} color={gradeColor(overallGrade)} size={72} />
-            <div className="text-[9px] font-bold mt-1" style={{ color: 'var(--text-muted)' }}>Overall: {overallGrade}</div>
+            <div className="text-[11px] font-bold mt-1" style={{ color: 'var(--text-muted)' }}>Overall: {overallGrade}</div>
           </div>
         </div>
 
@@ -357,11 +357,11 @@ export default function PerformancePulse() {
                   </div>
 
                   <div className="text-2xl font-extrabold mb-1" style={{ color: 'var(--heading)' }}>{m.value}</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{m.deltaLabel}</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{m.deltaLabel}</div>
 
                   {/* Mini sparkline */}
                   <div className="mt-3">
-                    <div className="text-[8px] font-bold mb-1" style={{ color: 'var(--text-muted)' }}>7-WEEK TREND</div>
+                    <div className="text-[11px] font-bold mb-1" style={{ color: 'var(--text-muted)' }}>7-WEEK TREND</div>
                     <MiniBar value={m.rawValue} max={m.label === 'Bounce Rate' ? 6 : (m.label === 'Revenue' ? 800000 : (m.label === 'Staff Outreach' ? 30 : (m.label === 'Emails Sent' ? 20000 : 50)))} color={m.iconColor} height={3} />
                   </div>
 
@@ -390,7 +390,7 @@ export default function PerformancePulse() {
                       <Sparkles className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" style={{ color: C.green }} />
                       <div>
                         <div className="text-[10px] font-bold" style={{ color: 'var(--heading)' }}>{w.text}</div>
-                        <div className="text-[9px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{w.detail}</div>
+                        <div className="text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{w.detail}</div>
                       </div>
                     </div>
                   </div>
@@ -414,11 +414,11 @@ export default function PerformancePulse() {
                         <div>
                           <div className="flex items-center gap-2">
                             <div className="text-[10px] font-bold" style={{ color: 'var(--heading)' }}>{n.text}</div>
-                            <span className="text-[7px] font-extrabold uppercase px-1 py-0.5 rounded" style={{ background: `${sevColor}20`, color: sevColor }}>
+                            <span className="text-[11px] font-extrabold uppercase px-1 py-0.5 rounded" style={{ background: `${sevColor}20`, color: sevColor }}>
                               {n.severity}
                             </span>
                           </div>
-                          <div className="text-[9px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{n.detail}</div>
+                          <div className="text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{n.detail}</div>
                         </div>
                       </div>
                     </div>
@@ -503,8 +503,8 @@ export default function PerformancePulse() {
               >
                 <span className="text-2xl font-extrabold" style={{ color: gradeColor(g.grade) }}>{g.grade}</span>
               </div>
-              <div className="text-[9px] font-bold" style={{ color: 'var(--text-muted)' }}>{g.week}</div>
-              <div className="text-[8px]" style={{ color: 'var(--text-muted)' }}>{g.score}/100</div>
+              <div className="text-[11px] font-bold" style={{ color: 'var(--text-muted)' }}>{g.week}</div>
+              <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{g.score}/100</div>
             </div>
           ))}
         </div>

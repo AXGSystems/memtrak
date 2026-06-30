@@ -8,6 +8,8 @@ import {
   type RegistrationStatus,
 } from '@/lib/member-data';
 import { logEntityAudit, diffRecords } from '@/lib/audit';
+import { requireStaff, requireAdminRole, safeError } from '@/lib/route-auth';
+import { auditContext } from '@/lib/audit-context';
 
 /**
  * PATCH  /api/memtrak/connect-events/[id]/registrations/[attId]
@@ -29,6 +31,9 @@ function actorLabel(row: EventAttendance, orgName?: string): string {
 }
 
 export async function PATCH(request: NextRequest, ctx: Ctx) {
+  const gate = await requireStaff();
+  if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
   const { attId } = await ctx.params;
 
   let body: Record<string, unknown>;
@@ -93,19 +98,21 @@ export async function PATCH(request: NextRequest, ctx: Ctx) {
       entity_id: row.id,
       entity_label: actorLabel(row, orgName),
       action: auditAction,
-      actor: 'staff',
+      actor: gate.actor.email,
       summary: auditSummary,
       diff: diffRecords(before as unknown as Record<string, unknown>, row as unknown as Record<string, unknown>),
+      ...auditContext(request),
     });
     return NextResponse.json({ success: true, registration: row });
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Update failed';
-    const isConfig = message.includes('Supabase not configured');
-    return NextResponse.json({ error: message }, { status: isConfig ? 503 : 500 });
+    return safeError(err);
   }
 }
 
-export async function DELETE(_req: NextRequest, ctx: Ctx) {
+export async function DELETE(request: NextRequest, ctx: Ctx) {
+  const gate = await requireAdminRole();
+  if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
   const { attId } = await ctx.params;
   const before = await getAttendance(attId);
   if (!before) return NextResponse.json({ error: 'Registration not found' }, { status: 404 });
@@ -118,13 +125,12 @@ export async function DELETE(_req: NextRequest, ctx: Ctx) {
       entity_id: attId,
       entity_label: actorLabel(before, orgName),
       action: 'delete',
-      actor: 'staff',
+      actor: gate.actor.email,
       summary: `Removed ${orgName ?? before.org_id}'s registration for ${before.event_name}`,
+      ...auditContext(request),
     });
     return new NextResponse(null, { status: 204 });
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Delete failed';
-    const isConfig = message.includes('Supabase not configured');
-    return NextResponse.json({ error: message }, { status: isConfig ? 503 : 500 });
+    return safeError(err);
   }
 }

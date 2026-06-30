@@ -41,7 +41,7 @@ export default function Segments() {
   return (
     <div className="p-6">
       <h1 className="text-lg font-extrabold mb-1" style={{ color: 'var(--heading)' }}>Smart Segments</h1>
-      <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>Pre-built audience segments + custom segment builder with AND/OR logic — what ActiveCampaign charges $186/mo for. Target the right members with the right message.</p>
+      <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>Pre-built audience segments + custom segment builder with AND/OR logic. Target the right members with the right message.</p>
 
       {/* KPIs */}
       <div className="grid grid-cols-3 gap-3 mb-6 stagger-children">
@@ -74,11 +74,11 @@ export default function Segments() {
                 <div className="min-w-0">
                   <div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{s.name}</div>
                   <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{s.desc}</div>
-                  <div className="flex gap-1 mt-1 flex-wrap">{s.filters.map(f => <span key={f} className="text-[9px] px-1.5 py-0.5 rounded" style={{ background: 'color-mix(in srgb, var(--accent) 10%, transparent)', color: 'var(--accent)' }}>{f}</span>)}</div>
+                  <div className="flex gap-1 mt-1 flex-wrap">{s.filters.map(f => <span key={f} className="text-[11px] px-1.5 py-0.5 rounded" style={{ background: 'color-mix(in srgb, var(--accent) 10%, transparent)', color: 'var(--accent)' }}>{f}</span>)}</div>
                 </div>
                 <div className="text-right flex-shrink-0 ml-3">
                   <div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>{s.count.toLocaleString()}</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>members</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>members</div>
                 </div>
               </div>
             </button>

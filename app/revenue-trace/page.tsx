@@ -1,6 +1,7 @@
 'use client';
 
 import Card from '@/components/Card';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import SparkKpi, { MiniBar } from '@/components/SparkKpi';
 import ClientChart from '@/components/ClientChart';
 import { demoCampaigns, demoMonthly } from '@/lib/demo-data';
@@ -82,6 +83,7 @@ const tableRows = sentCampaigns
 export default function RevenueTrace() {
   return (
     <div className="p-6">
+      <SampleDataBadge />
       {/* ── 1. Branded Header ─────────────────────────────────── */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
@@ -322,7 +324,7 @@ export default function RevenueTrace() {
                   (h) => (
                     <th
                       key={h}
-                      className="px-4 py-3 text-[9px] uppercase tracking-wider font-bold text-left"
+                      className="px-4 py-3 text-[11px] uppercase tracking-wider font-bold text-left"
                       style={{ color: 'var(--text-muted)' }}
                     >
                       {h}
@@ -350,7 +352,7 @@ export default function RevenueTrace() {
                   </td>
                   <td className="px-4 py-3">
                     <span
-                      className="inline-flex items-center text-[9px] font-bold px-2 py-0.5 rounded-full"
+                      className="inline-flex items-center text-[11px] font-bold px-2 py-0.5 rounded-full"
                       style={{
                         background: `color-mix(in srgb, ${typeColors[row.type] || C.blue} 12%, transparent)`,
                         color: typeColors[row.type] || C.blue,
@@ -446,7 +448,7 @@ export default function RevenueTrace() {
                 <div className="text-[10px] font-bold" style={{ color: 'var(--heading)' }}>
                   {m.label}
                 </div>
-                <div className="text-[9px] mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                <div className="text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>
                   {m.desc}
                 </div>
               </div>
@@ -473,7 +475,7 @@ export default function RevenueTrace() {
                 className="flex-1 min-w-[120px] rounded-lg p-3 border text-center"
                 style={{ borderColor: 'rgba(74,144,217,0.3)', background: 'rgba(74,144,217,0.06)' }}
               >
-                <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: C.blue }}>
+                <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: C.blue }}>
                   First Touch
                 </div>
                 <div className="text-[10px] font-semibold mb-1" style={{ color: 'var(--heading)' }}>
@@ -485,7 +487,7 @@ export default function RevenueTrace() {
                 <div className="text-sm font-extrabold mt-1" style={{ color: C.blue }}>
                   $364.80
                 </div>
-                <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>30% credit</div>
+                <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>30% credit</div>
               </div>
 
               <ArrowRight className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--text-muted)' }} />
@@ -495,7 +497,7 @@ export default function RevenueTrace() {
                 className="flex-1 min-w-[120px] rounded-lg p-3 border text-center"
                 style={{ borderColor: 'rgba(168,85,247,0.3)', background: 'rgba(168,85,247,0.06)' }}
               >
-                <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: C.purple }}>
+                <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: C.purple }}>
                   Assist
                 </div>
                 <div className="text-[10px] font-semibold mb-1" style={{ color: 'var(--heading)' }}>
@@ -507,7 +509,7 @@ export default function RevenueTrace() {
                 <div className="text-sm font-extrabold mt-1" style={{ color: C.purple }}>
                   $364.80
                 </div>
-                <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>30% credit</div>
+                <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>30% credit</div>
               </div>
 
               <ArrowRight className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--text-muted)' }} />
@@ -517,7 +519,7 @@ export default function RevenueTrace() {
                 className="flex-1 min-w-[120px] rounded-lg p-3 border text-center"
                 style={{ borderColor: 'rgba(140,198,63,0.3)', background: 'rgba(140,198,63,0.06)' }}
               >
-                <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: C.green }}>
+                <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: C.green }}>
                   Last Touch
                 </div>
                 <div className="text-[10px] font-semibold mb-1" style={{ color: 'var(--heading)' }}>
@@ -529,7 +531,7 @@ export default function RevenueTrace() {
                 <div className="text-sm font-extrabold mt-1" style={{ color: C.green }}>
                   $486.40
                 </div>
-                <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>40% credit</div>
+                <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>40% credit</div>
               </div>
 
               <ArrowRight className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--text-muted)' }} />
@@ -547,7 +549,7 @@ export default function RevenueTrace() {
                 <div className="text-sm font-extrabold" style={{ color: C.green }}>
                   $1,216
                 </div>
-                <div className="text-[9px] font-bold" style={{ color: C.green }}>
+                <div className="text-[11px] font-bold" style={{ color: C.green }}>
                   Renewed
                 </div>
               </div>
@@ -582,7 +584,7 @@ export default function RevenueTrace() {
                         </span>
                       </div>
                       <MiniBar value={parseFloat(pct)} max={100} color={item.color} />
-                      <p className="text-[9px] mt-1" style={{ color: 'var(--text-muted)' }}>{pct}% of total revenue</p>
+                      <p className="text-[11px] mt-1" style={{ color: 'var(--text-muted)' }}>{pct}% of total revenue</p>
                     </div>
                   );
                 })}

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import Card from '@/components/Card';
 import SparkKpi from '@/components/SparkKpi';
 import ClientChart from '@/components/ClientChart';
@@ -34,7 +35,10 @@ const C = {
   cyan: '#06b6d4',
 };
 
-/* ── synthetic heatmap data: 7 days x 24 hours ──────────── */
+/* ── ILLUSTRATIVE heatmap shape: 7 days x 24 hours ──────────────
+   This is NOT AI output and NOT real member data. It is a hard-coded curve
+   that demonstrates the layout SendBrain will render once the real open-event
+   feed is connected. The page's SampleDataBadge discloses this to the reader. */
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
 
@@ -150,6 +154,7 @@ export default function SendBrain() {
 
   return (
     <div className="p-6">
+      <SampleDataBadge />
       {/* ── 1. Branded Header ─────────────────────────────────── */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
@@ -172,9 +177,10 @@ export default function SendBrain() {
           </div>
         </div>
         <p className="text-xs leading-relaxed max-w-2xl" style={{ color: 'var(--text-muted)' }}>
-          AI send-time optimization at the <strong style={{ color: 'var(--heading)' }}>individual</strong> level,
-          not segment level. SendBrain learns from each recipient&apos;s historical open patterns and delivers
-          email at the exact time that specific person is most likely to engage.
+          Heuristic send-time analysis at the <strong style={{ color: 'var(--heading)' }}>individual</strong> level,
+          not segment level. Once the open-timestamp feed is connected, SendBrain will build a per-recipient
+          open-time profile from real opens and recommend the time that specific person is most likely to engage.
+          This is a planned capability — the figures below are illustrative until the event feed is wired.
         </p>
       </div>
 
@@ -182,34 +188,32 @@ export default function SendBrain() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8 stagger-children">
         <SparkKpi
           label="Members Profiled"
-          value="4,994"
-          sub="Individual time profiles built"
+          value="—"
+          sub="Pending open-event feed"
           icon={Users}
           color={C.purple}
           size="lg"
           accent
-          sparkData={[3200, 3600, 3900, 4200, 4500, 4750, 4994]}
-          sparkColor={C.purple}
-          trend={{ value: 8.2, label: 'vs last month' }}
           detail={
             <div className="space-y-2">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                SendBrain has built individual send-time preference profiles for <strong style={{ color: 'var(--heading)' }}>4,994 members</strong> by
-                analyzing historical open timestamps across all campaigns.
+                Once the open-timestamp feed is connected, SendBrain will build an individual send-time
+                profile for each member from their real open events. No profiles have been built yet — this
+                count stays a dash until the feed is wired.
               </p>
               <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
                 <div className="text-[10px] space-y-1" style={{ color: 'var(--text-muted)' }}>
                   <div className="flex justify-between">
                     <span>Full profiles (10+ data points)</span>
-                    <span style={{ color: C.green }}>4,345</span>
+                    <span style={{ color: 'var(--text-muted)' }}>—</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Partial profiles (3-9 data points)</span>
-                    <span style={{ color: C.amber }}>512</span>
+                    <span style={{ color: 'var(--text-muted)' }}>—</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Segment fallback (&lt;3 data points)</span>
-                    <span style={{ color: C.orange }}>137</span>
+                    <span style={{ color: 'var(--text-muted)' }}>—</span>
                   </div>
                 </div>
               </div>
@@ -284,14 +288,14 @@ export default function SendBrain() {
           detail={
             <div className="space-y-2">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                <strong style={{ color: 'var(--heading)' }}>87%</strong> of members (4,345 of 4,994) have enough
-                engagement data for SendBrain to make individual-level predictions. The remaining 13% fall back to
-                segment-level optimization.
+                In the target design, most members will have enough engagement data for SendBrain to make
+                individual-level predictions, and the rest fall back to segment-level optimization. The exact
+                coverage will populate once the open-event feed is connected.
               </p>
               <div className="relative h-3 rounded-full overflow-hidden" style={{ background: 'var(--input-bg)' }}>
                 <div className="h-full rounded-full" style={{ width: '87%', background: `linear-gradient(90deg, ${C.purple}, ${C.cyan})` }} />
               </div>
-              <div className="flex justify-between text-[9px]" style={{ color: 'var(--text-muted)' }}>
+              <div className="flex justify-between text-[11px]" style={{ color: 'var(--text-muted)' }}>
                 <span>4,345 individual</span>
                 <span>649 segment fallback</span>
               </div>
@@ -309,8 +313,10 @@ export default function SendBrain() {
         detailContent={
           <div className="space-y-3">
             <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-              This heatmap aggregates open timestamps across all 4,994 profiled members to show when ALTA members
-              are most likely to engage with email. The brightest cells represent the highest open probability windows.
+              This heatmap illustrates the shape SendBrain will produce — it will aggregate real open timestamps
+              across profiled members to show when ALTA members are most likely to engage with email. The cells
+              shown here are illustrative until the open-event feed is connected; the brightest cells represent the
+              highest open-probability windows.
             </p>
             <div className="space-y-2">
               <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
@@ -358,7 +364,7 @@ export default function SendBrain() {
               {HOURS.map((h) => (
                 <div
                   key={h}
-                  className="flex-1 text-center text-[8px] font-bold pb-1"
+                  className="flex-1 text-center text-[11px] font-bold pb-1"
                   style={{ color: 'var(--text-muted)', minWidth: '20px' }}
                 >
                   {h % 3 === 0 ? formatHour(h) : ''}
@@ -370,7 +376,7 @@ export default function SendBrain() {
             {DAYS.map((day, di) => (
               <div key={day} className="flex items-center gap-0">
                 <div
-                  className="text-[9px] font-bold text-right pr-2"
+                  className="text-[11px] font-bold text-right pr-2"
                   style={{ width: '40px', flexShrink: 0, color: 'var(--text-muted)' }}
                 >
                   {day}
@@ -402,7 +408,7 @@ export default function SendBrain() {
 
             {/* Legend */}
             <div className="flex items-center justify-center gap-2 mt-3">
-              <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Low</span>
+              <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Low</span>
               {[0.06, 0.15, 0.3, 0.35, 0.55, 0.75, 0.92].map((opacity, i) => (
                 <div
                   key={i}
@@ -414,7 +420,7 @@ export default function SendBrain() {
                   }}
                 />
               ))}
-              <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>High</span>
+              <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>High</span>
             </div>
           </div>
         </div>
@@ -440,7 +446,7 @@ export default function SendBrain() {
                 <div key={s.segment} className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{s.segment}</span>
-                    <span className="text-[9px] font-bold" style={{ color: conf.color }}>{conf.label} confidence</span>
+                    <span className="text-[11px] font-bold" style={{ color: conf.color }}>{conf.label} confidence</span>
                   </div>
                   <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
                     {s.day} {s.time} -- {s.openRate}% open rate -- {s.sample.toLocaleString()} members sampled
@@ -458,7 +464,7 @@ export default function SendBrain() {
                 {['Segment', 'Best Day', 'Best Time', 'Expected Open Rate', 'Sample Size', 'Confidence'].map((h) => (
                   <th
                     key={h}
-                    className="text-left text-[9px] uppercase tracking-wider font-bold pb-2 px-3"
+                    className="text-left text-[11px] uppercase tracking-wider font-bold pb-2 px-3"
                     style={{ color: 'var(--text-muted)' }}
                   >
                     {h}
@@ -496,7 +502,7 @@ export default function SendBrain() {
                     <td className="px-3 py-2.5" style={{ color: 'var(--text-muted)' }}>{s.sample.toLocaleString()}</td>
                     <td className="px-3 py-2.5 rounded-r-lg">
                       <span
-                        className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+                        className="text-[11px] font-bold px-2 py-0.5 rounded-full"
                         style={{
                           background: conf.color + '18',
                           color: conf.color,
@@ -547,7 +553,7 @@ export default function SendBrain() {
               <div key={ex.org} className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{ex.org}</span>
-                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ background: 'var(--card-border)', color: 'var(--text-muted)' }}>
+                  <span className="text-[11px] font-bold px-1.5 py-0.5 rounded" style={{ background: 'var(--card-border)', color: 'var(--text-muted)' }}>
                     {ex.type}
                   </span>
                 </div>
@@ -572,7 +578,7 @@ export default function SendBrain() {
         <div className="mb-5">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div className="rounded-xl p-4" style={{ background: 'var(--input-bg)', borderLeft: `3px solid ${C.amber}` }}>
-              <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: C.amber }}>Segment-Level</div>
+              <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: C.amber }}>Segment-Level</div>
               <div className="text-sm font-bold" style={{ color: 'var(--heading)' }}>ACA Title Agents</div>
               <div className="text-[10px] mt-1" style={{ color: 'var(--text-muted)' }}>
                 Thursday 7:30 AM &rarr; <span className="font-bold" style={{ color: C.amber }}>38% expected open rate</span>
@@ -585,7 +591,7 @@ export default function SendBrain() {
                 borderLeft: `3px solid ${C.purple}`,
               }}
             >
-              <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: C.purple }}>
+              <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: C.purple }}>
                 <Brain className="w-3 h-3 inline mr-1" style={{ verticalAlign: 'middle' }} />
                 Individual-Level
               </div>
@@ -608,26 +614,26 @@ export default function SendBrain() {
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <span className="text-[11px] font-bold" style={{ color: 'var(--heading)' }}>{ex.org}</span>
-                  <span className="text-[8px] font-bold px-1.5 py-0.5 rounded" style={{ background: 'var(--card-border)', color: 'var(--text-muted)' }}>
+                  <span className="text-[11px] font-bold px-1.5 py-0.5 rounded" style={{ background: 'var(--card-border)', color: 'var(--text-muted)' }}>
                     {ex.type}
                   </span>
                 </div>
-                <div className="text-[9px] mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                <div className="text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>
                   Segment: {ex.segDay} {ex.segTime} &rarr; Individual: {ex.indDay} {ex.indTime}
                 </div>
               </div>
               <div className="flex items-center gap-3 flex-shrink-0">
                 <div className="text-right">
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Segment</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Segment</div>
                   <div className="text-sm font-bold" style={{ color: C.amber }}>{ex.segRate}%</div>
                 </div>
                 <ChevronRight className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
                 <div className="text-right">
-                  <div className="text-[9px]" style={{ color: C.purple }}>Individual</div>
+                  <div className="text-[11px]" style={{ color: C.purple }}>Individual</div>
                   <div className="text-sm font-bold" style={{ color: C.green }}>{ex.indRate}%</div>
                 </div>
                 <div
-                  className="text-[9px] font-bold px-2 py-0.5 rounded-full ml-1"
+                  className="text-[11px] font-bold px-2 py-0.5 rounded-full ml-1"
                   style={{ background: 'rgba(140,198,63,0.12)', color: C.green }}
                 >
                   +{ex.indRate - ex.segRate}%
@@ -710,17 +716,18 @@ export default function SendBrain() {
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* ── 6. How SendBrain Learns ───────────────────────────── */}
+        {/* ── 6. How SendBrain Works ───────────────────────────── */}
         <Card
-          title="How SendBrain Learns"
-          subtitle="The algorithm behind individual optimization"
-          detailTitle="SendBrain Algorithm"
+          title="How SendBrain Works"
+          subtitle="The heuristic behind individual optimization"
+          detailTitle="SendBrain Method (planned)"
           detailContent={
             <div className="space-y-4">
               <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-                SendBrain is a per-recipient send-time optimization engine. Unlike tools that pick a single
-                &quot;best time&quot; for a whole list, SendBrain builds individual preference profiles and
-                delivers each email at the moment that specific person is most likely to engage.
+                SendBrain is a per-recipient send-time heuristic — not a machine-learning model. Unlike tools that
+                pick a single &quot;best time&quot; for a whole list, it will build individual open-time profiles
+                from real open timestamps and recommend the hour each person is most likely to engage. The
+                profiles, lift figures, and heatmap shown here are illustrative until the open-event feed is connected.
               </p>
               <div className="space-y-3">
                 {[
@@ -817,7 +824,7 @@ export default function SendBrain() {
         {/* ── 7. Predicted Impact Calculator ──────────────────── */}
         <Card
           title="Predicted Impact Calculator"
-          subtitle="Next campaign of 4,994 recipients -- SendBrain vs fixed time"
+          subtitle="Illustrative campaign -- SendBrain vs fixed time"
           detailTitle="Impact Prediction Methodology"
           detailContent={
             <div className="space-y-3">
@@ -833,7 +840,7 @@ export default function SendBrain() {
                   <div>2. For fixed time: look up Tue 9 AM cell for all members</div>
                   <div>3. For segment: look up segment-best cell for each member</div>
                   <div>4. For individual: look up personal-best cell for each member</div>
-                  <div>5. Average expected open rate across all 4,994 members</div>
+                  <div>5. Average expected open rate across all profiled members</div>
                 </div>
               </div>
               <div className="rounded-lg p-3" style={{ background: 'rgba(140,198,63,0.06)' }}>
@@ -897,14 +904,14 @@ export default function SendBrain() {
                       )}
                       {tier.label}
                     </div>
-                    <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{tier.desc}</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{tier.desc}</div>
                   </div>
                   <div className="text-right">
                     <div className="text-xl font-extrabold" style={{ color: tier.color }}>
                       {tier.rate}%
                     </div>
                     {tier.lift && (
-                      <div className="text-[9px] font-bold" style={{ color: tier.color }}>
+                      <div className="text-[11px] font-bold" style={{ color: tier.color }}>
                         {tier.lift} vs fixed
                       </div>
                     )}
@@ -922,11 +929,11 @@ export default function SendBrain() {
                   />
                 </div>
                 <div className="flex justify-between mt-1.5">
-                  <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
+                  <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
                     {tier.opens.toLocaleString()} predicted opens
                   </span>
-                  <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
-                    of 4,994 recipients
+                  <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
+                    of profiled recipients
                   </span>
                 </div>
               </div>

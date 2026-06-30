@@ -265,7 +265,7 @@ export default function Member360() {
 
       {/* ── Member Selector ──────────────────────────────────── */}
       <div className="rounded-xl border p-4" style={{ background: 'var(--card)', borderColor: 'var(--card-border)' }}>
-        <label className="text-[9px] uppercase tracking-wider font-bold block mb-2" style={{ color: 'var(--text-muted)' }}>Select Member</label>
+        <label className="text-[11px] uppercase tracking-wider font-bold block mb-2" style={{ color: 'var(--text-muted)' }}>Select Member</label>
         <select
           value={selectedIdx}
           onChange={e => setSelectedIdx(Number(e.target.value))}
@@ -293,7 +293,7 @@ export default function Member360() {
               <h2 className="text-base font-extrabold truncate" style={{ color: 'var(--heading)' }}>{m.org}</h2>
             </div>
             <div className="flex flex-wrap items-center gap-2 mb-3">
-              <span className="inline-flex items-center text-[9px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'color-mix(in srgb, var(--accent) 15%, transparent)', color: 'var(--accent)' }}>
+              <span className="inline-flex items-center text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'color-mix(in srgb, var(--accent) 15%, transparent)', color: 'var(--accent)' }}>
                 {m.type}
               </span>
               <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{m.typeFull}</span>
@@ -303,14 +303,14 @@ export default function Member360() {
               <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Member since {m.joinYear}</span>
             </div>
             <div className="flex items-center gap-3">
-              <span className="inline-flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-full" style={{ background: `color-mix(in srgb, ${renewalColor} 15%, transparent)`, color: renewalColor }}>
+              <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: `color-mix(in srgb, ${renewalColor} 15%, transparent)`, color: renewalColor }}>
                 <Shield className="w-3 h-3" /> {m.renewalStatus}
               </span>
               <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Renews {m.renewalDate}</span>
             </div>
           </div>
           <div className="text-right">
-            <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Annual Dues</div>
+            <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Annual Dues</div>
             <AnimatedCounter value={m.annualDues} prefix="$" className="text-3xl" color="var(--heading)" />
           </div>
         </div>
@@ -409,7 +409,7 @@ export default function Member360() {
                     <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{tp.staff}</span>
                   </div>
                 </div>
-                <span className="text-[9px] font-bold px-2 py-0.5 rounded-full flex-shrink-0" style={{ background: `color-mix(in srgb, ${sColor} 15%, transparent)`, color: sColor }}>
+                <span className="text-[11px] font-bold px-2 py-0.5 rounded-full flex-shrink-0" style={{ background: `color-mix(in srgb, ${sColor} 15%, transparent)`, color: sColor }}>
                   {tp.status}
                 </span>
               </div>
@@ -452,25 +452,25 @@ export default function Member360() {
       <Card title="Risk Assessment" subtitle="Churn probability and revenue impact" accent={m.churnProb >= 60 ? C.red : m.churnProb >= 30 ? C.amber : C.green}>
         <div className="grid grid-cols-3 gap-4">
           <div className="text-center p-3 rounded-xl" style={{ background: 'var(--background)' }}>
-            <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Decay Score</div>
+            <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Decay Score</div>
             <div className="text-2xl font-extrabold" style={{ color: m.decayScore >= 70 ? C.red : m.decayScore >= 40 ? C.amber : C.green }}>
               {m.decayScore}
             </div>
-            <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>of 100</div>
+            <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>of 100</div>
           </div>
           <div className="text-center p-3 rounded-xl" style={{ background: 'var(--background)' }}>
-            <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Churn Probability</div>
+            <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Churn Probability</div>
             <div className="text-2xl font-extrabold" style={{ color: m.churnProb >= 60 ? C.red : m.churnProb >= 30 ? C.amber : C.green }}>
               {m.churnProb}%
             </div>
-            <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>likelihood</div>
+            <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>likelihood</div>
           </div>
           <div className="text-center p-3 rounded-xl" style={{ background: 'var(--background)' }}>
-            <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Revenue at Risk</div>
+            <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Revenue at Risk</div>
             <div className="text-2xl font-extrabold" style={{ color: C.red }}>
               ${m.revenueAtRisk.toLocaleString()}
             </div>
-            <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>annual dues</div>
+            <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>annual dues</div>
           </div>
         </div>
       </Card>
@@ -527,7 +527,7 @@ export default function Member360() {
               <div key={i} className="flex items-center gap-3 p-3 rounded-lg" style={{ background: 'var(--background)', borderLeft: `3px solid ${priorityColor}` }}>
                 <Zap className="w-3.5 h-3.5 flex-shrink-0" style={{ color: priorityColor }} />
                 <span className="text-xs flex-1" style={{ color: 'var(--heading)' }}>{act.label}</span>
-                <span className="text-[8px] uppercase font-bold px-1.5 py-0.5 rounded-full flex-shrink-0" style={{ background: `color-mix(in srgb, ${priorityColor} 15%, transparent)`, color: priorityColor }}>
+                <span className="text-[11px] uppercase font-bold px-1.5 py-0.5 rounded-full flex-shrink-0" style={{ background: `color-mix(in srgb, ${priorityColor} 15%, transparent)`, color: priorityColor }}>
                   {act.priority}
                 </span>
               </div>
@@ -540,15 +540,15 @@ export default function Member360() {
       <Card title="Financial Summary" subtitle="Dues, lifetime value, and payment status">
         <div className="grid grid-cols-3 gap-4">
           <div className="text-center p-3 rounded-xl" style={{ background: 'var(--background)' }}>
-            <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Annual Dues</div>
+            <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Annual Dues</div>
             <AnimatedCounter value={m.annualDues} prefix="$" className="text-xl" color="var(--heading)" />
           </div>
           <div className="text-center p-3 rounded-xl" style={{ background: 'var(--background)' }}>
-            <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Lifetime Value</div>
+            <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Lifetime Value</div>
             <AnimatedCounter value={m.lifetimeValue} prefix="$" className="text-xl" color={C.green} />
           </div>
           <div className="text-center p-3 rounded-xl" style={{ background: 'var(--background)' }}>
-            <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Payment Status</div>
+            <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Payment Status</div>
             <div className="text-xs font-bold mt-1" style={{ color: paymentColor }}>{m.paymentStatus}</div>
           </div>
         </div>

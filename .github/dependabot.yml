@@ -1,0 +1,32 @@
+# Dependabot — continuous dependency vulnerability management.
+#
+# ISO 27001:2022 A.8.8 (Management of Technical Vulnerabilities) and
+# A.8.25-A.8.29 (Secure Development Lifecycle): Dependabot watches the npm
+# dependency tree and the GitHub Actions versions, opens upgrade PRs on a
+# weekly cadence, and raises immediate security PRs when a CVE is published
+# for a package in use. Combined with the `npm audit` SCA gate in CI
+# (.github/workflows/ci.yml), this gives auditable evidence of a managed,
+# reviewed dependency-patching process rather than ad-hoc upgrades.
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+    groups:
+      # Batch low-risk patch/minor bumps into one PR to keep review load sane;
+      # majors come through individually so they get a deliberate review.
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "ci"

@@ -6,6 +6,8 @@ import {
   type DocumentType,
 } from '@/lib/member-data';
 import { logEntityAudit } from '@/lib/audit';
+import { requireReadOnly, requireStaff, safeError } from '@/lib/route-auth';
+import { auditContext } from '@/lib/audit-context';
 
 /**
  * GET  /api/memtrak/documents
@@ -21,6 +23,9 @@ function isValidUrl(s: string): boolean {
 }
 
 export async function GET(request: NextRequest) {
+  const gate = await requireReadOnly();
+  if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
   const sp = request.nextUrl.searchParams;
   const rows = await listDocuments({
     q: sp.get('q') ?? undefined,
@@ -32,6 +37,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const gate = await requireStaff();
+  if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
   let body: Record<string, unknown>;
   try { body = await request.json(); }
   catch { return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 }); }
@@ -49,7 +57,8 @@ export async function POST(request: NextRequest) {
   const description = typeof body.description === 'string' ? body.description : null;
   const group_id    = typeof body.group_id === 'string' && body.group_id ? body.group_id : null;
   const effective_date = typeof body.effective_date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(body.effective_date) ? body.effective_date : null;
-  const uploaded_by = typeof body.uploaded_by === 'string' ? body.uploaded_by : 'staff';
+  // Trust the authenticated session for the actor, not a client-supplied field.
+  const uploaded_by = gate.actor.email;
   const tags = Array.isArray(body.tags) ? body.tags.filter((t): t is string => typeof t === 'string') : [];
 
   try {
@@ -59,13 +68,12 @@ export async function POST(request: NextRequest) {
     });
     logEntityAudit({
       entity: 'document', entity_id: doc.id, entity_label: doc.name,
-      action: 'create', actor: uploaded_by,
+      action: 'create', actor: gate.actor.email,
       summary: `Added ${doc.doc_type.toLowerCase()} "${doc.name}"`,
+      ...auditContext(request),
     });
     return NextResponse.json({ success: true, document: doc }, { status: 201 });
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Create failed';
-    const isConfig = message.includes('Supabase not configured');
-    return NextResponse.json({ error: message }, { status: isConfig ? 503 : 500 });
+    return safeError(err);
   }
 }

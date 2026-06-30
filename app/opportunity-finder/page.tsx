@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Card from '@/components/Card';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import SparkKpi from '@/components/SparkKpi';
 import ClientChart from '@/components/ClientChart';
 import AnimatedCounter from '@/components/AnimatedCounter';
@@ -242,6 +243,7 @@ export default function OpportunityFinder() {
 
   return (
     <div className="p-6">
+      <SampleDataBadge className="max-w-3xl" message="The opportunities and projected-value figures below are illustrative sample values. They will be derived from live member engagement, renewal and revenue data once this view is wired to the data layer." />
       {/* -- 1. Branded Header -- */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
@@ -345,7 +347,7 @@ export default function OpportunityFinder() {
             <AnimatedCounter
               value={totalRevenue}
               prefix="$"
-              className="text-5xl"
+              className="text-3xl sm:text-5xl"
               color={C.green}
               duration={2000}
             />
@@ -361,7 +363,7 @@ export default function OpportunityFinder() {
         <div className="flex items-center gap-2 mb-4">
           <Rocket className="w-4 h-4" style={{ color: C.emerald }} />
           <h2 className="text-sm font-extrabold" style={{ color: 'var(--heading)' }}>Ranked Opportunities</h2>
-          <span className="text-[9px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(16,185,129,0.12)', color: C.emerald }}>
+          <span className="text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(16,185,129,0.12)', color: C.emerald }}>
             Sorted by revenue impact
           </span>
         </div>
@@ -406,23 +408,23 @@ export default function OpportunityFinder() {
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="text-[11px] font-bold truncate" style={{ color: 'var(--heading)' }}>{opp.title}</h3>
                       {isActivated && (
-                        <span className="flex items-center gap-1 text-[8px] font-extrabold px-1.5 py-0.5 rounded-full flex-shrink-0" style={{ background: 'rgba(140,198,63,0.15)', color: C.green }}>
+                        <span className="flex items-center gap-1 text-[11px] font-extrabold px-1.5 py-0.5 rounded-full flex-shrink-0" style={{ background: 'rgba(140,198,63,0.15)', color: C.green }}>
                           <CheckCircle2 className="w-2.5 h-2.5" /> Activated
                         </span>
                       )}
                     </div>
                     <div className="flex items-center gap-3 flex-wrap">
-                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ background: `color-mix(in srgb, ${catColor} 12%, transparent)`, color: catColor }}>{opp.category}</span>
-                      <span className="flex items-center gap-1 text-[9px]" style={{ color: 'var(--text-muted)' }}>
+                      <span className="text-[11px] font-bold px-1.5 py-0.5 rounded" style={{ background: `color-mix(in srgb, ${catColor} 12%, transparent)`, color: catColor }}>{opp.category}</span>
+                      <span className="flex items-center gap-1 text-[11px]" style={{ color: 'var(--text-muted)' }}>
                         <Signal className="w-3 h-3" style={{ color: confidenceColors[opp.confidence] }} />
                         {opp.confidence} confidence
                       </span>
-                      <span className="flex items-center gap-1 text-[9px]" style={{ color: 'var(--text-muted)' }}>
+                      <span className="flex items-center gap-1 text-[11px]" style={{ color: 'var(--text-muted)' }}>
                         <Clock className="w-3 h-3" style={{ color: effortColors[opp.effort] }} />
                         {opp.effort} effort
                       </span>
                       {opp.audienceSize > 0 && (
-                        <span className="flex items-center gap-1 text-[9px]" style={{ color: 'var(--text-muted)' }}>
+                        <span className="flex items-center gap-1 text-[11px]" style={{ color: 'var(--text-muted)' }}>
                           <Users className="w-3 h-3" />
                           {opp.audienceSize.toLocaleString()} members
                         </span>
@@ -448,11 +450,11 @@ export default function OpportunityFinder() {
                       {/* Description & Rationale */}
                       <div className="space-y-3">
                         <div>
-                          <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Description</div>
+                          <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Description</div>
                           <p className="text-[10px] leading-relaxed" style={{ color: 'var(--heading)' }}>{opp.description}</p>
                         </div>
                         <div>
-                          <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Rationale</div>
+                          <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Rationale</div>
                           <p className="text-[10px] leading-relaxed" style={{ color: 'var(--heading)' }}>{opp.rationale}</p>
                         </div>
                       </div>
@@ -460,7 +462,7 @@ export default function OpportunityFinder() {
                       {/* Data points + Action */}
                       <div className="space-y-3">
                         <div>
-                          <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Supporting Data</div>
+                          <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Supporting Data</div>
                           <div className="space-y-1.5">
                             {opp.dataPoints.map((dp, i) => (
                               <div key={i} className="flex items-start gap-2">
@@ -471,7 +473,7 @@ export default function OpportunityFinder() {
                           </div>
                         </div>
                         <div className="rounded-lg p-3" style={{ background: `color-mix(in srgb, ${catColor} 6%, transparent)`, border: `1px solid ${catColor}20` }}>
-                          <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: catColor }}>Recommended Action</div>
+                          <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: catColor }}>Recommended Action</div>
                           <p className="text-[10px] font-semibold" style={{ color: 'var(--heading)' }}>{opp.action}</p>
                         </div>
                         {!isActivated && (

@@ -9,12 +9,14 @@
   --card: #162337;
   --card-border: #1e3350;
   --card-hover: #1a2d48;
-  --text-muted: #6b7f96;
+  /* WCAG 1.4.3 AA: raised from #6b7f96 (3.84:1) to meet 4.5:1 on card/bg */
+  --text-muted: #94a6bd;
   --heading: #e2e8f0;
   --accent: #8CC63F;
   --sidebar-bg: #0a1628;
   --sidebar-active: rgba(140,198,63,0.12);
-  --sidebar-text: rgba(255,255,255,0.45);
+  /* WCAG 1.4.3 AA: raised from 0.45 to reach 4.5:1 on sidebar-bg */
+  --sidebar-text: rgba(255,255,255,0.72);
   --grid-line: #1e3350;
   --ring-track: rgba(255,255,255,0.06);
   --input-bg: rgba(255,255,255,0.04);
@@ -34,12 +36,14 @@
   --card: #14082a;
   --card-border: #28104a;
   --card-hover: #1c0c38;
-  --text-muted: #8070a8;
+  /* WCAG 1.4.3 AA: raised from #8070a8 (~3.7:1) to reach 4.5:1 on card/bg */
+  --text-muted: #a394c4;
   --heading: #d4c4ff;
   --accent: #a855f7;
   --sidebar-bg: #060010;
   --sidebar-active: rgba(168,85,247,0.15);
-  --sidebar-text: rgba(212,196,255,0.4);
+  /* WCAG 1.4.3 AA: raised from 0.4 (3.67:1) to reach 4.5:1 on sidebar-bg */
+  --sidebar-text: rgba(212,196,255,0.78);
   --grid-line: #28104a;
   --ring-track: rgba(168,85,247,0.12);
   --input-bg: rgba(168,85,247,0.06);
@@ -86,10 +90,14 @@
   --card-hover: #f5f3ef;
   --text-muted: #65615a;
   --heading: #002D5C;
-  --accent: #C6A75E;
+  /* WCAG 1.4.3 AA: gold #C6A75E (2.31:1 on white) fails as text; darkened to
+     #8a6d1f (~4.6:1 on white) so link/active text is readable. */
+  --accent: #8a6d1f;
   --sidebar-bg: #002D5C;
   --sidebar-active: rgba(198,167,94,0.18);
-  --sidebar-text: rgba(198,167,94,0.7);
+  /* WCAG 1.4.3 AA: inactive nav raised to a lighter gold tint that clears
+     4.5:1 on the #002D5C navy sidebar. */
+  --sidebar-text: #e3cf9b;
   --grid-line: #e8e4de;
   --ring-track: #ddd9d3;
   --input-bg: #ffffff;
@@ -111,9 +119,12 @@
 [data-theme="axg"] .bg-white\/10 { background: rgba(0,45,92,0.04) !important; }
 [data-theme="axg"] .border-white\/5,
 [data-theme="axg"] .border-white\/10 { border-color: #ddd9d3 !important; }
-[data-theme="axg"] .text-green-400 { color: #C6A75E !important; }
+/* WCAG 1.4.3 AA: positive status was gold #C6A75E (2.31:1); use a true
+   AA-compliant green (#3F7E1F ~4.8:1 on white). amber darkened to #B5651D
+   (~4.6:1) so MEDIUM status text passes too. */
+[data-theme="axg"] .text-green-400 { color: #3F7E1F !important; }
 [data-theme="axg"] .text-red-400 { color: #C8102E !important; }
-[data-theme="axg"] .text-amber-400 { color: #E8923F !important; }
+[data-theme="axg"] .text-amber-400 { color: #B5651D !important; }
 [data-theme="axg"] .text-blue-400 { color: #005DAA !important; }
 
 /* ═══════════════════════════════════════════════════════════ */
@@ -152,10 +163,11 @@
 [data-theme="light"] .bg-white\/10 { background: rgba(27,58,92,0.04) !important; }
 [data-theme="light"] .border-white\/5,
 [data-theme="light"] .border-white\/10 { border-color: #d1d9e2 !important; }
-[data-theme="light"] .text-green-400 { color: #8CC63F !important; }
-[data-theme="light"] .text-red-400 { color: #D94A4A !important; }
-[data-theme="light"] .text-amber-400 { color: #E8923F !important; }
-[data-theme="light"] .text-blue-400 { color: #4A90D9 !important; }
+/* WCAG 1.4.3 AA on white: greens/amber/blue darkened to clear 4.5:1 */
+[data-theme="light"] .text-green-400 { color: #3F7E1F !important; }
+[data-theme="light"] .text-red-400 { color: #C8102E !important; }
+[data-theme="light"] .text-amber-400 { color: #B5651D !important; }
+[data-theme="light"] .text-blue-400 { color: #1f5fa8 !important; }
 
 /* ═══════════════════════════════════════════════════════════ */
 /* THEME 6: Ocean — Bright teal/cyan, light background        */
@@ -193,9 +205,10 @@
 [data-theme="ocean"] .bg-white\/10 { background: rgba(14,77,92,0.04) !important; }
 [data-theme="ocean"] .border-white\/5,
 [data-theme="ocean"] .border-white\/10 { border-color: #b2dfdf !important; }
-[data-theme="ocean"] .text-green-400 { color: #0891b2 !important; }
-[data-theme="ocean"] .text-red-400 { color: #D94A4A !important; }
-[data-theme="ocean"] .text-amber-400 { color: #E8923F !important; }
+/* WCAG 1.4.3 AA on white: cyan/amber darkened to clear 4.5:1 for status text */
+[data-theme="ocean"] .text-green-400 { color: #0e7490 !important; }
+[data-theme="ocean"] .text-red-400 { color: #C8102E !important; }
+[data-theme="ocean"] .text-amber-400 { color: #B5651D !important; }
 [data-theme="ocean"] .text-blue-400 { color: #0e7490 !important; }
 
 /* ═══════════════════════════════════════════════════════════ */
@@ -234,10 +247,11 @@
 [data-theme="sunset"] .bg-white\/10 { background: rgba(74,26,16,0.04) !important; }
 [data-theme="sunset"] .border-white\/5,
 [data-theme="sunset"] .border-white\/10 { border-color: #f0cfc5 !important; }
-[data-theme="sunset"] .text-green-400 { color: #e85d3a !important; }
+/* WCAG 1.4.3 AA on white: warm coral/amber darkened to clear 4.5:1 */
+[data-theme="sunset"] .text-green-400 { color: #1f7a4d !important; }
 [data-theme="sunset"] .text-red-400 { color: #C8102E !important; }
-[data-theme="sunset"] .text-amber-400 { color: #E8923F !important; }
-[data-theme="sunset"] .text-blue-400 { color: #c44a28 !important; }
+[data-theme="sunset"] .text-amber-400 { color: #B5651D !important; }
+[data-theme="sunset"] .text-blue-400 { color: #b03d1c !important; }
 
 /* ═══════════════════════════════════════════════════════════ */
 /* THEME 8: Electric — Dark with vivid neon blue accents      */
@@ -289,6 +303,28 @@
   --glass-bg-hover: rgba(255,255,255,0.10);
 }
 
+/* ═══════════════════════════════════════════════════════════ */
+/* Skeleton / loading tokens — derive from each theme's surface   */
+/* so loading states match the active theme instead of falling    */
+/* back to hardcoded light-gray on dark themes.                   */
+/* ═══════════════════════════════════════════════════════════ */
+:root,
+[data-theme] {
+  /* Dark-theme defaults: subtle light washes over the dark card */
+  --skeleton: rgba(255,255,255,0.10);
+  --skeleton-light: rgba(255,255,255,0.06);
+  --skeleton-subtle: rgba(255,255,255,0.03);
+}
+/* Light themes: dark washes so skeletons read against white cards */
+[data-theme="axg"],
+[data-theme="light"],
+[data-theme="ocean"],
+[data-theme="sunset"] {
+  --skeleton: rgba(0,0,0,0.10);
+  --skeleton-light: rgba(0,0,0,0.06);
+  --skeleton-subtle: rgba(0,0,0,0.03);
+}
+
 /* Glassmorphic card light-theme adjustments for Ocean & Sunset */
 [data-theme="ocean"] .rounded-xl,
 [data-theme="sunset"] .rounded-xl {
@@ -302,6 +338,14 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+}
+
+/* Document-root horizontal-overflow guard — containment no longer depends    */
+/* solely on `main.overflow-x-hidden`; any fixed/absolute sibling (hamburger,  */
+/* drawers, portals) that exceeds the viewport can never leak a scrollbar.     */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 body {
@@ -339,6 +383,85 @@ canvas { max-width: 100% !important; }
 /* Mobile responsive — sidebar slides in via toggle, main takes full width */
 @media (max-width: 1023px) {
   main { margin-left: 0 !important; }
+}
+
+/* ───────────────────────────────────────────────────────────── */
+/* Mobile hardening (phones ≤640px) — collapses dense KPI/stat    */
+/* grids, reclaims padding, and guarantees 40px touch targets so  */
+/* the 120 inner pages inherit the home-page responsive discipline */
+/* without per-file edits. Scoped under `main` (descendant        */
+/* combinator) so specificity beats single-class Tailwind utils   */
+/* with no !important; never fires ≥640px so sm:/md:/lg: variants  */
+/* are untouched.                                                  */
+/* ───────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  /* Dense stat rows collapse to 2 columns; very-wide rows to 1.   */
+  /* Grids that opt into horizontal scroll (min-w-[…]) are left as  */
+  /* is — they live in an overflow-x-auto wrapper by design.        */
+  main .grid.grid-cols-3:not([class*="min-w-["]),
+  main .grid.grid-cols-4:not([class*="min-w-["]),
+  main .grid.grid-cols-5:not([class*="min-w-["]),
+  main .grid.grid-cols-6:not([class*="min-w-["]) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  main .grid.grid-cols-7:not([class*="min-w-["]),
+  main .grid.grid-cols-8:not([class*="min-w-["]),
+  main .grid.grid-cols-9:not([class*="min-w-["]),
+  main .grid.grid-cols-10:not([class*="min-w-["]),
+  main .grid.grid-cols-11:not([class*="min-w-["]),
+  main .grid.grid-cols-12:not([class*="min-w-["]) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* Reclaim flat page padding (p-6 = 1.5rem, p-8 = 2rem) on the   */
+  /* page root so content isn't crushed before the grid even runs. */
+  main > div.p-6,
+  main > div.p-8 {
+    padding: 1rem;
+  }
+  /* WCAG 2.5.5 — broaden the tap-target net beyond three padding   */
+  /* classes. Any <button>/role=button, links explicitly styled as  */
+  /* controls (.btn / .icon-btn / .tap), and the short py-1 / py-1.5 */
+  /* action controls all get a ≥40px hit area. Inline prose links    */
+  /* (<a> inside text) are intentionally NOT matched so body copy is  */
+  /* untouched — only opt-in control classes and real buttons are.    */
+  /* Min tap HEIGHT for all real controls. `display` is left alone   */
+  /* so full-width (w-full flex / block) buttons keep their layout;   */
+  /* min-height + the existing flex alignment on the element handle   */
+  /* vertical centering. align-content keeps single-line labels       */
+  /* centered for the rare display:block control.                     */
+  main button,
+  main [role="button"],
+  main a.btn,
+  main a.icon-btn,
+  main .icon-btn,
+  main .tap,
+  main button.py-1,
+  main button.py-1\.5 {
+    min-height: 40px;
+  }
+  /* Icon-only / square buttons (p-1…p-2, w-7/h-7) also need width    */
+  /* and centering — these are reliably inline icon controls.         */
+  main button.p-1,
+  main button.p-1\.5,
+  main button.p-2,
+  main button.w-7,
+  main button.h-7,
+  main .icon-btn,
+  main a.icon-btn {
+    min-width: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* Reusable 40px touch-target utility for icon buttons. */
+.icon-btn {
+  min-width: 40px;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 /* Desktop — sidebar always visible, main offset */
 @media (min-width: 1024px) {
@@ -540,6 +663,42 @@ input:focus, select:focus, textarea:focus {
 .overflow-y-auto::-webkit-scrollbar-track { background: transparent; }
 .overflow-y-auto::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--accent) 25%, transparent); border-radius: 3px; }
 .overflow-y-auto::-webkit-scrollbar-thumb:hover { background: color-mix(in srgb, var(--accent) 40%, transparent); }
+
+/* Accessibility: visually-hidden helper for screen-reader-only text         */
+/* (used by skip link, status-message labels, icon-button names).            */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* WCAG 2.4.1 — skip-to-content link: hidden until focused, then visible. */
+.skip-link {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  padding: 10px 16px;
+  margin: 8px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  transform: translateY(-150%);
+  transition: transform 0.15s ease;
+}
+.skip-link:focus {
+  transform: translateY(0);
+  outline: 2px solid var(--heading);
+  outline-offset: 2px;
+}
 
 /* Accessibility: respect reduced motion preferences */
 @media (prefers-reduced-motion: reduce) {

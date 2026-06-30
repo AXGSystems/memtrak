@@ -35,8 +35,8 @@ export default function PortalHome() {
   if (error) {
     return (
       <Card glass>
-        <div className="flex items-start gap-2 text-xs" style={{ color: '#D94A4A' }}>
-          <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" /> {error}
+        <div role="alert" className="flex items-start gap-2 text-xs" style={{ color: '#D94A4A' }}>
+          <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" aria-hidden="true" /> {error}
         </div>
       </Card>
     );

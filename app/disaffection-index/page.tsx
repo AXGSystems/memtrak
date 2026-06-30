@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import { Activity, Shield, AlertTriangle, TrendingDown, TrendingUp, ChevronDown, ChevronUp, Info } from 'lucide-react';
 import Card from '@/components/Card';
 import SparkKpi, { MiniBar } from '@/components/SparkKpi';
@@ -145,6 +146,7 @@ export default function DisaffectionIndex() {
 
   return (
     <div className="p-6 max-w-[1400px] mx-auto">
+      <SampleDataBadge />
 
       {/* ── 1. Branded Header ──────────────────────────── */}
       <div className="mb-8">
@@ -275,7 +277,7 @@ export default function DisaffectionIndex() {
                   <div className="flex items-center gap-2 mb-1">
                     <div className="w-2 h-2 rounded-full" style={{ background: f.color }} />
                     <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{f.label}</span>
-                    <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold" style={{ background: 'rgba(124,92,252,0.15)', color: C.purple }}>{f.weight}% weight</span>
+                    <span className="text-[11px] px-1.5 py-0.5 rounded-full font-bold" style={{ background: 'rgba(124,92,252,0.15)', color: C.purple }}>{f.weight}% weight</span>
                   </div>
                   <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{f.desc}</p>
                 </div>
@@ -305,7 +307,7 @@ export default function DisaffectionIndex() {
                   <th
                     key={i}
                     onClick={col.key ? () => toggleSort(col.key!) : undefined}
-                    className={`text-[9px] uppercase tracking-wider font-bold py-2 pr-3 ${col.key ? 'cursor-pointer select-none' : ''}`}
+                    className={`text-[11px] uppercase tracking-wider font-bold py-2 pr-3 ${col.key ? 'cursor-pointer select-none' : ''}`}
                     style={{ color: 'var(--text-muted)' }}
                   >
                     <span className="inline-flex items-center gap-0.5">
@@ -321,7 +323,7 @@ export default function DisaffectionIndex() {
                 <tr key={c.id} className="border-b transition-colors" style={{ borderColor: 'color-mix(in srgb, var(--card-border) 50%, transparent)' }}>
                   <td className="py-2.5 pr-3">
                     <div className="text-xs font-semibold" style={{ color: 'var(--heading)' }}>{c.name}</div>
-                    <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{c.type}</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{c.type}</div>
                   </td>
                   <td className="py-2.5 pr-3 text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>
                     {c.sent.toLocaleString()}
@@ -344,7 +346,7 @@ export default function DisaffectionIndex() {
                         <MiniBar value={c.index} max={100} color={c.band.color} height={6} />
                       </div>
                       <span
-                        className="text-[8px] px-1.5 py-0.5 rounded-full font-bold whitespace-nowrap"
+                        className="text-[11px] px-1.5 py-0.5 rounded-full font-bold whitespace-nowrap"
                         style={{ background: `${c.band.color}20`, color: c.band.color }}
                       >
                         {c.band.label}
@@ -376,7 +378,7 @@ export default function DisaffectionIndex() {
                   <div className="flex items-center gap-2">
                     <div className="w-2.5 h-2.5 rounded-full" style={{ background: d.color }} />
                     <span className="text-xs font-semibold" style={{ color: 'var(--heading)' }}>{d.label}</span>
-                    <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>({d.min}&ndash;{d.max})</span>
+                    <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>({d.min}&ndash;{d.max})</span>
                   </div>
                   <span className="text-xs font-bold" style={{ color: d.color }}>
                     {d.count} campaign{d.count !== 1 ? 's' : ''}
@@ -619,8 +621,8 @@ export default function DisaffectionIndex() {
                       </div>
                       <MiniBar value={bounceContrib} max={c.index || 1} color={C.orange} height={6} />
                       <div className="flex justify-between mt-1">
-                        <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Weight: 40%</span>
-                        <span className="text-[9px] font-bold" style={{ color: C.orange }}>Contributes {bounceContrib} pts</span>
+                        <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Weight: 40%</span>
+                        <span className="text-[11px] font-bold" style={{ color: C.orange }}>Contributes {bounceContrib} pts</span>
                       </div>
                     </div>
 
@@ -632,8 +634,8 @@ export default function DisaffectionIndex() {
                       </div>
                       <MiniBar value={unsubContrib} max={c.index || 1} color={C.red} height={6} />
                       <div className="flex justify-between mt-1">
-                        <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Weight: 40%</span>
-                        <span className="text-[9px] font-bold" style={{ color: C.red }}>Contributes {unsubContrib} pts</span>
+                        <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Weight: 40%</span>
+                        <span className="text-[11px] font-bold" style={{ color: C.red }}>Contributes {unsubContrib} pts</span>
                       </div>
                     </div>
 
@@ -645,8 +647,8 @@ export default function DisaffectionIndex() {
                       </div>
                       <MiniBar value={complaintContrib} max={c.index || 1} color={C.purple} height={6} />
                       <div className="flex justify-between mt-1">
-                        <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Weight: 20%</span>
-                        <span className="text-[9px] font-bold" style={{ color: C.purple }}>Contributes {complaintContrib} pts</span>
+                        <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Weight: 20%</span>
+                        <span className="text-[11px] font-bold" style={{ color: C.purple }}>Contributes {complaintContrib} pts</span>
                       </div>
                     </div>
                   </div>
@@ -669,13 +671,13 @@ export default function DisaffectionIndex() {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <span
-                      className="text-[9px] px-2 py-0.5 rounded-full font-bold"
+                      className="text-[11px] px-2 py-0.5 rounded-full font-bold"
                       style={{ background: `${c.band.color}20`, color: c.band.color }}
                     >
                       #{rank + 1} Risk
                     </span>
                     <span
-                      className="text-[9px] px-2 py-0.5 rounded-full font-bold"
+                      className="text-[11px] px-2 py-0.5 rounded-full font-bold"
                       style={{ background: `${c.band.color}20`, color: c.band.color }}
                     >
                       {c.band.label}
@@ -686,26 +688,26 @@ export default function DisaffectionIndex() {
 
                 {/* Campaign name */}
                 <div className="text-xs font-bold mb-0.5" style={{ color: 'var(--heading)' }}>{c.name}</div>
-                <div className="text-[9px] mb-3" style={{ color: 'var(--text-muted)' }}>{c.type} &middot; {c.sent.toLocaleString()} delivered</div>
+                <div className="text-[11px] mb-3" style={{ color: 'var(--text-muted)' }}>{c.type} &middot; {c.sent.toLocaleString()} delivered</div>
 
                 {/* Factor bars */}
                 <div className="space-y-2">
                   <div>
-                    <div className="flex justify-between text-[9px] mb-1">
+                    <div className="flex justify-between text-[11px] mb-1">
                       <span style={{ color: 'var(--text-muted)' }}>Bounce ({c.bounceRate}%)</span>
                       <span className="font-bold" style={{ color: C.orange }}>{bounceContrib} pts</span>
                     </div>
                     <MiniBar value={bounceContrib} max={Math.max(bounceContrib, unsubContrib, complaintContrib, 1)} color={C.orange} height={5} />
                   </div>
                   <div>
-                    <div className="flex justify-between text-[9px] mb-1">
+                    <div className="flex justify-between text-[11px] mb-1">
                       <span style={{ color: 'var(--text-muted)' }}>Unsub ({c.unsubRate}%)</span>
                       <span className="font-bold" style={{ color: C.red }}>{unsubContrib} pts</span>
                     </div>
                     <MiniBar value={unsubContrib} max={Math.max(bounceContrib, unsubContrib, complaintContrib, 1)} color={C.red} height={5} />
                   </div>
                   <div>
-                    <div className="flex justify-between text-[9px] mb-1">
+                    <div className="flex justify-between text-[11px] mb-1">
                       <span style={{ color: 'var(--text-muted)' }}>Complaint ({c.complaintRate}%)</span>
                       <span className="font-bold" style={{ color: C.purple }}>{complaintContrib} pts</span>
                     </div>
@@ -720,7 +722,7 @@ export default function DisaffectionIndex() {
 
       {/* ── Footer attribution ─────────────────────────── */}
       <div className="text-center py-4">
-        <p className="text-[9px] font-medium" style={{ color: 'var(--text-muted)' }}>
+        <p className="text-[11px] font-medium" style={{ color: 'var(--text-muted)' }}>
           DisaffectionIndex&trade; &mdash; A MEMTrak proprietary metric &middot; Demo data for proof-of-concept
         </p>
       </div>

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getEvent } from '@/lib/member-data';
 
+import { requireReadOnly } from '@/lib/route-auth';
 type Ctx = { params: Promise<{ id: string }> };
 
 /**
@@ -10,6 +11,9 @@ type Ctx = { params: Promise<{ id: string }> };
  * alta_connect_event_id (URL-encoded if it contains slashes).
  */
 export async function GET(_req: NextRequest, ctx: Ctx) {
+  const gate = await requireReadOnly();
+  if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
   const { id } = await ctx.params;
   const result = await getEvent(decodeURIComponent(id));
   if (!result) return NextResponse.json({ error: 'Event not found' }, { status: 404 });

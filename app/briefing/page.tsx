@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import Card from '@/components/Card';
 import SparkKpi, { MiniBar } from '@/components/SparkKpi';
 import ProgressRing from '@/components/ProgressRing';
@@ -240,6 +241,7 @@ export default function Briefing() {
 
   return (
     <div className="p-6 space-y-6">
+      <SampleDataBadge />
 
       {/* ═══════════ 1. HEADER ═══════════ */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
@@ -254,7 +256,7 @@ export default function Briefing() {
             <div className="flex items-center gap-3">
               <h1 className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>Daily Intelligence Report</h1>
               <span
-                className="px-2.5 py-0.5 rounded-full text-[9px] font-bold tracking-wide"
+                className="px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wide"
                 style={{ background: `color-mix(in srgb, ${GOLD} 12%, transparent)`, color: GOLD, border: `1px solid color-mix(in srgb, ${GOLD} 25%, transparent)` }}
               >
                 CONFIDENTIAL
@@ -482,15 +484,15 @@ export default function Briefing() {
             <div className="grid grid-cols-3 gap-3">
               <div className="text-center p-3 rounded-lg" style={{ background: 'var(--background)' }}>
                 <div className="text-lg font-extrabold" style={{ color: C.green }}>{funnelDelivPct}%</div>
-                <div className="text-[9px] font-bold" style={{ color: 'var(--text-muted)' }}>Delivery Rate</div>
+                <div className="text-[11px] font-bold" style={{ color: 'var(--text-muted)' }}>Delivery Rate</div>
               </div>
               <div className="text-center p-3 rounded-lg" style={{ background: 'var(--background)' }}>
                 <div className="text-lg font-extrabold" style={{ color: C.blue }}>{funnelOpenPct}%</div>
-                <div className="text-[9px] font-bold" style={{ color: 'var(--text-muted)' }}>Open Rate</div>
+                <div className="text-[11px] font-bold" style={{ color: 'var(--text-muted)' }}>Open Rate</div>
               </div>
               <div className="text-center p-3 rounded-lg" style={{ background: 'var(--background)' }}>
                 <div className="text-lg font-extrabold" style={{ color: C.green }}>{funnelClickPct}%</div>
-                <div className="text-[9px] font-bold" style={{ color: 'var(--text-muted)' }}>Click-to-Open</div>
+                <div className="text-[11px] font-bold" style={{ color: 'var(--text-muted)' }}>Click-to-Open</div>
               </div>
             </div>
           </div>
@@ -501,17 +503,17 @@ export default function Briefing() {
           <FunnelStep label="Sent" value={funnelSent} pct="100" color={C.navy} maxVal={funnelSent} />
           <div className="flex items-center gap-1 ml-[84px] my-1">
             <ArrowRight className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
-            <span className="text-[9px] font-bold" style={{ color: C.green }}>{funnelDelivPct}% delivered</span>
+            <span className="text-[11px] font-bold" style={{ color: C.green }}>{funnelDelivPct}% delivered</span>
           </div>
           <FunnelStep label="Delivered" value={funnelDelivered} pct={funnelDelivPct} color="#1B3A5C" maxVal={funnelSent} />
           <div className="flex items-center gap-1 ml-[84px] my-1">
             <ArrowRight className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
-            <span className="text-[9px] font-bold" style={{ color: C.blue }}>{funnelOpenPct}% opened</span>
+            <span className="text-[11px] font-bold" style={{ color: C.blue }}>{funnelOpenPct}% opened</span>
           </div>
           <FunnelStep label="Opened" value={funnelOpened} pct={((funnelOpened / funnelSent) * 100).toFixed(1)} color={C.blue} maxVal={funnelSent} />
           <div className="flex items-center gap-1 ml-[84px] my-1">
             <ArrowRight className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
-            <span className="text-[9px] font-bold" style={{ color: C.green }}>{funnelClickPct}% clicked</span>
+            <span className="text-[11px] font-bold" style={{ color: C.green }}>{funnelClickPct}% clicked</span>
           </div>
           <FunnelStep label="Clicked" value={funnelClicked} pct={((funnelClicked / funnelSent) * 100).toFixed(1)} color={C.green} maxVal={funnelSent} />
         </div>
@@ -530,7 +532,7 @@ export default function Briefing() {
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <span
-                    className="inline-block px-2.5 py-0.5 rounded-full text-[9px] font-extrabold tracking-wide mb-2"
+                    className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-extrabold tracking-wide mb-2"
                     style={{ background: `color-mix(in srgb, ${C.red} 20%, transparent)`, color: C.red }}
                   >
                     URGENT
@@ -543,9 +545,9 @@ export default function Briefing() {
                   </p>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <div className="text-[9px] font-bold" style={{ color: C.red }}>REVENUE AT RISK</div>
+                  <div className="text-[11px] font-bold" style={{ color: C.red }}>REVENUE AT RISK</div>
                   <div className="text-xl font-extrabold" style={{ color: C.red }}>${decayRevenue.toLocaleString()}</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>per year</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>per year</div>
                 </div>
               </div>
               <div className="mt-3 space-y-0">
@@ -573,7 +575,7 @@ export default function Briefing() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <span
-                  className="inline-block px-2.5 py-0.5 rounded-full text-[9px] font-extrabold tracking-wide mb-2"
+                  className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-extrabold tracking-wide mb-2"
                   style={{ background: `color-mix(in srgb, ${C.orange} 20%, transparent)`, color: C.orange }}
                 >
                   MEDIUM
@@ -586,7 +588,7 @@ export default function Briefing() {
                 </p>
               </div>
               <div className="text-right flex-shrink-0">
-                <div className="text-[9px] font-bold" style={{ color: C.orange }}>BOUNCE RATE</div>
+                <div className="text-[11px] font-bold" style={{ color: C.orange }}>BOUNCE RATE</div>
                 <div className="text-xl font-extrabold" style={{ color: C.orange }}>{bounceRate}%</div>
               </div>
             </div>
@@ -601,7 +603,7 @@ export default function Briefing() {
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <span
-                    className="inline-block px-2.5 py-0.5 rounded-full text-[9px] font-extrabold tracking-wide mb-2"
+                    className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-extrabold tracking-wide mb-2"
                     style={{ background: `color-mix(in srgb, ${C.red} 20%, transparent)`, color: C.red }}
                   >
                     URGENT
@@ -611,9 +613,9 @@ export default function Briefing() {
                   </h4>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <div className="text-[9px] font-bold" style={{ color: C.red }}>COMBINED RISK</div>
+                  <div className="text-[11px] font-bold" style={{ color: C.red }}>COMBINED RISK</div>
                   <div className="text-xl font-extrabold" style={{ color: C.red }}>${churnHigh.reduce((s, c) => s + c.revenue, 0).toLocaleString()}</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>per year</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>per year</div>
                 </div>
               </div>
               <div className="mt-3 space-y-0">
@@ -625,7 +627,7 @@ export default function Briefing() {
                     </div>
                     <div className="flex items-center gap-4">
                       <span
-                        className="px-2 py-0.5 rounded-full text-[9px] font-extrabold"
+                        className="px-2 py-0.5 rounded-full text-[11px] font-extrabold"
                         style={{ background: `color-mix(in srgb, ${C.red} 15%, transparent)`, color: C.red }}
                       >
                         {c.score}% risk
@@ -641,7 +643,7 @@ export default function Briefing() {
           {/* Renewal Planning */}
           <Card glass accent={C.blue}>
             <span
-              className="inline-block px-2.5 py-0.5 rounded-full text-[9px] font-extrabold tracking-wide mb-2"
+              className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-extrabold tracking-wide mb-2"
               style={{ background: `color-mix(in srgb, ${C.blue} 20%, transparent)`, color: C.blue }}
             >
               PLANNING
@@ -693,12 +695,12 @@ export default function Briefing() {
           <table className="w-full text-[11px]" style={{ borderCollapse: 'collapse' }}>
             <thead>
               <tr>
-                <th className="text-left pb-3 text-[9px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Campaign</th>
-                <th className="text-right pb-3 text-[9px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Sent</th>
-                <th className="text-right pb-3 text-[9px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Open Rate</th>
-                <th className="pb-3 text-[9px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)', width: 80, textAlign: 'center' }}></th>
-                <th className="text-right pb-3 text-[9px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Clicks</th>
-                <th className="text-right pb-3 text-[9px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Revenue</th>
+                <th className="text-left pb-3 text-[11px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Campaign</th>
+                <th className="text-right pb-3 text-[11px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Sent</th>
+                <th className="text-right pb-3 text-[11px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Open Rate</th>
+                <th className="pb-3 text-[11px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)', width: 80, textAlign: 'center' }}></th>
+                <th className="text-right pb-3 text-[11px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Clicks</th>
+                <th className="text-right pb-3 text-[11px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Revenue</th>
               </tr>
             </thead>
             <tbody>
@@ -849,7 +851,7 @@ export default function Briefing() {
                     </div>
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <div className="text-[8px] font-bold uppercase tracking-wider" style={{ color: action.color }}>Impact</div>
+                    <div className="text-[11px] font-bold uppercase tracking-wider" style={{ color: action.color }}>Impact</div>
                     <div className="text-base font-extrabold" style={{ color: action.color }}>{action.impact}</div>
                   </div>
                 </div>
@@ -875,7 +877,7 @@ export default function Briefing() {
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{r.staff}</span>
                     <span
-                      className="px-2 py-0.5 rounded-full text-[9px] font-extrabold"
+                      className="px-2 py-0.5 rounded-full text-[11px] font-extrabold"
                       style={{ background: `color-mix(in srgb, ${replyColor} 15%, transparent)`, color: replyColor }}
                     >
                       {r.strength}
@@ -898,12 +900,12 @@ export default function Briefing() {
           <table className="w-full text-[11px]" style={{ borderCollapse: 'collapse' }}>
             <thead>
               <tr>
-                <th className="text-left pb-3 text-[9px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Staff Member</th>
-                <th className="text-right pb-3 text-[9px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Outreach</th>
-                <th className="text-right pb-3 text-[9px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Reply Rate</th>
+                <th className="text-left pb-3 text-[11px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Staff Member</th>
+                <th className="text-right pb-3 text-[11px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Outreach</th>
+                <th className="text-right pb-3 text-[11px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Reply Rate</th>
                 <th className="pb-3" style={{ width: 60 }}></th>
-                <th className="text-right pb-3 text-[9px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Avg Response</th>
-                <th className="text-right pb-3 text-[9px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Strength</th>
+                <th className="text-right pb-3 text-[11px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Avg Response</th>
+                <th className="text-right pb-3 text-[11px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Strength</th>
               </tr>
             </thead>
             <tbody>
@@ -921,7 +923,7 @@ export default function Briefing() {
                     <td className="py-2.5 text-right" style={{ color: 'var(--text-muted)' }}>{r.responseTime}</td>
                     <td className="py-2.5 text-right">
                       <span
-                        className="px-2 py-0.5 rounded-full text-[9px] font-extrabold"
+                        className="px-2 py-0.5 rounded-full text-[11px] font-extrabold"
                         style={{ background: `color-mix(in srgb, ${strengthColor} 12%, transparent)`, color: strengthColor }}
                       >
                         {r.strength}
@@ -953,12 +955,12 @@ export default function Briefing() {
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-semibold" style={{ color: 'var(--heading)' }}>{s.segment}</span>
                   <span className="text-[11px] font-extrabold" style={{ color: s.openRate >= 50 ? C.green : C.blue }}>
-                    {s.openRate}% <span className="text-[9px] font-normal" style={{ color: 'var(--text-muted)' }}>predicted</span>
+                    {s.openRate}% <span className="text-[11px] font-normal" style={{ color: 'var(--text-muted)' }}>predicted</span>
                   </span>
                 </div>
                 <div className="flex items-center justify-between mt-1">
                   <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{s.day}, {s.time}</span>
-                  <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>n={s.sample.toLocaleString()}</span>
+                  <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>n={s.sample.toLocaleString()}</span>
                 </div>
                 <MiniBar value={s.openRate} max={100} color={s.openRate >= 50 ? C.green : C.blue} height={3} />
               </div>
@@ -972,7 +974,7 @@ export default function Briefing() {
         <p className="text-[10px] font-semibold" style={{ color: 'var(--text-muted)' }}>
           MEMTrak &mdash; Email Intelligence Platform &mdash; American Land Title Association
         </p>
-        <p className="text-[9px] mt-1" style={{ color: 'var(--text-muted)', opacity: 0.6 }}>
+        <p className="text-[11px] mt-1" style={{ color: 'var(--text-muted)', opacity: 0.6 }}>
           Generated {date} &mdash; Confidential: Internal Use Only &mdash; Data reflects campaigns processed through {date}
         </p>
       </div>

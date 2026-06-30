@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { bulkCreateOrganizations, type OrganizationInput } from '@/lib/member-data';
+import { requireStaff, safeError } from '@/lib/route-auth';
+import { logEntityAudit } from '@/lib/audit';
+import { auditContext } from '@/lib/audit-context';
 
 /**
  * POST /api/memtrak/members/import
@@ -16,6 +19,9 @@ const ORG_TYPES = new Set(['ACU', 'ACA', 'ACB', 'REA', 'Associate', 'Affiliate',
 const MAX_ROWS = 5000;
 
 export async function POST(request: NextRequest) {
+  const gate = await requireStaff();
+  if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
   let body: unknown;
   try {
     body = await request.json();
@@ -68,10 +74,14 @@ export async function POST(request: NextRequest) {
 
   try {
     const result = await bulkCreateOrganizations(cleaned);
+    logEntityAudit({
+      entity: 'organization', entity_id: 'bulk-import', entity_label: `${cleaned.length} rows`,
+      action: 'import', actor: gate.actor.email,
+      summary: `Bulk-imported ${result.inserted ?? cleaned.length} organizations`,
+      ...auditContext(request),
+    });
     return NextResponse.json(result, { status: 201 });
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Import failed';
-    const isConfig = message.includes('Supabase not configured');
-    return NextResponse.json({ error: message }, { status: isConfig ? 503 : 500 });
+    return safeError(err);
   }
 }

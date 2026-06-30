@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import Card from '@/components/Card';
 import SparkKpi from '@/components/SparkKpi';
 import ClientChart from '@/components/ClientChart';
@@ -131,6 +132,7 @@ export default function DecayRadar() {
 
   return (
     <div className="p-6">
+      <SampleDataBadge />
       {/* ── 1. Branded Header ─────────────────────────────────── */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
@@ -144,7 +146,7 @@ export default function DecayRadar() {
             <Radio className="w-5 h-5" style={{ color: C.red }} />
           </div>
           <div>
-            <h1 className="text-xl font-extrabold tracking-tight" style={{ color: 'var(--heading)' }}>
+            <h1 className="text-2xl font-extrabold tracking-tight" style={{ color: 'var(--heading)' }}>
               DecayRadar<span style={{ color: C.red, fontSize: '0.65em', verticalAlign: 'super' }}>&trade;</span>
             </h1>
             <p className="text-[11px] font-semibold" style={{ color: C.orange }}>
@@ -262,7 +264,7 @@ export default function DecayRadar() {
             Decay Alerts
           </h2>
           <span
-            className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+            className="text-[11px] font-bold px-2 py-0.5 rounded-full"
             style={{ background: 'rgba(217,74,74,0.15)', color: C.red }}
           >
             {decayAlerts.length} members
@@ -310,13 +312,13 @@ export default function DecayRadar() {
                           {alert.org}
                         </span>
                         <span
-                          className="text-[9px] font-bold px-1.5 py-0.5 rounded"
+                          className="text-[11px] font-bold px-1.5 py-0.5 rounded"
                           style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}
                         >
                           {alert.type}
                         </span>
                         <span
-                          className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+                          className="text-[11px] font-bold px-2 py-0.5 rounded-full"
                           style={{ background: tc.bg, color: tc.color }}
                         >
                           {tc.label}
@@ -333,7 +335,7 @@ export default function DecayRadar() {
 
                       {/* Decay bar: historical → current */}
                       <div className="mt-3">
-                        <div className="flex items-center justify-between text-[9px] mb-1">
+                        <div className="flex items-center justify-between text-[11px] mb-1">
                           <span style={{ color: 'var(--text-muted)' }}>
                             Historical: {alert.historical}%
                           </span>
@@ -371,7 +373,7 @@ export default function DecayRadar() {
                       <div className="text-lg font-extrabold" style={{ color: C.red }}>
                         $<AnimatedCounter value={alert.revenue} />
                       </div>
-                      <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
+                      <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
                         annual revenue at risk
                       </div>
                       <div
@@ -401,7 +403,7 @@ export default function DecayRadar() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
                       <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
                         <div
-                          className="text-[9px] uppercase tracking-wider font-bold mb-1"
+                          className="text-[11px] uppercase tracking-wider font-bold mb-1"
                           style={{ color: 'var(--text-muted)' }}
                         >
                           Decay Breakdown
@@ -426,7 +428,7 @@ export default function DecayRadar() {
 
                       <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
                         <div
-                          className="text-[9px] uppercase tracking-wider font-bold mb-1"
+                          className="text-[11px] uppercase tracking-wider font-bold mb-1"
                           style={{ color: 'var(--text-muted)' }}
                         >
                           Churn Score
@@ -467,7 +469,7 @@ export default function DecayRadar() {
 
                       <div className="rounded-lg p-3" style={{ background: 'rgba(140,198,63,0.06)' }}>
                         <div
-                          className="text-[9px] uppercase tracking-wider font-bold mb-1"
+                          className="text-[11px] uppercase tracking-wider font-bold mb-1"
                           style={{ color: C.green }}
                         >
                           Recommended Action
@@ -791,13 +793,13 @@ export default function DecayRadar() {
           <div className="grid grid-cols-4 gap-2 mt-4">
             {severityTiers.map((t) => (
               <div key={t.tier} className="text-center p-2 rounded-lg" style={{ background: 'var(--input-bg)' }}>
-                <div className="text-[9px] uppercase font-bold" style={{ color: t.color }}>
+                <div className="text-[11px] uppercase font-bold" style={{ color: t.color }}>
                   {t.tier}
                 </div>
                 <div className="text-sm font-extrabold" style={{ color: 'var(--heading)' }}>
                   {t.count}
                 </div>
-                <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
+                <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
                   member{t.count !== 1 ? 's' : ''}
                 </div>
               </div>

@@ -100,7 +100,7 @@ export default function SparkKpi({ label, value, sub, trend, sparkData, sparkCol
                 <span className="text-[10px] font-bold" style={{ color: trendColor }}>
                   {trend.value > 0 ? '+' : ''}{trend.value}%
                 </span>
-                <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{trend.label}</span>
+                <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{trend.label}</span>
               </div>
             )}
           </div>
@@ -114,7 +114,7 @@ export default function SparkKpi({ label, value, sub, trend, sparkData, sparkCol
           <div className={`text-[10px] ${trend ? 'mt-1' : 'mt-1.5'}`} style={{ color: 'var(--text-muted)' }}>{sub}</div>
         )}
 
-        {detail && <div className="text-[9px] mt-2 font-semibold" style={{ color: 'var(--accent)' }}>Click for details</div>}
+        {detail && <div className="text-[11px] mt-2 font-semibold" style={{ color: 'var(--accent)' }}>Click for details</div>}
       </div>
 
       {/* Detail modal */}
@@ -176,7 +176,7 @@ export function StatusPill({ status, size = 'sm' }: { status: string; size?: 'sm
   };
   const c = colors[status.toLowerCase()] || colors.draft;
   return (
-    <span className={`inline-flex items-center font-bold rounded-full ${size === 'xs' ? 'text-[8px] px-1.5 py-0.5' : 'text-[9px] px-2 py-0.5'}`} style={{ background: c.bg, color: c.text }}>
+    <span className={`inline-flex items-center font-bold rounded-full ${size === 'xs' ? 'text-[11px] px-1.5 py-0.5' : 'text-[11px] px-2 py-0.5'}`} style={{ background: c.bg, color: c.text }}>
       {status}
     </span>
   );

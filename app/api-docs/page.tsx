@@ -47,7 +47,7 @@ export default function APIDocs() {
         {filtered.map(ep => (
           <div key={ep.path + ep.method} className="rounded-xl border overflow-hidden transition-all" style={{ background: 'var(--card)', borderColor: expanded === ep.path + ep.method ? 'var(--accent)' : 'var(--card-border)' }}>
             <button onClick={() => setExpanded(expanded === ep.path + ep.method ? null : ep.path + ep.method)} className="w-full flex items-center gap-3 p-4 text-left">
-              <span className={`text-[9px] px-2 py-0.5 rounded font-bold ${methodColors[ep.method]}`}>{ep.method}</span>
+              <span className={`text-[11px] px-2 py-0.5 rounded font-bold ${methodColors[ep.method]}`}>{ep.method}</span>
               <code className="text-xs font-mono flex-1" style={{ color: 'var(--heading)' }}>{ep.path}</code>
               <span className="text-[10px] hidden lg:block" style={{ color: 'var(--text-muted)' }}>{ep.desc}</span>
             </button>
@@ -55,15 +55,15 @@ export default function APIDocs() {
               <div className="px-4 pb-4 border-t" style={{ borderColor: 'var(--card-border)' }}>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 mt-3">
                   <div className="p-3 rounded-lg" style={{ background: 'var(--background)' }}>
-                    <div className="text-[9px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Description</div>
+                    <div className="text-[11px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Description</div>
                     <div className="text-xs" style={{ color: 'var(--heading)' }}>{ep.desc}</div>
                   </div>
                   <div className="p-3 rounded-lg" style={{ background: 'var(--background)' }}>
-                    <div className="text-[9px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Parameters</div>
+                    <div className="text-[11px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Parameters</div>
                     <div className="text-xs font-mono" style={{ color: 'var(--heading)' }}>{ep.params}</div>
                   </div>
                   <div className="p-3 rounded-lg" style={{ background: 'var(--background)' }}>
-                    <div className="text-[9px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Response</div>
+                    <div className="text-[11px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Response</div>
                     <div className="text-xs font-mono" style={{ color: 'var(--heading)' }}>{ep.response}</div>
                   </div>
                 </div>

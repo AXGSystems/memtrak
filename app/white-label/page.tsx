@@ -286,7 +286,7 @@ export default function WhiteLabel() {
             Tenant Dashboard
           </h2>
           <span
-            className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+            className="text-[11px] font-bold px-2 py-0.5 rounded-full"
             style={{ background: 'rgba(20,184,166,0.15)', color: C.teal }}
           >
             {tenants.length} organizations
@@ -336,13 +336,13 @@ export default function WhiteLabel() {
                           {t.name}
                         </span>
                         <span
-                          className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+                          className="text-[11px] font-bold px-2 py-0.5 rounded-full"
                           style={{ background: tc.bg, color: tc.color }}
                         >
                           {t.tier}
                         </span>
                         <span
-                          className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+                          className="text-[11px] font-bold px-2 py-0.5 rounded-full"
                           style={{ background: 'rgba(140,198,63,0.12)', color: C.green }}
                         >
                           {t.status}
@@ -370,10 +370,10 @@ export default function WhiteLabel() {
                       <div className="text-lg font-extrabold" style={{ color: C.green }}>
                         ${t.monthlyRevenue.toLocaleString()}
                       </div>
-                      <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
+                      <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
                         monthly revenue
                       </div>
-                      <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
+                      <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
                         Since {t.setupDate}
                       </div>
                       <ChevronRight
@@ -393,7 +393,7 @@ export default function WhiteLabel() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
                       {/* Branding */}
                       <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
-                        <div className="text-[9px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>
+                        <div className="text-[11px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>
                           Branding
                         </div>
                         <div className="space-y-2">
@@ -417,7 +417,7 @@ export default function WhiteLabel() {
 
                       {/* Domain + Security */}
                       <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
-                        <div className="text-[9px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>
+                        <div className="text-[11px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>
                           Domain &amp; Security
                         </div>
                         <div className="space-y-1 text-[10px]" style={{ color: 'var(--text-muted)' }}>
@@ -444,7 +444,7 @@ export default function WhiteLabel() {
 
                       {/* Usage */}
                       <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
-                        <div className="text-[9px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>
+                        <div className="text-[11px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>
                           Usage
                         </div>
                         <div className="space-y-1 text-[10px]" style={{ color: 'var(--text-muted)' }}>
@@ -521,7 +521,7 @@ export default function WhiteLabel() {
                 {t.logo}
               </div>
               <div className="text-[11px] font-bold mb-1" style={{ color: 'var(--heading)' }}>{t.name}</div>
-              <div className="space-y-1 text-[9px]" style={{ color: 'var(--text-muted)' }}>
+              <div className="space-y-1 text-[11px]" style={{ color: 'var(--text-muted)' }}>
                 <div className="flex items-center justify-center gap-1">
                   <Shield className="w-3 h-3" style={{ color: C.green }} />
                   Isolated Database
@@ -570,7 +570,7 @@ export default function WhiteLabel() {
             >
               {t.highlight && (
                 <div
-                  className="text-center text-[9px] font-bold py-1 uppercase tracking-wider"
+                  className="text-center text-[11px] font-bold py-1 uppercase tracking-wider"
                   style={{ background: t.color + '20', color: t.color }}
                 >
                   Most Popular
@@ -635,10 +635,10 @@ export default function WhiteLabel() {
           <div className="space-y-1">
             {/* Header */}
             <div className="flex items-center justify-between px-2 py-1">
-              <span className="text-[9px] font-bold uppercase" style={{ color: 'var(--text-muted)' }}>Feature</span>
+              <span className="text-[11px] font-bold uppercase" style={{ color: 'var(--text-muted)' }}>Feature</span>
               <div className="flex items-center gap-3">
                 {['Starter', 'Pro', 'Ent'].map((l, i) => (
-                  <span key={l} className="w-8 text-center text-[8px] font-bold uppercase" style={{ color: [C.blue, C.purple, C.amber][i] }}>
+                  <span key={l} className="w-8 text-center text-[11px] font-bold uppercase" style={{ color: [C.blue, C.purple, C.amber][i] }}>
                     {l}
                   </span>
                 ))}
@@ -680,7 +680,7 @@ export default function WhiteLabel() {
                     <s.icon className="w-4 h-4" style={{ color: s.status === 'complete' ? C.green : s.status === 'current' ? C.teal : 'var(--text-muted)' }} />
                     <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>Step {s.step}: {s.name}</span>
                     <span
-                      className="text-[8px] font-bold px-1.5 py-0.5 rounded-full ml-auto"
+                      className="text-[11px] font-bold px-1.5 py-0.5 rounded-full ml-auto"
                       style={{
                         background: s.status === 'complete' ? 'rgba(140,198,63,0.12)' : s.status === 'current' ? 'rgba(20,184,166,0.12)' : 'var(--input-bg)',
                         color: s.status === 'complete' ? C.green : s.status === 'current' ? C.teal : 'var(--text-muted)',
@@ -731,7 +731,7 @@ export default function WhiteLabel() {
                       </span>
                       {isCurrent && (
                         <span
-                          className="text-[8px] font-bold px-1.5 py-0.5 rounded-full animate-pulse"
+                          className="text-[11px] font-bold px-1.5 py-0.5 rounded-full animate-pulse"
                           style={{ background: C.teal + '20', color: C.teal }}
                         >
                           In Progress

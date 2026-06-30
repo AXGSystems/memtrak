@@ -162,6 +162,10 @@ export default function NotificationsCenter() {
 
   return (
     <div className="p-6 space-y-6" style={{ animation: 'fadeIn 0.4s ease-out' }}>
+      <div>
+        <h1 className="text-xl font-extrabold" style={{ color: 'var(--heading)' }}>Notifications Center</h1>
+        <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>Review, filter, and manage your alerts</p>
+      </div>
       {/* SparkKPIs */}
       <div className="grid grid-cols-4 gap-4 stagger-children">
         <SparkKpi
@@ -234,7 +238,7 @@ export default function NotificationsCenter() {
                       >
                         {t.label}
                         {t.count > 0 && (
-                          <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold" style={{
+                          <span className="text-[11px] px-1.5 py-0.5 rounded-full font-bold" style={{
                             background: active ? (sev ? sev.color + '25' : 'var(--accent)') : 'var(--input-bg)',
                             color: active ? (sev ? sev.color : '#fff') : 'var(--text-muted)',
                           }}>{t.count}</span>
@@ -273,7 +277,7 @@ export default function NotificationsCenter() {
                     <div className="flex items-center gap-2 mb-2">
                       <div className="text-[10px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>{group}</div>
                       <div className="flex-1 h-px" style={{ background: 'var(--card-border)' }} />
-                      <div className="text-[9px] font-semibold" style={{ color: 'var(--text-muted)' }}>{items.length}</div>
+                      <div className="text-[11px] font-semibold" style={{ color: 'var(--text-muted)' }}>{items.length}</div>
                     </div>
                     <div className="space-y-2">
                       {items.map((n, i) => {
@@ -309,11 +313,11 @@ export default function NotificationsCenter() {
                                 </div>
                                 <p className="text-[11px] leading-relaxed mt-1" style={{ color: 'var(--text-muted)' }}>{n.description}</p>
                                 <div className="flex items-center gap-3 mt-2">
-                                  <span className="text-[9px] font-medium" style={{ color: 'var(--text-muted)' }}>
+                                  <span className="text-[11px] font-medium" style={{ color: 'var(--text-muted)' }}>
                                     <Clock className="w-2.5 h-2.5 inline mr-0.5" style={{ verticalAlign: 'text-bottom' }} />
                                     {formatTime(n.timestamp)}
                                   </span>
-                                  <span className="text-[9px] px-1.5 py-0.5 rounded font-bold" style={{ background: sev.bg, color: sev.color }}>{sev.label}</span>
+                                  <span className="text-[11px] px-1.5 py-0.5 rounded font-bold" style={{ background: sev.bg, color: sev.color }}>{sev.label}</span>
                                   {n.actionLabel && (
                                     <button className="text-[10px] font-bold transition-all hover:opacity-80" style={{ color: 'var(--accent)' }}>
                                       {n.actionLabel} &rarr;
@@ -389,7 +393,7 @@ export default function NotificationsCenter() {
                     <Icon className="w-3.5 h-3.5 flex-shrink-0" style={{ color: isOn ? 'var(--accent)' : 'var(--text-muted)' }} />
                     <div className="flex-1 text-left min-w-0">
                       <div className="text-[11px] font-semibold" style={{ color: 'var(--heading)' }}>{cat.label}</div>
-                      <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{cat.desc}</div>
+                      <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{cat.desc}</div>
                     </div>
                     <div
                       className="w-8 h-4 rounded-full flex-shrink-0 transition-all duration-200 relative"

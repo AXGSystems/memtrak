@@ -168,7 +168,7 @@ on conflict (email) do update set role = 'admin', revoked_at = null;`}</pre>
           <div className="flex items-center gap-2 p-2 rounded-md" style={{ background: 'var(--input-bg)' }}>
             <KeyRound className="w-3.5 h-3.5 flex-shrink-0" style={{ color: 'var(--accent)' }} />
             <code className="flex-1 text-[11px] font-mono" style={{ color: 'var(--heading)' }}>vercel env add MEMTRAK_AUTH_ENABLED production  # → &quot;true&quot;</code>
-            <button onClick={() => copy('vercel env add MEMTRAK_AUTH_ENABLED production')} className="inline-flex items-center justify-center w-7 h-7 rounded-md" style={{ color: 'var(--accent)', background: 'color-mix(in srgb, var(--accent) 12%, transparent)' }}>
+            <button onClick={() => copy('vercel env add MEMTRAK_AUTH_ENABLED production')} aria-label="Copy command" className="icon-btn rounded-md" style={{ color: 'var(--accent)', background: 'color-mix(in srgb, var(--accent) 12%, transparent)' }}>
               <Copy className="w-3.5 h-3.5" />
             </button>
           </div>

@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { listInvoices, createInvoice, type InvoiceStatus } from '@/lib/member-data';
+import { requireReadOnly, requireStaff, safeError } from '@/lib/route-auth';
 
 const STATUSES: InvoiceStatus[] = ['Pending', 'Sent', 'Paid', 'Past Due', 'Cancelled', 'Refunded'];
 
 export async function GET(request: NextRequest) {
+  const gate = await requireReadOnly();
+  if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
   const sp = request.nextUrl.searchParams;
   const status = sp.get('status') as InvoiceStatus | null;
   const result = await listInvoices({
@@ -20,6 +24,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const gate = await requireStaff();
+  if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
   let body: Record<string, unknown>;
   try { body = await request.json(); } catch { return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 }); }
 
@@ -33,8 +40,6 @@ export async function POST(request: NextRequest) {
     const invoice = await createInvoice(body as any);
     return NextResponse.json({ success: true, invoice }, { status: 201 });
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Create failed';
-    const isConfig = message.includes('Supabase not configured');
-    return NextResponse.json({ error: message }, { status: isConfig ? 503 : 500 });
+    return safeError(err);
   }
 }

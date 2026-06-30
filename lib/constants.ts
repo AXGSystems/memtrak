@@ -1,3 +1,47 @@
+// ─────────────────────────────────────────────────────────────
+// DELIVERABILITY — single source of truth
+//
+// Both the Deliverability monitor and InboxGuard reference these values so
+// the same metric is never reported two different ways. When MEMTrak is wired
+// to a live reputation feed (Google Postmaster / Microsoft SNDS), replace these
+// constants with the feed values in one place.
+//
+// Threshold figures (Google's 0.3% spam-complaint hard limit; the Feb-2024
+// Gmail/Yahoo bulk-sender mandate) are documented requirements, not estimates.
+// ─────────────────────────────────────────────────────────────
+export const DELIVERABILITY = {
+  // ALTA domain — current period
+  spamComplaintRate: 0.08, // percent — same number used everywhere
+  deliveryRate: 96.2, // percent
+  hardBounceRate: 1.8, // percent
+  softBounceRate: 2.0, // percent
+  domainHealthScore: 87, // composite, 0–100
+
+  // Documented industry thresholds (not ALTA-specific)
+  googleComplaintHardLimit: 0.3, // percent — Gmail will block above this
+  recommendedComplaintCeiling: 0.1, // percent
+
+  // The actual ALTA SPF record references the M365/Graph sending path the
+  // send route targets — it does NOT self-include alta.org.
+  spfRecord: 'v=spf1 include:spf.protection.outlook.com -all',
+} as const;
+
+// ─────────────────────────────────────────────────────────────
+// Is the deliverability/reputation dashboard wired to a live feed?
+//
+// The figures in DELIVERABILITY (delivery rate, complaint rate, reputation,
+// per-provider inbox placement, SPF/DKIM/DMARC pass state) are illustrative
+// sample values until MEMTrak is connected to a live reputation feed
+// (Google Postmaster Tools / Microsoft SNDS) and a live DNS lookup for the
+// authentication records. While this returns false, the Deliverability and
+// InboxGuard pages MUST surface a visible "sample data" disclosure so the
+// numbers are never mistaken for real, measured ALTA telemetry. Flip this to
+// true (or drive it from an env/feed check) only once the live feed is wired.
+// ─────────────────────────────────────────────────────────────
+export function isDeliverabilityFeedLive(): boolean {
+  return false;
+}
+
 // ALTA brand colors used across all dashboard charts
 export const COLORS = {
   navy: '#1B3A5C',

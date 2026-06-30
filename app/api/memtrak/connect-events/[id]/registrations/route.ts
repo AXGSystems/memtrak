@@ -7,6 +7,8 @@ import {
   type RegistrationStatus,
 } from '@/lib/member-data';
 import { logEntityAudit } from '@/lib/audit';
+import { requireStaff, safeError } from '@/lib/route-auth';
+import { auditContext } from '@/lib/audit-context';
 
 /**
  * POST /api/memtrak/connect-events/[id]/registrations
@@ -32,6 +34,9 @@ const STATUSES = new Set<RegistrationStatus>(['Registered', 'Attended', 'No Show
 const todayIso = () => new Date().toISOString().slice(0, 10);
 
 export async function POST(request: NextRequest, ctx: Ctx) {
+  const gate = await requireStaff();
+  if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
   const { id: rawId } = await ctx.params;
   const altaConnectEventId = decodeURIComponent(rawId);
 
@@ -103,14 +108,13 @@ export async function POST(request: NextRequest, ctx: Ctx) {
       entity_id: row.id,
       entity_label: `${event_name} — ${org.org_name}`,
       action: 'create',
-      actor: 'staff',
+      actor: gate.actor.email,
       summary: `Registered ${org.org_name} for ${event_name}${fee > 0 ? ` ($${fee.toLocaleString()}${body.paid ? ', paid' : ', unpaid'})` : ''}`,
+      ...auditContext(request),
     });
 
     return NextResponse.json({ success: true, registration: row, bootstrapped: !existing }, { status: 201 });
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Create failed';
-    const isConfig = message.includes('Supabase not configured');
-    return NextResponse.json({ error: message }, { status: isConfig ? 503 : 500 });
+    return safeError(err);
   }
 }

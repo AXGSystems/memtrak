@@ -108,11 +108,11 @@ export default function GroupDetailPage({ params }: PageProps) {
                         {m.contact ? `${m.contact.first_name} ${m.contact.last_name}` : `Contact ${m.contact_id}`}
                       </span>
                       {isChairOrViceChair && <Star className="w-3 h-3" fill={color} style={{ color }} />}
-                      <span className="text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded" style={{ color, background: `color-mix(in srgb, ${color} 14%, transparent)` }}>
+                      <span className="text-[11px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded" style={{ color, background: `color-mix(in srgb, ${color} 14%, transparent)` }}>
                         {m.role}
                       </span>
                       {!m.is_active && (
-                        <span className="text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded" style={{ background: 'var(--card-border)', color: 'var(--text-muted)' }}>
+                        <span className="text-[11px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded" style={{ background: 'var(--card-border)', color: 'var(--text-muted)' }}>
                           Alum
                         </span>
                       )}

@@ -1,8 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useDialogA11y } from '@/lib/useDialogA11y';
 import Card from '@/components/Card';
 import SparkKpi from '@/components/SparkKpi';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import ClientChart from '@/components/ClientChart';
 import {
   Ear, Users, DollarSign, Activity, BarChart3,
@@ -126,9 +128,9 @@ function divergence(eng: number, whi: number) {
 function DivergenceBadge({ eng, whi }: { eng: number; whi: number }) {
   const diff = whi - eng;
   const absDiff = Math.abs(diff);
-  if (absDiff < 15) return <span className="text-[9px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(74,144,217,0.15)', color: C.blue }}>Aligned</span>;
-  if (diff > 0) return <span className="text-[9px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(140,198,63,0.15)', color: C.green }}>Hidden Champion</span>;
-  return <span className="text-[9px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(232,146,63,0.15)', color: C.orange }}>Email Vanity</span>;
+  if (absDiff < 15) return <span className="text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(74,144,217,0.15)', color: C.blue }}>Aligned</span>;
+  if (diff > 0) return <span className="text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(140,198,63,0.15)', color: C.green }}>Hidden Champion</span>;
+  return <span className="text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(232,146,63,0.15)', color: C.orange }}>Email Vanity</span>;
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -136,6 +138,8 @@ function DivergenceBadge({ eng, whi }: { eng: number; whi: number }) {
    ══════════════════════════════════════════════════════════ */
 export default function WhisperScorePage() {
   const [selectedMember, setSelectedMember] = useState<WhisperMember | null>(null);
+  const memberRef = useRef<HTMLDivElement>(null);
+  useDialogA11y(!!selectedMember, () => setSelectedMember(null), memberRef);
 
   const hiddenChampions = members.filter(m => m.whisperScore - m.engagementScore > 15).length;
   const silentRevenue = members.filter(m => m.engagementScore < 20 && m.whisperScore > 40).reduce((s, m) => s + m.revenue, 0);
@@ -151,13 +155,14 @@ export default function WhisperScorePage() {
         </div>
         <div>
           <h1 className="text-lg font-extrabold tracking-tight" style={{ color: 'var(--heading)' }}>
-            WhisperScore<span className="align-super text-[9px] font-black" style={{ color: 'var(--accent)' }}>&trade;</span>
+            WhisperScore<span className="align-super text-[11px] font-black" style={{ color: 'var(--accent)' }}>&trade;</span>
           </h1>
           <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
             Hear the members <strong style={{ color: 'var(--heading)' }}>your metrics miss.</strong>
           </p>
         </div>
       </div>
+      <SampleDataBadge message="The composite whisper scores and signal breakdowns below are illustrative sample values until the offline and indirect engagement signals they combine are connected to MEMTRAK." />
       <p className="text-[11px] leading-relaxed max-w-2xl" style={{ color: 'var(--text-muted)' }}>
         Traditional email metrics only capture digital engagement. <strong style={{ color: 'var(--heading)' }}>WhisperScore</strong> combines
         6 offline and indirect signals to reveal members who are deeply engaged but invisible to your email dashboard.
@@ -289,7 +294,7 @@ export default function WhisperScorePage() {
                 <div className="flex items-center justify-between mb-2">
                   <div>
                     <div className="text-[12px] font-bold" style={{ color: 'var(--heading)' }}>{m.org}</div>
-                    <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{m.contact} | {m.type} | ${m.revenue.toLocaleString()}</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{m.contact} | {m.type} | ${m.revenue.toLocaleString()}</div>
                   </div>
                   <DivergenceBadge eng={m.engagementScore} whi={m.whisperScore} />
                 </div>
@@ -326,10 +331,10 @@ export default function WhisperScorePage() {
                 >
                   <td className="px-5 py-2.5">
                     <div className="font-semibold" style={{ color: 'var(--heading)' }}>{member.org}</div>
-                    <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{member.contact}</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{member.contact}</div>
                   </td>
                   <td className="text-center px-3 py-2.5">
-                    <span className="text-[9px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'var(--input-bg)', color: 'var(--heading)' }}>
+                    <span className="text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'var(--input-bg)', color: 'var(--heading)' }}>
                       {member.type}
                     </span>
                   </td>
@@ -423,7 +428,7 @@ export default function WhisperScorePage() {
               },
             }}
           />
-          <div className="flex items-center justify-center gap-4 text-[9px] mt-2" style={{ color: 'var(--text-muted)' }}>
+          <div className="flex items-center justify-center gap-4 text-[11px] mt-2" style={{ color: 'var(--text-muted)' }}>
             <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ background: C.green }} /> Hidden Champion</span>
             <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ background: C.blue }} /> Aligned</span>
             <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full" style={{ background: C.orange }} /> Email Vanity</span>
@@ -505,7 +510,7 @@ export default function WhisperScorePage() {
                   <div className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ background: item.color }} />
                   <div>
                     <span style={{ color: 'var(--heading)' }}>{item.action}</span>
-                    <span className="ml-2 text-[8px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: `${item.color}20`, color: item.color }}>{item.status}</span>
+                    <span className="ml-2 text-[11px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: `${item.color}20`, color: item.color }}>{item.status}</span>
                   </div>
                 </div>
               ))}
@@ -517,8 +522,13 @@ export default function WhisperScorePage() {
       {/* ── Member Detail Modal ───────────────────────────── */}
       {selectedMember && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={() => setSelectedMember(null)}>
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" aria-hidden="true" />
           <div
+            ref={memberRef}
+            tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Member whisper score detail"
             className="relative w-full max-w-lg max-h-[80vh] overflow-y-auto rounded-2xl border"
             style={{ background: 'var(--card)', borderColor: 'var(--card-border)', boxShadow: '0 25px 60px rgba(0,0,0,0.4)' }}
             onClick={e => e.stopPropagation()}
@@ -536,11 +546,11 @@ export default function WhisperScorePage() {
               {/* Score comparison */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="rounded-lg p-3 text-center" style={{ background: 'var(--input-bg)' }}>
-                  <div className="text-[9px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Email Engagement</div>
+                  <div className="text-[11px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Email Engagement</div>
                   <div className="text-2xl font-extrabold" style={{ color: scoreColor(selectedMember.engagementScore) }}>{selectedMember.engagementScore}</div>
                 </div>
                 <div className="rounded-lg p-3 text-center" style={{ background: 'var(--input-bg)' }}>
-                  <div className="text-[9px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>WhisperScore</div>
+                  <div className="text-[11px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>WhisperScore</div>
                   <div className="text-2xl font-extrabold" style={{ color: scoreColor(selectedMember.whisperScore) }}>{selectedMember.whisperScore}</div>
                 </div>
               </div>

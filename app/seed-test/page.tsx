@@ -117,21 +117,21 @@ function ProviderModal({ provider, onClose }: { provider: typeof providers[0]; o
             <div className="text-center p-3 rounded-lg" style={{ background: `color-mix(in srgb, ${C.green} 8%, transparent)` }}>
               <CheckCircle2 className="w-4 h-4 mx-auto mb-1" style={{ color: C.green }} />
               <div className="text-lg font-extrabold" style={{ color: C.green }}>{provider.inbox}%</div>
-              <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Inbox</div>
+              <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Inbox</div>
             </div>
             <div className="text-center p-3 rounded-lg" style={{ background: `color-mix(in srgb, ${C.red} 8%, transparent)` }}>
               <AlertTriangle className="w-4 h-4 mx-auto mb-1" style={{ color: C.red }} />
               <div className="text-lg font-extrabold" style={{ color: C.red }}>{provider.spam}%</div>
-              <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Spam</div>
+              <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Spam</div>
             </div>
             <div className="text-center p-3 rounded-lg" style={{ background: `color-mix(in srgb, ${C.gray} 8%, transparent)` }}>
               <HelpCircle className="w-4 h-4 mx-auto mb-1" style={{ color: C.gray }} />
               <div className="text-lg font-extrabold" style={{ color: C.gray }}>{provider.missing}%</div>
-              <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Missing</div>
+              <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Missing</div>
             </div>
           </div>
           <div>
-            <p className="text-[9px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>5-Test Trend</p>
+            <p className="text-[11px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>5-Test Trend</p>
             <div className="flex items-end gap-2 h-16">
               {provider.trend.map((v, i) => (
                 <div key={i} className="flex-1 flex flex-col items-center gap-1">
@@ -143,7 +143,7 @@ function ProviderModal({ provider, onClose }: { provider: typeof providers[0]; o
                       minHeight: '4px',
                     }}
                   />
-                  <span className="text-[8px] font-bold" style={{ color: 'var(--text-muted)' }}>{v}%</span>
+                  <span className="text-[11px] font-bold" style={{ color: 'var(--text-muted)' }}>{v}%</span>
                 </div>
               ))}
             </div>
@@ -296,7 +296,7 @@ export default function SeedTest() {
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{p.icon} {p.name}</span>
                 <span
-                  className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+                  className="text-[11px] font-bold px-2 py-0.5 rounded-full"
                   style={{
                     background: `color-mix(in srgb, ${p.inbox >= 90 ? C.green : p.inbox >= 80 ? C.amber : C.red} 15%, transparent)`,
                     color: p.inbox >= 90 ? C.green : p.inbox >= 80 ? C.amber : C.red,
@@ -316,18 +316,18 @@ export default function SeedTest() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1">
                   <CheckCircle2 className="w-2.5 h-2.5" style={{ color: C.green }} />
-                  <span className="text-[9px] font-bold" style={{ color: C.green }}>{p.inbox}%</span>
+                  <span className="text-[11px] font-bold" style={{ color: C.green }}>{p.inbox}%</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <XCircle className="w-2.5 h-2.5" style={{ color: C.red }} />
-                  <span className="text-[9px] font-bold" style={{ color: C.red }}>{p.spam}%</span>
+                  <span className="text-[11px] font-bold" style={{ color: C.red }}>{p.spam}%</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <HelpCircle className="w-2.5 h-2.5" style={{ color: C.gray }} />
-                  <span className="text-[9px] font-bold" style={{ color: C.gray }}>{p.missing}%</span>
+                  <span className="text-[11px] font-bold" style={{ color: C.gray }}>{p.missing}%</span>
                 </div>
               </div>
-              <div className="text-[8px] mt-2 font-semibold" style={{ color: 'var(--accent)' }}>Click for details</div>
+              <div className="text-[11px] mt-2 font-semibold" style={{ color: 'var(--accent)' }}>Click for details</div>
             </div>
           ))}
         </div>
@@ -341,7 +341,7 @@ export default function SeedTest() {
           ].map(l => (
             <div key={l.label} className="flex items-center gap-1.5">
               <div className="w-2.5 h-2.5 rounded-sm" style={{ background: l.color }} />
-              <span className="text-[9px] font-bold" style={{ color: 'var(--text-muted)' }}>{l.label}</span>
+              <span className="text-[11px] font-bold" style={{ color: 'var(--text-muted)' }}>{l.label}</span>
             </div>
           ))}
         </div>
@@ -371,9 +371,9 @@ export default function SeedTest() {
             <table className="w-full">
               <thead>
                 <tr>
-                  <th className="text-[9px] uppercase tracking-wider font-bold pb-2 text-left pr-3" style={{ color: 'var(--text-muted)' }}>Provider</th>
+                  <th className="text-[11px] uppercase tracking-wider font-bold pb-2 text-left pr-3" style={{ color: 'var(--text-muted)' }}>Provider</th>
                   {heatmapTests.map(t => (
-                    <th key={t} className="text-[9px] uppercase tracking-wider font-bold pb-2 text-center px-1" style={{ color: 'var(--text-muted)' }}>{t}</th>
+                    <th key={t} className="text-[11px] uppercase tracking-wider font-bold pb-2 text-center px-1" style={{ color: 'var(--text-muted)' }}>{t}</th>
                   ))}
                 </tr>
               </thead>
@@ -408,7 +408,7 @@ export default function SeedTest() {
             ].map(l => (
               <div key={l.label} className="flex items-center gap-1">
                 <div className="w-3 h-2 rounded-sm" style={{ background: `color-mix(in srgb, ${l.color} 25%, transparent)` }} />
-                <span className="text-[8px] font-bold" style={{ color: l.color }}>{l.label}</span>
+                <span className="text-[11px] font-bold" style={{ color: l.color }}>{l.label}</span>
               </div>
             ))}
           </div>
@@ -432,7 +432,7 @@ export default function SeedTest() {
                   <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{t.campaign}</span>
                   <span className="text-sm font-extrabold" style={{ color: t.score >= 85 ? C.green : t.score >= 75 ? C.amber : C.red }}>{t.score}</span>
                 </div>
-                <div className="flex items-center gap-3 text-[9px]" style={{ color: 'var(--text-muted)' }}>
+                <div className="flex items-center gap-3 text-[11px]" style={{ color: 'var(--text-muted)' }}>
                   <span>{t.date}</span>
                   <span>Inbox: {t.inbox}%</span>
                   <span>Spam: {t.spam}%</span>
@@ -448,7 +448,7 @@ export default function SeedTest() {
             <thead>
               <tr style={{ borderBottom: '1px solid var(--card-border)' }}>
                 {['Date', 'Campaign', 'Score', 'Inbox', 'Spam', 'Missing', 'Status'].map(h => (
-                  <th key={h} className="text-[9px] uppercase tracking-wider font-bold pb-3 pr-4" style={{ color: 'var(--text-muted)' }}>{h}</th>
+                  <th key={h} className="text-[11px] uppercase tracking-wider font-bold pb-3 pr-4" style={{ color: 'var(--text-muted)' }}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -472,7 +472,7 @@ export default function SeedTest() {
                   <td className="py-2.5 pr-4 text-xs" style={{ color: C.gray }}>{t.missing}%</td>
                   <td className="py-2.5 pr-4">
                     <span
-                      className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+                      className="text-[11px] font-bold px-2 py-0.5 rounded-full"
                       style={{
                         background: `color-mix(in srgb, ${t.status === 'passed' ? C.green : C.amber} 15%, transparent)`,
                         color: t.status === 'passed' ? C.green : C.amber,
@@ -521,19 +521,19 @@ export default function SeedTest() {
               <div className="grid grid-cols-3 gap-3">
                 <div className="text-center p-3 rounded-lg" style={{ background: `color-mix(in srgb, ${C.green} 8%, transparent)` }}>
                   <div className="text-lg font-extrabold" style={{ color: C.green }}>{selectedTest.inbox}%</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Inbox</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Inbox</div>
                 </div>
                 <div className="text-center p-3 rounded-lg" style={{ background: `color-mix(in srgb, ${C.red} 8%, transparent)` }}>
                   <div className="text-lg font-extrabold" style={{ color: C.red }}>{selectedTest.spam}%</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Spam</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Spam</div>
                 </div>
                 <div className="text-center p-3 rounded-lg" style={{ background: `color-mix(in srgb, ${C.gray} 8%, transparent)` }}>
                   <div className="text-lg font-extrabold" style={{ color: C.gray }}>{selectedTest.missing}%</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Missing</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Missing</div>
                 </div>
               </div>
               <div>
-                <p className="text-[9px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>Per-Provider Breakdown</p>
+                <p className="text-[11px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>Per-Provider Breakdown</p>
                 <div className="space-y-2">
                   {providers.map(p => (
                     <div key={p.name} className="flex items-center justify-between p-2 rounded-lg" style={{ background: 'var(--input-bg)' }}>

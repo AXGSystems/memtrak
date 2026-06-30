@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Card from '@/components/Card';
 import SparkKpi from '@/components/SparkKpi';
 import ClientChart from '@/components/ClientChart';
@@ -45,7 +45,7 @@ interface QualityDimension {
   details: string;
 }
 
-const dimensions: QualityDimension[] = [
+const baseDimensions: QualityDimension[] = [
   { name: 'Completeness', score: 68, description: 'How many fields are filled', icon: Database, color: C.orange, details: 'Of 18,400 member records, 32% are missing at least one critical field (phone, address, or email). Phone numbers are the most commonly missing field at 1,200 records.' },
   { name: 'Accuracy', score: 82, description: 'Verified vs unverified', icon: CheckCircle, color: C.green, details: '82% of email addresses have been verified via deliverability check in the past 90 days. 680 emails are confirmed invalid (hard bounces). 1,400 remain unverified.' },
   { name: 'Timeliness', score: 75, description: 'How recently updated', icon: TrendingUp, color: C.blue, details: '75% of records were updated within the last 6 months. 15% are 6-12 months stale. 10% have not been updated in over a year.' },
@@ -65,7 +65,7 @@ interface DataIssue {
   recommendation: string;
 }
 
-const issues: DataIssue[] = [
+const baseIssues: DataIssue[] = [
   { category: 'Invalid Emails', count: 680, icon: Mail, color: C.red, severity: 'Critical', description: 'Email addresses that fail format validation or have hard-bounced.', recommendation: 'Run batch email verification, suppress confirmed invalids, and request updates from members via phone.' },
   { category: 'Missing Phone Numbers', count: 1200, icon: Phone, color: C.orange, severity: 'High', description: 'Member records with no phone number on file.', recommendation: 'Add phone field to renewal form. Launch "complete your profile" campaign targeting these records.' },
   { category: 'Duplicate Records', count: 420, icon: Users, color: C.amber, severity: 'Medium', description: 'Suspected duplicate member records based on name + org matching.', recommendation: 'Review top 50 highest-confidence duplicates. Merge records, preserving the most recent engagement data.' },
@@ -88,6 +88,34 @@ const cleanupActions = [
 export default function DataQuality() {
   const [selectedIssue, setSelectedIssue] = useState<DataIssue | null>(null);
   const [selectedDimension, setSelectedDimension] = useState<QualityDimension | null>(null);
+  // Live duplicate count computed from the real organization table via the
+  // dedupe engine. null = not yet loaded / unavailable (shown as a dash, never
+  // a fabricated number).
+  const [liveDupes, setLiveDupes] = useState<{ candidates: number; high: number; scanned: number } | null>(null);
+
+  useEffect(() => {
+    fetch('/api/memtrak/dedupe/candidates?limit=200')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d && Array.isArray(d.candidates)) {
+          setLiveDupes({ candidates: d.candidates.length, high: d.highConfidence ?? 0, scanned: d.scanned ?? 0 });
+        }
+      })
+      .catch(() => { /* leave null — UI shows a dash, not a fake number */ });
+  }, []);
+
+  // Override the static issue/dimension copy with the live duplicate signal
+  // when the dedupe engine has reported real candidates.
+  const dimensions: QualityDimension[] = baseDimensions.map((d) =>
+    d.name === 'Uniqueness' && liveDupes
+      ? { ...d, details: `${liveDupes.candidates} suspected duplicate organization pair${liveDupes.candidates === 1 ? '' : 's'} detected live across ${liveDupes.scanned} scanned records (${liveDupes.high} high-confidence). Most duplicates arise from records created under both personal and company email addresses.` }
+      : d
+  );
+  const issues: DataIssue[] = baseIssues.map((i) =>
+    i.category === 'Duplicate Records' && liveDupes
+      ? { ...i, count: liveDupes.candidates, description: `${liveDupes.candidates} suspected duplicate organization pairs detected live (fuzzy name + state + member-ID matching).`, recommendation: `Review the ${liveDupes.high} highest-confidence pairs in the merge queue. Merge records, preserving the most recent engagement data.` }
+      : i
+  );
 
   const overallScore = 73;
   const totalIssues = issues.reduce((s, i) => s + i.count, 0);
@@ -228,10 +256,10 @@ export default function DataQuality() {
                   <div className="mt-2 text-[11px] font-bold" style={{ color: 'var(--heading)' }}>
                     {dim.name}
                   </div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
                     {dim.description}
                   </div>
-                  <div className="text-[8px] mt-1 font-semibold" style={{ color: dim.color }}>
+                  <div className="text-[11px] mt-1 font-semibold" style={{ color: dim.color }}>
                     Click for details
                   </div>
                 </div>
@@ -276,7 +304,7 @@ export default function DataQuality() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-[11px] font-bold" style={{ color: 'var(--heading)' }}>{issue.category}</span>
-                      <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: sc.bg, color: sc.text }}>
+                      <span className="text-[11px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: sc.bg, color: sc.text }}>
                         {issue.severity}
                       </span>
                     </div>
@@ -288,7 +316,7 @@ export default function DataQuality() {
                     </div>
                   </div>
                 </div>
-                <div className="text-[8px] mt-2 font-semibold text-right" style={{ color: issue.color }}>
+                <div className="text-[11px] mt-2 font-semibold text-right" style={{ color: issue.color }}>
                   Click for recommendation
                 </div>
               </div>
@@ -384,10 +412,10 @@ export default function DataQuality() {
                       </span>
                     </div>
                     <div className="flex items-center gap-3 mt-1">
-                      <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
+                      <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
                         Effort: <span style={{ color: action.effort === 'Low' ? C.green : C.amber }}>{action.effort}</span>
                       </span>
-                      <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
+                      <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
                         Timeline: <span style={{ color: 'var(--heading)' }}>{action.timeline}</span>
                       </span>
                     </div>
@@ -449,7 +477,7 @@ export default function DataQuality() {
                       return (
                         <td key={i} className="text-center py-2 px-2">
                           <span
-                            className="inline-flex items-center justify-center w-8 h-5 rounded text-[9px] font-bold"
+                            className="inline-flex items-center justify-center w-8 h-5 rounded text-[11px] font-bold"
                             style={{
                               background: score >= 85 ? 'rgba(140,198,63,0.15)' : score >= 70 ? 'rgba(74,144,217,0.15)' : 'rgba(217,74,74,0.15)',
                               color: score >= 85 ? C.green : score >= 70 ? C.blue : C.red,
@@ -499,7 +527,7 @@ export default function DataQuality() {
                 {selectedDimension.details}
               </p>
               <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
-                <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: selectedDimension.color }}>
+                <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: selectedDimension.color }}>
                   Score Assessment
                 </div>
                 <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
@@ -539,7 +567,7 @@ export default function DataQuality() {
                 {selectedIssue.description}
               </p>
               <div className="rounded-lg p-3" style={{ background: 'rgba(140,198,63,0.06)' }}>
-                <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: C.green }}>
+                <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: C.green }}>
                   Recommended Action
                 </div>
                 <p className="text-[10px] leading-relaxed" style={{ color: 'var(--heading)' }}>

@@ -1,25 +1,28 @@
 'use client';
 
 import { useState } from 'react';
-import { Shield, AlertTriangle, CheckCircle, XCircle, Search, Zap } from 'lucide-react';
+import { CheckCircle, XCircle, Search, Zap, Circle } from 'lucide-react';
 
-const C = { green: '#8CC63F', red: '#D94A4A', orange: '#E8923F', blue: '#4A90D9' };
+const C = { green: '#8CC63F', red: '#D94A4A', orange: '#E8923F', blue: '#4A90D9', gray: '#6B7A8D' };
 
-// Spam trigger words — what GlockApps charges $59/mo for
+// Spam trigger words checked against the email content below.
 const triggerWords = ['free', 'act now', 'limited time', 'click here', 'buy now', 'winner', 'congratulations', 'urgent', 'guarantee', '100%', 'no cost', 'risk-free', 'order now', 'special offer', 'exclusive deal', 'cash', 'credit', 'billion', 'million dollars'];
 
-// Blacklist databases — what Amplemarket charges $300+/mo for
+// The major DNSBL / blacklist zones MEMTrak is designed to monitor for the
+// sending IP. These are NOT live results — live reputation querying requires
+// connecting a monitoring feed (Google Postmaster / a DNSBL lookup service).
+// Until then the panel honestly shows "Not checked" rather than a fake "Clean".
 const blacklists = [
-  { name: 'Spamhaus ZEN', status: 'Clean', icon: CheckCircle },
-  { name: 'Barracuda BRBL', status: 'Clean', icon: CheckCircle },
-  { name: 'SURBL', status: 'Clean', icon: CheckCircle },
-  { name: 'SpamCop', status: 'Clean', icon: CheckCircle },
-  { name: 'Invaluement', status: 'Clean', icon: CheckCircle },
-  { name: 'SORBS', status: 'Clean', icon: CheckCircle },
-  { name: 'UCEProtect L1', status: 'Clean', icon: CheckCircle },
-  { name: 'UCEProtect L2', status: 'Clean', icon: CheckCircle },
-  { name: 'Composite BL', status: 'Clean', icon: CheckCircle },
-  { name: 'JustSpam', status: 'Clean', icon: CheckCircle },
+  { name: 'Spamhaus ZEN', zone: 'zen.spamhaus.org' },
+  { name: 'Barracuda BRBL', zone: 'b.barracudacentral.org' },
+  { name: 'SURBL', zone: 'multi.surbl.org' },
+  { name: 'SpamCop', zone: 'bl.spamcop.net' },
+  { name: 'Invaluement', zone: 'sip.invaluement.com' },
+  { name: 'SORBS', zone: 'dnsbl.sorbs.net' },
+  { name: 'UCEProtect L1', zone: 'dnsbl-1.uceprotect.net' },
+  { name: 'UCEProtect L2', zone: 'dnsbl-2.uceprotect.net' },
+  { name: 'Composite BL', zone: 'cbl.abuseat.org' },
+  { name: 'JustSpam', zone: 'dnsbl.justspam.org' },
 ];
 
 interface CheckResult { score: number; issues: string[]; passed: string[]; }
@@ -60,10 +63,12 @@ function analyzeContent(subject: string, body: string): CheckResult {
     else passed.push(`${imgCount} image(s) — OK`);
   }
 
-  // Auth checks
-  passed.push('SPF: Configured for alta.org');
-  passed.push('DKIM: Configured for alta.org');
-  issues.push('DMARC: Set to "none" — recommend upgrading to "quarantine"');
+  // Domain authentication note — this content checker analyzes the message
+  // text only; it does NOT perform a live DNS lookup of the sending domain.
+  // The expected alta.org configuration (SPF/DKIM via M365, DMARC p=none) is
+  // surfaced as context, not asserted as a verified result for this message.
+  passed.push('SPF/DKIM: expected via M365 sending path (not verified by live DNS lookup here)');
+  issues.push('DMARC: expected p=none for alta.org — recommend upgrading to "quarantine" (verify in DNS)');
   score -= 5;
 
   if (!body.includes('unsubscribe') && !body.includes('Unsubscribe')) { issues.push('No unsubscribe link detected — CAN-SPAM violation risk'); score -= 15; }
@@ -82,7 +87,7 @@ export default function SpamCheck() {
   return (
     <div className="p-6">
       <h1 className="text-lg font-extrabold mb-1" style={{ color: 'var(--heading)' }}>Spam Score Pre-Check</h1>
-      <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>Test your email content BEFORE sending — what GlockApps charges $59/mo for. Checks subject lines, body content, link density, image ratio, and CAN-SPAM compliance.</p>
+      <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>Test your email content BEFORE sending. Checks subject lines, body content, link density, image ratio, and CAN-SPAM compliance against the rules below.</p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         {/* Input */}
@@ -108,7 +113,7 @@ export default function SpamCheck() {
           {result ? (
             <>
               <div className="text-center mb-4">
-                <div className="text-5xl font-extrabold" style={{ color: result.score >= 80 ? C.green : result.score >= 50 ? C.orange : C.red }}>{result.score}</div>
+                <div className="text-3xl sm:text-5xl font-extrabold" style={{ color: result.score >= 80 ? C.green : result.score >= 50 ? C.orange : C.red }}>{result.score}</div>
                 <div className="text-xs font-bold mt-1" style={{ color: result.score >= 80 ? C.green : result.score >= 50 ? C.orange : C.red }}>
                   {result.score >= 80 ? 'Good — Safe to Send' : result.score >= 50 ? 'Caution — Review Issues' : 'High Risk — Fix Before Sending'}
                 </div>
@@ -151,21 +156,24 @@ export default function SpamCheck() {
 
       {/* Blacklist Monitor */}
       <div className="rounded-xl border p-5" style={{ background: 'var(--card)', borderColor: 'var(--card-border)' }}>
-        <h3 className="text-xs font-bold mb-1" style={{ color: 'var(--heading)' }}>Blacklist Monitor — alta.org</h3>
-        <p className="text-[10px] mb-3" style={{ color: 'var(--text-muted)' }}>Checking 10 major email blacklists. Being listed on ANY of these can tank deliverability. GlockApps checks 50+ for $59/mo — MEMTrak does the top 10 for free.</p>
+        <div className="flex items-center gap-2 mb-1">
+          <h3 className="text-xs font-bold" style={{ color: 'var(--heading)' }}>DNSBL / Blacklist Monitor — alta.org sending IP</h3>
+          <span className="text-[11px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider" style={{ background: `color-mix(in srgb, ${C.gray} 18%, transparent)`, color: C.gray }}>Not connected</span>
+        </div>
+        <p className="text-[10px] mb-3" style={{ color: 'var(--text-muted)' }}>
+          These are the 10 major DNSBL zones MEMTrak watches for the sending IP — being listed on any of them can tank deliverability. Live reputation querying is not yet connected, so the zones below show <span className="font-semibold">Not checked</span> rather than a status MEMTrak cannot verify. Connect a DNSBL lookup feed to enable live monitoring.
+        </p>
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-2">
-          {blacklists.map(bl => {
-            const Icon = bl.icon;
-            return (
-              <div key={bl.name} className="flex items-center gap-2 p-2.5 rounded-lg" style={{ background: 'var(--background)' }}>
-                <Icon className="w-3.5 h-3.5 flex-shrink-0" style={{ color: bl.status === 'Clean' ? C.green : C.red }} />
-                <div>
-                  <div className="text-[10px] font-semibold" style={{ color: 'var(--heading)' }}>{bl.name}</div>
-                  <div className="text-[9px]" style={{ color: bl.status === 'Clean' ? C.green : C.red }}>{bl.status}</div>
-                </div>
+          {blacklists.map(bl => (
+            <div key={bl.name} className="flex items-center gap-2 p-2.5 rounded-lg" style={{ background: 'var(--background)' }}>
+              <Circle className="w-3.5 h-3.5 flex-shrink-0" style={{ color: C.gray }} />
+              <div className="min-w-0">
+                <div className="text-[10px] font-semibold truncate" style={{ color: 'var(--heading)' }}>{bl.name}</div>
+                <div className="text-[11px]" style={{ color: C.gray }}>Not checked</div>
+                <div className="text-[11px] font-mono truncate" style={{ color: 'var(--text-muted)' }}>{bl.zone}</div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       </div>
     </div>

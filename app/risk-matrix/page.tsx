@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Card from '@/components/Card';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import SparkKpi from '@/components/SparkKpi';
 import {
   Shield,
@@ -168,6 +169,7 @@ export default function RiskMatrix() {
 
   return (
     <div className="p-6">
+      <SampleDataBadge className="max-w-3xl" message="The risk placements and counts below are illustrative sample values. The members directory already stores churn_risk and engagement_score; this matrix will be wired to plot from that live data." />
       {/* ── 1. Branded Header ─────────────────────────────────── */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
@@ -270,7 +272,7 @@ export default function RiskMatrix() {
               {/* Y-axis label */}
               <div className="flex flex-col justify-center items-center w-8 flex-shrink-0">
                 <span
-                  className="text-[9px] font-bold uppercase tracking-wider transform -rotate-90 whitespace-nowrap"
+                  className="text-[11px] font-bold uppercase tracking-wider transform -rotate-90 whitespace-nowrap"
                   style={{ color: 'var(--text-muted)' }}
                 >
                   Impact
@@ -284,7 +286,7 @@ export default function RiskMatrix() {
                   <div key={impactLevel} className="flex items-stretch">
                     {/* Y-axis tick */}
                     <div className="w-16 flex-shrink-0 flex items-center justify-end pr-2">
-                      <span className="text-[9px] font-bold" style={{ color: 'var(--text-muted)' }}>
+                      <span className="text-[11px] font-bold" style={{ color: 'var(--text-muted)' }}>
                         {IMPACT_LABELS[impactLevel]}
                       </span>
                     </div>
@@ -322,12 +324,12 @@ export default function RiskMatrix() {
                               }}
                               title={risk.name}
                             >
-                              <span className="text-[7px] font-extrabold" style={{ color: '#fff' }}>
+                              <span className="text-[11px] font-extrabold" style={{ color: '#fff' }}>
                                 {risk.id}
                               </span>
                               {/* Tooltip on hover */}
                               <div
-                                className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 rounded-lg text-[9px] font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20"
+                                className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1.5 rounded-lg text-[11px] font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20"
                                 style={{
                                   background: 'var(--card)',
                                   color: 'var(--heading)',
@@ -353,14 +355,14 @@ export default function RiskMatrix() {
                   <div className="w-16 flex-shrink-0" />
                   {[1, 2, 3, 4, 5].map((l) => (
                     <div key={l} className="flex-1 text-center">
-                      <span className="text-[9px] font-bold" style={{ color: 'var(--text-muted)' }}>
+                      <span className="text-[11px] font-bold" style={{ color: 'var(--text-muted)' }}>
                         {LIKELIHOOD_LABELS[l]}
                       </span>
                     </div>
                   ))}
                 </div>
                 <div className="text-center mt-1">
-                  <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+                  <span className="text-[11px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
                     Likelihood
                   </span>
                 </div>
@@ -377,7 +379,7 @@ export default function RiskMatrix() {
               ].map((zone) => (
                 <div key={zone.label} className="flex items-center gap-1.5">
                   <div className="w-4 h-4 rounded" style={{ background: zone.bg, border: `1px solid ${zone.color}40` }} />
-                  <span className="text-[9px] font-bold" style={{ color: zone.color }}>{zone.label}</span>
+                  <span className="text-[11px] font-bold" style={{ color: zone.color }}>{zone.label}</span>
                 </div>
               ))}
             </div>
@@ -416,24 +418,24 @@ export default function RiskMatrix() {
                     className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
                     style={{ background: zoneColor, boxShadow: `0 0 8px ${zoneColor}40` }}
                   >
-                    <span className="text-[9px] font-extrabold" style={{ color: '#fff' }}>{risk.id}</span>
+                    <span className="text-[11px] font-extrabold" style={{ color: '#fff' }}>{risk.id}</span>
                   </div>
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-[11px] font-bold" style={{ color: 'var(--heading)' }}>{risk.name}</span>
-                      <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: `${zoneColor}20`, color: zoneColor }}>
+                      <span className="text-[11px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: `${zoneColor}20`, color: zoneColor }}>
                         {zoneLabel}
                       </span>
-                      <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: sc.bg, color: sc.text }}>
+                      <span className="text-[11px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: sc.bg, color: sc.text }}>
                         {risk.status}
                       </span>
-                      <span className="text-[8px] px-1.5 py-0.5 rounded" style={{ background: 'var(--card)', color: 'var(--text-muted)' }}>
+                      <span className="text-[11px] px-1.5 py-0.5 rounded" style={{ background: 'var(--card)', color: 'var(--text-muted)' }}>
                         {risk.category}
                       </span>
                     </div>
-                    <div className="flex items-center gap-4 mt-1 text-[9px]" style={{ color: 'var(--text-muted)' }}>
+                    <div className="flex items-center gap-4 mt-1 text-[11px]" style={{ color: 'var(--text-muted)' }}>
                       <span>Likelihood: <span style={{ color: 'var(--heading)' }}>{LIKELIHOOD_LABELS[risk.likelihood]}</span></span>
                       <span>Impact: <span style={{ color: 'var(--heading)' }}>{IMPACT_LABELS[risk.impact]}</span></span>
                       {risk.revenueExposure && (
@@ -484,11 +486,11 @@ export default function RiskMatrix() {
                           border: `1px solid ${color}`,
                         }}
                       >
-                        <span className="text-[8px] font-bold" style={{ color }}>{catRisks.length}</span>
+                        <span className="text-[11px] font-bold" style={{ color }}>{catRisks.length}</span>
                       </div>
                     </div>
                     <span
-                      className="text-[9px] font-bold px-1.5 py-0.5 rounded flex-shrink-0"
+                      className="text-[11px] font-bold px-1.5 py-0.5 rounded flex-shrink-0"
                       style={{
                         background: maxScore >= 16 ? `${C.darkRed}20` : maxScore >= 10 ? `${C.red}20` : `${C.amber}20`,
                         color: maxScore >= 16 ? C.darkRed : maxScore >= 10 ? C.red : C.amber,
@@ -520,12 +522,12 @@ export default function RiskMatrix() {
                   <div className="w-4 h-4 rounded" style={{ background: tier.color }} />
                   <div>
                     <div className="text-[11px] font-bold" style={{ color: tier.color }}>{tier.zone}</div>
-                    <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{tier.range}</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{tier.range}</div>
                   </div>
                 </div>
                 <div className="text-right">
                   <div className="text-lg font-extrabold" style={{ color: tier.color }}>{tier.count}</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>risk{tier.count !== 1 ? 's' : ''}</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>risk{tier.count !== 1 ? 's' : ''}</div>
                 </div>
               </div>
             ))}
@@ -570,7 +572,7 @@ export default function RiskMatrix() {
               {/* Tags */}
               <div className="flex items-center gap-2 flex-wrap">
                 <span
-                  className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+                  className="text-[11px] font-bold px-2 py-0.5 rounded-full"
                   style={{
                     background: `${getZoneColor(selectedRisk.likelihood, selectedRisk.impact)}20`,
                     color: getZoneColor(selectedRisk.likelihood, selectedRisk.impact),
@@ -578,11 +580,11 @@ export default function RiskMatrix() {
                 >
                   {getZoneLabel(selectedRisk.likelihood, selectedRisk.impact)} Risk
                 </span>
-                <span className="text-[9px] px-2 py-0.5 rounded" style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}>
+                <span className="text-[11px] px-2 py-0.5 rounded" style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}>
                   {selectedRisk.category}
                 </span>
                 {selectedRisk.revenueExposure && (
-                  <span className="text-[9px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(232,146,63,0.15)', color: C.orange }}>
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(232,146,63,0.15)', color: C.orange }}>
                     {selectedRisk.revenueExposure} exposure
                   </span>
                 )}
@@ -591,21 +593,21 @@ export default function RiskMatrix() {
               {/* Score grid */}
               <div className="grid grid-cols-3 gap-2">
                 <div className="rounded-lg p-3 text-center" style={{ background: 'var(--input-bg)' }}>
-                  <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Likelihood</div>
+                  <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Likelihood</div>
                   <div className="text-lg font-extrabold mt-0.5" style={{ color: 'var(--heading)' }}>{selectedRisk.likelihood}/5</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{LIKELIHOOD_LABELS[selectedRisk.likelihood]}</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{LIKELIHOOD_LABELS[selectedRisk.likelihood]}</div>
                 </div>
                 <div className="rounded-lg p-3 text-center" style={{ background: 'var(--input-bg)' }}>
-                  <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Impact</div>
+                  <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Impact</div>
                   <div className="text-lg font-extrabold mt-0.5" style={{ color: 'var(--heading)' }}>{selectedRisk.impact}/5</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{IMPACT_LABELS[selectedRisk.impact]}</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{IMPACT_LABELS[selectedRisk.impact]}</div>
                 </div>
                 <div className="rounded-lg p-3 text-center" style={{ background: `${getZoneColor(selectedRisk.likelihood, selectedRisk.impact)}15` }}>
-                  <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Risk Score</div>
+                  <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Risk Score</div>
                   <div className="text-lg font-extrabold mt-0.5" style={{ color: getZoneColor(selectedRisk.likelihood, selectedRisk.impact) }}>
                     {selectedRisk.likelihood * selectedRisk.impact}
                   </div>
-                  <div className="text-[9px]" style={{ color: getZoneColor(selectedRisk.likelihood, selectedRisk.impact) }}>
+                  <div className="text-[11px]" style={{ color: getZoneColor(selectedRisk.likelihood, selectedRisk.impact) }}>
                     {getZoneLabel(selectedRisk.likelihood, selectedRisk.impact)}
                   </div>
                 </div>
@@ -632,11 +634,11 @@ export default function RiskMatrix() {
               {/* Owner + Status */}
               <div className="flex items-center justify-between p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
                 <div>
-                  <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Risk Owner</div>
+                  <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Risk Owner</div>
                   <div className="text-[11px] font-bold" style={{ color: 'var(--heading)' }}>{selectedRisk.owner}</div>
                 </div>
                 <span
-                  className="text-[9px] font-bold px-2 py-1 rounded-full"
+                  className="text-[11px] font-bold px-2 py-1 rounded-full"
                   style={{
                     background: selectedRisk.status === 'Active' ? 'rgba(217,74,74,0.15)' : selectedRisk.status === 'Mitigated' ? 'rgba(140,198,63,0.15)' : 'rgba(74,144,217,0.15)',
                     color: selectedRisk.status === 'Active' ? C.red : selectedRisk.status === 'Mitigated' ? C.green : C.blue,

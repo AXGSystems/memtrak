@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { listContacts, createContact } from '@/lib/member-data';
+import { requireReadOnly, requireStaff, safeError } from '@/lib/route-auth';
+import { logEntityAudit } from '@/lib/audit';
+import { auditContext } from '@/lib/audit-context';
 
 /**
  * GET  /api/memtrak/orgs/[id]/contacts → array of contacts for the org
@@ -11,12 +14,18 @@ type Ctx = { params: Promise<{ id: string }> };
 const ROLES = new Set(['Primary', 'Billing', 'Operations', 'Marketing', 'Technical', 'Other']);
 
 export async function GET(_req: NextRequest, ctx: Ctx) {
+  const gate = await requireReadOnly();
+  if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
   const { id } = await ctx.params;
   const rows = await listContacts(id);
   return NextResponse.json({ rows });
 }
 
 export async function POST(request: NextRequest, ctx: Ctx) {
+  const gate = await requireStaff();
+  if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
   const { id } = await ctx.params;
   let body: Record<string, unknown>;
   try {
@@ -49,10 +58,15 @@ export async function POST(request: NextRequest, ctx: Ctx) {
       total_opens: 0,
       total_clicks: 0,
     });
+    logEntityAudit({
+      entity: 'contact', entity_id: contact.id,
+      entity_label: `${first_name} ${last_name}`.trim() || email,
+      action: 'create', actor: gate.actor.email,
+      summary: `Added contact ${first_name} ${last_name} to org ${id}`,
+      ...auditContext(request),
+    });
     return NextResponse.json({ success: true, contact }, { status: 201 });
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Create failed';
-    const isConfig = message.includes('Supabase not configured');
-    return NextResponse.json({ error: message }, { status: isConfig ? 503 : 500 });
+    return safeError(err);
   }
 }

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { logEvent } from '@/lib/memtrak';
-import { sanitize, logAudit } from '@/lib/security';
+import { sanitize, logAudit, isValidEmail, isValidCampaignId } from '@/lib/security';
 
 /**
  * MEMTrak Tracking Pixel
@@ -19,22 +19,30 @@ import { sanitize, logAudit } from '@/lib/security';
 const PIXEL = Buffer.from('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'base64');
 
 export async function GET(request: NextRequest) {
-  const cid = sanitize(request.nextUrl.searchParams.get('cid'), 100) || 'unknown';
-  const rid = sanitize(request.nextUrl.searchParams.get('rid'), 254) || 'unknown';
+  const rawCid = sanitize(request.nextUrl.searchParams.get('cid'), 100);
+  const rawRid = sanitize(request.nextUrl.searchParams.get('rid'), 254);
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
 
-  logAudit('pixel-open', ip, `Campaign: ${cid}, Recipient: ${rid}`);
+  // Only record an open when BOTH identifiers are well-formed. Anything else
+  // is a forged/malformed beacon — serve the pixel but do NOT write an event,
+  // so attacker-supplied junk can't poison analytics or inflate the table.
+  const validCid = isValidCampaignId(rawCid);
+  const validRid = isValidEmail(rawRid);
 
-  // Log the open event
-  await logEvent({
-    type: 'open',
-    campaignId: cid,
-    recipientEmail: rid,
-    metadata: {
-      userAgent: request.headers.get('user-agent') || 'unknown',
-      ip: request.headers.get('x-forwarded-for') || 'unknown',
-    },
-  });
+  if (validCid && validRid) {
+    logAudit('pixel-open', ip, `Campaign: ${rawCid}, Recipient: ${rawRid}`);
+    await logEvent({
+      type: 'open',
+      campaignId: rawCid,
+      recipientEmail: rawRid,
+      metadata: {
+        userAgent: request.headers.get('user-agent') || 'unknown',
+        ip,
+      },
+    });
+  } else {
+    logAudit('pixel-rejected', ip, `Rejected forged/invalid pixel beacon (cid=${validCid ? 'ok' : 'bad'}, rid=${validRid ? 'ok' : 'bad'})`, 'warning');
+  }
 
   // Return transparent 1x1 GIF with no-cache headers
   return new NextResponse(PIXEL, {

@@ -7,12 +7,15 @@ import { logEvent } from '@/lib/memtrak';
  * Processes returned physical mail and matches it to member records.
  *
  * How it works:
- * 1. Staff photographs returned envelope with phone camera
- * 2. Image is uploaded to this endpoint
- * 3. OCR extracts the address text (Claude Vision or Azure OCR)
- * 4. Fuzzy matching finds the member organization in re:Members
- * 5. Member record is flagged as "bad physical address"
- * 6. ALTA DASH and re:Members both see the flag immediately
+ * 1. Staff enters the returned envelope's org name + address (and optionally
+ *    attaches a photo for reference)
+ * 2. Fuzzy matching finds the member organization in re:Members
+ * 3. Member record is flagged as "bad physical address"
+ * 4. ALTA DASH and re:Members both see the flag immediately
+ *
+ * Image OCR (Claude Vision or Azure Computer Vision) is planned but NOT yet
+ * implemented — returns are processed from the manually-entered fields, and
+ * the response reports processedBy: "manual" accordingly.
  *
  * POST: Upload a scanned return envelope
  *   Content-Type: multipart/form-data
@@ -45,7 +48,11 @@ interface MailReturn {
 // In-memory store (production: Azure SQL)
 const returns: MailReturn[] = [];
 
-// Simulated member address matching (production: query re:Members via Azure SQL)
+// Sample member-address directory used for fuzzy matching (production: query
+// re:Members via Azure SQL). Submitted returns themselves are real user input;
+// only this lookup table is illustrative, so GET below reports the directory's
+// provenance as 'sample' while the returned entries reflect actual submissions.
+const ADDRESS_DIRECTORY_PROVENANCE = 'sample' as const;
 const MEMBER_ADDRESSES = [
   { id: 'M-4421', org: 'Heritage Abstract LLC', city: 'Pittsburgh', state: 'PA' },
   { id: 'M-2819', org: 'Summit Title Services', city: 'Nashville', state: 'TN' },
@@ -86,22 +93,13 @@ export async function POST(request: NextRequest) {
     const image = formData.get('image') as File | null;
 
     const extractedOrgName = orgName;
-    let processedBy: 'ocr' | 'manual' = 'manual';
-
-    // If image uploaded AND Claude API available, use OCR
-    if (image && process.env.ANTHROPIC_API_KEY) {
-      // TODO: Send image to Claude Vision API for OCR
-      // const imageBuffer = await image.arrayBuffer();
-      // const base64 = Buffer.from(imageBuffer).toString('base64');
-      // const response = await anthropic.messages.create({
-      //   model: 'claude-sonnet-4-20250514',
-      //   messages: [{ role: 'user', content: [
-      //     { type: 'image', source: { type: 'base64', media_type: image.type, data: base64 } },
-      //     { type: 'text', text: 'Extract the recipient organization name and full mailing address from this returned envelope. Return as JSON: { orgName, address, returnReason }' }
-      //   ]}],
-      // });
-      processedBy = 'ocr';
-    }
+    // Honesty: image OCR (Claude Vision / Azure CV) is not yet implemented, so
+    // every return is processed from the manually-entered org/address fields.
+    // We never claim "ocr" processing that did not actually run. An uploaded
+    // image is currently retained context only; once a vision extractor is
+    // wired, this will flip to 'ocr' on real extraction.
+    const processedBy: 'ocr' | 'manual' = 'manual';
+    void image;
 
     // Fuzzy match against member database
     const match = fuzzyMatch(extractedOrgName, MEMBER_ADDRESSES);
@@ -152,6 +150,8 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   return NextResponse.json({
+    // Submitted returns are real; the matching directory is sample data.
+    matchDirectoryProvenance: ADDRESS_DIRECTORY_PROVENANCE,
     returns: returns.sort((a, b) => b.scannedDate.localeCompare(a.scannedDate)),
     total: returns.length,
     autoFlagged: returns.filter(r => r.status === 'Auto-Flagged').length,

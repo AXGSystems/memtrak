@@ -7,6 +7,8 @@ import {
   type DocumentType,
 } from '@/lib/member-data';
 import { logEntityAudit, diffRecords } from '@/lib/audit';
+import { requireReadOnly, requireStaff, requireAdminRole, safeError } from '@/lib/route-auth';
+import { auditContext } from '@/lib/audit-context';
 
 /**
  * GET    /api/memtrak/documents/[id]
@@ -22,6 +24,9 @@ function isValidUrl(s: string): boolean {
 }
 
 export async function GET(_req: NextRequest, ctx: Ctx) {
+  const gate = await requireReadOnly();
+  if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
   const { id } = await ctx.params;
   const doc = await getDocument(id);
   if (!doc) return NextResponse.json({ error: 'Not found' }, { status: 404 });
@@ -29,6 +34,9 @@ export async function GET(_req: NextRequest, ctx: Ctx) {
 }
 
 export async function PATCH(request: NextRequest, ctx: Ctx) {
+  const gate = await requireStaff();
+  if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
   const { id } = await ctx.params;
 
   let body: Record<string, unknown>;
@@ -63,19 +71,21 @@ export async function PATCH(request: NextRequest, ctx: Ctx) {
     const doc = await updateDocument(id, patch as Partial<typeof before>);
     logEntityAudit({
       entity: 'document', entity_id: doc.id, entity_label: doc.name,
-      action: 'update', actor: 'staff',
+      action: 'update', actor: gate.actor.email,
       summary: `Updated "${doc.name}"`,
       diff: diffRecords(before as unknown as Record<string, unknown>, doc as unknown as Record<string, unknown>),
+      ...auditContext(request),
     });
     return NextResponse.json({ success: true, document: doc });
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Update failed';
-    const isConfig = message.includes('Supabase not configured');
-    return NextResponse.json({ error: message }, { status: isConfig ? 503 : 500 });
+    return safeError(err);
   }
 }
 
-export async function DELETE(_req: NextRequest, ctx: Ctx) {
+export async function DELETE(request: NextRequest, ctx: Ctx) {
+  const gate = await requireAdminRole();
+  if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
   const { id } = await ctx.params;
   const before = await getDocument(id);
   if (!before) return NextResponse.json({ error: 'Not found' }, { status: 404 });
@@ -84,13 +94,12 @@ export async function DELETE(_req: NextRequest, ctx: Ctx) {
     await deleteDocument(id);
     logEntityAudit({
       entity: 'document', entity_id: id, entity_label: before.name,
-      action: 'delete', actor: 'staff',
+      action: 'delete', actor: gate.actor.email,
       summary: `Deleted "${before.name}"`,
+      ...auditContext(request),
     });
     return new NextResponse(null, { status: 204 });
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Delete failed';
-    const isConfig = message.includes('Supabase not configured');
-    return NextResponse.json({ error: message }, { status: isConfig ? 503 : 500 });
+    return safeError(err);
   }
 }

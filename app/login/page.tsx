@@ -80,6 +80,8 @@ function LoginForm() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@alta.org"
+              aria-invalid={!!error}
+              aria-describedby={error ? 'login-error' : undefined}
               className="w-full pl-9 pr-3 py-2.5 rounded-lg text-sm border focus:outline-none focus:ring-2"
               style={{ background: 'var(--input-bg)', borderColor: 'var(--input-border)', color: 'var(--heading)' }}
             />
@@ -87,8 +89,8 @@ function LoginForm() {
         </label>
 
         {error && (
-          <div className="flex items-start gap-2 px-3 py-2 rounded-lg text-xs" style={{ background: 'color-mix(in srgb, #D94A4A 12%, transparent)', color: '#D94A4A', border: '1px solid color-mix(in srgb, #D94A4A 30%, transparent)' }}>
-            <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" /> {error}
+          <div id="login-error" role="alert" className="flex items-start gap-2 px-3 py-2 rounded-lg text-xs" style={{ background: 'color-mix(in srgb, #D94A4A 12%, transparent)', color: '#D94A4A', border: '1px solid color-mix(in srgb, #D94A4A 30%, transparent)' }}>
+            <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" aria-hidden="true" /> {error}
           </div>
         )}
 

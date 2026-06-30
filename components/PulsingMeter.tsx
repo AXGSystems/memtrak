@@ -37,7 +37,7 @@ export default function PulsingMeter({
   const glowOpacity = 0.15 + (clamped / 100) * 0.5;
 
   const valueFontSize = size === 'sm' ? 'text-lg' : size === 'lg' ? 'text-3xl' : 'text-2xl';
-  const labelFontSize = size === 'sm' ? 'text-[8px]' : size === 'lg' ? 'text-[11px]' : 'text-[9px]';
+  const labelFontSize = size === 'sm' ? 'text-[11px]' : size === 'lg' ? 'text-[11px]' : 'text-[11px]';
 
   return (
     <div className="flex flex-col items-center gap-1">

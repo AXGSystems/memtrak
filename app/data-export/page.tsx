@@ -1,6 +1,7 @@
 'use client';
 
 import { Download, Database, Mail, Users, Shield, BarChart3 } from 'lucide-react';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import { exportCSV } from '@/lib/export-utils';
 import { demoCampaigns, demoDecayAlerts, demoChurnScores, demoSendTimes, demoRelationships, getCampaignTotals } from '@/lib/demo-data';
 
@@ -16,8 +17,9 @@ const exports = [
 export default function DataExport() {
   return (
     <div className="p-6">
+      <SampleDataBadge />
       <h1 className="text-lg font-extrabold mb-1" style={{ color: 'var(--heading)' }}>Data Export Center</h1>
-      <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>Download any MEMTrak dataset as CSV for compliance, backup, or external analysis. All exports include headers and are Excel-compatible.</p>
+      <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>Download a MEMTrak dataset as CSV to preview the export format. Files include headers and are Excel-compatible. The rows below are illustrative sample data (see notice above) — for live, source-cited extracts use the Reports library at <a href="/reports" style={{ color: 'var(--accent)' }} className="font-semibold underline">/reports</a>, where each report exports CSV built from the /api/memtrak endpoints with a provenance line.</p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         {exports.map(exp => {

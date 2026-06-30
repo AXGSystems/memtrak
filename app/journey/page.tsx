@@ -130,7 +130,7 @@ function MemberDetailModal({ org }: { org: JourneyOrg }) {
             }}
           />
         </div>
-        <div className="grid grid-cols-3 gap-2 mt-2 text-[9px]" style={{ color: 'var(--text-muted)' }}>
+        <div className="grid grid-cols-3 gap-2 mt-2 text-[11px]" style={{ color: 'var(--text-muted)' }}>
           <span>Open rate: {openRate}% (x0.25)</span>
           <span>Click rate: {clickRate}% (x0.25)</span>
           <span>In-person: {meetings + events} (x10pts)</span>
@@ -150,7 +150,7 @@ function MemberDetailModal({ org }: { org: JourneyOrg }) {
                 </div>
                 <div>
                   <div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{count}</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{typeLabels[type] || type}</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{typeLabels[type] || type}</div>
                 </div>
               </div>
             );
@@ -166,7 +166,7 @@ function MemberDetailModal({ org }: { org: JourneyOrg }) {
             <div key={year} className="flex items-center justify-between p-2 rounded-lg" style={{ background: 'var(--input-bg)', animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
               <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{year}</span>
               <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>${org.dues.toLocaleString()}</span>
-              <span className="text-[9px] px-1.5 py-0.5 rounded-full font-semibold bg-green-500/20 text-green-400">Paid</span>
+              <span className="text-[11px] px-1.5 py-0.5 rounded-full font-semibold bg-green-500/20 text-green-400">Paid</span>
             </div>
           ))}
         </div>

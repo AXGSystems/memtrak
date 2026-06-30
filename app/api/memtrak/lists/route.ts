@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createList, getLists, getList, getActiveRecipients, getSuppressionCount } from '@/lib/memtrak';
+import { requireReadOnly, requireStaff } from '@/lib/route-auth';
 
 /**
  * MEMTrak Recipient Lists API
@@ -15,6 +16,9 @@ import { createList, getLists, getList, getActiveRecipients, getSuppressionCount
  */
 
 export async function GET(request: NextRequest) {
+  const gate = await requireReadOnly();
+  if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
   const id = request.nextUrl.searchParams.get('id');
 
   if (id) {
@@ -45,6 +49,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const gate = await requireStaff();
+  if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
   try {
     const body = await request.json();
     if (!body.name || !body.recipients || !Array.isArray(body.recipients)) {

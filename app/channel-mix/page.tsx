@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Card from '@/components/Card';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import SparkKpi from '@/components/SparkKpi';
 import ClientChart from '@/components/ClientChart';
 import {
@@ -180,6 +181,7 @@ export default function ChannelMix() {
 
   return (
     <div className="p-6">
+      <SampleDataBadge className="max-w-3xl" message="The per-channel reach and performance figures below are illustrative sample values. Only the email channel is currently wired in MEMTRAK; the other channels shown are not yet connected." />
       {/* ── 1. Branded Header ─────────────────────────────────── */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
@@ -289,21 +291,21 @@ export default function ChannelMix() {
               <div className="space-y-2">
                 {ch.metrics.map((m) => (
                   <div key={m.label} className="flex items-center justify-between">
-                    <span className="text-[9px] uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>{m.label}</span>
+                    <span className="text-[11px] uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>{m.label}</span>
                     <span className="text-xs font-extrabold" style={{ color: ch.color }}>{m.value}</span>
                   </div>
                 ))}
               </div>
               <div className="mt-3 pt-2 border-t" style={{ borderColor: 'var(--card-border)' }}>
                 <div className="flex items-center justify-between">
-                  <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Engagement Share</span>
+                  <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Engagement Share</span>
                   <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{ch.share}%</span>
                 </div>
                 <div className="w-full h-1.5 rounded-full overflow-hidden mt-1" style={{ background: 'var(--card-border)' }}>
                   <div className="h-full rounded-full transition-all duration-700" style={{ width: `${ch.share}%`, background: ch.color }} />
                 </div>
               </div>
-              <div className="text-[8px] mt-2 font-semibold" style={{ color: 'var(--accent)' }}>Click for details</div>
+              <div className="text-[11px] mt-2 font-semibold" style={{ color: 'var(--accent)' }}>Click for details</div>
             </div>
           );
         })}
@@ -364,7 +366,7 @@ export default function ChannelMix() {
               <div className="grid grid-cols-3 gap-3">
                 {selectedChannel.metrics.map((m) => (
                   <div key={m.label} className="p-3 rounded-lg text-center" style={{ background: 'var(--input-bg)' }}>
-                    <div className="text-[9px] uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>{m.label}</div>
+                    <div className="text-[11px] uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>{m.label}</div>
                     <div className="text-lg font-extrabold" style={{ color: selectedChannel.color }}>{m.value}</div>
                   </div>
                 ))}

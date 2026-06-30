@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateInvoices } from '@/lib/member-data';
+import { requireStaff, safeError } from '@/lib/route-auth';
+import { logEntityAudit } from '@/lib/audit';
+import { auditContext } from '@/lib/audit-context';
 
 /**
  * POST /api/memtrak/invoices/generate
@@ -10,6 +13,9 @@ import { generateInvoices } from '@/lib/member-data';
  *   (derived from the `to` date). Idempotent within a fiscal year.
  */
 export async function POST(request: NextRequest) {
+  const gate = await requireStaff();
+  if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
   let body: Record<string, unknown>;
   try { body = await request.json(); } catch { return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 }); }
 
@@ -24,10 +30,14 @@ export async function POST(request: NextRequest) {
 
   try {
     const result = await generateInvoices(from, to);
+    logEntityAudit({
+      entity: 'invoice', entity_id: 'bulk-generate', entity_label: `${from}..${to}`,
+      action: 'create', actor: gate.actor.email,
+      summary: `Generated invoices for renewals ${from} to ${to}`,
+      ...auditContext(request),
+    });
     return NextResponse.json(result, { status: 201 });
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Generate failed';
-    const isConfig = message.includes('Supabase not configured');
-    return NextResponse.json({ error: message }, { status: isConfig ? 503 : 500 });
+    return safeError(err);
   }
 }

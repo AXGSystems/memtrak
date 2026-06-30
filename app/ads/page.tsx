@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useDialogA11y } from '@/lib/useDialogA11y';
 import Link from 'next/link';
 import Card, { KpiCard } from '@/components/Card';
 import ClientChart from '@/components/ClientChart';
@@ -41,6 +42,8 @@ const statusColors: Record<string, { bg: string; color: string }> = {
 
 export default function AdsOverview() {
   const [detail, setDetail] = useState<typeof campaigns[0] | null>(null);
+  const detailRef = useRef<HTMLDivElement>(null);
+  useDialogA11y(!!detail, () => setDetail(null), detailRef);
 
   const totalImpressions = campaigns.filter(c => c.status !== 'Scheduled').reduce((s, c) => s + c.impressions, 0);
   const totalClicks = campaigns.filter(c => c.status !== 'Scheduled').reduce((s, c) => s + c.clicks, 0);
@@ -100,7 +103,7 @@ export default function AdsOverview() {
               <div key={c.id} className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{c.name}</span>
-                  <span className={`px-2 py-0.5 rounded-full text-[9px] font-semibold ${statusColors[c.status]?.bg} ${statusColors[c.status]?.color}`} style={c.status === 'Completed' ? { background: 'var(--input-bg)', color: 'var(--text-muted)' } : undefined}>{c.status}</span>
+                  <span className={`px-2 py-0.5 rounded-full text-[11px] font-semibold ${statusColors[c.status]?.bg} ${statusColors[c.status]?.color}`} style={c.status === 'Completed' ? { background: 'var(--input-bg)', color: 'var(--text-muted)' } : undefined}>{c.status}</span>
                 </div>
                 <div className="text-[10px] mb-2" style={{ color: 'var(--text-muted)' }}>{c.advertiser} -- {c.zone} -- {c.start} to {c.end}</div>
                 <div className="grid grid-cols-4 gap-2 text-[10px]">
@@ -128,7 +131,7 @@ export default function AdsOverview() {
                   <tr key={c.id} onClick={() => setDetail(c)} className="cursor-pointer transition-colors" style={{ borderBottom: '1px solid var(--card-border)', color: 'var(--text-muted)' }} onMouseEnter={e => (e.currentTarget.style.background = 'var(--input-bg)')} onMouseLeave={e => (e.currentTarget.style.background = '')}>
                     <td className="py-2.5 font-semibold" style={{ color: 'var(--heading)' }}>{c.name}</td>
                     <td className="py-2.5">{c.advertiser}</td>
-                    <td className="py-2.5 text-center"><span className={`px-2 py-0.5 rounded-full text-[9px] font-semibold ${statusColors[c.status]?.bg} ${statusColors[c.status]?.color}`} style={c.status === 'Completed' ? { background: 'var(--input-bg)', color: 'var(--text-muted)' } : undefined}>{c.status}</span></td>
+                    <td className="py-2.5 text-center"><span className={`px-2 py-0.5 rounded-full text-[11px] font-semibold ${statusColors[c.status]?.bg} ${statusColors[c.status]?.color}`} style={c.status === 'Completed' ? { background: 'var(--input-bg)', color: 'var(--text-muted)' } : undefined}>{c.status}</span></td>
                     <td className="py-2.5 text-right">{c.impressions > 0 ? (c.impressions / 1000).toFixed(0) + 'K' : '—'}</td>
                     <td className="py-2.5 text-right">{c.clicks > 0 ? c.clicks.toLocaleString() : '—'}</td>
                     <td className="py-2.5 text-right">{c.ctr > 0 ? <span className={`font-bold ${c.ctr >= 2 ? 'text-green-400' : ''}`} style={c.ctr < 2 ? { color: 'var(--text-muted)' } : undefined}>{c.ctr}%</span> : '—'}</td>
@@ -162,14 +165,14 @@ export default function AdsOverview() {
       {/* Detail Panel */}
       {detail && (
         <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={() => setDetail(null)}>
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-          <div className="relative rounded-2xl w-full max-w-lg mx-4 p-6" style={{ background: 'var(--card)', borderColor: 'var(--card-border)', borderWidth: '1px', borderStyle: 'solid' }} onClick={e => e.stopPropagation()}>
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" aria-hidden="true" />
+          <div ref={detailRef} tabIndex={-1} role="dialog" aria-modal="true" aria-label={`${detail.name} campaign details`} className="relative rounded-2xl w-full max-w-lg mx-4 p-6" style={{ background: 'var(--card)', borderColor: 'var(--card-border)', borderWidth: '1px', borderStyle: 'solid' }} onClick={e => e.stopPropagation()}>
             <h2 className="text-sm font-bold mb-1" style={{ color: 'var(--heading)' }}>{detail.name}</h2>
             <p className="text-[10px] mb-4" style={{ color: 'var(--text-muted)' }}>{detail.advertiser} -- {detail.zone} -- {detail.start} – {detail.end}</p>
             <div className="grid grid-cols-3 gap-3 mb-4">
-              <div className="p-3 rounded-lg text-center" style={{ background: 'var(--input-bg)' }}><div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>{detail.impressions > 0 ? (detail.impressions / 1000).toFixed(0) + 'K' : '—'}</div><div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Impressions</div></div>
-              <div className="p-3 rounded-lg text-center" style={{ background: 'var(--input-bg)' }}><div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>{detail.clicks.toLocaleString()}</div><div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Clicks</div></div>
-              <div className="p-3 rounded-lg text-center" style={{ background: 'var(--input-bg)' }}><div className="text-lg font-extrabold text-green-400">${detail.revenue.toLocaleString()}</div><div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Revenue</div></div>
+              <div className="p-3 rounded-lg text-center" style={{ background: 'var(--input-bg)' }}><div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>{detail.impressions > 0 ? (detail.impressions / 1000).toFixed(0) + 'K' : '—'}</div><div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Impressions</div></div>
+              <div className="p-3 rounded-lg text-center" style={{ background: 'var(--input-bg)' }}><div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>{detail.clicks.toLocaleString()}</div><div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Clicks</div></div>
+              <div className="p-3 rounded-lg text-center" style={{ background: 'var(--input-bg)' }}><div className="text-lg font-extrabold text-green-400">${detail.revenue.toLocaleString()}</div><div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Revenue</div></div>
             </div>
             <div className="flex items-center justify-between p-3 rounded-lg mb-4" style={{ background: 'var(--input-bg)' }}>
               <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Budget utilization</span>

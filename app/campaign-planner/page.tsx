@@ -246,14 +246,14 @@ export default function CampaignPlanner() {
           <div style={{ minWidth: 900 }}>
             {/* Month headers */}
             <div className="flex border-b" style={{ borderColor: 'var(--card-border)' }}>
-              <div className="w-48 flex-shrink-0 p-2 text-[9px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
+              <div className="w-48 flex-shrink-0 p-2 text-[11px] font-bold uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
                 Campaign
               </div>
               <div className="flex-1 flex">
                 {MONTHS.map((m, i) => (
                   <div
                     key={m}
-                    className="flex-1 text-center p-2 text-[9px] font-bold uppercase tracking-wider border-l"
+                    className="flex-1 text-center p-2 text-[11px] font-bold uppercase tracking-wider border-l"
                     style={{ color: 'var(--text-muted)', borderColor: 'var(--card-border)' }}
                   >
                     {m}
@@ -261,7 +261,7 @@ export default function CampaignPlanner() {
                     {milestones.filter((ms) => ms.month === i + 4).map((ms) => (
                       <div key={ms.label} className="flex items-center justify-center gap-0.5 mt-0.5">
                         <ms.icon className="w-2.5 h-2.5" style={{ color: ms.color }} />
-                        <span className="text-[7px] font-bold" style={{ color: ms.color }}>{ms.label}</span>
+                        <span className="text-[11px] font-bold" style={{ color: ms.color }}>{ms.label}</span>
                       </div>
                     ))}
                   </div>
@@ -289,7 +289,7 @@ export default function CampaignPlanner() {
                     <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: color }} />
                     <div className="min-w-0">
                       <div className="text-[10px] font-bold truncate" style={{ color: 'var(--heading)' }}>{campaign.name}</div>
-                      <div className="text-[8px]" style={{ color: 'var(--text-muted)' }}>
+                      <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
                         {campaign.audience.toLocaleString()} recipients
                       </div>
                     </div>
@@ -313,7 +313,7 @@ export default function CampaignPlanner() {
                         boxShadow: `0 0 8px ${color}20`,
                       }}
                     >
-                      <span className="text-[7px] font-bold truncate" style={{ color }}>
+                      <span className="text-[11px] font-bold truncate" style={{ color }}>
                         {campaign.durationDays <= 14 ? '' : campaign.name.split(' - ')[0].slice(0, 15)}
                       </span>
                     </div>
@@ -355,10 +355,10 @@ export default function CampaignPlanner() {
                       <div className="text-[10px] font-bold" style={{ color: 'var(--heading)' }}>
                         {col.overlapDays}-day overlap
                       </div>
-                      <div className="text-[9px] mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                      <div className="text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>
                         <span style={{ color: C.orange }}>{col.a}</span> overlaps with <span style={{ color: C.orange }}>{col.b}</span>
                       </div>
-                      <div className="text-[9px] mt-1" style={{ color: C.amber }}>
+                      <div className="text-[11px] mt-1" style={{ color: C.amber }}>
                         Risk: Audience fatigue from concurrent sends to overlapping lists.
                       </div>
                     </div>
@@ -455,12 +455,12 @@ export default function CampaignPlanner() {
                       </div>
                     </td>
                     <td className="py-2.5 px-2">
-                      <span className="px-1.5 py-0.5 rounded text-[9px] font-bold" style={{ background: `${color}15`, color }}>
+                      <span className="px-1.5 py-0.5 rounded text-[11px] font-bold" style={{ background: `${color}15`, color }}>
                         {c.type}
                       </span>
                     </td>
                     <td className="py-2.5 px-2">
-                      <span className="px-1.5 py-0.5 rounded-full text-[9px] font-bold" style={{ background: sc.bg, color: sc.text }}>
+                      <span className="px-1.5 py-0.5 rounded-full text-[11px] font-bold" style={{ background: sc.bg, color: sc.text }}>
                         {c.status}
                       </span>
                     </td>
@@ -541,7 +541,7 @@ export default function CampaignPlanner() {
                   { label: 'Expected Revenue', value: selectedCampaign.expectedRevenue > 0 ? `$${selectedCampaign.expectedRevenue.toLocaleString()}` : 'N/A', color: selectedCampaign.expectedRevenue > 0 ? C.green : 'var(--text-muted)' },
                 ].map((item) => (
                   <div key={item.label} className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
-                    <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>{item.label}</div>
+                    <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>{item.label}</div>
                     <div className="text-sm font-extrabold mt-0.5" style={{ color: item.color }}>{item.value}</div>
                   </div>
                 ))}

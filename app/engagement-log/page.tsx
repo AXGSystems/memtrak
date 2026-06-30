@@ -538,14 +538,14 @@ export default function EngagementLog() {
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{entry.staff}</span>
                       <div
-                        className="flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-bold"
+                        className="flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[11px] font-bold"
                         style={{ background: `color-mix(in srgb, ${channelColor[entry.channel]} 15%, transparent)`, color: channelColor[entry.channel] }}
                       >
                         <ChannelIcon className="w-2.5 h-2.5" />
                         {entry.channel}
                       </div>
                       <span
-                        className="text-[9px] px-1.5 py-0.5 rounded-full font-bold"
+                        className="text-[11px] px-1.5 py-0.5 rounded-full font-bold"
                         style={{ background: os.bg, color: os.text }}
                       >
                         {entry.outcome}
@@ -562,7 +562,7 @@ export default function EngagementLog() {
                       </div>
                     )}
                     <div className="flex items-center gap-2 mt-1.5">
-                      <span className="text-[9px] font-semibold" style={{ color: 'var(--text-muted)' }}>{relativeDate(entry.date)}</span>
+                      <span className="text-[11px] font-semibold" style={{ color: 'var(--text-muted)' }}>{relativeDate(entry.date)}</span>
                       <ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-60 transition-opacity" style={{ color: 'var(--text-muted)' }} />
                     </div>
                   </div>

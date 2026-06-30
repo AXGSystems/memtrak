@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 // import { getEvents } from '@/lib/memtrak';
 
+import { requireReadOnly } from '@/lib/route-auth';
 /**
  * MEMTrak List Hygiene Engine
  *
@@ -21,8 +22,12 @@ import { NextRequest, NextResponse } from 'next/server';
  * - Spam complaint → immediate suppress + review
  */
 
-// Simulated hygiene data (in production, computed from MEMTrak events + re:Members)
+// Sample hygiene data (in production, computed from MEMTrak events + re:Members).
+// The `provenance: 'sample'` flag is attached to every response so consumers
+// can distinguish these illustrative figures from live, event-derived data.
+const PROVENANCE = 'sample' as const;
 const hygieneReport = {
+  provenance: PROVENANCE,
   totalAddresses: 18400,
   lastCleanedDate: '2026-02-15',
   daysSinceClean: 57,
@@ -67,19 +72,22 @@ const physicalReturns = [
 ];
 
 export async function GET(request: NextRequest) {
+  const gate = await requireReadOnly();
+  if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
   const action = request.nextUrl.searchParams.get('action') || 'report';
 
   switch (action) {
     case 'report':
       return NextResponse.json(hygieneReport);
     case 'stale':
-      return NextResponse.json({ staleBySegment: hygieneReport.staleBySegment, total: hygieneReport.categories.stale.count });
+      return NextResponse.json({ provenance: PROVENANCE, staleBySegment: hygieneReport.staleBySegment, total: hygieneReport.categories.stale.count });
     case 'bounced':
-      return NextResponse.json({ totalBounced: hygieneReport.categories.bounced.count });
+      return NextResponse.json({ provenance: PROVENANCE, totalBounced: hygieneReport.categories.bounced.count });
     case 'recommendations':
-      return NextResponse.json({ recommendations: hygieneReport.recommendations, estimatedImpact: hygieneReport.estimatedImpact });
+      return NextResponse.json({ provenance: PROVENANCE, recommendations: hygieneReport.recommendations, estimatedImpact: hygieneReport.estimatedImpact });
     case 'mail-returns':
-      return NextResponse.json({ returns: physicalReturns, total: physicalReturns.length });
+      return NextResponse.json({ provenance: PROVENANCE, returns: physicalReturns, total: physicalReturns.length });
     default:
       return NextResponse.json(hygieneReport);
   }

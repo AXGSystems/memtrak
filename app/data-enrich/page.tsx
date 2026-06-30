@@ -179,16 +179,16 @@ function SourceModal({ source, onClose }: { source: typeof enrichmentSources[0];
           <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>{source.description}</p>
           <div className="grid grid-cols-2 gap-3">
             <div className="p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
-              <p className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Match Rate</p>
+              <p className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Match Rate</p>
               <p className="text-lg font-extrabold" style={{ color: source.color }}>{source.matchRate}%</p>
             </div>
             <div className="p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
-              <p className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Records Enriched</p>
+              <p className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Records Enriched</p>
               <p className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>{source.records.toLocaleString()}</p>
             </div>
           </div>
           <div>
-            <p className="text-[9px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>Fields Provided</p>
+            <p className="text-[11px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>Fields Provided</p>
             <div className="flex flex-wrap gap-1.5">
               {source.fieldsProvided.map(f => (
                 <span key={f} className="text-[10px] font-bold px-2.5 py-1 rounded-full" style={{ background: `color-mix(in srgb, ${source.color} 10%, transparent)`, color: source.color }}>
@@ -319,7 +319,7 @@ export default function DataEnrich() {
                 <div className="w-full h-2 rounded-full overflow-hidden mb-1" style={{ background: 'var(--card-border)' }}>
                   <div className="h-full rounded-full transition-all duration-500" style={{ width: `${f.coverage}%`, background: f.color }} />
                 </div>
-                <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
+                <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
                   {f.filled.toLocaleString()} of {f.total.toLocaleString()} members &middot; {(f.total - f.filled).toLocaleString()} gaps remaining
                 </div>
               </div>
@@ -336,7 +336,7 @@ export default function DataEnrich() {
                   className="h-full rounded-lg transition-all duration-700 flex items-center justify-end pr-2"
                   style={{ width: `${f.coverage}%`, background: `color-mix(in srgb, ${f.color} 25%, transparent)` }}
                 >
-                  <span className="text-[9px] font-extrabold" style={{ color: f.color }}>{f.coverage}%</span>
+                  <span className="text-[11px] font-extrabold" style={{ color: f.color }}>{f.coverage}%</span>
                 </div>
               </div>
               <div className="flex items-center gap-1 w-10 flex-shrink-0">
@@ -409,32 +409,32 @@ export default function DataEnrich() {
                   </div>
                   <div>
                     <p className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{source.name}</p>
-                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: `color-mix(in srgb, ${C.green} 15%, transparent)`, color: C.green }}>{source.status}</span>
+                    <span className="text-[11px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: `color-mix(in srgb, ${C.green} 15%, transparent)`, color: C.green }}>{source.status}</span>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-2 mb-3">
                   <div>
-                    <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Match Rate</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Match Rate</div>
                     <div className="text-sm font-extrabold" style={{ color: source.color }}>{source.matchRate}%</div>
                   </div>
                   <div>
-                    <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Records</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Records</div>
                     <div className="text-sm font-extrabold" style={{ color: 'var(--heading)' }}>{source.records.toLocaleString()}</div>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-1">
                   {source.fieldsProvided.slice(0, 3).map(f => (
-                    <span key={f} className="text-[8px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: `color-mix(in srgb, ${source.color} 8%, transparent)`, color: source.color }}>
+                    <span key={f} className="text-[11px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: `color-mix(in srgb, ${source.color} 8%, transparent)`, color: source.color }}>
                       {f}
                     </span>
                   ))}
                   {source.fieldsProvided.length > 3 && (
-                    <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}>
+                    <span className="text-[11px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}>
                       +{source.fieldsProvided.length - 3}
                     </span>
                   )}
                 </div>
-                <div className="text-[8px] mt-3 font-semibold" style={{ color: 'var(--accent)' }}>Click for details</div>
+                <div className="text-[11px] mt-3 font-semibold" style={{ color: 'var(--accent)' }}>Click for details</div>
               </div>
             );
           })}
@@ -478,8 +478,8 @@ export default function DataEnrich() {
                     <span className="text-[10px] font-bold capitalize" style={{ color: 'var(--text-muted)' }}>{key.replace(/([A-Z])/g, ' $1')}</span>
                     <div className="flex items-center gap-1.5">
                       <span className="text-[10px]" style={{ color: isNew ? C.green : isUpdated ? C.blue : 'var(--heading)' }}>{val}</span>
-                      {isNew && <span className="text-[8px] font-bold px-1 py-0.5 rounded" style={{ background: `color-mix(in srgb, ${C.green} 15%, transparent)`, color: C.green }}>NEW</span>}
-                      {isUpdated && <span className="text-[8px] font-bold px-1 py-0.5 rounded" style={{ background: `color-mix(in srgb, ${C.blue} 15%, transparent)`, color: C.blue }}>UPDATED</span>}
+                      {isNew && <span className="text-[11px] font-bold px-1 py-0.5 rounded" style={{ background: `color-mix(in srgb, ${C.green} 15%, transparent)`, color: C.green }}>NEW</span>}
+                      {isUpdated && <span className="text-[11px] font-bold px-1 py-0.5 rounded" style={{ background: `color-mix(in srgb, ${C.blue} 15%, transparent)`, color: C.blue }}>UPDATED</span>}
                     </div>
                   </div>
                 );
@@ -487,7 +487,7 @@ export default function DataEnrich() {
             </div>
             <div className="mt-3 pt-2 flex items-center gap-2" style={{ borderTop: '1px solid var(--card-border)' }}>
               <Zap className="w-3 h-3" style={{ color: C.amber }} />
-              <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Enriched by {sampleMember.enrichedBy} on {sampleMember.enrichedDate}</span>
+              <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Enriched by {sampleMember.enrichedBy} on {sampleMember.enrichedDate}</span>
             </div>
           </div>
         </div>
@@ -509,7 +509,7 @@ export default function DataEnrich() {
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{entry.action}</span>
                   <span
-                    className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+                    className="text-[11px] font-bold px-2 py-0.5 rounded-full"
                     style={{
                       background: `color-mix(in srgb, ${entry.status === 'success' ? C.green : C.amber} 15%, transparent)`,
                       color: entry.status === 'success' ? C.green : C.amber,
@@ -518,7 +518,7 @@ export default function DataEnrich() {
                     {entry.status}
                   </span>
                 </div>
-                <div className="flex items-center gap-3 text-[9px]" style={{ color: 'var(--text-muted)' }}>
+                <div className="flex items-center gap-3 text-[11px]" style={{ color: 'var(--text-muted)' }}>
                   <span>{entry.timestamp}</span>
                   <span>{entry.source}</span>
                   <span>{entry.records} records</span>
@@ -534,7 +534,7 @@ export default function DataEnrich() {
             <thead>
               <tr style={{ borderBottom: '1px solid var(--card-border)' }}>
                 {['Timestamp', 'Action', 'Source', 'Records', 'Fields', 'Status'].map(h => (
-                  <th key={h} className="text-[9px] uppercase tracking-wider font-bold pb-3 pr-4" style={{ color: 'var(--text-muted)' }}>{h}</th>
+                  <th key={h} className="text-[11px] uppercase tracking-wider font-bold pb-3 pr-4" style={{ color: 'var(--text-muted)' }}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -545,7 +545,7 @@ export default function DataEnrich() {
                   <td className="py-2.5 pr-4 text-xs font-medium" style={{ color: 'var(--heading)' }}>{entry.action}</td>
                   <td className="py-2.5 pr-4">
                     <span
-                      className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+                      className="text-[11px] font-bold px-2 py-0.5 rounded-full"
                       style={{
                         background: `color-mix(in srgb, ${entry.source === 'ZoomInfo' ? C.blue : entry.source === 'Clearbit' ? C.green : C.purple} 12%, transparent)`,
                         color: entry.source === 'ZoomInfo' ? C.blue : entry.source === 'Clearbit' ? C.green : C.purple,
@@ -558,7 +558,7 @@ export default function DataEnrich() {
                   <td className="py-2.5 pr-4 text-xs" style={{ color: 'var(--text-muted)' }}>{entry.fields}</td>
                   <td className="py-2.5 pr-4">
                     <span
-                      className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+                      className="text-[11px] font-bold px-2 py-0.5 rounded-full"
                       style={{
                         background: `color-mix(in srgb, ${entry.status === 'success' ? C.green : C.amber} 15%, transparent)`,
                         color: entry.status === 'success' ? C.green : C.amber,

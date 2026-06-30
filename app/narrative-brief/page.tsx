@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import Card from '@/components/Card';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import { getCampaignTotals, demoCampaigns, demoDecayAlerts, demoChurnScores, demoRelationships, demoMonthly, demoHygiene } from '@/lib/demo-data';
@@ -114,6 +115,7 @@ export default function NarrativeBrief() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
+      <SampleDataBadge />
 
       {/* ── Branded Header ──────────────────────────────────── */}
       <div className="mb-8">
@@ -395,11 +397,11 @@ export default function NarrativeBrief() {
               <p className="text-[10px] font-bold" style={{ color: 'var(--text-muted)' }}>
                 NarrativeBrief&trade; by MEMTrak &middot; AXG Systems
               </p>
-              <p className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
+              <p className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
                 Generated {new Date().toLocaleString()} &middot; Data window: previous 24 hours
               </p>
             </div>
-            <p className="text-[9px] italic" style={{ color: 'var(--text-muted)' }}>
+            <p className="text-[11px] italic" style={{ color: 'var(--text-muted)' }}>
               This report was generated programmatically from MEMTrak event data. No AI API was used.
             </p>
           </div>

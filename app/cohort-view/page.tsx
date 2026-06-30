@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Card from '@/components/Card';
 import SparkKpi from '@/components/SparkKpi';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import ClientChart from '@/components/ClientChart';
 import {
   Users, TrendingUp, TrendingDown, AlertTriangle,
@@ -106,6 +107,7 @@ export default function CohortViewPage() {
           </p>
         </div>
       </div>
+      <SampleDataBadge message="Cohort retention curves and segment counts below are illustrative sample values. They will be computed from the live member join_date and engagement_score fields once this view is wired to the data layer." />
       <p className="text-[11px] leading-relaxed max-w-2xl" style={{ color: 'var(--text-muted)' }}>
         RFM cohort analysis across <strong style={{ color: 'var(--heading)' }}>join year</strong>, <strong style={{ color: 'var(--heading)' }}>lifecycle stage</strong>, and <strong style={{ color: 'var(--heading)' }}>behavioral segments</strong>. Identify which cohorts retain best and where churn hotspots emerge.
       </p>
@@ -250,7 +252,7 @@ export default function CohortViewPage() {
           </table>
         </div>
         <div className="flex items-center gap-3 mt-3">
-          <span className="text-[9px] font-bold" style={{ color: 'var(--text-muted)' }}>Legend:</span>
+          <span className="text-[11px] font-bold" style={{ color: 'var(--text-muted)' }}>Legend:</span>
           {[
             { label: '85%+', bg: 'rgba(140,198,63,0.15)', fg: C.green },
             { label: '75-84%', bg: 'rgba(74,144,217,0.15)', fg: C.blue },
@@ -258,7 +260,7 @@ export default function CohortViewPage() {
             { label: '50-64%', bg: 'rgba(232,146,63,0.15)', fg: C.orange },
             { label: '<50%', bg: 'rgba(217,74,74,0.15)', fg: C.red },
           ].map(l => (
-            <span key={l.label} className="text-[8px] font-bold px-2 py-0.5 rounded" style={{ background: l.bg, color: l.fg }}>{l.label}</span>
+            <span key={l.label} className="text-[11px] font-bold px-2 py-0.5 rounded" style={{ background: l.bg, color: l.fg }}>{l.label}</span>
           ))}
         </div>
       </Card>
@@ -283,7 +285,7 @@ export default function CohortViewPage() {
                     <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{s.count.toLocaleString()}</span>
                   </div>
                   <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{s.desc}</div>
-                  <div className="text-[9px] mt-1" style={{ color: 'var(--text-muted)' }}>R: {s.r} | F: {s.f} | M: {s.m}</div>
+                  <div className="text-[11px] mt-1" style={{ color: 'var(--text-muted)' }}>R: {s.r} | F: {s.f} | M: {s.m}</div>
                 </div>
               ))}
             </div>
@@ -321,7 +323,7 @@ export default function CohortViewPage() {
                 onClick={() => setSelectedRfm(s)}
               >
                 <div className="text-xs font-extrabold" style={{ color: s.color }}>{s.count}</div>
-                <div className="text-[8px] font-bold" style={{ color: 'var(--text-muted)' }}>{s.segment}</div>
+                <div className="text-[11px] font-bold" style={{ color: 'var(--text-muted)' }}>{s.segment}</div>
               </div>
             ))}
           </div>
@@ -376,7 +378,7 @@ export default function CohortViewPage() {
             {lifecycleStages.slice(0, 4).map(s => (
               <div key={s.stage} className="rounded-lg p-2" style={{ background: 'var(--background)' }}>
                 <div className="text-sm font-extrabold" style={{ color: s.color }}>{s.pct}%</div>
-                <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{s.stage}</div>
+                <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{s.stage}</div>
               </div>
             ))}
           </div>
@@ -532,7 +534,7 @@ export default function CohortViewPage() {
                 ].map(d => (
                   <div key={d.label} className="rounded-lg p-3 text-center" style={{ background: 'var(--background)' }}>
                     <div className="text-lg font-extrabold" style={{ color: selectedRfm.color }}>{d.val}</div>
-                    <div className="text-[9px] font-bold" style={{ color: 'var(--text-muted)' }}>{d.label}</div>
+                    <div className="text-[11px] font-bold" style={{ color: 'var(--text-muted)' }}>{d.label}</div>
                   </div>
                 ))}
               </div>

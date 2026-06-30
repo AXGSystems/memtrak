@@ -188,7 +188,7 @@ export default function NewMembers() {
             <div key={i} className="flex items-center gap-4 p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
               <div className="w-12 text-center flex-shrink-0">
                 <div className="text-lg font-extrabold text-[#8CC63F]">D{email.day}</div>
-                <div className="text-[8px]" style={{ color: 'var(--text-muted)' }}>day</div>
+                <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>day</div>
               </div>
               <div className="flex-1 min-w-0">
                 <div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{email.email}</div>

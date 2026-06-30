@@ -17,20 +17,51 @@ import { extractBearer, hashApiKey, scopeAllows } from '@/lib/api-keys';
 const { auth } = NextAuth(authConfig);
 
 // ── Rate limiter (in-memory, per-IP) ────────────────────────────────
+// NOTE: per-instance only — a shared store (Upstash/Supabase) is the
+// production follow-up. Keyed on a best-effort trusted client IP and
+// bucketed so sensitive endpoints get a much tighter limit than the rest.
 const rateLimits = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT = 100;
+const RATE_LIMIT = 100;          // general API budget / minute
+const RATE_LIMIT_SENSITIVE = 10; // auth, key mgmt, basic-auth gate / minute
 const RATE_WINDOW = 60_000;
 
-function checkRateLimit(ip: string): boolean {
+function checkRateLimit(ip: string, bucket: 'general' | 'sensitive'): boolean {
   const now = Date.now();
-  const entry = rateLimits.get(ip);
+  const limit = bucket === 'sensitive' ? RATE_LIMIT_SENSITIVE : RATE_LIMIT;
+  const k = `${bucket}:${ip}`;
+  const entry = rateLimits.get(k);
   if (!entry || now > entry.resetAt) {
-    rateLimits.set(ip, { count: 1, resetAt: now + RATE_WINDOW });
+    rateLimits.set(k, { count: 1, resetAt: now + RATE_WINDOW });
     return true;
   }
   entry.count++;
-  return entry.count <= RATE_LIMIT;
+  return entry.count <= limit;
 }
+
+/**
+ * Best-effort trusted client IP. On Vercel the platform sets `x-real-ip` to
+ * the true edge-observed peer; we prefer that over the fully client-spoofable
+ * `x-forwarded-for`. We take the LAST hop of XFF as a fallback (the value the
+ * trusted proxy appended) rather than the first (which the client controls).
+ */
+function clientIp(request: NextRequest): string {
+  const real = request.headers.get('x-real-ip');
+  if (real) return real.trim();
+  const xff = request.headers.get('x-forwarded-for');
+  if (xff) {
+    const hops = xff.split(',').map((s) => s.trim()).filter(Boolean);
+    if (hops.length) return hops[hops.length - 1];
+  }
+  return 'unknown';
+}
+
+const SENSITIVE_RL_PREFIXES = [
+  '/api/auth/',
+  '/api/memtrak/keys',
+  // The Claude-backed AI endpoint drives metered ANTHROPIC_API_KEY spend and
+  // accepts free-form prompts — throttle it on the tighter sensitive bucket.
+  '/api/memtrak/ai',
+];
 
 if (typeof setInterval !== 'undefined') {
   setInterval(() => {
@@ -83,9 +114,14 @@ function applySecurityHeaders(response: NextResponse, pathname: string) {
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   response.headers.set('X-XSS-Protection', '1; mode=block');
   response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  // HSTS: force HTTPS for two years incl. subdomains (preload-eligible).
+  response.headers.set('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
   response.headers.set(
     'Content-Security-Policy',
-    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://*.supabase.co wss://*.supabase.co;",
+    // No 'unsafe-eval' — eval()/new Function() are blocked. frame-ancestors
+    // 'none' hardens clickjacking beyond X-Frame-Options. object-src 'none'
+    // blocks legacy plugin vectors.
+    "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://*.supabase.co wss://*.supabase.co; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none';",
   );
 
   // Tracking pixel/logo: allow embedding in emails (no X-Frame-Options).
@@ -155,15 +191,26 @@ function checkBasicAuth(request: NextRequest): NextResponse | null {
 // `auth()` wraps the handler so `req.auth` carries the session when enabled.
 export default auth(async function middleware(request) {
   const pathname = request.nextUrl.pathname;
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown';
+  const req = request as unknown as NextRequest;
+  const ip = clientIp(req);
+  const isSensitive = SENSITIVE_RL_PREFIXES.some((p) => pathname === p || pathname.startsWith(p));
+
+  // Tighter rate limit on sensitive endpoints (auth + key mgmt), checked
+  // BEFORE the gate so failed/brute-force attempts still consume the budget.
+  if (isSensitive && !checkRateLimit(ip, 'sensitive')) {
+    return new NextResponse(JSON.stringify({ error: 'Too many requests. Try again shortly.' }), {
+      status: 429,
+      headers: { 'Content-Type': 'application/json', 'Retry-After': '60' },
+    });
+  }
 
   // Global AXG basic-auth gate (front of everything else)
-  const basicAuthFail = checkBasicAuth(request as unknown as NextRequest);
+  const basicAuthFail = checkBasicAuth(req);
   if (basicAuthFail) return basicAuthFail;
 
-  // Rate limit API routes
+  // Rate limit API routes (general budget)
   if (pathname.startsWith('/api/')) {
-    if (!checkRateLimit(ip)) {
+    if (!checkRateLimit(ip, 'general')) {
       return new NextResponse(JSON.stringify({ error: 'Rate limit exceeded. Max 100 requests/minute.' }), {
         status: 429,
         headers: { 'Content-Type': 'application/json', 'Retry-After': '60' },

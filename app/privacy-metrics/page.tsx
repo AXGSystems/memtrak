@@ -58,22 +58,22 @@ export default function PrivacyMetrics() {
         <div className="rounded-xl border p-4 text-center" style={{ background: 'var(--card)', borderColor: 'var(--card-border)' }}>
           <div className="text-2xl font-extrabold line-through" style={{ color: C.red }}>{metrics.reportedOpenRate}%</div>
           <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Reported Open Rate</div>
-          <div className="text-[9px]" style={{ color: C.red }}>Inflated — includes machine opens</div>
+          <div className="text-[11px]" style={{ color: C.red }}>Inflated — includes machine opens</div>
         </div>
         <div className="rounded-xl border p-4 text-center" style={{ background: 'var(--card)', borderColor: 'var(--card-border)' }}>
           <div className="text-2xl font-extrabold" style={{ color: C.blue }}>{metrics.estimatedRealOpenRate}%</div>
           <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Estimated Real Opens</div>
-          <div className="text-[9px]" style={{ color: C.blue }}>Adjusted for MPP inflation</div>
+          <div className="text-[11px]" style={{ color: C.blue }}>Adjusted for MPP inflation</div>
         </div>
         <div className="rounded-xl border p-4 text-center border-2" style={{ background: 'var(--card)', borderColor: C.green }}>
           <div className="text-2xl font-extrabold" style={{ color: C.green }}>{metrics.clickRate}%</div>
           <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Click Rate (TRUE)</div>
-          <div className="text-[9px]" style={{ color: C.green }}>100% reliable — can&apos;t be faked</div>
+          <div className="text-[11px]" style={{ color: C.green }}>100% reliable — can&apos;t be faked</div>
         </div>
         <div className="rounded-xl border p-4 text-center border-2" style={{ background: 'var(--card)', borderColor: C.green }}>
           <div className="text-2xl font-extrabold" style={{ color: C.green }}>{metrics.conversionRate}%</div>
           <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Conversion Rate (TRUE)</div>
-          <div className="text-[9px]" style={{ color: C.green }}>Email → action. The gold standard.</div>
+          <div className="text-[11px]" style={{ color: C.green }}>Email → action. The gold standard.</div>
         </div>
       </div>
 
@@ -88,9 +88,9 @@ export default function PrivacyMetrics() {
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{m.metric}</span>
                   {m.recommended ? (
-                    <span className="text-[9px] px-2 py-0.5 rounded-full font-semibold bg-green-500/20 text-green-400">Recommended</span>
+                    <span className="text-[11px] px-2 py-0.5 rounded-full font-semibold bg-green-500/20 text-green-400">Recommended</span>
                   ) : (
-                    <span className="text-[9px] px-2 py-0.5 rounded-full font-semibold bg-red-500/20 text-red-400">Unreliable</span>
+                    <span className="text-[11px] px-2 py-0.5 rounded-full font-semibold bg-red-500/20 text-red-400">Unreliable</span>
                   )}
                 </div>
                 <div className="text-[10px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{m.desc}</div>

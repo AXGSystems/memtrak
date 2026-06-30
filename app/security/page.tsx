@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { Shield, CheckCircle, Lock, Eye, Key, Server, Clock } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
+import EmptyState from '@/components/EmptyState';
 
 interface AuditStats { total: number; critical: number; warning: number; last24h: number; }
 interface AuditEvent { timestamp: string; action: string; ip: string; detail: string; severity: 'info' | 'warning' | 'critical'; }
@@ -11,8 +13,8 @@ const securityChecks = [
   { name: 'Security Headers', status: 'Active', detail: 'X-Frame-Options DENY, X-Content-Type-Options nosniff, XSS Protection, Permissions-Policy', icon: Lock },
   { name: 'Open Redirect Protection', status: 'Active', detail: 'Click tracker only redirects to allowlisted ALTA domains (HTTPS only)', icon: Eye },
   { name: 'Input Sanitization', status: 'Active', detail: 'HTML stripping, length limits, email validation on all API inputs', icon: Shield },
-  { name: 'API Key System', status: 'Ready', detail: 'Set MEMTRAK_API_KEYS env var to enable key-based auth for external integrations', icon: Key },
-  { name: 'Audit Logging', status: 'Active', detail: 'Security events logged with IP, timestamp, severity. Last 1,000 events retained.', icon: Server },
+  { name: 'API Key System', status: 'Active', detail: 'Hashed (SHA-256) key lookup — secrets never stored or compared in plaintext. Per-key scopes and revocation supported.', icon: Key },
+  { name: 'Audit Logging', status: 'Active', detail: 'Tamper-evident trail: events persisted to the database with IP, timestamp, severity, and a SHA-256 hash chain (any edit/delete breaks the chain).', icon: Server },
   { name: 'CORS Policy', status: 'Default', detail: 'Same-origin only. Cross-origin requests blocked by default.', icon: Lock },
   { name: 'Tracking Pixel Security', status: 'Active', detail: 'Pixel/logo endpoints exempt from X-Frame-Options (required for email embedding). No-cache headers enforced.', icon: Eye },
 ];
@@ -26,8 +28,11 @@ export default function Security() {
 
   return (
     <div className="p-6">
-      <h1 className="text-lg font-extrabold mb-2" style={{ color: 'var(--heading)' }}>Security Dashboard</h1>
-      <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>MEMTrak security controls, audit log, and compliance status</p>
+      <PageHeader
+        title="Security Dashboard"
+        subtitle="MEMTrak security controls, audit log, and compliance status"
+        className="mb-6"
+      />
 
       {/* Security Status */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6 stagger-children">
@@ -61,7 +66,7 @@ export default function Security() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{check.name}</span>
-                    <span className={`text-[9px] px-2 py-0.5 rounded-full font-semibold ${check.status === 'Active' ? 'bg-green-500/20 text-green-400' : check.status === 'Ready' ? 'bg-blue-500/20 text-blue-400' : 'bg-amber-500/20 text-amber-400'}`}>{check.status}</span>
+                    <span className={`text-[11px] px-2 py-0.5 rounded-full font-semibold ${check.status === 'Active' ? 'bg-green-500/20 text-green-400' : check.status === 'Ready' ? 'bg-blue-500/20 text-blue-400' : 'bg-amber-500/20 text-amber-400'}`}>{check.status}</span>
                   </div>
                   <div className="text-[10px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{check.detail}</div>
                 </div>
@@ -87,7 +92,11 @@ export default function Security() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-8 text-xs" style={{ color: 'var(--text-muted)' }}>No audit events yet. Events are logged when API routes are accessed.</div>
+          <EmptyState
+            icon={Server}
+            title="No audit events yet"
+            message="Events are logged when API routes are accessed."
+          />
         )}
       </div>
     </div>

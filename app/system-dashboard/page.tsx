@@ -102,10 +102,10 @@ interface Integration {
 
 const integrations: Integration[] = [
   { name: 'Microsoft Graph', status: 'pending', details: 'Awaiting OAuth consent from IT admin. Required for Outlook tracking.' },
-  { name: 'Higher Logic', status: 'connected', lastSync: '2026-04-14 08:15 AM', details: 'Syncing newsletters and email events. Last batch: 4,840 records.' },
+  { name: 'Higher Logic', status: 'pending', details: 'Connector not yet implemented. Newsletter and email-event sync is planned.' },
   { name: 'Google Analytics 4', status: 'pending', details: 'GA4 property created. Awaiting measurement protocol key configuration.' },
   { name: 'Azure SQL', status: 'pending', details: 'Database credentials received. Firewall rule pending from infrastructure team.' },
-  { name: 'Supabase', status: 'connected', lastSync: '2026-04-14 09:42 AM', details: 'Primary event database. 12,808 events stored. Real-time subscriptions active.' },
+  { name: 'Supabase', status: 'connected', details: 'Primary event database — MEMTrak send/open/click events are stored and queried here.' },
 ];
 
 /* -- Error Log -- */
@@ -258,28 +258,28 @@ export default function SystemDashboard() {
         <Card glass title="Performance Metrics" subtitle="Current system performance indicators" className="lg:col-span-2">
           <div className="grid grid-cols-2 gap-4">
             <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
-              <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Avg Response Time</div>
+              <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Avg Response Time</div>
               <div className="text-xl font-extrabold" style={{ color: C.blue }}><AnimatedCounter value={avgResponseTime} suffix="ms" /></div>
               <MiniBar value={avgResponseTime} max={200} color={C.blue} height={3} />
-              <div className="text-[8px] mt-1" style={{ color: 'var(--text-muted)' }}>Target: under 200ms</div>
+              <div className="text-[11px] mt-1" style={{ color: 'var(--text-muted)' }}>Target: under 200ms</div>
             </div>
             <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
-              <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Peak Load</div>
+              <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Peak Load</div>
               <div className="text-xl font-extrabold" style={{ color: C.purple }}><AnimatedCounter value={peakLoad} suffix=" req/min" /></div>
               <MiniBar value={peakLoad} max={1000} color={C.purple} height={3} />
-              <div className="text-[8px] mt-1" style={{ color: 'var(--text-muted)' }}>Capacity: 1,000 req/min</div>
+              <div className="text-[11px] mt-1" style={{ color: 'var(--text-muted)' }}>Capacity: 1,000 req/min</div>
             </div>
             <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
-              <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Cache Hit Rate</div>
+              <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Cache Hit Rate</div>
               <div className="text-xl font-extrabold" style={{ color: C.teal }}><AnimatedCounter value={cacheHitRate} suffix="%" decimals={1} /></div>
               <MiniBar value={cacheHitRate} max={100} color={C.teal} height={3} />
-              <div className="text-[8px] mt-1" style={{ color: 'var(--text-muted)' }}>Target: above 90%</div>
+              <div className="text-[11px] mt-1" style={{ color: 'var(--text-muted)' }}>Target: above 90%</div>
             </div>
             <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
-              <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Error Rate</div>
+              <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Error Rate</div>
               <div className="text-xl font-extrabold" style={{ color: errorRate < 0.1 ? C.green : C.red }}><AnimatedCounter value={errorRate} suffix="%" decimals={2} /></div>
               <MiniBar value={errorRate} max={1} color={errorRate < 0.1 ? C.green : C.red} height={3} />
-              <div className="text-[8px] mt-1" style={{ color: 'var(--text-muted)' }}>Target: under 0.1%</div>
+              <div className="text-[11px] mt-1" style={{ color: 'var(--text-muted)' }}>Target: under 0.1%</div>
             </div>
           </div>
         </Card>
@@ -342,18 +342,18 @@ export default function SystemDashboard() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
-                <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Events Stored</div>
+                <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Events Stored</div>
                 <div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}><AnimatedCounter value={eventsProcessed} /></div>
               </div>
               <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
-                <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Storage Used</div>
+                <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Storage Used</div>
                 <div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>{storageUsed} GB</div>
               </div>
             </div>
             <div>
               <div className="flex items-center justify-between mb-1">
-                <span className="text-[9px] font-bold" style={{ color: 'var(--text-muted)' }}>Storage: {storageUsed} GB / {storageLimit} GB</span>
-                <span className="text-[9px] font-bold" style={{ color: C.teal }}>{((storageUsed / storageLimit) * 100).toFixed(0)}%</span>
+                <span className="text-[11px] font-bold" style={{ color: 'var(--text-muted)' }}>Storage: {storageUsed} GB / {storageLimit} GB</span>
+                <span className="text-[11px] font-bold" style={{ color: C.teal }}>{((storageUsed / storageLimit) * 100).toFixed(0)}%</span>
               </div>
               <MiniBar value={storageUsed} max={storageLimit} color={C.teal} height={6} />
             </div>
@@ -369,12 +369,12 @@ export default function SystemDashboard() {
                   <div className="w-2 h-2 rounded-full" style={{ background: statusColors[te.status] }} />
                   <div>
                     <span className="text-[10px] font-bold block" style={{ color: 'var(--heading)' }}>{te.name}</span>
-                    <span className="text-[8px] font-mono" style={{ color: 'var(--text-muted)' }}>{te.path}</span>
+                    <span className="text-[11px] font-mono" style={{ color: 'var(--text-muted)' }}>{te.path}</span>
                   </div>
                 </div>
                 <div className="text-right">
                   <div className="text-[10px] font-bold" style={{ color: 'var(--heading)' }}>{te.hits24h.toLocaleString()}</div>
-                  <div className="text-[8px]" style={{ color: 'var(--text-muted)' }}>24h | {te.hitsTotal.toLocaleString()} total</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>24h | {te.hitsTotal.toLocaleString()} total</div>
                 </div>
               </div>
             ))}
@@ -401,7 +401,7 @@ export default function SystemDashboard() {
                     <span className="text-[11px] font-bold" style={{ color: 'var(--heading)' }}>{ig.name}</span>
                   </div>
                   <span
-                    className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+                    className="text-[11px] font-bold px-2 py-0.5 rounded-full"
                     style={{ background: `color-mix(in srgb, ${sColor} 12%, transparent)`, color: sColor }}
                   >
                     {ig.status.charAt(0).toUpperCase() + ig.status.slice(1)}
@@ -409,7 +409,7 @@ export default function SystemDashboard() {
                 </div>
                 <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{ig.details}</p>
                 {ig.lastSync && (
-                  <div className="text-[9px] mt-1" style={{ color: 'var(--text-muted)' }}>Last sync: {ig.lastSync}</div>
+                  <div className="text-[11px] mt-1" style={{ color: 'var(--text-muted)' }}>Last sync: {ig.lastSync}</div>
                 )}
               </div>
             );
@@ -439,8 +439,8 @@ export default function SystemDashboard() {
           ))}
         </div>
         <div className="flex items-center justify-between mt-2">
-          <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>30 days ago</span>
-          <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Today</span>
+          <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>30 days ago</span>
+          <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Today</span>
         </div>
       </Card>
 
@@ -457,7 +457,7 @@ export default function SystemDashboard() {
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2">
                   <span
-                    className="text-[9px] font-extrabold px-1.5 py-0.5 rounded"
+                    className="text-[11px] font-extrabold px-1.5 py-0.5 rounded"
                     style={{
                       background: err.code >= 500 ? 'rgba(217,74,74,0.12)' : 'rgba(232,146,63,0.12)',
                       color: err.code >= 500 ? C.red : C.orange,
@@ -467,7 +467,7 @@ export default function SystemDashboard() {
                   </span>
                   <span className="text-[10px] font-mono font-semibold" style={{ color: 'var(--heading)' }}>{err.endpoint}</span>
                 </div>
-                <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{err.timestamp}</span>
+                <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{err.timestamp}</span>
               </div>
               <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{err.message}</p>
             </div>

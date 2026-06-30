@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { getAdminSupabase } from '@/lib/supabase-admin';
-import { isAuthEnabled, type AuthRole } from '@/lib/auth.config';
+import { isAuthEnabled, isPreviewOpen, type AuthRole } from '@/lib/auth.config';
 import { logEntityAudit } from '@/lib/audit';
 
 /**
@@ -17,7 +17,13 @@ type Ctx = { params: Promise<{ id: string }> };
 const ROLES: AuthRole[] = ['admin', 'staff', 'read-only'];
 
 async function requireAdmin() {
-  if (!isAuthEnabled()) return { ok: true as const, email: 'auth-disabled' };
+  // Fail closed: when the session gate is "disabled", invite management is
+  // allowed ONLY in an explicit non-production preview — production NEVER
+  // bypasses (mirrors keys/route.ts and lib/route-auth.requireRole).
+  if (!isAuthEnabled()) {
+    if (isPreviewOpen()) return { ok: true as const, email: 'preview-demo' };
+    return { ok: false as const, status: 401, error: 'Authentication required' };
+  }
   const session = await auth();
   const user = session?.user as { email?: string | null; role?: AuthRole } | undefined;
   if (!user || user.role !== 'admin') {

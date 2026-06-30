@@ -43,18 +43,18 @@ export default function EventTracker() {
                 <div className="text-sm font-bold" style={{ color: 'var(--heading)' }}>{e.name}</div>
                 <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{e.date} · {e.location}</div>
               </div>
-              <span className={`text-[9px] px-2.5 py-1 rounded-full font-bold ${e.status === 'Completed' ? 'bg-green-500/20 text-green-400' : e.status === 'Coming Soon' ? 'bg-amber-500/20 text-amber-400' : 'bg-blue-500/20 text-blue-400'}`}>{e.status}</span>
+              <span className={`text-[11px] px-2.5 py-1 rounded-full font-bold ${e.status === 'Completed' ? 'bg-green-500/20 text-green-400' : e.status === 'Coming Soon' ? 'bg-amber-500/20 text-amber-400' : 'bg-blue-500/20 text-blue-400'}`}>{e.status}</span>
             </div>
             <div className="grid grid-cols-5 gap-3">
-              <div><div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>{e.registered}</div><div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>of {e.capacity} capacity</div></div>
-              <div><div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>{e.emailsSent.toLocaleString()}</div><div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>emails sent</div></div>
-              <div><div className="text-lg font-extrabold" style={{ color: e.conversionRate >= 10 ? C.green : C.blue }}>{e.conversionRate}%</div><div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>email→reg rate</div></div>
-              <div><div className="text-lg font-extrabold" style={{ color: C.green }}>${(e.revenue / 1000).toFixed(0)}K</div><div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>revenue</div></div>
+              <div><div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>{e.registered}</div><div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>of {e.capacity} capacity</div></div>
+              <div><div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>{e.emailsSent.toLocaleString()}</div><div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>emails sent</div></div>
+              <div><div className="text-lg font-extrabold" style={{ color: e.conversionRate >= 10 ? C.green : C.blue }}>{e.conversionRate}%</div><div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>email→reg rate</div></div>
+              <div><div className="text-lg font-extrabold" style={{ color: C.green }}>${(e.revenue / 1000).toFixed(0)}K</div><div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>revenue</div></div>
               <div>
                 <div className="h-2 rounded-full" style={{ background: 'var(--card-border)' }}>
                   <div className="h-2 rounded-full transition-all" style={{ width: `${(e.registered / e.capacity) * 100}%`, background: (e.registered / e.capacity) >= 0.8 ? C.green : C.blue }} />
                 </div>
-                <div className="text-[9px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{((e.registered / e.capacity) * 100).toFixed(0)}% filled</div>
+                <div className="text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{((e.registered / e.capacity) * 100).toFixed(0)}% filled</div>
               </div>
             </div>
           </div>

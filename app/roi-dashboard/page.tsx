@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Card from '@/components/Card';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import SparkKpi from '@/components/SparkKpi';
 import ClientChart from '@/components/ClientChart';
 import ProgressRing from '@/components/ProgressRing';
@@ -91,6 +92,7 @@ export default function ROIDashboard() {
 
   return (
     <div className="p-6">
+      <SampleDataBadge className="max-w-3xl" message="The ROI, cost and revenue figures below are illustrative sample values. A model driven by live invoice revenue and program costs is planned but not yet wired into this view." />
       {/* ── 1. Branded Header ─────────────────────────────────── */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
@@ -197,7 +199,7 @@ export default function ROIDashboard() {
             </div>
             <div className="mt-3 flex items-center gap-2">
               <span
-                className="text-[9px] font-bold px-2 py-1 rounded-full"
+                className="text-[11px] font-bold px-2 py-1 rounded-full"
                 style={{ background: 'rgba(140,198,63,0.12)', color: C.green }}
               >
                 3x Industry Average
@@ -206,11 +208,11 @@ export default function ROIDashboard() {
             <div className="w-full mt-4 rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
               <div className="grid grid-cols-2 gap-2 text-center">
                 <div>
-                  <div className="text-[9px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>MEMTrak</div>
+                  <div className="text-[11px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>MEMTrak</div>
                   <div className="text-lg font-extrabold" style={{ color: C.green }}>36x</div>
                 </div>
                 <div>
-                  <div className="text-[9px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Industry Avg</div>
+                  <div className="text-[11px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Industry Avg</div>
                   <div className="text-lg font-extrabold" style={{ color: C.blue }}>12x</div>
                 </div>
               </div>
@@ -229,7 +231,7 @@ export default function ROIDashboard() {
                   border: `1px solid ${c.annual > 0 ? c.color + '25' : 'var(--card-border)'}`,
                 }}
               >
-                <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: c.color }}>
+                <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: c.color }}>
                   {c.item}
                 </div>
                 <div className="text-xl font-extrabold" style={{ color: c.annual > 0 ? c.color : 'var(--heading)' }}>
@@ -255,15 +257,15 @@ export default function ROIDashboard() {
           {/* Value delivered */}
           <div className="grid grid-cols-3 gap-3 mt-4">
             <div className="rounded-lg p-3 text-center" style={{ background: 'var(--input-bg)' }}>
-              <div className="text-[9px] uppercase font-bold" style={{ color: C.blue }}>Revenue Attributed</div>
+              <div className="text-[11px] uppercase font-bold" style={{ color: C.blue }}>Revenue Attributed</div>
               <div className="text-lg font-extrabold" style={{ color: C.blue }}>$673K</div>
             </div>
             <div className="rounded-lg p-3 text-center" style={{ background: 'var(--input-bg)' }}>
-              <div className="text-[9px] uppercase font-bold" style={{ color: C.orange }}>Cost Savings</div>
+              <div className="text-[11px] uppercase font-bold" style={{ color: C.orange }}>Cost Savings</div>
               <div className="text-lg font-extrabold" style={{ color: C.orange }}>${(annualSavings / 1000).toFixed(0)}K</div>
             </div>
             <div className="rounded-lg p-3 text-center" style={{ background: 'rgba(140,198,63,0.06)' }}>
-              <div className="text-[9px] uppercase font-bold" style={{ color: C.green }}>Total Value</div>
+              <div className="text-[11px] uppercase font-bold" style={{ color: C.green }}>Total Value</div>
               <div className="text-lg font-extrabold" style={{ color: C.green }}>$709K</div>
             </div>
           </div>
@@ -647,24 +649,24 @@ export default function ROIDashboard() {
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-3 gap-3">
                 <div className="rounded-lg p-3 text-center" style={{ background: 'var(--input-bg)' }}>
-                  <div className="text-[9px] uppercase font-bold" style={{ color: C.red }}>Send Cost</div>
+                  <div className="text-[11px] uppercase font-bold" style={{ color: C.red }}>Send Cost</div>
                   <div className="text-xl font-extrabold" style={{ color: C.red }}>${selectedCampaign.cost}</div>
                 </div>
                 <div className="rounded-lg p-3 text-center" style={{ background: 'var(--input-bg)' }}>
-                  <div className="text-[9px] uppercase font-bold" style={{ color: C.blue }}>Revenue</div>
+                  <div className="text-[11px] uppercase font-bold" style={{ color: C.blue }}>Revenue</div>
                   <div className="text-xl font-extrabold" style={{ color: C.blue }}>
                     ${selectedCampaign.revenue.toLocaleString()}
                   </div>
                 </div>
                 <div className="rounded-lg p-3 text-center" style={{ background: 'rgba(140,198,63,0.06)' }}>
-                  <div className="text-[9px] uppercase font-bold" style={{ color: C.green }}>ROI</div>
+                  <div className="text-[11px] uppercase font-bold" style={{ color: C.green }}>ROI</div>
                   <div className="text-xl font-extrabold" style={{ color: C.green }}>
                     {selectedCampaign.roi.toLocaleString()}x
                   </div>
                 </div>
               </div>
               <div className="rounded-lg p-4" style={{ background: 'var(--input-bg)' }}>
-                <div className="text-[9px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>
+                <div className="text-[11px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>
                   ROI Calculation
                 </div>
                 <div className="space-y-1 text-[10px]" style={{ color: 'var(--text-muted)' }}>
@@ -807,23 +809,23 @@ export default function ROIDashboard() {
         {/* 5-year summary row */}
         <div className="grid grid-cols-3 gap-3 mt-4 pt-3 border-t" style={{ borderColor: 'var(--card-border)' }}>
           <div className="text-center">
-            <div className="text-[9px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>5-Year Cost</div>
+            <div className="text-[11px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>5-Year Cost</div>
             <div className="text-lg font-extrabold" style={{ color: C.red }}>$4,500</div>
-            <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>$900/yr x 5</div>
+            <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>$900/yr x 5</div>
           </div>
           <div className="text-center">
-            <div className="text-[9px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>5-Year Value</div>
+            <div className="text-[11px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>5-Year Value</div>
             <div className="text-lg font-extrabold" style={{ color: C.green }}>
               ${(fiveYearProjection / 1000000).toFixed(1)}M
             </div>
-            <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>cumulative</div>
+            <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>cumulative</div>
           </div>
           <div className="text-center">
-            <div className="text-[9px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>5-Year ROI</div>
+            <div className="text-[11px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>5-Year ROI</div>
             <div className="text-lg font-extrabold" style={{ color: C.purple }}>
               {Math.round(fiveYearProjection / 4500).toLocaleString()}x
             </div>
-            <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>return</div>
+            <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>return</div>
           </div>
         </div>
       </Card>

@@ -289,7 +289,7 @@ export default function TemplateVault() {
               <div className="relative h-24" style={{ background: categoryGradients[t.category] }}>
                 {t.recommended && (
                   <div
-                    className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-full text-[8px] font-extrabold"
+                    className="absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-extrabold"
                     style={{ background: 'rgba(140,198,63,0.9)', color: '#fff' }}
                   >
                     <Sparkles className="w-2.5 h-2.5" /> Recommended
@@ -297,7 +297,7 @@ export default function TemplateVault() {
                 )}
                 <div className="absolute bottom-2 left-3 flex items-center gap-1.5">
                   <CatIcon className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.8)' }} />
-                  <span className="text-[9px] font-bold" style={{ color: 'rgba(255,255,255,0.8)' }}>{t.category}</span>
+                  <span className="text-[11px] font-bold" style={{ color: 'rgba(255,255,255,0.8)' }}>{t.category}</span>
                 </div>
                 {/* Score badge */}
                 <div
@@ -314,17 +314,17 @@ export default function TemplateVault() {
                 <div className="flex items-center gap-3 mb-2">
                   <div className="flex items-center gap-1">
                     <Eye className="w-3 h-3" style={{ color: C.blue }} />
-                    <span className="text-[9px] font-semibold" style={{ color: 'var(--text-muted)' }}>{t.openRate}%</span>
+                    <span className="text-[11px] font-semibold" style={{ color: 'var(--text-muted)' }}>{t.openRate}%</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <MousePointerClick className="w-3 h-3" style={{ color: C.green }} />
-                    <span className="text-[9px] font-semibold" style={{ color: 'var(--text-muted)' }}>{t.clickRate}%</span>
+                    <span className="text-[11px] font-semibold" style={{ color: 'var(--text-muted)' }}>{t.clickRate}%</span>
                   </div>
                 </div>
                 <MiniBar value={t.score} color={scoreColor} />
                 <div className="flex items-center justify-between mt-2">
-                  <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Used {t.timesUsed}x</span>
-                  <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Last: {t.lastUsed}</span>
+                  <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Used {t.timesUsed}x</span>
+                  <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Last: {t.lastUsed}</span>
                 </div>
               </div>
             </div>
@@ -413,7 +413,7 @@ export default function TemplateVault() {
                 <div className="flex items-center gap-2">
                   <h2 className="text-base font-bold" style={{ color: 'var(--heading)' }}>{selectedTemplate.name}</h2>
                   {selectedTemplate.recommended && (
-                    <span className="text-[8px] font-extrabold px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(140,198,63,0.15)', color: C.green }}>Recommended</span>
+                    <span className="text-[11px] font-extrabold px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(140,198,63,0.15)', color: C.green }}>Recommended</span>
                   )}
                 </div>
                 <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{selectedTemplate.category} template</p>
@@ -428,23 +428,23 @@ export default function TemplateVault() {
               <div className="flex items-center gap-6">
                 <div className="text-center">
                   <div className="text-4xl font-extrabold" style={{ color: selectedTemplate.score >= 85 ? C.green : selectedTemplate.score >= 70 ? C.blue : C.orange }}>{selectedTemplate.score}</div>
-                  <div className="text-[9px] font-bold" style={{ color: 'var(--text-muted)' }}>Performance Score</div>
+                  <div className="text-[11px] font-bold" style={{ color: 'var(--text-muted)' }}>Performance Score</div>
                 </div>
                 <div className="flex-1 grid grid-cols-2 gap-3">
                   <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
-                    <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Open Rate</div>
+                    <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Open Rate</div>
                     <div className="text-lg font-extrabold" style={{ color: C.blue }}>{selectedTemplate.openRate}%</div>
                   </div>
                   <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
-                    <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Click Rate</div>
+                    <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Click Rate</div>
                     <div className="text-lg font-extrabold" style={{ color: C.green }}>{selectedTemplate.clickRate}%</div>
                   </div>
                   <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
-                    <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Times Used</div>
+                    <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Times Used</div>
                     <div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>{selectedTemplate.timesUsed}</div>
                   </div>
                   <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
-                    <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Last Used</div>
+                    <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Last Used</div>
                     <div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>{selectedTemplate.lastUsed}</div>
                   </div>
                 </div>
@@ -452,9 +452,9 @@ export default function TemplateVault() {
 
               {/* Subject Line & Preview */}
               <div className="rounded-lg p-4" style={{ background: 'var(--input-bg)', border: '1px solid var(--card-border)' }}>
-                <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Subject Line</div>
+                <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Subject Line</div>
                 <div className="text-sm font-bold mb-3" style={{ color: 'var(--heading)' }}>{selectedTemplate.subjectLine}</div>
-                <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Preview Text</div>
+                <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Preview Text</div>
                 <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{selectedTemplate.previewText}</div>
               </div>
 
@@ -470,7 +470,7 @@ export default function TemplateVault() {
                       <div className="flex items-center gap-2">
                         {i === 0 && <CheckCircle2 className="w-3.5 h-3.5" style={{ color: C.green }} />}
                         <span className="text-[10px] font-bold" style={{ color: 'var(--heading)' }}>{ab.variant}</span>
-                        {i === 0 && <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(140,198,63,0.15)', color: C.green }}>Winner</span>}
+                        {i === 0 && <span className="text-[11px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(140,198,63,0.15)', color: C.green }}>Winner</span>}
                       </div>
                       <div className="flex items-center gap-4">
                         <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Open: <span className="font-bold" style={{ color: C.blue }}>{ab.openRate}%</span></span>

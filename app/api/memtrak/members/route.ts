@@ -5,6 +5,8 @@ import {
   type SortField,
 } from '@/lib/member-data';
 import { logEntityAudit } from '@/lib/audit';
+import { requireReadOnly, requireStaff, safeError } from '@/lib/route-auth';
+import { auditContext } from '@/lib/audit-context';
 
 /**
  * MEMTrak Members API
@@ -19,6 +21,9 @@ import { logEntityAudit } from '@/lib/audit';
  */
 
 export async function GET(request: NextRequest) {
+  const gate = await requireReadOnly();
+  if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
   const sp = request.nextUrl.searchParams;
   const result = await listOrganizations({
     q: sp.get('q') ?? undefined,
@@ -38,6 +43,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const gate = await requireStaff();
+  if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
   let body: Record<string, unknown>;
   try {
     body = await request.json();
@@ -57,13 +65,12 @@ export async function POST(request: NextRequest) {
     const org = await createOrganization(body as any);
     logEntityAudit({
       entity: 'organization', entity_id: org.id, entity_label: org.org_name,
-      action: 'create', actor: 'staff',
+      action: 'create', actor: gate.actor.email,
       summary: `Created ${org.org_name} (${org.org_type}, $${org.annual_dues.toLocaleString()} dues)`,
+      ...auditContext(request),
     });
     return NextResponse.json({ success: true, org }, { status: 201 });
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Create failed';
-    const isConfig = message.includes('Supabase not configured');
-    return NextResponse.json({ error: message }, { status: isConfig ? 503 : 500 });
+    return safeError(err);
   }
 }

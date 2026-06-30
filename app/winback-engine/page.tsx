@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import SparkKpi from '@/components/SparkKpi';
 import Card from '@/components/Card';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import ClientChart from '@/components/ClientChart';
 
 /* ── Palette ── */
@@ -145,17 +146,17 @@ function CandidateModal({ candidate, onClose }: { candidate: typeof sunsetCandid
               { label: 'Winback Result', value: candidate.winbackResult },
             ].map(f => (
               <div key={f.label} className="p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
-                <p className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>{f.label}</p>
+                <p className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>{f.label}</p>
                 <p className="text-sm font-bold" style={{ color: 'var(--heading)' }}>{f.value}</p>
               </div>
             ))}
           </div>
           <div className="p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
-            <p className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Email</p>
+            <p className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Email</p>
             <p className="text-xs font-mono" style={{ color: 'var(--heading)' }}>{candidate.email}</p>
           </div>
           <div className="p-3 rounded-lg" style={{ background: `color-mix(in srgb, ${candidate.action === 'Remove' ? C.red : candidate.action === 'Phone outreach' ? C.amber : C.blue} 10%, transparent)` }}>
-            <p className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Recommended Action</p>
+            <p className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Recommended Action</p>
             <p className="text-sm font-bold" style={{ color: candidate.action === 'Remove' ? C.red : candidate.action === 'Phone outreach' ? C.amber : C.blue }}>
               {candidate.action}
             </p>
@@ -167,7 +168,7 @@ function CandidateModal({ candidate, onClose }: { candidate: typeof sunsetCandid
             </p>
           </div>
           <div>
-            <p className="text-[9px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>Winback Sequence Timeline</p>
+            <p className="text-[11px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>Winback Sequence Timeline</p>
             <div className="space-y-2">
               {winbackSequence.map((step, i) => (
                 <div key={i} className="flex items-center gap-3 p-2 rounded-lg" style={{ background: 'var(--input-bg)' }}>
@@ -181,7 +182,7 @@ function CandidateModal({ candidate, onClose }: { candidate: typeof sunsetCandid
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-[10px] font-bold truncate" style={{ color: 'var(--heading)' }}>{step.subject}</p>
-                    <p className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{step.timing}</p>
+                    <p className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{step.timing}</p>
                   </div>
                 </div>
               ))}
@@ -203,6 +204,7 @@ export default function WinbackEngine() {
   return (
     <div className="p-6 space-y-6">
 
+      <SampleDataBadge message="The lapsed-member cohorts and win-back results below are illustrative sample values. They will be computed from live member status, decay_score and last_payment_date once this engine is wired to the data layer and send client." />
       {/* ── 1. Branded Header ── */}
       <div className="flex items-center gap-4">
         <div
@@ -304,13 +306,13 @@ export default function WinbackEngine() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-sm font-extrabold" style={{ color: 'var(--heading)' }}>{t.days} Days</span>
-                    <span className="text-[9px] font-bold px-2 py-0.5 rounded-full" style={{ background: `color-mix(in srgb, ${t.color} 15%, transparent)`, color: t.color }}>{t.label}</span>
+                    <span className="text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: `color-mix(in srgb, ${t.color} 15%, transparent)`, color: t.color }}>{t.label}</span>
                   </div>
                   <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{t.desc}</p>
                 </div>
                 <div className="text-right flex-shrink-0">
                   <div className="text-lg font-extrabold" style={{ color: t.color }}>{t.count.toLocaleString()}</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{t.pct}% of list</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{t.pct}% of list</div>
                 </div>
               </div>
               {i < thresholds.length - 1 && (
@@ -345,19 +347,19 @@ export default function WinbackEngine() {
                   </div>
                   <div className="grid grid-cols-4 gap-2">
                     <div className="text-center">
-                      <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Total</div>
+                      <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Total</div>
                       <div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{tier.total.toLocaleString()}</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-[9px]" style={{ color: C.amber }}>30d</div>
+                      <div className="text-[11px]" style={{ color: C.amber }}>30d</div>
                       <div className="text-xs font-bold" style={{ color: C.amber }}>{tier.inactive30}</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-[9px]" style={{ color: C.red }}>60d</div>
+                      <div className="text-[11px]" style={{ color: C.red }}>60d</div>
                       <div className="text-xs font-bold" style={{ color: C.red }}>{tier.inactive60}</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-[9px]" style={{ color: C.gray }}>90d</div>
+                      <div className="text-[11px]" style={{ color: C.gray }}>90d</div>
                       <div className="text-xs font-bold" style={{ color: C.gray }}>{tier.inactive90}</div>
                     </div>
                   </div>
@@ -372,7 +374,7 @@ export default function WinbackEngine() {
             <thead>
               <tr style={{ borderBottom: '1px solid var(--card-border)' }}>
                 {['Tier', 'Total', '30-Day', '60-Day', '90-Day', '% Inactive'].map(h => (
-                  <th key={h} className="text-[9px] uppercase tracking-wider font-bold pb-3 pr-4" style={{ color: 'var(--text-muted)' }}>{h}</th>
+                  <th key={h} className="text-[11px] uppercase tracking-wider font-bold pb-3 pr-4" style={{ color: 'var(--text-muted)' }}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -418,7 +420,7 @@ export default function WinbackEngine() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <p className="text-xs font-bold truncate" style={{ color: 'var(--heading)' }}>{step.subject}</p>
-                    <span className="text-[9px] font-bold px-2 py-0.5 rounded-full flex-shrink-0" style={{ background: `color-mix(in srgb, ${C.green} 15%, transparent)`, color: C.green }}>{step.status}</span>
+                    <span className="text-[11px] font-bold px-2 py-0.5 rounded-full flex-shrink-0" style={{ background: `color-mix(in srgb, ${C.green} 15%, transparent)`, color: C.green }}>{step.status}</span>
                   </div>
                   <p className="text-[10px] mb-2" style={{ color: 'var(--text-muted)' }}>{step.tone} &middot; {step.timing}</p>
                   <div className="flex items-center gap-4">
@@ -433,7 +435,7 @@ export default function WinbackEngine() {
                   </div>
                 </div>
               </div>
-              <div className="text-[8px] mt-2 font-semibold" style={{ color: 'var(--accent)' }}>Click for details</div>
+              <div className="text-[11px] mt-2 font-semibold" style={{ color: 'var(--accent)' }}>Click for details</div>
             </div>
           ))}
           <div className="p-3 rounded-lg" style={{ background: `color-mix(in srgb, ${C.green} 8%, transparent)` }}>
@@ -472,8 +474,8 @@ export default function WinbackEngine() {
                   <span className="text-sm font-extrabold" style={{ color: m.color }}>{m.value}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{m.sub}</span>
-                  <span className="text-[9px] font-bold" style={{ color: 'var(--text-muted)' }}>{m.benchmark}</span>
+                  <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{m.sub}</span>
+                  <span className="text-[11px] font-bold" style={{ color: 'var(--text-muted)' }}>{m.benchmark}</span>
                 </div>
               </div>
             ))}
@@ -495,15 +497,15 @@ export default function WinbackEngine() {
             <div className="grid grid-cols-3 gap-3">
               <div className="p-3 rounded-lg text-center" style={{ background: `color-mix(in srgb, ${C.red} 8%, transparent)` }}>
                 <div className="text-lg font-extrabold" style={{ color: C.red }}>3</div>
-                <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Remove</div>
+                <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Remove</div>
               </div>
               <div className="p-3 rounded-lg text-center" style={{ background: `color-mix(in srgb, ${C.amber} 8%, transparent)` }}>
                 <div className="text-lg font-extrabold" style={{ color: C.amber }}>2</div>
-                <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Last attempt</div>
+                <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Last attempt</div>
               </div>
               <div className="p-3 rounded-lg text-center" style={{ background: `color-mix(in srgb, ${C.blue} 8%, transparent)` }}>
                 <div className="text-lg font-extrabold" style={{ color: C.blue }}>1</div>
-                <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Extend</div>
+                <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Extend</div>
               </div>
             </div>
           </div>
@@ -514,7 +516,7 @@ export default function WinbackEngine() {
             <thead>
               <tr style={{ borderBottom: '1px solid var(--card-border)' }}>
                 {['Organization', 'Type', 'Last Open', 'Winback Result', 'Revenue', 'Action'].map(h => (
-                  <th key={h} className="text-[9px] uppercase tracking-wider font-bold pb-3 pr-4" style={{ color: 'var(--text-muted)' }}>{h}</th>
+                  <th key={h} className="text-[11px] uppercase tracking-wider font-bold pb-3 pr-4" style={{ color: 'var(--text-muted)' }}>{h}</th>
                 ))}
               </tr>
             </thead>
@@ -535,7 +537,7 @@ export default function WinbackEngine() {
                   <td className="py-2.5 pr-4 text-xs font-bold" style={{ color: 'var(--heading)' }}>{c.revenue}</td>
                   <td className="py-2.5 pr-4">
                     <span
-                      className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+                      className="text-[11px] font-bold px-2 py-0.5 rounded-full"
                       style={{
                         background: `color-mix(in srgb, ${c.action === 'Remove' ? C.red : c.action === 'Phone outreach' ? C.amber : C.blue} 12%, transparent)`,
                         color: c.action === 'Remove' ? C.red : c.action === 'Phone outreach' ? C.amber : C.blue,
@@ -573,25 +575,25 @@ export default function WinbackEngine() {
             </div>
             <div className="p-6 space-y-4">
               <div className="p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
-                <p className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Subject Line</p>
+                <p className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Subject Line</p>
                 <p className="text-sm font-bold" style={{ color: 'var(--heading)' }}>{selectedSequence.subject}</p>
               </div>
               <div className="grid grid-cols-3 gap-3">
                 <div className="text-center p-3 rounded-lg" style={{ background: `color-mix(in srgb, ${C.blue} 8%, transparent)` }}>
                   <div className="text-lg font-extrabold" style={{ color: C.blue }}>{selectedSequence.openRate}%</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Open Rate</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Open Rate</div>
                 </div>
                 <div className="text-center p-3 rounded-lg" style={{ background: `color-mix(in srgb, ${C.green} 8%, transparent)` }}>
                   <div className="text-lg font-extrabold" style={{ color: C.green }}>{selectedSequence.clickRate}%</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Click Rate</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Click Rate</div>
                 </div>
                 <div className="text-center p-3 rounded-lg" style={{ background: `color-mix(in srgb, ${C.amber} 8%, transparent)` }}>
                   <div className="text-lg font-extrabold" style={{ color: C.amber }}>{selectedSequence.timing}</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Send Timing</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Send Timing</div>
                 </div>
               </div>
               <div>
-                <p className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Email Content Strategy</p>
+                <p className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Email Content Strategy</p>
                 <p className="text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>{selectedSequence.content}</p>
               </div>
             </div>

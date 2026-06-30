@@ -121,7 +121,7 @@ function BucketCard({ bucket, onPreview }: { bucket: BucketRow; onPreview: (invo
             <div className="flex items-center gap-2 flex-wrap">
               <h3 className="text-sm font-bold" style={{ color: 'var(--heading)' }}>{bucket.label}</h3>
               <span
-                className="text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded"
+                className="text-[11px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded"
                 style={{ color, background: `color-mix(in srgb, ${color} 14%, transparent)` }}
               >
                 {bucket.tone}

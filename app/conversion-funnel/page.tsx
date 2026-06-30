@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Card from '@/components/Card';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import SparkKpi from '@/components/SparkKpi';
 import ClientChart from '@/components/ClientChart';
 import {
@@ -191,6 +192,7 @@ export default function ConversionFunnel() {
 
   return (
     <div className="p-6">
+      <SampleDataBadge className="max-w-3xl" message="The funnel stage counts and conversion rates below are illustrative sample values. They will be aggregated from the live MEMTRAK open/click/conversion event log once this view is wired to it." />
       {/* ── 1. Branded Header ─────────────────────────────────── */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
@@ -290,7 +292,7 @@ export default function ConversionFunnel() {
                     <div className="flex items-center gap-1.5 px-3 py-1 rounded-full" style={{ background: 'var(--input-bg)' }}>
                       <ArrowDownRight className="w-3 h-3" style={{ color: 'var(--text-muted)' }} />
                       <span className="text-[10px] font-bold" style={{ color: 'var(--heading)' }}>{conversionFromPrev}%</span>
-                      <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
+                      <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
                         &middot; {dropFromPrev!.toLocaleString()} lost
                       </span>
                     </div>
@@ -302,7 +304,7 @@ export default function ConversionFunnel() {
                 <div className="flex items-center gap-4">
                   <div className="w-20 text-right flex-shrink-0">
                     <div className="text-[10px] font-bold" style={{ color: 'var(--heading)' }}>{stage.label}</div>
-                    {stage.note && <div className="text-[8px]" style={{ color: 'var(--text-muted)' }}>{stage.note}</div>}
+                    {stage.note && <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{stage.note}</div>}
                   </div>
                   <div className="flex-1">
                     {stage.isRevenue ? (
@@ -377,7 +379,7 @@ export default function ConversionFunnel() {
                     <div className="flex items-center gap-4 flex-shrink-0 ml-3">
                       <div className="text-right">
                         <div className="text-sm font-extrabold" style={{ color: d.color }}>{d.dropPct}</div>
-                        <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{d.dropCount.toLocaleString()} lost</div>
+                        <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{d.dropCount.toLocaleString()} lost</div>
                       </div>
                       <ChevronDown
                         className="w-4 h-4 transition-transform"
@@ -401,7 +403,7 @@ export default function ConversionFunnel() {
                             className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
                             style={{ background: `color-mix(in srgb, ${d.color} 20%, transparent)` }}
                           >
-                            <span className="text-[8px] font-bold" style={{ color: d.color }}>{ri + 1}</span>
+                            <span className="text-[11px] font-bold" style={{ color: d.color }}>{ri + 1}</span>
                           </div>
                           <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{rec}</span>
                         </div>
@@ -444,8 +446,8 @@ export default function ConversionFunnel() {
                       return (
                         <div key={s.label}>
                           <div className="flex items-center justify-between mb-0.5">
-                            <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{s.label}</span>
-                            <span className="text-[9px] font-bold" style={{ color: 'var(--heading)' }}>
+                            <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{s.label}</span>
+                            <span className="text-[11px] font-bold" style={{ color: 'var(--heading)' }}>
                               {s.count.toLocaleString()}
                               {si > 0 && (
                                 <span className="ml-1" style={{ color: 'var(--text-muted)' }}>

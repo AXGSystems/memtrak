@@ -87,19 +87,19 @@ export default function LiveFeed() {
       <div className="grid grid-cols-4 gap-3 mb-6 stagger-children">
         <div className="rounded-xl border p-3 text-center" style={{ background: 'var(--card)', borderColor: 'var(--card-border)' }}>
           <div className="text-xl font-extrabold num-transition" style={{ color: 'var(--heading)' }}>{events.length}</div>
-          <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Total Events</div>
+          <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Total Events</div>
         </div>
         <div className="rounded-xl border p-3 text-center" style={{ background: 'var(--card)', borderColor: 'var(--card-border)' }}>
           <div className="text-xl font-extrabold num-transition" style={{ color: '#8CC63F' }}>{counts.opens}</div>
-          <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Opens</div>
+          <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Opens</div>
         </div>
         <div className="rounded-xl border p-3 text-center" style={{ background: 'var(--card)', borderColor: 'var(--card-border)' }}>
           <div className="text-xl font-extrabold num-transition" style={{ color: '#4A90D9' }}>{counts.clicks}</div>
-          <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Clicks</div>
+          <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Clicks</div>
         </div>
         <div className="rounded-xl border p-3 text-center" style={{ background: 'var(--card)', borderColor: 'var(--card-border)' }}>
           <div className="text-xl font-extrabold num-transition" style={{ color: '#D94A4A' }}>{counts.bounces}</div>
-          <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Bounces</div>
+          <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Bounces</div>
         </div>
       </div>
 
@@ -122,12 +122,12 @@ export default function LiveFeed() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{ev.org}</span>
-                    <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold" style={{ background: cfg.bg, color: cfg.color }}>{cfg.label}</span>
-                    <span className="text-[9px] px-1.5 py-0.5 rounded" style={{ background: 'var(--background)', color: 'var(--text-muted)' }}>{ev.campaign}</span>
+                    <span className="text-[11px] px-1.5 py-0.5 rounded-full font-bold" style={{ background: cfg.bg, color: cfg.color }}>{cfg.label}</span>
+                    <span className="text-[11px] px-1.5 py-0.5 rounded" style={{ background: 'var(--background)', color: 'var(--text-muted)' }}>{ev.campaign}</span>
                   </div>
                   <div className="text-[10px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{ev.detail}</div>
                 </div>
-                <div className="text-[9px] flex-shrink-0 flex items-center gap-1" style={{ color: 'var(--text-muted)' }}>
+                <div className="text-[11px] flex-shrink-0 flex items-center gap-1" style={{ color: 'var(--text-muted)' }}>
                   <Clock className="w-3 h-3" />{ev.time}
                 </div>
               </div>

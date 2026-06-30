@@ -46,7 +46,7 @@ function StatusBadge({ status }: { status: string }) {
   if (cls === '__muted__') {
     return (
       <span
-        className="text-[9px] px-2 py-0.5 rounded-full font-semibold"
+        className="text-[11px] px-2 py-0.5 rounded-full font-semibold"
         style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}
       >
         {status}
@@ -54,7 +54,7 @@ function StatusBadge({ status }: { status: string }) {
     );
   }
   return (
-    <span className={`text-[9px] px-2 py-0.5 rounded-full font-semibold ${cls}`}>{status}</span>
+    <span className={`text-[11px] px-2 py-0.5 rounded-full font-semibold ${cls}`}>{status}</span>
   );
 }
 

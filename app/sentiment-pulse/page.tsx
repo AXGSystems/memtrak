@@ -317,7 +317,7 @@ export default function SentimentPulse() {
                   </div>
                   <div className="text-right">
                     <div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{ch.count}</div>
-                    <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>interactions</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>interactions</div>
                   </div>
                 </div>
               </div>
@@ -488,13 +488,13 @@ export default function SentimentPulse() {
                         {signal.member}
                       </span>
                       <span
-                        className="text-[9px] font-bold px-1.5 py-0.5 rounded"
+                        className="text-[11px] font-bold px-1.5 py-0.5 rounded"
                         style={{ background: 'var(--card)', color: 'var(--text-muted)' }}
                       >
                         {signal.channel}
                       </span>
                       <span
-                        className="text-[9px] font-bold px-2 py-0.5 rounded-full capitalize"
+                        className="text-[11px] font-bold px-2 py-0.5 rounded-full capitalize"
                         style={{ background: sentimentBg, color: sentimentColor }}
                       >
                         {signal.sentiment}
@@ -511,7 +511,7 @@ export default function SentimentPulse() {
                     <div className="text-lg font-extrabold" style={{ color: sentimentColor }}>
                       {signal.score}
                     </div>
-                    <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{signal.date}</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{signal.date}</div>
                   </div>
                 </div>
               </div>
@@ -573,7 +573,7 @@ export default function SentimentPulse() {
                 </div>
               </div>
               <div className="rounded-lg p-4" style={{ background: 'var(--input-bg)' }}>
-                <div className="text-[9px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>
+                <div className="text-[11px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>
                   Member Quote
                 </div>
                 <p className="text-xs italic leading-relaxed" style={{ color: 'var(--heading)' }}>
@@ -581,7 +581,7 @@ export default function SentimentPulse() {
                 </p>
               </div>
               <div className="rounded-lg p-4" style={{ background: 'var(--input-bg)' }}>
-                <div className="text-[9px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>
+                <div className="text-[11px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>
                   Analysis
                 </div>
                 <p className="text-[10px] leading-relaxed" style={{ color: 'var(--text-muted)' }}>
@@ -627,7 +627,7 @@ export default function SentimentPulse() {
                       {rec.title}
                     </span>
                     <span
-                      className="text-[8px] font-bold px-1.5 py-0.5 rounded-full"
+                      className="text-[11px] font-bold px-1.5 py-0.5 rounded-full"
                       style={{ background: `${rec.color}15`, color: rec.color }}
                     >
                       {rec.priority}

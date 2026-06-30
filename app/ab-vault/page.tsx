@@ -374,7 +374,7 @@ export default function ABVault() {
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="text-xs font-bold truncate" style={{ color: 'var(--heading)' }}>{test.name}</span>
                         <span
-                          className="text-[8px] px-1.5 py-0.5 rounded-full font-bold flex-shrink-0"
+                          className="text-[11px] px-1.5 py-0.5 rounded-full font-bold flex-shrink-0"
                           style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}
                         >
                           {test.category}
@@ -386,13 +386,13 @@ export default function ABVault() {
                   <div className="flex items-center gap-4 flex-shrink-0 ml-3">
                     <div className="text-right">
                       <div className="text-sm font-extrabold" style={{ color: C.green }}>+{test.lift}%</div>
-                      <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>lift</div>
+                      <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>lift</div>
                     </div>
                     <div className="text-right hidden sm:block">
                       <div className="text-xs font-bold" style={{ color: test.confidence >= 95 ? C.green : C.amber }}>
                         {test.confidence}%
                       </div>
-                      <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>confidence</div>
+                      <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>confidence</div>
                     </div>
                     <div
                       className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"
@@ -415,7 +415,7 @@ export default function ABVault() {
                 <div className="px-4 pb-4 space-y-3 border-t" style={{ borderColor: 'var(--card-border)' }}>
                   <div className="grid grid-cols-2 gap-3 mt-3">
                     <div className="p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
-                      <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>
+                      <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>
                         Variant A {test.winner === 'A' && '(Winner)'}
                       </div>
                       <div className="text-xs font-bold" style={{ color: test.winner === 'A' ? C.green : 'var(--heading)' }}>
@@ -423,7 +423,7 @@ export default function ABVault() {
                       </div>
                     </div>
                     <div className="p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
-                      <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>
+                      <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>
                         Variant B {test.winner === 'B' && '(Winner)'}
                       </div>
                       <div className="text-xs font-bold" style={{ color: test.winner === 'B' ? C.green : 'var(--heading)' }}>
@@ -434,19 +434,19 @@ export default function ABVault() {
 
                   <div className="grid grid-cols-4 gap-3">
                     <div className="p-2 rounded-lg text-center" style={{ background: 'var(--input-bg)' }}>
-                      <div className="text-[8px] uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Lift</div>
+                      <div className="text-[11px] uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Lift</div>
                       <div className="text-sm font-extrabold" style={{ color: C.green }}>+{test.lift}%</div>
                     </div>
                     <div className="p-2 rounded-lg text-center" style={{ background: 'var(--input-bg)' }}>
-                      <div className="text-[8px] uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Confidence</div>
+                      <div className="text-[11px] uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Confidence</div>
                       <div className="text-sm font-extrabold" style={{ color: test.confidence >= 95 ? C.green : C.amber }}>{test.confidence}%</div>
                     </div>
                     <div className="p-2 rounded-lg text-center" style={{ background: 'var(--input-bg)' }}>
-                      <div className="text-[8px] uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Sample</div>
+                      <div className="text-[11px] uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Sample</div>
                       <div className="text-sm font-extrabold" style={{ color: 'var(--heading)' }}>{test.sampleSize.toLocaleString()}</div>
                     </div>
                     <div className="p-2 rounded-lg text-center" style={{ background: 'var(--input-bg)' }}>
-                      <div className="text-[8px] uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Revenue</div>
+                      <div className="text-[11px] uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>Revenue</div>
                       <div className="text-sm font-extrabold" style={{ color: C.blue }}>
                         {test.revenueImpact > 0 ? `$${(test.revenueImpact / 1000).toFixed(0)}K` : '--'}
                       </div>
@@ -494,7 +494,7 @@ export default function ABVault() {
                 </div>
                 <div>
                   <p className="text-xs font-bold leading-snug" style={{ color: 'var(--heading)' }}>{l.text}</p>
-                  <p className="text-[9px] mt-0.5" style={{ color: 'var(--text-muted)' }}>Source: {l.source}</p>
+                  <p className="text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>Source: {l.source}</p>
                 </div>
               </div>
             );

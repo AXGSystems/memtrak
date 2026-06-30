@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Card from '@/components/Card';
 import ClientChart from '@/components/ClientChart';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import ProgressRing from '@/components/ProgressRing';
 import SparkKpi from '@/components/SparkKpi';
 import AnimatedCounter from '@/components/AnimatedCounter';
@@ -129,7 +130,7 @@ function TrendBadge({ trend }: { trend: string }) {
   const c = cfg[trend] || cfg.stable;
   const Icon = c.icon;
   return (
-    <span className="inline-flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-full" style={{ background: c.bg, color: c.fg }}>
+    <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: c.bg, color: c.fg }}>
       <Icon className="w-2.5 h-2.5" /> {trend}
     </span>
   );
@@ -153,13 +154,14 @@ export default function TrustScorePage() {
         </div>
         <div>
           <h1 className="text-lg font-extrabold tracking-tight" style={{ color: 'var(--heading)' }}>
-            TrustScore<span className="align-super text-[9px] font-black" style={{ color: 'var(--accent)' }}>&trade;</span>
+            TrustScore<span className="align-super text-[11px] font-black" style={{ color: 'var(--accent)' }}>&trade;</span>
           </h1>
           <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
             Measure what actually matters: <strong style={{ color: 'var(--heading)' }}>trust.</strong>
           </p>
         </div>
       </div>
+      <SampleDataBadge message="Trust scores and component breakdowns below are illustrative sample values. The members directory already stores a trust_score field; this view will be wired to compute from that live data." />
       <p className="text-[11px] leading-relaxed max-w-2xl" style={{ color: 'var(--text-muted)' }}>
         Based on the MarTech 2026 trust framework. <strong style={{ color: 'var(--heading)' }}>Credibility + Reliability + Intimacy &minus; Self-Orientation = Trust.</strong> TrustScore measures the <em>relationship</em>, not just the engagement.
       </p>
@@ -361,12 +363,12 @@ export default function TrustScorePage() {
                       <Icon className="w-3.5 h-3.5 flex-shrink-0" style={{ color: f.color }} />
                       <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>
                         {f.name}
-                        {f.negative && <span className="text-[9px] font-normal ml-1" style={{ color: C.red }}>(negative factor)</span>}
+                        {f.negative && <span className="text-[11px] font-normal ml-1" style={{ color: C.red }}>(negative factor)</span>}
                       </span>
-                      <span className="text-[9px] font-semibold ml-auto" style={{ color: f.color }}>{f.weight}%</span>
+                      <span className="text-[11px] font-semibold ml-auto" style={{ color: f.color }}>{f.weight}%</span>
                     </div>
                     <p className="text-[10px] italic" style={{ color: 'var(--text-muted)' }}>&ldquo;{f.question}&rdquo;</p>
-                    <p className="text-[9px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{f.measured}</p>
+                    <p className="text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{f.measured}</p>
                   </div>
                 </div>
               );
@@ -664,16 +666,16 @@ export default function TrustScorePage() {
         />
         {/* Quadrant labels */}
         <div className="grid grid-cols-2 gap-2 mt-3">
-          <div className="text-center text-[9px] font-bold rounded-lg py-1.5" style={{ background: 'rgba(245,197,66,0.08)', color: C.amber }}>
+          <div className="text-center text-[11px] font-bold rounded-lg py-1.5" style={{ background: 'rgba(245,197,66,0.08)', color: C.amber }}>
             High Trust / Low Engagement
           </div>
-          <div className="text-center text-[9px] font-bold rounded-lg py-1.5" style={{ background: 'rgba(140,198,63,0.08)', color: C.green }}>
+          <div className="text-center text-[11px] font-bold rounded-lg py-1.5" style={{ background: 'rgba(140,198,63,0.08)', color: C.green }}>
             High Trust / High Engagement
           </div>
-          <div className="text-center text-[9px] font-bold rounded-lg py-1.5" style={{ background: 'rgba(128,128,128,0.08)', color: 'var(--text-muted)' }}>
+          <div className="text-center text-[11px] font-bold rounded-lg py-1.5" style={{ background: 'rgba(128,128,128,0.08)', color: 'var(--text-muted)' }}>
             Low Trust / Low Engagement
           </div>
-          <div className="text-center text-[9px] font-bold rounded-lg py-1.5" style={{ background: 'rgba(217,74,74,0.08)', color: C.red }}>
+          <div className="text-center text-[11px] font-bold rounded-lg py-1.5" style={{ background: 'rgba(217,74,74,0.08)', color: C.red }}>
             Low Trust / High Engagement
           </div>
         </div>

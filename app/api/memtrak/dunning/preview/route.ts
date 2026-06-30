@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getInvoice, getOrganization, listContacts } from '@/lib/member-data';
 import { cohortForInvoice, renderDunningEmail } from '@/lib/dunning';
 
+import { requireReadOnly } from '@/lib/route-auth';
 /**
  * GET /api/memtrak/dunning/preview?invoice_id=...
  *
@@ -13,6 +14,9 @@ import { cohortForInvoice, renderDunningEmail } from '@/lib/dunning';
  * match any dunning window.
  */
 export async function GET(request: NextRequest) {
+  const gate = await requireReadOnly();
+  if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
   const sp = request.nextUrl.searchParams;
   const id = sp.get('invoice_id');
   if (!id) return NextResponse.json({ error: 'invoice_id required' }, { status: 400 });

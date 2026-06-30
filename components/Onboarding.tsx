@@ -99,22 +99,22 @@ export default function Onboarding() {
               <div className="flex items-center justify-center gap-4 mt-8">
                 <div className="text-center">
                   <div className="text-2xl font-extrabold" style={{ color: 'var(--accent)' }}>43</div>
-                  <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Pages</div>
+                  <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Pages</div>
                 </div>
                 <div className="w-px h-8" style={{ background: 'var(--card-border)' }} />
                 <div className="text-center">
                   <div className="text-2xl font-extrabold" style={{ color: 'var(--accent)' }}>15</div>
-                  <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>API Endpoints</div>
+                  <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>API Endpoints</div>
                 </div>
                 <div className="w-px h-8" style={{ background: 'var(--card-border)' }} />
                 <div className="text-center">
                   <div className="text-2xl font-extrabold" style={{ color: 'var(--accent)' }}>5</div>
-                  <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Themes</div>
+                  <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Themes</div>
                 </div>
                 <div className="w-px h-8" style={{ background: 'var(--card-border)' }} />
                 <div className="text-center">
                   <div className="text-2xl font-extrabold" style={{ color: '#8CC63F' }}>$0</div>
-                  <div className="text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Per-seat Cost</div>
+                  <div className="text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Per-seat Cost</div>
                 </div>
               </div>
             </div>
@@ -133,7 +133,7 @@ export default function Onboarding() {
                       <div className="flex items-center gap-2 mb-1.5">
                         <Icon className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} />
                         <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{r.tool}</span>
-                        <span className="ml-auto text-[9px] font-bold" style={{ color: '#D94A4A' }}>{r.cost}</span>
+                        <span className="ml-auto text-[11px] font-bold" style={{ color: '#D94A4A' }}>{r.cost}</span>
                       </div>
                       <div className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{r.replaced}</div>
                     </div>
@@ -246,7 +246,7 @@ export default function Onboarding() {
                 ].map(a => (
                   <div key={a.label} className="p-3 rounded-xl text-center" style={{ background: 'var(--background)' }}>
                     <div className="text-[11px] font-bold mb-0.5" style={{ color: a.color }}>{a.label}</div>
-                    <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{a.desc}</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{a.desc}</div>
                   </div>
                 ))}
               </div>

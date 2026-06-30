@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { getAdminSupabase } from '@/lib/supabase-admin';
-import { isAuthEnabled, type AuthRole } from '@/lib/auth.config';
+import { isAuthEnabled, isPreviewOpen, type AuthRole } from '@/lib/auth.config';
 import { generateApiKeySecret, hashApiKey, prefixOf, type ApiKeyRecord } from '@/lib/api-keys';
 import { logEntityAudit } from '@/lib/audit';
 
@@ -12,10 +12,16 @@ import { logEntityAudit } from '@/lib/audit';
  */
 
 async function requireAdmin() {
-  if (!isAuthEnabled()) return { ok: true as const, email: 'auth-disabled' };
+  // Fail closed: even when the session gate is "disabled", key management
+  // requires an explicit non-production preview. Production NEVER bypasses.
+  if (!isAuthEnabled()) {
+    if (isPreviewOpen()) return { ok: true as const, email: 'preview-demo' };
+    return { ok: false as const, status: 401, error: 'Authentication required' };
+  }
   const session = await auth();
   const user = session?.user as { email?: string | null; role?: AuthRole } | undefined;
-  if (!user || user.role !== 'admin') {
+  if (!user) return { ok: false as const, status: 401, error: 'Authentication required' };
+  if (user.role !== 'admin') {
     return { ok: false as const, status: 403, error: 'Admin only' };
   }
   return { ok: true as const, email: user.email ?? 'admin' };
@@ -52,6 +58,14 @@ export async function POST(request: NextRequest) {
   const scopes = Array.isArray(body.scopes)
     ? body.scopes.filter((s): s is string => typeof s === 'string')
     : [];
+  // Empty scopes grant NO access (see scopeAllows). Reject at creation so an
+  // unscoped — and therefore useless/dangerous-by-mistake — key is never minted.
+  if (scopes.length === 0) {
+    return NextResponse.json(
+      { error: 'At least one scope is required (e.g. "GET:/api/memtrak/members"). Empty scopes grant no access.' },
+      { status: 400 },
+    );
+  }
   const note = typeof body.note === 'string' ? body.note : null;
 
   const admin = getAdminSupabase();

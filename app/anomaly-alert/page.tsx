@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Card from '@/components/Card';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import SparkKpi from '@/components/SparkKpi';
 import ClientChart from '@/components/ClientChart';
 import {
@@ -122,6 +123,7 @@ export default function AnomalyAlert() {
 
   return (
     <div className="p-6">
+      <SampleDataBadge className="max-w-3xl" message="The anomaly events and detection figures below are illustrative sample values. They demonstrate how MEMTRAK will surface send/engagement anomalies once the detector runs against the live event log." />
       {/* ── 1. Branded Header ─────────────────────────────────── */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
@@ -176,7 +178,7 @@ export default function AnomalyAlert() {
                 ].map((s) => (
                   <div key={s.label} className="text-center p-2 rounded-lg" style={{ background: 'var(--input-bg)' }}>
                     <div className="text-lg font-extrabold" style={{ color: s.color }}>{s.count}</div>
-                    <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{s.label}</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{s.label}</div>
                   </div>
                 ))}
               </div>
@@ -229,7 +231,7 @@ export default function AnomalyAlert() {
             Recent Anomalies
           </h2>
           <span
-            className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+            className="text-[11px] font-bold px-2 py-0.5 rounded-full"
             style={{ background: 'rgba(245,158,11,0.15)', color: C.amber }}
           >
             {anomalies.length} events
@@ -276,14 +278,14 @@ export default function AnomalyAlert() {
                           {a.metric}
                         </span>
                         <span
-                          className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+                          className="text-[11px] font-bold px-2 py-0.5 rounded-full"
                           style={{ background: sc.bg, color: sc.color }}
                         >
                           {a.severity}
                         </span>
                         {isPositive && (
                           <span
-                            className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+                            className="text-[11px] font-bold px-2 py-0.5 rounded-full"
                             style={{ background: 'rgba(140,198,63,0.12)', color: C.green }}
                           >
                             Positive
@@ -327,7 +329,7 @@ export default function AnomalyAlert() {
                   <div className="px-4 pb-4 pt-0 border-t" style={{ borderColor: 'var(--card-border)' }}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
                       <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
-                        <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>
+                        <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: 'var(--text-muted)' }}>
                           Analysis
                         </div>
                         <p className="text-[10px] leading-relaxed" style={{ color: 'var(--heading)' }}>
@@ -335,7 +337,7 @@ export default function AnomalyAlert() {
                         </p>
                       </div>
                       <div className="rounded-lg p-3" style={{ background: 'rgba(140,198,63,0.06)' }}>
-                        <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: C.green }}>
+                        <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: C.green }}>
                           Recommended Action
                         </div>
                         <p className="text-[10px] leading-relaxed" style={{ color: 'var(--heading)' }}>
@@ -372,7 +374,7 @@ export default function AnomalyAlert() {
               ].map((s) => (
                 <div key={s.label} className="text-center p-2 rounded-lg" style={{ background: 'var(--input-bg)' }}>
                   <div className="text-lg font-extrabold" style={{ color: s.color }}>{s.value}</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{s.label}</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{s.label}</div>
                 </div>
               ))}
             </div>
@@ -486,7 +488,7 @@ export default function AnomalyAlert() {
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="w-2.5 h-2.5 rounded-full" style={{ background: sc.dot }} />
-                  <span className="text-[8px] font-bold uppercase" style={{ color: sc.dot }}>{sc.label}</span>
+                  <span className="text-[11px] font-bold uppercase" style={{ color: sc.dot }}>{sc.label}</span>
                 </div>
                 <div className="text-[10px] font-bold mb-1" style={{ color: 'var(--heading)' }}>
                   {m.metric}
@@ -495,10 +497,10 @@ export default function AnomalyAlert() {
                   {m.current}
                 </div>
                 <div className="flex items-center justify-between mt-1">
-                  <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>
+                  <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
                     Base: {m.baseline}
                   </span>
-                  <span className="text-[9px] font-bold" style={{ color: sc.dot }}>
+                  <span className="text-[11px] font-bold" style={{ color: sc.dot }}>
                     {m.delta}
                   </span>
                 </div>

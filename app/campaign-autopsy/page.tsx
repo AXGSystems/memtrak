@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import Card from '@/components/Card';
 import SparkKpi from '@/components/SparkKpi';
 import ClientChart from '@/components/ClientChart';
@@ -191,6 +192,7 @@ export default function CampaignAutopsy() {
 
   return (
     <div className="p-6">
+      <SampleDataBadge />
       {/* ── 1. Branded Header ─────────────────────────────────── */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
@@ -306,7 +308,7 @@ export default function CampaignAutopsy() {
                   border: i === selectedIdx ? `1px solid ${C.indigo}40` : '1px solid var(--card-border)',
                 }}
               >
-                <span className="w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-extrabold" style={{ background: `color-mix(in srgb, ${sc} 20%, transparent)`, color: sc }}>{s}</span>
+                <span className="w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-extrabold" style={{ background: `color-mix(in srgb, ${sc} 20%, transparent)`, color: sc }}>{s}</span>
                 <span className="truncate max-w-[160px]">{c.name}</span>
               </button>
             );
@@ -333,13 +335,13 @@ export default function CampaignAutopsy() {
               <h3 className="text-base font-extrabold" style={{ color: 'var(--heading)' }}>{selected.name}</h3>
               <div className="flex items-center gap-3 mt-1">
                 <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>Sent {selected.sentDate}</span>
-                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}>{selected.type}</span>
-                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}>{selected.source}</span>
+                <span className="text-[11px] font-bold px-1.5 py-0.5 rounded" style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}>{selected.type}</span>
+                <span className="text-[11px] font-bold px-1.5 py-0.5 rounded" style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}>{selected.source}</span>
               </div>
             </div>
             <div className="text-right">
               <div className="text-3xl font-extrabold" style={{ color: scoreColor }}>{score}</div>
-              <div className="text-[9px] font-bold" style={{ color: 'var(--text-muted)' }}>Campaign Score</div>
+              <div className="text-[11px] font-bold" style={{ color: 'var(--text-muted)' }}>Campaign Score</div>
             </div>
           </div>
         </div>
@@ -399,9 +401,9 @@ export default function CampaignAutopsy() {
                       className="mx-auto rounded-t-lg transition-all duration-500"
                       style={{ height: Math.max(20, pct * 1.2), background: f.color + '80', borderTop: `3px solid ${f.color}`, width: '100%' }}
                     />
-                    <div className="text-[9px] font-bold mt-1.5" style={{ color: 'var(--text-muted)' }}>{f.label}</div>
+                    <div className="text-[11px] font-bold mt-1.5" style={{ color: 'var(--text-muted)' }}>{f.label}</div>
                     {i > 0 && (
-                      <div className="text-[8px] font-bold" style={{ color: f.color }}>{rate}%</div>
+                      <div className="text-[11px] font-bold" style={{ color: f.color }}>{rate}%</div>
                     )}
                   </div>
                 );
@@ -412,7 +414,7 @@ export default function CampaignAutopsy() {
           {/* Revenue Per Recipient + Comparison */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div className="rounded-lg p-4" style={{ background: 'var(--input-bg)' }}>
-              <div className="text-[9px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>Revenue Per Recipient</div>
+              <div className="text-[11px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>Revenue Per Recipient</div>
               <div className="text-2xl font-extrabold" style={{ color: selected.revenue > 0 ? C.green : 'var(--heading)' }}>
                 ${selected.delivered > 0 ? (selected.revenue / selected.delivered).toFixed(2) : '0.00'}
               </div>
@@ -421,13 +423,13 @@ export default function CampaignAutopsy() {
               </div>
               {avg.rpr > 0 && (
                 <div className="mt-2 flex items-center gap-2">
-                  <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{selected.type} avg:</span>
+                  <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{selected.type} avg:</span>
                   <span className="text-[10px] font-bold" style={{ color: C.blue }}>${avg.rpr.toFixed(2)}</span>
                 </div>
               )}
             </div>
             <div className="rounded-lg p-4" style={{ background: 'var(--input-bg)' }}>
-              <div className="text-[9px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>vs {selected.type} Average</div>
+              <div className="text-[11px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>vs {selected.type} Average</div>
               <div className="space-y-2">
                 {[
                   { label: 'Open Rate', yours: (selected.uniqueOpened / selected.delivered * 100), avg: avg.openRate },
@@ -439,7 +441,7 @@ export default function CampaignAutopsy() {
                       <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{m.label}</span>
                       <div className="flex items-center gap-2">
                         <span className="text-[10px] font-bold" style={{ color: 'var(--heading)' }}>{m.yours.toFixed(1)}%</span>
-                        <span className="text-[9px] font-bold" style={{ color: diff >= 0 ? C.green : C.red }}>
+                        <span className="text-[11px] font-bold" style={{ color: diff >= 0 ? C.green : C.red }}>
                           {diff >= 0 ? '+' : ''}{diff.toFixed(1)}pp
                         </span>
                       </div>
@@ -461,7 +463,7 @@ export default function CampaignAutopsy() {
                 <div key={i} className="rounded-lg border p-4" style={{ background: 'var(--input-bg)', borderColor: 'var(--card-border)', borderLeftWidth: '3px', borderLeftColor: r.color }}>
                   <div className="flex items-start justify-between mb-2">
                     <span className="text-[11px] font-bold" style={{ color: 'var(--heading)' }}>{r.title}</span>
-                    <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0 ml-2" style={{ background: `color-mix(in srgb, ${r.color} 15%, transparent)`, color: r.color }}>
+                    <span className="text-[11px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0 ml-2" style={{ background: `color-mix(in srgb, ${r.color} 15%, transparent)`, color: r.color }}>
                       {r.impact}
                     </span>
                   </div>

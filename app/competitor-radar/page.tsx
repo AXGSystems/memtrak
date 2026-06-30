@@ -416,13 +416,13 @@ export default function CompetitorRadarPage() {
 
         {/* Legend */}
         <div className="flex items-center gap-4 mt-4 pt-3 border-t" style={{ borderColor: 'var(--card-border)' }}>
-          <div className="flex items-center gap-1.5 text-[9px]" style={{ color: 'var(--text-muted)' }}>
+          <div className="flex items-center gap-1.5 text-[11px]" style={{ color: 'var(--text-muted)' }}>
             <RatingBadge rating="Full" /> <span>Full Support</span>
           </div>
-          <div className="flex items-center gap-1.5 text-[9px]" style={{ color: 'var(--text-muted)' }}>
+          <div className="flex items-center gap-1.5 text-[11px]" style={{ color: 'var(--text-muted)' }}>
             <RatingBadge rating="Partial" /> <span>Partial</span>
           </div>
-          <div className="flex items-center gap-1.5 text-[9px]" style={{ color: 'var(--text-muted)' }}>
+          <div className="flex items-center gap-1.5 text-[11px]" style={{ color: 'var(--text-muted)' }}>
             <RatingBadge rating="None" /> <span>Not Available</span>
           </div>
         </div>
@@ -601,7 +601,7 @@ export default function CompetitorRadarPage() {
             Why MEMTrak Wins
           </h2>
           <span
-            className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+            className="text-[11px] font-bold px-2 py-0.5 rounded-full"
             style={{ background: 'rgba(140,198,63,0.15)', color: C.green }}
           >
             {advantages.length} unique advantages
@@ -671,7 +671,7 @@ export default function CompetitorRadarPage() {
       >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="rounded-xl p-4 text-center" style={{ background: 'rgba(140,198,63,0.06)', border: '1px solid rgba(140,198,63,0.15)' }}>
-            <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: C.green }}>
+            <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: C.green }}>
               MEMTrak Annual
             </div>
             <div className="text-2xl font-extrabold" style={{ color: C.green }}>
@@ -681,7 +681,7 @@ export default function CompetitorRadarPage() {
           </div>
 
           <div className="rounded-xl p-4 text-center" style={{ background: 'rgba(217,74,74,0.06)', border: '1px solid rgba(217,74,74,0.15)' }}>
-            <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: C.red }}>
+            <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: C.red }}>
               Avg Competitor Annual
             </div>
             <div className="text-2xl font-extrabold" style={{ color: C.red }}>
@@ -691,7 +691,7 @@ export default function CompetitorRadarPage() {
           </div>
 
           <div className="rounded-xl p-4 text-center" style={{ background: 'rgba(74,144,217,0.06)', border: '1px solid rgba(74,144,217,0.15)' }}>
-            <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: C.blue }}>
+            <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: C.blue }}>
               Annual Savings
             </div>
             <div className="text-2xl font-extrabold" style={{ color: C.blue }}>

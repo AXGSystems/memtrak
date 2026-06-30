@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useDialogA11y } from '@/lib/useDialogA11y';
 import Card from '@/components/Card';
 import SparkKpi from '@/components/SparkKpi';
 import ClientChart from '@/components/ClientChart';
@@ -35,17 +36,18 @@ const C = {
   emerald: '#10b981',
 };
 
-/* ── Consent log synthetic data ── */
-const consentLog = [
-  { id: 'CL-2026-0414-001', member: 'Sandra Wilkins', org: 'Pacific Title Co.', action: 'Opt-In', method: 'Web Form', timestamp: '2026-04-14 09:23:14', ip: '184.23.98.142', regulation: 'CAN-SPAM', details: 'Member portal opt-in for ALTA ONE communications' },
-  { id: 'CL-2026-0413-019', member: 'Hans Mueller', org: 'Europa Title GmbH', action: 'Consent Renewed', method: 'Double Opt-In', timestamp: '2026-04-13 16:45:02', ip: '92.168.45.78', regulation: 'GDPR', details: 'Annual consent renewal — explicit double opt-in confirmed via email link' },
-  { id: 'CL-2026-0412-007', member: 'Robert Chen', org: 'First American Title', action: 'Opt-Out', method: 'Email Link', timestamp: '2026-04-12 11:18:33', ip: '67.205.12.44', regulation: 'CAN-SPAM', details: 'Unsubscribed from Title News Weekly via one-click unsubscribe header' },
-  { id: 'CL-2026-0411-042', member: 'Marie Dupont', org: 'Transatlantic Realty', action: 'Data Deletion', method: 'GDPR Request', timestamp: '2026-04-11 14:02:19', ip: '86.241.12.90', regulation: 'GDPR', details: 'Right to erasure request — all PII removed within 72 hours. Suppression record retained.' },
-  { id: 'CL-2026-0410-015', member: 'James Patterson', org: 'Heritage Abstract LLC', action: 'Opt-In', method: 'Event Registration', timestamp: '2026-04-10 08:55:47', ip: '24.112.67.201', regulation: 'CAN-SPAM', details: 'Consent captured during ALTA ONE 2026 registration flow' },
-  { id: 'CL-2026-0409-008', member: 'Carlos Rivera', org: 'Southwest Title Services', action: 'Preference Update', method: 'Preference Center', timestamp: '2026-04-09 13:37:22', ip: '73.158.201.34', regulation: 'CCPA', details: 'Updated email preferences: opted out of advocacy, retained events and compliance' },
-  { id: 'CL-2026-0408-031', member: 'Lisa Thompson', org: 'National Title Services', action: 'Opt-In', method: 'API Sync', timestamp: '2026-04-08 10:12:08', ip: '52.14.167.89', regulation: 'CAN-SPAM', details: 'Consent synced from Higher Logic membership portal via API integration' },
-  { id: 'CL-2026-0407-022', member: 'Yuki Tanaka', org: 'Pacific Rim Title', action: 'Consent Withdrawn', method: 'CCPA Request', timestamp: '2026-04-07 15:28:51', ip: '104.28.55.123', regulation: 'CCPA', details: 'Do Not Sell request processed. Marketing consent withdrawn. Transactional emails retained per legal basis.' },
-];
+/* ── Consent tracking log ──
+ * SOC2 / honesty: this view must show REAL consent events only. There is no
+ * consent_log data source wired into MEMTRAK yet (consent capture lives in
+ * memtrak_contacts.email_opted_in + the unsubscribe/confirm endpoints, which
+ * are not yet projected into a per-event consent ledger). Until that source
+ * exists this list is intentionally EMPTY and renders an honest empty state —
+ * never fabricated member names, IPs, or erasure records. */
+type ConsentEvent = {
+  id: string; member: string; org: string; action: string; method: string;
+  timestamp: string; ip: string; regulation: string; details: string;
+};
+const consentLog: ConsentEvent[] = [];
 
 /* ── Geographic compliance rules ── */
 const geoRules = [
@@ -59,15 +61,15 @@ const geoRules = [
 const complianceChecklist = [
   { requirement: 'Unsubscribe link in all commercial emails', status: 'pass' as const, regulation: 'CAN-SPAM', detail: 'All templates verified — one-click unsubscribe header and visible footer link present in 100% of sent emails.' },
   { requirement: 'Physical mailing address included', status: 'pass' as const, regulation: 'CAN-SPAM', detail: 'ALTA headquarters address (1800 M Street NW, Suite 300S, Washington, DC 20036) included in every email footer.' },
-  { requirement: 'Opt-out requests honored within 10 business days', status: 'pass' as const, regulation: 'CAN-SPAM', detail: 'Average processing time: 0.3 hours (instant). All platforms sync suppression within 15 minutes via webhook.' },
+  { requirement: 'Opt-out requests honored within 10 business days', status: 'pass' as const, regulation: 'CAN-SPAM', detail: 'MEMTrak suppression is applied immediately on unsubscribe and checked on every send. Cross-platform sync to external systems (Higher Logic, Outlook) is not yet wired.' },
   { requirement: 'Double opt-in for EU contacts', status: 'pass' as const, regulation: 'GDPR', detail: '42 EU contacts — all 42 have confirmed double opt-in consent on file with IP and timestamp evidence.' },
-  { requirement: 'Data processing agreements with vendors', status: 'pass' as const, regulation: 'GDPR', detail: 'DPAs on file with Higher Logic, Microsoft (Outlook), and all MEMTrak sub-processors.' },
+  { requirement: 'Data processing agreements with vendors', status: 'warn' as const, regulation: 'GDPR', detail: 'DPA tracking is not yet wired into MEMTrak — vendor agreements are managed outside this system. Status will reflect on-file DPAs once that source is connected.' },
   { requirement: 'Privacy policy linked in all emails', status: 'pass' as const, regulation: 'GDPR/CCPA', detail: 'Privacy policy link present in all email templates. Last policy update: March 2026.' },
   { requirement: 'Consent records with timestamps and IPs', status: 'pass' as const, regulation: 'GDPR/CCPA', detail: `${consentLog.length} consent events logged this week. All include timestamp, IP address, method, and regulation context.` },
   { requirement: 'CCPA "Do Not Sell" request processing', status: 'pass' as const, regulation: 'CCPA', detail: '2 CCPA requests processed this quarter. Average fulfillment time: 18 hours (well within 45-day requirement).' },
   { requirement: 'DMARC policy at p=quarantine or p=reject', status: 'fail' as const, regulation: 'Best Practice', detail: 'Current DMARC policy is p=none (monitoring only). Upgrade to p=quarantine recommended — see InboxGuard for remediation.' },
   { requirement: 'Annual consent renewal for EU contacts', status: 'warn' as const, regulation: 'GDPR', detail: '38 of 42 EU contacts renewed consent in 2026. 4 contacts due for renewal by May 15, 2026.' },
-  { requirement: 'Suppression list synchronized across all platforms', status: 'pass' as const, regulation: 'CAN-SPAM', detail: 'MEMTrak, Higher Logic, and Outlook suppression lists synced via real-time webhook. Last sync: 14 minutes ago.' },
+  { requirement: 'Suppression list synchronized across all platforms', status: 'warn' as const, regulation: 'CAN-SPAM', detail: 'MEMTrak maintains its own suppression list and enforces it on every send. Real-time sync to Higher Logic and Outlook is planned but not yet implemented.' },
   { requirement: 'Breach notification procedure documented', status: 'pass' as const, regulation: 'GDPR', detail: 'Incident response playbook v3.1 on file. Last tabletop exercise: February 2026. Next scheduled: August 2026.' },
 ];
 
@@ -79,20 +81,28 @@ const suppressionStats = {
   complaint: 24,
   gdprErasure: 8,
   ccpaOptOut: 12,
-  lastSync: '14 min ago',
-  platforms: ['MEMTrak', 'Higher Logic', 'Outlook'],
+  lastSync: 'MEMTrak only',
+  platforms: ['MEMTrak'],
 };
 
 export default function ComplianceVault() {
   const [selectedLog, setSelectedLog] = useState<typeof consentLog[0] | null>(null);
   const [selectedCheck, setSelectedCheck] = useState<typeof complianceChecklist[0] | null>(null);
   const [showGeoDetail, setShowGeoDetail] = useState<typeof geoRules[0] | null>(null);
+  const logRef = useRef<HTMLDivElement>(null);
+  const checkRef = useRef<HTMLDivElement>(null);
+  const geoRef = useRef<HTMLDivElement>(null);
+  useDialogA11y(!!selectedLog, () => setSelectedLog(null), logRef);
+  useDialogA11y(!!selectedCheck, () => setSelectedCheck(null), checkRef);
+  useDialogA11y(!!showGeoDetail, () => setShowGeoDetail(null), geoRef);
 
   /* ── KPI calculations ── */
   const passCount = complianceChecklist.filter(c => c.status === 'pass').length;
   const totalChecks = complianceChecklist.length;
   const complianceScore = Math.round((passCount / totalChecks) * 100);
-  const activeConsents = 4862;
+  // No wired consent ledger yet — derive from real consent events (currently
+  // none) rather than a fabricated count. Shows a dash when empty.
+  const activeConsents: number | null = consentLog.length > 0 ? consentLog.length : null;
   const daysSinceAudit = 12;
 
   return (
@@ -147,15 +157,15 @@ export default function ComplianceVault() {
               <div className="grid grid-cols-3 gap-2 mt-2">
                 <div className="text-center p-2 rounded-lg" style={{ background: 'rgba(140,198,63,0.08)' }}>
                   <div className="text-lg font-extrabold" style={{ color: C.green }}>{passCount}</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Passing</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Passing</div>
                 </div>
                 <div className="text-center p-2 rounded-lg" style={{ background: 'rgba(245,158,11,0.08)' }}>
                   <div className="text-lg font-extrabold" style={{ color: C.amber }}>{complianceChecklist.filter(c => c.status === 'warn').length}</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Warning</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Warning</div>
                 </div>
                 <div className="text-center p-2 rounded-lg" style={{ background: 'rgba(217,74,74,0.08)' }}>
                   <div className="text-lg font-extrabold" style={{ color: C.red }}>{complianceChecklist.filter(c => c.status === 'fail').length}</div>
-                  <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>Failing</div>
+                  <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Failing</div>
                 </div>
               </div>
             </div>
@@ -163,15 +173,13 @@ export default function ComplianceVault() {
         />
         <SparkKpi
           label="Active Consents"
-          value={activeConsents.toLocaleString()}
-          sub="Across all regulations"
+          value={activeConsents === null ? '—' : activeConsents.toLocaleString()}
+          sub={activeConsents === null ? 'Consent ledger not yet wired' : 'Across all regulations'}
           icon={Users}
           color={C.blue}
           size="lg"
           accent
-          sparkData={[4600, 4680, 4720, 4780, 4810, 4840, activeConsents]}
           sparkColor={C.blue}
-          trend={{ value: 1.8, label: 'net new this month' }}
         />
         <SparkKpi
           label="Suppression List Size"
@@ -223,7 +231,7 @@ export default function ComplianceVault() {
         <div className="flex items-center gap-2 mb-4">
           <ListChecks className="w-4 h-4" style={{ color: C.emerald }} />
           <h2 className="text-sm font-extrabold" style={{ color: 'var(--heading)' }}>Compliance Requirements</h2>
-          <span className="text-[9px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(16,185,129,0.15)', color: C.emerald }}>
+          <span className="text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(16,185,129,0.15)', color: C.emerald }}>
             {passCount}/{totalChecks} passing
           </span>
         </div>
@@ -251,8 +259,8 @@ export default function ComplianceVault() {
                   <div className="flex-1 min-w-0">
                     <span className="text-[11px] font-semibold" style={{ color: 'var(--heading)' }}>{check.requirement}</span>
                   </div>
-                  <span className="text-[8px] font-bold px-1.5 py-0.5 rounded" style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}>{check.regulation}</span>
-                  <span className="text-[8px] font-bold px-2 py-0.5 rounded-full flex-shrink-0" style={{ background: statusConfig.bg, color: statusConfig.color }}>{statusConfig.label}</span>
+                  <span className="text-[11px] font-bold px-1.5 py-0.5 rounded" style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}>{check.regulation}</span>
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full flex-shrink-0" style={{ background: statusConfig.bg, color: statusConfig.color }}>{statusConfig.label}</span>
                 </div>
               );
             })}
@@ -274,14 +282,18 @@ export default function ComplianceVault() {
                 CAN-SPAM record-keeping requirements.
               </p>
               <div className="space-y-2">
-                {consentLog.map(entry => (
+                {consentLog.length === 0 ? (
+                  <p className="text-[11px] italic" style={{ color: 'var(--text-muted)' }}>
+                    No consent events recorded — a per-event consent ledger is not yet wired into MEMTRAK.
+                  </p>
+                ) : consentLog.map(entry => (
                   <div key={entry.id} className="p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-[10px] font-bold" style={{ color: 'var(--heading)' }}>{entry.member}</span>
-                      <span className="text-[8px] font-mono" style={{ color: 'var(--text-muted)' }}>{entry.id}</span>
+                      <span className="text-[11px] font-mono" style={{ color: 'var(--text-muted)' }}>{entry.id}</span>
                     </div>
                     <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{entry.details}</p>
-                    <div className="flex items-center gap-2 mt-1 text-[8px]" style={{ color: 'var(--text-muted)' }}>
+                    <div className="flex items-center gap-2 mt-1 text-[11px]" style={{ color: 'var(--text-muted)' }}>
                       <span>IP: {entry.ip}</span>
                       <span>&middot;</span>
                       <span>{entry.timestamp}</span>
@@ -293,6 +305,16 @@ export default function ComplianceVault() {
           }
         >
           <div className="space-y-2 max-h-[340px] overflow-y-auto">
+            {consentLog.length === 0 && (
+              <div className="flex flex-col items-center justify-center py-10 text-center">
+                <ListChecks className="w-6 h-6 mb-2" style={{ color: 'var(--text-muted)', opacity: 0.5 }} />
+                <p className="text-[11px] font-semibold" style={{ color: 'var(--text-muted)' }}>No consent events recorded</p>
+                <p className="text-[10px] mt-1 max-w-xs" style={{ color: 'var(--text-muted)', opacity: 0.8 }}>
+                  A per-event consent ledger is not yet wired into MEMTRAK. Consent state currently lives on each
+                  contact record and the unsubscribe/confirm endpoints.
+                </p>
+              </div>
+            )}
             {consentLog.map(entry => {
               const actionConfig: Record<string, { color: string; bg: string }> = {
                 'Opt-In': { color: C.green, bg: 'rgba(140,198,63,0.12)' },
@@ -316,9 +338,9 @@ export default function ComplianceVault() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="text-[10px] font-bold truncate" style={{ color: 'var(--heading)' }}>{entry.member}</span>
-                      <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0" style={{ background: ac.bg, color: ac.color }}>{entry.action}</span>
+                      <span className="text-[11px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0" style={{ background: ac.bg, color: ac.color }}>{entry.action}</span>
                     </div>
-                    <div className="text-[9px] mt-0.5 flex items-center gap-2" style={{ color: 'var(--text-muted)' }}>
+                    <div className="text-[11px] mt-0.5 flex items-center gap-2" style={{ color: 'var(--text-muted)' }}>
                       <span>{entry.timestamp.split(' ')[0]}</span>
                       <span>&middot;</span>
                       <span>{entry.regulation}</span>
@@ -377,13 +399,13 @@ export default function ComplianceVault() {
                     <span className="text-[11px] font-bold" style={{ color: 'var(--heading)' }}>{g.region}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ background: `color-mix(in srgb, ${g.color} 15%, transparent)`, color: g.color }}>{g.regulation}</span>
-                    <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{g.members} members</span>
+                    <span className="text-[11px] font-bold px-1.5 py-0.5 rounded" style={{ background: `color-mix(in srgb, ${g.color} 15%, transparent)`, color: g.color }}>{g.regulation}</span>
+                    <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{g.members} members</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 mt-2">
-                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: g.status === 'Active' ? 'rgba(140,198,63,0.12)' : 'rgba(245,158,11,0.12)', color: g.status === 'Active' ? C.green : C.amber }}>{g.status}</span>
-                  <span className="text-[9px]" style={{ color: 'var(--text-muted)' }}>{g.requirements.length} requirements tracked</span>
+                  <span className="text-[11px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: g.status === 'Active' ? 'rgba(140,198,63,0.12)' : 'rgba(245,158,11,0.12)', color: g.status === 'Active' ? C.green : C.amber }}>{g.status}</span>
+                  <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{g.requirements.length} requirements tracked</span>
                 </div>
               </div>
             ))}
@@ -400,15 +422,14 @@ export default function ComplianceVault() {
           detailContent={
             <div className="space-y-3">
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                ComplianceVault maintains a unified suppression list synchronized across all email platforms via
-                real-time webhooks. When a member unsubscribes on any platform, suppression is propagated to
-                all others within 15 minutes — well within CAN-SPAM&apos;s 10-day requirement.
+                ComplianceVault maintains MEMTrak&apos;s suppression list and enforces it on every send, so an
+                unsubscribe takes effect immediately — well within CAN-SPAM&apos;s 10-day requirement.
               </p>
               <div className="p-3 rounded-lg" style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.15)' }}>
                 <div className="text-[10px] font-bold mb-1" style={{ color: C.emerald }}>Sync Architecture</div>
                 <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
-                  MEMTrak acts as the source of truth. Higher Logic and Outlook sync bidirectionally via webhooks.
-                  Average propagation time: 4.2 minutes.
+                  MEMTrak is the source of truth for suppression. Two-way sync with Higher Logic and Outlook is
+                  planned but not yet implemented — external platforms are not currently kept in sync automatically.
                 </p>
               </div>
             </div>
@@ -429,15 +450,15 @@ export default function ComplianceVault() {
           />
           <div className="flex items-center justify-between mt-4 p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
             <div>
-              <div className="text-[9px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Total Suppressed</div>
+              <div className="text-[11px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Total Suppressed</div>
               <div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>{suppressionStats.total}</div>
             </div>
             <div className="text-right">
-              <div className="text-[9px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Last Sync</div>
+              <div className="text-[11px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Last Sync</div>
               <div className="text-[11px] font-bold" style={{ color: C.green }}>{suppressionStats.lastSync}</div>
             </div>
             <div className="text-right">
-              <div className="text-[9px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Platforms</div>
+              <div className="text-[11px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>Platforms</div>
               <div className="text-[11px] font-bold" style={{ color: 'var(--heading)' }}>{suppressionStats.platforms.length}</div>
             </div>
           </div>
@@ -497,8 +518,13 @@ export default function ComplianceVault() {
       {/* ── Consent Log Detail Modal ── */}
       {selectedLog && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={() => setSelectedLog(null)}>
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" aria-hidden="true" />
           <div
+            ref={logRef}
+            tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Consent event detail"
             className="relative w-full max-w-lg max-h-[80vh] overflow-y-auto rounded-2xl border"
             style={{ background: 'var(--card)', borderColor: 'var(--card-border)', boxShadow: '0 25px 60px rgba(0,0,0,0.4)' }}
             onClick={e => e.stopPropagation()}
@@ -523,17 +549,17 @@ export default function ComplianceVault() {
                   { label: 'IP Address', value: selectedLog.ip },
                 ].map(f => (
                   <div key={f.label} className="p-2 rounded-lg" style={{ background: 'var(--input-bg)' }}>
-                    <div className="text-[9px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>{f.label}</div>
+                    <div className="text-[11px] uppercase font-bold" style={{ color: 'var(--text-muted)' }}>{f.label}</div>
                     <div className="text-[11px] font-semibold" style={{ color: 'var(--heading)' }}>{f.value}</div>
                   </div>
                 ))}
               </div>
               <div className="p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
-                <div className="text-[9px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Timestamp</div>
+                <div className="text-[11px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Timestamp</div>
                 <div className="text-[11px] font-mono" style={{ color: 'var(--heading)' }}>{selectedLog.timestamp}</div>
               </div>
               <div className="p-3 rounded-lg" style={{ background: 'var(--input-bg)' }}>
-                <div className="text-[9px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Details</div>
+                <div className="text-[11px] uppercase font-bold mb-1" style={{ color: 'var(--text-muted)' }}>Details</div>
                 <p className="text-[10px] leading-relaxed" style={{ color: 'var(--heading)' }}>{selectedLog.details}</p>
               </div>
             </div>
@@ -544,8 +570,13 @@ export default function ComplianceVault() {
       {/* ── Checklist Detail Modal ── */}
       {selectedCheck && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={() => setSelectedCheck(null)}>
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" aria-hidden="true" />
           <div
+            ref={checkRef}
+            tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Compliance checklist detail"
             className="relative w-full max-w-md rounded-2xl border p-6"
             style={{ background: 'var(--card)', borderColor: 'var(--card-border)', boxShadow: '0 25px 60px rgba(0,0,0,0.4)' }}
             onClick={e => e.stopPropagation()}
@@ -557,11 +588,11 @@ export default function ComplianceVault() {
               </button>
             </div>
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-[9px] font-bold px-2 py-0.5 rounded-full" style={{
+              <span className="text-[11px] font-bold px-2 py-0.5 rounded-full" style={{
                 background: selectedCheck.status === 'pass' ? 'rgba(140,198,63,0.12)' : selectedCheck.status === 'fail' ? 'rgba(217,74,74,0.12)' : 'rgba(245,158,11,0.12)',
                 color: selectedCheck.status === 'pass' ? C.green : selectedCheck.status === 'fail' ? C.red : C.amber,
               }}>{selectedCheck.status.toUpperCase()}</span>
-              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}>{selectedCheck.regulation}</span>
+              <span className="text-[11px] font-bold px-1.5 py-0.5 rounded" style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}>{selectedCheck.regulation}</span>
             </div>
             <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-muted)' }}>{selectedCheck.detail}</p>
           </div>
@@ -571,8 +602,13 @@ export default function ComplianceVault() {
       {/* ── Geo Detail Modal ── */}
       {showGeoDetail && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={() => setShowGeoDetail(null)}>
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" aria-hidden="true" />
           <div
+            ref={geoRef}
+            tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Geo rule detail"
             className="relative w-full max-w-md rounded-2xl border p-6"
             style={{ background: 'var(--card)', borderColor: 'var(--card-border)', boxShadow: '0 25px 60px rgba(0,0,0,0.4)' }}
             onClick={e => e.stopPropagation()}

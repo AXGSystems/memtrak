@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getEvents, getStats, logEvent } from '@/lib/memtrak';
+import { requireReadOnly, requireStaff } from '@/lib/route-auth';
 
 /**
  * MEMTrak Events API
@@ -12,6 +13,9 @@ import { getEvents, getStats, logEvent } from '@/lib/memtrak';
  */
 
 export async function GET(request: NextRequest) {
+  const gate = await requireReadOnly();
+  if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
   const action = request.nextUrl.searchParams.get('action') || 'stats';
 
   if (action === 'stats') {
@@ -26,6 +30,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const gate = await requireStaff();
+  if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
   try {
     const body = await request.json();
     const event = await logEvent({

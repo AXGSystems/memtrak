@@ -1,5 +1,5 @@
 import { auth } from '@/auth';
-import { isAuthEnabled, type AuthRole } from '@/lib/auth.config';
+import { isAuthEnabled, isPreviewOpen, type AuthRole } from '@/lib/auth.config';
 
 /**
  * Resolve the portal context (contact_id + org_id) for the current request.
@@ -31,8 +31,12 @@ export async function getPortalContext(): Promise<
   | { ok: true; ctx: PortalContext }
   | { ok: false; status: number; error: string }
 > {
+  // Demo context is permitted ONLY in an explicit non-production preview.
+  // Production (and any non-preview env) must resolve a real session — it
+  // never serves the hardcoded demo contact.
   if (!isAuthEnabled()) {
-    return { ok: true, ctx: DEMO_CONTEXT };
+    if (isPreviewOpen()) return { ok: true, ctx: DEMO_CONTEXT };
+    return { ok: false, status: 401, error: 'Authentication required' };
   }
 
   const session = await auth();

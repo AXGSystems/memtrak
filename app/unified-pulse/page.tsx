@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import SampleDataBadge from '@/components/SampleDataBadge';
 import { Layers, Zap, BarChart3, Activity, CheckCircle, XCircle, MinusCircle, Info, X, Radio, Mail, Globe, Server } from 'lucide-react';
 import Card from '@/components/Card';
 import SparkKpi, { MiniBar } from '@/components/SparkKpi';
@@ -82,6 +83,7 @@ export default function UnifiedPulsePage() {
 
   return (
     <div className="min-h-screen px-4 py-8 sm:px-6 lg:px-8 max-w-[1400px] mx-auto">
+      <SampleDataBadge />
 
       {/* ── 1. Branded Header ─────────────────────────────── */}
       <header className="mb-8">
@@ -280,24 +282,24 @@ export default function UnifiedPulsePage() {
                 <div className="space-y-4 text-xs" style={{ color: 'var(--text)' }}>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
-                      <div className="text-[9px] uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>Campaigns</div>
+                      <div className="text-[11px] uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>Campaigns</div>
                       <div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>{platform.stats.count}</div>
                     </div>
                     <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
-                      <div className="text-[9px] uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>Total Delivered</div>
+                      <div className="text-[11px] uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>Total Delivered</div>
                       <div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>{platform.stats.totalSent.toLocaleString()}</div>
                     </div>
                     <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
-                      <div className="text-[9px] uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>Unique Opens</div>
+                      <div className="text-[11px] uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>Unique Opens</div>
                       <div className="text-lg font-extrabold" style={{ color: 'var(--heading)' }}>{platform.stats.totalOpened.toLocaleString()}</div>
                     </div>
                     <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
-                      <div className="text-[9px] uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>Avg Open Rate</div>
+                      <div className="text-[11px] uppercase tracking-wider mb-1" style={{ color: 'var(--text-muted)' }}>Avg Open Rate</div>
                       <div className="text-lg font-extrabold" style={{ color: SOURCE_COLORS[platform.name] }}>{platform.stats.avgOpenRate.toFixed(1)}%</div>
                     </div>
                   </div>
                   <div className="mt-3">
-                    <div className="text-[9px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>Campaigns</div>
+                    <div className="text-[11px] uppercase tracking-wider font-bold mb-2" style={{ color: 'var(--text-muted)' }}>Campaigns</div>
                     <div className="space-y-1.5">
                       {platform.stats.campaigns.map(c => (
                         <div key={c.id} className="flex items-center justify-between py-1 border-b" style={{ borderColor: 'var(--card-border)' }}>
@@ -325,15 +327,15 @@ export default function UnifiedPulsePage() {
                 </div>
                 <div className="grid grid-cols-3 gap-3">
                   <div>
-                    <div className="text-[9px] uppercase tracking-wider mb-0.5" style={{ color: 'var(--text-muted)' }}>Campaigns</div>
+                    <div className="text-[11px] uppercase tracking-wider mb-0.5" style={{ color: 'var(--text-muted)' }}>Campaigns</div>
                     <div className="text-base font-extrabold" style={{ color: 'var(--heading)' }}><AnimatedCounter value={platform.stats.count} /></div>
                   </div>
                   <div>
-                    <div className="text-[9px] uppercase tracking-wider mb-0.5" style={{ color: 'var(--text-muted)' }}>Delivered</div>
+                    <div className="text-[11px] uppercase tracking-wider mb-0.5" style={{ color: 'var(--text-muted)' }}>Delivered</div>
                     <div className="text-base font-extrabold" style={{ color: 'var(--heading)' }}><AnimatedCounter value={platform.stats.totalSent} /></div>
                   </div>
                   <div>
-                    <div className="text-[9px] uppercase tracking-wider mb-0.5" style={{ color: 'var(--text-muted)' }}>Open Rate</div>
+                    <div className="text-[11px] uppercase tracking-wider mb-0.5" style={{ color: 'var(--text-muted)' }}>Open Rate</div>
                     <div className="text-base font-extrabold" style={{ color: SOURCE_COLORS[platform.name] }}><AnimatedCounter value={parseFloat(platform.stats.avgOpenRate.toFixed(1))} suffix="%" decimals={1} /></div>
                   </div>
                 </div>
@@ -358,7 +360,7 @@ export default function UnifiedPulsePage() {
                 <div className="flex items-center justify-between mb-1">
                   <span className="font-bold" style={{ color: 'var(--heading)' }}>{c.name}</span>
                   <span
-                    className="text-[9px] font-bold px-1.5 py-0.5 rounded-full"
+                    className="text-[11px] font-bold px-1.5 py-0.5 rounded-full"
                     style={{ background: `color-mix(in srgb, ${SOURCE_COLORS[c.source]} 15%, transparent)`, color: SOURCE_COLORS[c.source] }}
                   >
                     {c.source}
@@ -398,7 +400,7 @@ export default function UnifiedPulsePage() {
                         {c.name}
                       </span>
                       <span
-                        className="text-[8px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0"
+                        className="text-[11px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0"
                         style={{ background: `color-mix(in srgb, ${color} 15%, transparent)`, color }}
                       >
                         {c.source}
@@ -412,7 +414,7 @@ export default function UnifiedPulsePage() {
                   </div>
                   <div className="flex-shrink-0 text-right">
                     <div className="text-sm font-extrabold" style={{ color }}>{openRate}%</div>
-                    <div className="text-[9px]" style={{ color: 'var(--text-muted)' }}>open rate</div>
+                    <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>open rate</div>
                   </div>
                 </div>
               </div>
@@ -540,14 +542,14 @@ export default function UnifiedPulsePage() {
           <table className="w-full text-xs" style={{ color: 'var(--text)' }}>
             <thead>
               <tr className="border-b" style={{ borderColor: 'var(--card-border)' }}>
-                <th className="text-left py-2 pr-4 text-[9px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Capability</th>
-                <th className="text-center py-2 px-3 text-[9px] uppercase tracking-wider font-bold" style={{ color: C.green }}>
+                <th className="text-left py-2 pr-4 text-[11px] uppercase tracking-wider font-bold" style={{ color: 'var(--text-muted)' }}>Capability</th>
+                <th className="text-center py-2 px-3 text-[11px] uppercase tracking-wider font-bold" style={{ color: C.green }}>
                   <div className="flex items-center justify-center gap-1"><Server className="w-3 h-3" /> MEMTrak</div>
                 </th>
-                <th className="text-center py-2 px-3 text-[9px] uppercase tracking-wider font-bold" style={{ color: C.blue }}>
+                <th className="text-center py-2 px-3 text-[11px] uppercase tracking-wider font-bold" style={{ color: C.blue }}>
                   <div className="flex items-center justify-center gap-1"><Globe className="w-3 h-3" /> Higher Logic</div>
                 </th>
-                <th className="text-center py-2 px-3 text-[9px] uppercase tracking-wider font-bold" style={{ color: C.amber }}>
+                <th className="text-center py-2 px-3 text-[11px] uppercase tracking-wider font-bold" style={{ color: C.amber }}>
                   <div className="flex items-center justify-center gap-1"><Mail className="w-3 h-3" /> Outlook</div>
                 </th>
               </tr>
@@ -661,15 +663,15 @@ export default function UnifiedPulsePage() {
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
               <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
-                <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: C.purple }}>Before UnifiedPulse</div>
+                <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: C.purple }}>Before UnifiedPulse</div>
                 <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>3 logins, 3 dashboards, 3 definitions of success. Hours of manual reconciliation.</div>
               </div>
               <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
-                <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: C.green }}>After UnifiedPulse</div>
+                <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: C.green }}>After UnifiedPulse</div>
                 <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>One dashboard. Normalized metrics. Instant cross-platform comparison. Real answers in seconds.</div>
               </div>
               <div className="rounded-lg p-3" style={{ background: 'var(--input-bg)' }}>
-                <div className="text-[9px] uppercase tracking-wider font-bold mb-1" style={{ color: C.cyan }}>The Advantage</div>
+                <div className="text-[11px] uppercase tracking-wider font-bold mb-1" style={{ color: C.cyan }}>The Advantage</div>
                 <div className="text-[11px]" style={{ color: 'var(--text-muted)' }}>See which platform drives the best engagement. Identify gaps. Make data-driven decisions about where to send.</div>
               </div>
             </div>

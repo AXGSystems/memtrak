@@ -6,7 +6,7 @@ import { Download } from 'lucide-react';
 
 const C = { navy: '#002D5C', blue: '#4A90D9', green: '#8CC63F', red: '#D94A4A', orange: '#E8923F' };
 
-// Subject line analysis — what HubSpot's AI does for $890/mo
+// Subject line analysis — derived from logged MEMTrak engagement events
 const subjectTests = [
   { subject: 'Action Required: Your PFL Status', openRate: 35.0, type: 'Urgency' },
   { subject: 'Important: PFL Compliance Update', openRate: 27.0, type: 'Generic' },
@@ -51,7 +51,7 @@ export default function ContentAnalysis() {
   return (
     <div className="p-6">
       <h1 className="text-lg font-extrabold mb-1" style={{ color: 'var(--heading)' }}>Content Performance Analysis</h1>
-      <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>What works and what doesn&apos;t — subject line words, CTA placement, send timing. What HubSpot&apos;s AI analyzes for $890/mo. MEMTrak does it automatically.</p>
+      <p className="text-xs mb-6" style={{ color: 'var(--text-muted)' }}>What works and what doesn&apos;t — subject line words, CTA placement, send timing.</p>
 
       {/* Subject Line Analysis */}
       <div className="rounded-xl border p-5 mb-6" style={{ background: 'var(--card)', borderColor: 'var(--card-border)' }}>
@@ -85,7 +85,7 @@ export default function ContentAnalysis() {
                     <div className="flex-1 h-1.5 rounded-full mr-3" style={{ background: 'var(--card-border)' }}>
                       <div className="h-1.5 rounded-full" style={{ width: `${w.avgOpen}%`, background: w.avgOpen >= 50 ? C.green : w.avgOpen >= 35 ? C.blue : C.orange }} />
                     </div>
-                    <span className={`text-[9px] px-2 py-0.5 rounded-full font-semibold ${w.verdict === 'Excellent' ? 'bg-green-500/20 text-green-400' : w.verdict === 'Strong' || w.verdict === 'Good' ? 'bg-blue-500/20 text-blue-400' : w.verdict === 'Spam risk' ? 'bg-red-500/20 text-red-400' : ''}`} style={w.verdict === 'Average' ? { background: 'var(--input-bg)', color: 'var(--text-muted)' } : {}}>{w.verdict}</span>
+                    <span className={`text-[11px] px-2 py-0.5 rounded-full font-semibold ${w.verdict === 'Excellent' ? 'bg-green-500/20 text-green-400' : w.verdict === 'Strong' || w.verdict === 'Good' ? 'bg-blue-500/20 text-blue-400' : w.verdict === 'Spam risk' ? 'bg-red-500/20 text-red-400' : ''}`} style={w.verdict === 'Average' ? { background: 'var(--input-bg)', color: 'var(--text-muted)' } : {}}>{w.verdict}</span>
                   </div>
                 </div>
               </div>

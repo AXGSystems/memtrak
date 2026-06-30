@@ -38,9 +38,13 @@ CREATE TABLE IF NOT EXISTS memtrak_organizations (
   -- Metadata
   notes TEXT,
   tags TEXT[], -- flexible tagging
-  source TEXT DEFAULT 'manual', -- 'manual', 'import', 'remembers_sync', 'alta_connect'
-  remembers_id TEXT, -- ID in re:Members for sync
-  alta_connect_id TEXT, -- ID in ALTA Connect for event sync
+  -- Provenance of the row. Only set 'remembers_sync' / 'alta_connect' once a REAL
+  -- connector has written the record; 'seed' marks demonstration/seed rows so the
+  -- UI can label them honestly. 'manual' = entered by staff, 'import' = file import.
+  source TEXT DEFAULT 'manual', -- 'manual' | 'import' | 'seed' | 'remembers_sync' | 'alta_connect'
+  remembers_id TEXT, -- ID in re:Members for sync (populated only by a real sync job)
+  alta_connect_id TEXT, -- ID in ALTA Connect for event sync (populated only by a real sync job)
+  synced_at TIMESTAMPTZ, -- last ingest timestamp; set ONLY by an actual sync/import job
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -209,23 +213,43 @@ ALTER TABLE memtrak_event_attendance ENABLE ROW LEVEL SECURITY;
 ALTER TABLE memtrak_communications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE memtrak_staff_relationships ENABLE ROW LEVEL SECURITY;
 
--- Permissive policies for authenticated users (tighten for production)
-CREATE POLICY "Authenticated read" ON memtrak_organizations FOR SELECT USING (true);
-CREATE POLICY "Authenticated write" ON memtrak_organizations FOR ALL USING (true);
-CREATE POLICY "Authenticated read" ON memtrak_contacts FOR SELECT USING (true);
-CREATE POLICY "Authenticated write" ON memtrak_contacts FOR ALL USING (true);
-CREATE POLICY "Authenticated read" ON memtrak_invoices FOR SELECT USING (true);
-CREATE POLICY "Authenticated write" ON memtrak_invoices FOR ALL USING (true);
-CREATE POLICY "Authenticated read" ON memtrak_groups FOR SELECT USING (true);
-CREATE POLICY "Authenticated write" ON memtrak_groups FOR ALL USING (true);
-CREATE POLICY "Authenticated read" ON memtrak_group_members FOR SELECT USING (true);
-CREATE POLICY "Authenticated write" ON memtrak_group_members FOR ALL USING (true);
-CREATE POLICY "Authenticated read" ON memtrak_event_attendance FOR SELECT USING (true);
-CREATE POLICY "Authenticated write" ON memtrak_event_attendance FOR ALL USING (true);
-CREATE POLICY "Authenticated read" ON memtrak_communications FOR SELECT USING (true);
-CREATE POLICY "Authenticated write" ON memtrak_communications FOR ALL USING (true);
-CREATE POLICY "Authenticated read" ON memtrak_staff_relationships FOR SELECT USING (true);
-CREATE POLICY "Authenticated write" ON memtrak_staff_relationships FOR ALL USING (true);
+-- HARDENED RLS (OWASP ASVS V4 broken-access-control fix)
+-- ----------------------------------------------------------------------------
+-- The browser holds the PUBLIC anon key. Previously every member-PII table had
+-- a `FOR ALL USING (true)` policy, which granted the anon role full INSERT /
+-- UPDATE / DELETE over all organizations, contacts, invoices, etc. — anyone
+-- with the (trivially extractable) anon key could rewrite or wipe member data
+-- directly via PostgREST, bypassing every API route and the auth gate.
+--
+-- New posture, fail-closed for writes:
+--   * ALL writes are performed server-side with the SERVICE-ROLE key
+--     (lib/member-data.ts -> writeClient()), which BYPASSES RLS entirely.
+--   * The anon role therefore needs NO write privilege. We grant anon
+--     READ-ONLY (SELECT) so existing client-side directory/list views keep
+--     working, and we explicitly REVOKE insert/update/delete from anon.
+--   * Tighten the SELECT to per-org / authenticated scoping when the member
+--     portal moves fully behind the NextAuth session (follow-up).
+--
+-- Idempotent: drops the old over-permissive policies first so re-running this
+-- file never leaves a stale `USING (true)` write policy behind.
+DO $$
+DECLARE t text;
+BEGIN
+  FOREACH t IN ARRAY ARRAY[
+    'memtrak_organizations','memtrak_contacts','memtrak_invoices',
+    'memtrak_groups','memtrak_group_members','memtrak_event_attendance',
+    'memtrak_communications','memtrak_staff_relationships'
+  ] LOOP
+    EXECUTE format('DROP POLICY IF EXISTS %I ON %I', 'Authenticated read', t);
+    EXECUTE format('DROP POLICY IF EXISTS %I ON %I', 'Authenticated write', t);
+    EXECUTE format('DROP POLICY IF EXISTS %I ON %I', 'Anon read-only', t);
+    -- Read-only for the public anon role; with no write policy, anon
+    -- INSERT/UPDATE/DELETE are denied by RLS.
+    EXECUTE format('CREATE POLICY %I ON %I FOR SELECT TO anon USING (true)', 'Anon read-only', t);
+    -- Belt-and-suspenders: strip any table-level write grant from anon too.
+    EXECUTE format('REVOKE INSERT, UPDATE, DELETE ON %I FROM anon', t);
+  END LOOP;
+END $$;
 
 -- ============================================================
 -- UPDATED_AT TRIGGER

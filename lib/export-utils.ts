@@ -38,7 +38,7 @@ export function printContent(title: string, html: string) {
   </style></head><body>
     <h1>${safeTitle}</h1>
     ${html}
-    <div class="footer">ALTA DASH 2.0 | Generated: ${new Date().toLocaleString()} | Internal — ALTA Staff Only</div>
+    <div class="footer">MEMTrak — by AXG Systems for the American Land Title Association | Generated: ${new Date().toLocaleString()} | Confidential — Internal ALTA Staff Use Only</div>
   </body></html>`);
   w.document.close();
   setTimeout(() => { w.print(); w.close(); }, 500);

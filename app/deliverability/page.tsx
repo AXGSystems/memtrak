@@ -4,6 +4,10 @@ import ClientChart from '@/components/ClientChart';
 import Card from '@/components/Card';
 import AnimatedCounter from '@/components/AnimatedCounter';
 import ProgressRing from '@/components/ProgressRing';
+import SampleDataBadge from '@/components/SampleDataBadge';
+import { DELIVERABILITY, isDeliverabilityFeedLive } from '@/lib/constants';
+
+const FEED_LIVE = isDeliverabilityFeedLive();
 
 const C = { navy: '#1B3A5C', blue: '#4A90D9', green: '#8CC63F', red: '#D94A4A', orange: '#E8923F' };
 
@@ -19,7 +23,7 @@ const bounces = [
 ];
 
 const auth = [
-  { name: 'SPF', status: 'Pass', desc: 'Sender Policy Framework — verifies alta.org is authorized to send' },
+  { name: 'SPF', status: 'Pass', desc: `Sender Policy Framework — authorizes ALTA's M365 sending path (${DELIVERABILITY.spfRecord})` },
   { name: 'DKIM', status: 'Pass', desc: 'DomainKeys — cryptographically signs emails' },
   { name: 'DMARC', status: 'Partial', desc: 'Set to monitoring only — upgrade to "quarantine" recommended' },
 ];
@@ -27,18 +31,21 @@ const auth = [
 export default function Deliverability() {
   return (
     <div className="p-6">
-      <h1 className="text-lg font-extrabold mb-6" style={{ color: 'var(--heading)' }}>Deliverability Monitor</h1>
+      <h1 className="text-lg font-extrabold mb-2" style={{ color: 'var(--heading)' }}>Deliverability Monitor</h1>
+      {!FEED_LIVE && (
+        <SampleDataBadge message="The delivery, bounce, trend, and SPF/DKIM/DMARC figures below are illustrative sample values, not yet connected to a live deliverability feed (Google Postmaster Tools / Microsoft SNDS) or a live DNS lookup. They demonstrate the layout this monitor will show once the feed is wired. The Gmail/Yahoo bulk-sender thresholds (0.3% complaint hard limit) are documented industry requirements, not ALTA-specific measurements." />
+      )}
 
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6 stagger-children">
         {[
-          { label: 'Delivery Rate', value: 96.2, ringValue: 96.2, color: C.green },
-          { label: 'Hard Bounce', value: 1.8, ringValue: 1.8, color: C.red },
-          { label: 'Soft Bounce', value: 2.0, ringValue: 2.0, color: C.orange },
-          { label: 'Spam Complaints', value: 0.02, ringValue: 0.02, color: C.green },
+          { label: 'Delivery Rate', value: DELIVERABILITY.deliveryRate, ringValue: DELIVERABILITY.deliveryRate, color: C.green },
+          { label: 'Hard Bounce', value: DELIVERABILITY.hardBounceRate, ringValue: DELIVERABILITY.hardBounceRate, color: C.red },
+          { label: 'Soft Bounce', value: DELIVERABILITY.softBounceRate, ringValue: DELIVERABILITY.softBounceRate, color: C.orange },
+          { label: 'Spam Complaints', value: DELIVERABILITY.spamComplaintRate, ringValue: DELIVERABILITY.spamComplaintRate, color: C.green },
           { label: 'Invalid Addresses', value: 332, ringValue: 0, color: C.blue },
         ].map((m, i) => (
           <div key={m.label} style={{ animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
-          <Card glass className="p-4 flex flex-col items-center text-center" detailTitle={m.label} detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>{m.label === 'Delivery Rate' ? 'Current delivery rate of 96.2% means ~700 emails per campaign fail to reach inboxes. Industry benchmark for associations is 97-98%. Cleaning invalid and bounced addresses would push this above 98%.' : m.label === 'Hard Bounce' ? 'Hard bounces (1.8%) indicate permanently undeliverable addresses — invalid mailboxes or non-existent domains. These should be removed immediately as ISPs penalize senders with high hard bounce rates.' : m.label === 'Soft Bounce' ? 'Soft bounces (2.0%) are temporary failures — full mailboxes, server timeouts, or rate limiting. Most resolve on retry, but addresses that soft bounce repeatedly (3+ times) should be investigated.' : m.label === 'Spam Complaints' ? 'Spam complaint rate of 0.02% is well below the 0.1% danger threshold. Above 0.1%, major ISPs (Gmail, Outlook) may throttle or block your emails entirely.' : 'There are 332 addresses flagged as invalid through DNS verification and syntax checks. These have never received a send attempt but would hard bounce if included. Remove them proactively.'}</p></div>}>
+          <Card glass className="p-4 flex flex-col items-center text-center" detailTitle={m.label} detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>{m.label === 'Delivery Rate' ? 'Current delivery rate of 96.2% means ~700 emails per campaign fail to reach inboxes. Industry benchmark for associations is 97-98%. Cleaning invalid and bounced addresses would push this above 98%.' : m.label === 'Hard Bounce' ? 'Hard bounces (1.8%) indicate permanently undeliverable addresses — invalid mailboxes or non-existent domains. These should be removed immediately as ISPs penalize senders with high hard bounce rates.' : m.label === 'Soft Bounce' ? 'Soft bounces (2.0%) are temporary failures — full mailboxes, server timeouts, or rate limiting. Most resolve on retry, but addresses that soft bounce repeatedly (3+ times) should be investigated.' : m.label === 'Spam Complaints' ? `Spam complaint rate of ${DELIVERABILITY.spamComplaintRate}% is well below Google's ${DELIVERABILITY.googleComplaintHardLimit}% hard limit and the ${DELIVERABILITY.recommendedComplaintCeiling}% recommended ceiling. Above ${DELIVERABILITY.googleComplaintHardLimit}%, Gmail may throttle or block alta.org entirely under the Feb-2024 bulk-sender rules.` : 'There are 332 addresses flagged as invalid through DNS verification and syntax checks. These have never received a send attempt but would hard bounce if included. Remove them proactively.'}</p></div>}>
             {m.ringValue > 0 ? (
               <ProgressRing value={m.label.includes('Rate') ? m.ringValue : m.ringValue} max={m.label.includes('Rate') ? 100 : 10} size={64} color={m.color} />
             ) : (
@@ -74,14 +81,14 @@ export default function Deliverability() {
         </Card>
       </div>
 
-      <Card glass title="Email Authentication (SPF / DKIM / DMARC)" subtitle="Domain security for alta.org" className="mb-6" detailTitle="Authentication Explained" detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>SPF verifies alta.org servers are authorized to send. DKIM cryptographically signs messages. DMARC tells receiving servers what to do with failed messages. All three must pass for maximum deliverability. ALTA has SPF and DKIM configured correctly, but DMARC is in monitoring mode only — upgrading to "quarantine" would prevent spoofing and improve inbox placement.</p></div>}>
+      <Card glass title="Email Authentication (SPF / DKIM / DMARC)" subtitle={FEED_LIVE ? 'Domain security for alta.org' : 'Expected configuration for alta.org — not yet verified against live DNS'} className="mb-6" detailTitle="Authentication Explained" detailContent={<div><p className="text-xs" style={{ color: 'var(--text-muted)' }}>SPF verifies alta.org servers are authorized to send. DKIM cryptographically signs messages. DMARC tells receiving servers what to do with failed messages. All three must pass for maximum deliverability.{!FEED_LIVE && ' The states shown here reflect the expected MEMTrak/M365 sending configuration and have not yet been confirmed by a live DNS lookup of alta.org / _dmarc.alta.org.'}</p></div>}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {auth.map((a, i) => (
             <div key={a.name} className="p-4 rounded-lg" style={{ background: 'var(--input-bg)', animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
               <div className="flex items-center gap-2 mb-2">
                 <span className={`w-2 h-2 rounded-full ${a.status === 'Pass' ? 'bg-green-400' : 'bg-amber-400'}`} />
                 <span className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{a.name}</span>
-                <span className={`text-[9px] px-2 py-0.5 rounded-full font-semibold ${a.status === 'Pass' ? 'bg-green-500/20 text-green-400' : 'bg-amber-500/20 text-amber-400'}`}>{a.status}</span>
+                <span className={`text-[11px] px-2 py-0.5 rounded-full font-semibold ${a.status === 'Pass' ? 'bg-green-500/20 text-green-400' : 'bg-amber-500/20 text-amber-400'}`}>{a.status}</span>
               </div>
               <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{a.desc}</p>
             </div>
@@ -100,7 +107,7 @@ export default function Deliverability() {
           ].map((r, i) => (
             <div key={i} className="flex items-center justify-between p-3 rounded-lg" style={{ background: 'var(--input-bg)', animation: `slideInUp 0.3s ease-out ${i * 0.06}s both` }}>
               <div><div className="text-xs font-bold" style={{ color: 'var(--heading)' }}>{r.action}</div><div className="text-[10px] text-green-400">{r.impact}</div></div>
-              <span className="text-[9px] px-2 py-0.5 rounded-full font-semibold" style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}>{r.when}</span>
+              <span className="text-[11px] px-2 py-0.5 rounded-full font-semibold" style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}>{r.when}</span>
             </div>
           ))}
         </div>

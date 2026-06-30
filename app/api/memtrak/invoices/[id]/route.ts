@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getInvoice, updateInvoice, deleteInvoice, markInvoicePaid } from '@/lib/member-data';
+import { requireReadOnly, requireStaff, safeError } from '@/lib/route-auth';
+import { logEntityAudit } from '@/lib/audit';
+import { auditContext } from '@/lib/audit-context';
 
 type Ctx = { params: Promise<{ id: string }> };
 
 export async function GET(_req: NextRequest, ctx: Ctx) {
+  const gate = await requireReadOnly();
+  if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
   const { id } = await ctx.params;
   const invoice = await getInvoice(id);
   if (!invoice) return NextResponse.json({ error: 'Not found' }, { status: 404 });
@@ -11,6 +17,9 @@ export async function GET(_req: NextRequest, ctx: Ctx) {
 }
 
 export async function PUT(request: NextRequest, ctx: Ctx) {
+  const gate = await requireStaff();
+  if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
   const { id } = await ctx.params;
   let patch: Record<string, unknown>;
   try { patch = await request.json(); } catch { return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 }); }
@@ -22,25 +31,42 @@ export async function PUT(request: NextRequest, ctx: Ctx) {
       const payment_reference = typeof patch.payment_reference === 'string' ? patch.payment_reference : undefined;
       const date_paid = typeof patch.date_paid === 'string' ? patch.date_paid : undefined;
       const invoice = await markInvoicePaid(id, { payment_method, payment_reference, date_paid });
+      logEntityAudit({
+        entity: 'invoice', entity_id: id, entity_label: invoice.invoice_number,
+        action: 'mark_paid', actor: gate.actor.email,
+        summary: `Marked invoice ${invoice.invoice_number} paid ($${invoice.amount.toLocaleString()}, ${payment_method})`,
+        ...auditContext(request),
+      });
       return NextResponse.json({ success: true, invoice });
     }
     const invoice = await updateInvoice(id, patch);
+    logEntityAudit({
+      entity: 'invoice', entity_id: id, entity_label: invoice.invoice_number,
+      action: 'update', actor: gate.actor.email,
+      summary: `Updated invoice ${invoice.invoice_number}`,
+      ...auditContext(request),
+    });
     return NextResponse.json({ success: true, invoice });
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Update failed';
-    const isConfig = message.includes('Supabase not configured');
-    return NextResponse.json({ error: message }, { status: isConfig ? 503 : 500 });
+    return safeError(err);
   }
 }
 
-export async function DELETE(_req: NextRequest, ctx: Ctx) {
+export async function DELETE(request: NextRequest, ctx: Ctx) {
+  const gate = await requireStaff();
+  if (!gate.ok) return NextResponse.json({ error: gate.error }, { status: gate.status });
+
   const { id } = await ctx.params;
   try {
     await deleteInvoice(id);
+    logEntityAudit({
+      entity: 'invoice', entity_id: id, entity_label: id,
+      action: 'delete', actor: gate.actor.email,
+      summary: `Deleted invoice ${id}`,
+      ...auditContext(request),
+    });
     return new NextResponse(null, { status: 204 });
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Delete failed';
-    const isConfig = message.includes('Supabase not configured');
-    return NextResponse.json({ error: message }, { status: isConfig ? 503 : 500 });
+    return safeError(err);
   }
 }

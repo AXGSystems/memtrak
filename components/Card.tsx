@@ -28,15 +28,15 @@ export default function Card({ children, title, subtitle, className = '', glass 
         className={`group rounded-xl border transition-all duration-300 ease-out hover:translate-y-[-3px] ${detailContent ? 'cursor-pointer' : ''} ${className}`}
         style={{
           background: isGlass
-            ? 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)'
+            ? 'linear-gradient(135deg, var(--glass-bg) 0%, var(--glass-bg-hover) 100%)'
             : 'var(--card)',
           borderColor: isGlass
-            ? 'rgba(255,255,255,0.10)'
+            ? 'var(--glass-border)'
             : 'var(--card-border)',
           borderLeftWidth: accent ? '4px' : undefined,
           borderLeftColor: accent,
           boxShadow: isGlass
-            ? '0 4px 24px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 0 rgba(0,0,0,0.1)'
+            ? '0 4px 24px rgba(0,0,0,0.12), inset 0 1px 0 var(--glass-bg)'
             : '0 2px 8px rgba(0,0,0,0.08)',
           backdropFilter: 'blur(16px) saturate(1.2)',
           WebkitBackdropFilter: 'blur(16px) saturate(1.2)',
@@ -122,20 +122,20 @@ export function KpiCard({ label, value, sub, icon: Icon, color, detail }: {
         onClick={detail ? () => setShowDetail(true) : undefined}
         className={`group rounded-xl border p-4 transition-all duration-300 ease-out hover:translate-y-[-3px] ${detail ? 'cursor-pointer' : ''}`}
         style={{
-          background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)',
-          borderColor: 'rgba(255,255,255,0.10)',
-          boxShadow: '0 4px 24px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.06)',
+          background: 'linear-gradient(135deg, var(--glass-bg) 0%, var(--glass-bg-hover) 100%)',
+          borderColor: 'var(--glass-border)',
+          boxShadow: '0 4px 24px rgba(0,0,0,0.12), inset 0 1px 0 var(--glass-bg)',
           backdropFilter: 'blur(16px) saturate(1.2)',
           WebkitBackdropFilter: 'blur(16px) saturate(1.2)',
         }}
       >
         <div className="flex items-center justify-between mb-1">
-          <span className="text-[9px] uppercase tracking-wider font-semibold" style={{ color: 'var(--text-muted)' }}>{label}</span>
+          <span className="text-[11px] uppercase tracking-wider font-semibold" style={{ color: 'var(--text-muted)' }}>{label}</span>
           {Icon && <Icon className="w-3.5 h-3.5" style={{ color: color || 'var(--accent)' }} />}
         </div>
         <div className="text-xl font-extrabold" style={{ color: color || 'var(--heading)' }}>{value}</div>
         {sub && <div className="text-[10px] mt-0.5" style={{ color: 'var(--text-muted)' }}>{sub}</div>}
-        {detail && <div className="text-[9px] mt-1 font-semibold" style={{ color: 'var(--accent)' }}>Click for details</div>}
+        {detail && <div className="text-[11px] mt-1 font-semibold" style={{ color: 'var(--accent)' }}>Click for details</div>}
       </div>
 
       {showDetail && detail && (

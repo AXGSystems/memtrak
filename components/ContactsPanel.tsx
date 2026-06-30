@@ -125,7 +125,7 @@ export default function ContactsPanel({ orgId, orgName }: ContactsPanelProps) {
                     </span>
                     {c.is_primary && <Star className="w-3 h-3" style={{ color: '#F5C542' }} fill="#F5C542" />}
                     <span
-                      className="text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded"
+                      className="text-[11px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded"
                       style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}
                     >
                       {c.role}

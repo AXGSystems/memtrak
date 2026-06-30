@@ -1,7 +1,14 @@
 /**
- * MEMTrak Report Generator
- * Generates professional, self-contained reports with context and narrative.
- * Someone reading this for the first time should understand everything.
+ * MEMTrak Report Generator (illustrative layout previews)
+ *
+ * IMPORTANT — honesty contract: the named reports in this file are built from
+ * illustrative SAMPLE data (lib/demo-data) plus inline example figures. They
+ * exist to demonstrate report layout/structure, NOT to certify real numbers.
+ * Every report rendered here is stamped with a visible "Sample data" banner and
+ * an honest footer so it can never be mistaken for an audit-grade, source-cited
+ * report. For real, live-data, provenance-stamped output use lib/reports.ts via
+ * the /reports library (memtrakReportHTML / printReport), which fetches from the
+ * /api/memtrak/* endpoints and cites sources + record counts.
  */
 
 import { demoCampaigns, demoMonthly, demoDecayAlerts, demoChurnScores,
@@ -12,9 +19,17 @@ const openRate = ((totals.totalOpened / totals.totalDelivered) * 100).toFixed(1)
 const clickRate = ((totals.totalClicked / totals.totalDelivered) * 100).toFixed(1);
 const bounceRate = ((totals.totalBounced / totals.totalSent) * 100).toFixed(1);
 
+function reportId(title: string) {
+  const stamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
+  return `MT-${title.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8)}-${stamp}-${rand}`;
+}
+
 function header(title: string, subtitle: string) {
+  const id = reportId(title);
+  const asOf = new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
   return `
-  <div style="display:flex;align-items:flex-end;justify-content:space-between;border-bottom:3px solid #C6A75E;padding-bottom:14px;margin-bottom:28px;">
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;border-bottom:3px solid #C6A75E;padding-bottom:14px;margin-bottom:8px;">
     <div>
       <div style="font-size:24px;font-weight:800;color:#002D5C;letter-spacing:-0.5px;">MEMTrak</div>
       <div style="font-size:13px;color:#002D5C;font-weight:600;margin-top:2px;">${title}</div>
@@ -24,6 +39,24 @@ function header(title: string, subtitle: string) {
       <div style="font-size:11px;color:#5a6d82;font-weight:600;">American Land Title Association</div>
       <div style="font-size:9px;color:#9a9690;">by AXG Systems</div>
     </div>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:14px;font-size:9px;color:#7a8898;margin-bottom:14px;">
+    <span><strong style="color:#5a6d82;">Report ID:</strong> ${id}</span>
+    <span><strong style="color:#5a6d82;">Generated:</strong> ${asOf}</span>
+  </div>
+  ${sampleBanner()}`;
+}
+
+/**
+ * Visible honesty disclosure stamped on every printed preview. Mirrors the
+ * in-app SampleDataBadge so a printed/shared page can never be mistaken for an
+ * audit-grade, source-cited report. Points the reader to the live /reports
+ * engine for real, provenance-stamped output.
+ */
+function sampleBanner() {
+  return `<div style="display:flex;align-items:flex-start;gap:8px;background:#fff6e6;border:1px solid #E8923F;border-radius:8px;padding:10px 14px;margin-bottom:22px;font-size:10px;color:#7a4a10;line-height:1.5;">
+    <span style="font-weight:800;text-transform:uppercase;letter-spacing:0.04em;color:#b5651d;white-space:nowrap;">Sample data</span>
+    <span>The figures below are illustrative sample values that demonstrate this report's layout — they are not yet computed from a live MEMTrak source and must not be cited as audit-grade. For real, source-cited output (live data, provenance line, record counts), use the Reports library at <strong>/reports</strong>.</span>
   </div>`;
 }
 
@@ -54,8 +87,8 @@ function insight(text: string) {
 function footer() {
   return `<div style="margin-top:40px;padding-top:14px;border-top:1px solid #d1d9e2;text-align:center;font-size:9px;color:#9a9690;line-height:1.6;">
     MEMTrak — Email Intelligence Platform for the American Land Title Association<br>
-    Built by AXG Systems | Report generated ${new Date().toLocaleString()}<br>
-    <em>Confidential — For Internal ALTA Staff Use Only</em>
+    Built by AXG Systems | Generated ${new Date().toLocaleString()}<br>
+    <em>Illustrative sample report — figures are not source-verified. Use /reports for live, source-cited output.</em>
   </div>`;
 }
 
@@ -531,11 +564,16 @@ export function memtrakPrint(title: string) {
       @media print{body{padding:0;}@page{margin:0.5in;size:letter;}}</style></head>
       <body>${reportFn()}</body></html>`);
   } else {
-    // Fallback: clone page content for pages without custom reports
+    // Fallback: clone page content for pages without a purpose-built report.
+    // A missed key means a low-fidelity DOM clone shipped silently before — warn
+    // loudly so the gap is visible and a real report key gets wired in.
+    console.warn(`[memtrakPrint] No purpose-built report for "${title}" — using page snapshot fallback. Wire a report key or use the live /reports engine for audit-grade output.`);
     const main = document.querySelector('main');
     if (!main) { w.close(); return; }
     const content = main.cloneNode(true) as HTMLElement;
     content.querySelectorAll('.no-print, button, input, select, textarea, .sticky').forEach(el => el.remove());
+
+    const fallbackBanner = `<div style="background:#fff6e6;border:1px solid #E8923F;border-radius:8px;padding:10px 14px;margin-bottom:18px;font-size:10px;color:#7a4a10;line-height:1.5;"><strong>Page snapshot:</strong> This is a print rendering of the on-screen dashboard, not a purpose-built report. For audit-grade, source-cited output use the Reports library (/reports).</div>`;
 
     w.document.write(`<!DOCTYPE html><html><head><title>${title} — MEMTrak</title>
       <style>
@@ -554,6 +592,7 @@ export function memtrakPrint(title: string) {
         @media print{body{padding:0;}@page{margin:0.5in;}}
       </style></head><body>
       ${header(title, new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }))}
+      ${fallbackBanner}
       ${content.innerHTML}
       ${footer()}
       </body></html>`);
