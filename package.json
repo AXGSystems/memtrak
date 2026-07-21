@@ -8,15 +8,15 @@
     "start": "next start"
   },
   "dependencies": {
-    "@auth/supabase-adapter": "^1.11.2",
-    "@supabase/supabase-js": "^2.103.0",
+    "@auth/supabase-adapter": "^1.11.3",
+    "@supabase/supabase-js": "^2.110.8",
     "chart.js": "^4.5.1",
     "chartjs-plugin-datalabels": "^2.2.0",
-    "lucide-react": "^1.8.0",
-    "next": "16.2.3",
+    "lucide-react": "^1.25.0",
+    "next": "16.2.11",
     "next-auth": "^5.0.0-beta.31",
-    "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
